@@ -2,6 +2,10 @@
 This is a learning management system for administration, tracking, reporting, and delivery of educational programs or classes.
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), accompanied with Java EE Backend using NetBeans.
 
+## File Organisation System
+Frontend - lms-react folder
+Backend - 
+
 ## Version Control Log
 All notable version control changes to this project will be documented in (insert file name).
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
