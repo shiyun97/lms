@@ -1,10 +1,6 @@
 # learning-management-system
 This is a learning management system for administration, tracking, reporting, and delivery of educational programs or classes.
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), accompanied with Java EE Backend using NetBeans.
-
-## File Organisation System
-1. Frontend - lms-react folder
-2. Backend - 
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), supported with Java EE Backend using NetBeans to supply the RESTful APIs.
 
 ## Version Control Log
 All notable version control changes to this project will be documented in (insert file name).
