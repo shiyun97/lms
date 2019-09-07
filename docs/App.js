@@ -43,7 +43,7 @@ class App extends Component {
       <Router>
       {/* <SideNav /> */}
         <div className="flyout">
-          <MDBNavbar color="indigo" dark expand="md" scrolling>
+          <MDBNavbar color="indigo" dark expand="md" scrolling fixed="top">
             <MDBNavbarBrand href="/" className="py-0 font-weight-bold">
               <img src="https://www.iconsdb.com/icons/preview/white/graduation-cap-xxl.png" style={{ height: "1.5rem", width: "2rem", paddingRight: "10px" }} />
               <strong className="align-middle">LUMINUS</strong>

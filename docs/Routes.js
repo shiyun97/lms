@@ -63,6 +63,10 @@ import TreeviewPage from './pages/TreeviewPage'
 import DashboardPage from './pages/DashboardPage';
 import LoginPage from './dev/LoginPage';
 import RegisterPage from './dev/RegisterPage';
+import ModuleOverviewPage from './dev/ModuleOverviewPage';
+import ModuleDetailsPage from './dev/ModuleDetailsPage';
+import ModuleAnnouncementsPage from './dev/ModuleAnnouncementsPage';
+import ModuleFilesPage from './dev/ModuleFilesPage';
 
 
 class Routes extends React.Component {
@@ -81,6 +85,11 @@ class Routes extends React.Component {
         <Route exact path="/modals" component={ModalsNavPage} />
         <Route exact path="/navigation" component={NavigationNavPage} />
         <Route exact path="/tables" component={TablesNavPage} />
+
+        <Route exact path="/modules/:moduleId/moduleOverview" component={ModuleOverviewPage} />
+        <Route exact path="/modules/:moduleId/moduleDetails" component={ModuleDetailsPage} />
+        <Route exact path="/modules/:moduleId/announcements" component={ModuleAnnouncementsPage} />
+        <Route exact path="/modules/:moduleId/files" component={ModuleFilesPage} />
 
         {/* FREE */}
         <Route path="/addons/iframe" component={IframePage} />
