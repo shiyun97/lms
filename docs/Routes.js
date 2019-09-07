@@ -61,6 +61,8 @@ import NotificationPage from './pages/NotificationPage';
 import InputGroupPage from './pages/InputGroupPage'
 import TreeviewPage from './pages/TreeviewPage'
 import DashboardPage from './pages/DashboardPage';
+import LoginPage from './dev/LoginPage';
+import RegisterPage from './dev/RegisterPage';
 
 
 class Routes extends React.Component {
@@ -69,6 +71,8 @@ class Routes extends React.Component {
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route exact path="/dashboard" component={DashboardPage} />
+        <Route exact path="/login" component={LoginPage} />
+        <Route exact path="/register" component={RegisterPage} />
         <Route exact path="/addons" component={AddonsNavPage} />
         <Route exact path="/advanced" component={AdvancedNavPage} />
         <Route exact path="/components" component={ComponentsNavPage} />

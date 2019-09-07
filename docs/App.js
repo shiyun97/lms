@@ -9,9 +9,8 @@ import {
   MDBFooter,
   MDBNavLink
 } from "mdbreact";
-import { ReactComponent as Logo } from "./assets/logo.svg";
 import { BrowserRouter as Router } from "react-router-dom";
-// import SideNavigation from './components/sideNavigation';
+import SideNav from './dev/SideNav';
 import Routes from "./Routes";
 
 class App extends Component {
@@ -42,12 +41,12 @@ class App extends Component {
 
     return (
       <Router>
-      {/* <SideNavigation /> */}
+      {/* <SideNav /> */}
         <div className="flyout">
           <MDBNavbar color="indigo" dark expand="md" scrolling>
             <MDBNavbarBrand href="/" className="py-0 font-weight-bold">
-              <Logo style={{ height: "2.5rem", width: "2.5rem" }} />
-              <strong className="align-middle">MDB React</strong>
+              <img src="https://www.iconsdb.com/icons/preview/white/graduation-cap-xxl.png" style={{ height: "1.5rem", width: "2rem", paddingRight: "10px" }} />
+              <strong className="align-middle">LUMINUS</strong>
             </MDBNavbarBrand>
             <MDBNavbarToggler
               onClick={this.toggleCollapse("mainNavbarCollapse")}
@@ -73,6 +72,14 @@ class App extends Component {
                     to="/dashboard"
                   >
                     <strong>Dashboard</strong>
+                  </MDBNavLink>
+                </MDBNavItem>
+                <MDBNavItem>
+                  <MDBNavLink
+                    onClick={this.closeCollapse("mainNavbarCollapse")}
+                    to="/login"
+                  >
+                    <strong>Login</strong>
                   </MDBNavLink>
                 </MDBNavItem>
                 <MDBNavItem>
@@ -143,13 +150,12 @@ class App extends Component {
             </MDBCollapse>
           </MDBNavbar>
           {collapseID && overlay}
-          <main style={{ marginTop: "4rem" }}>
+          <main style={{ marginTop: "3rem" }}>
             <Routes />
           </main>
           <MDBFooter color="indigo">
             <p className="footer-copyright mb-0 py-3 text-center">
-              &copy; {new Date().getFullYear()} Copyright:
-              <a href="https://www.MDBootstrap.com"> MDBootstrap.com </a>
+              &copy; {new Date().getFullYear()} Copyright Learning Management System
             </p>
           </MDBFooter>
         </div>
