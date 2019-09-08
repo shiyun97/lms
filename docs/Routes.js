@@ -2,6 +2,7 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 import { MDBIcon } from 'mdbreact';
 
+// FREE
 import NavigationNavPage from "./pages/NavigationNavPage";
 import FormsNavPage from "./pages/FormsNavPage";
 import TablesNavPage from "./pages/TablesNavPage";
@@ -9,8 +10,6 @@ import AddonsNavPage from "./pages/AddonsNavPage";
 import ModalsNavPage from "./pages/ModalsNavPage";
 import AdvancedNavPage from "./pages/AdvancedNavPage";
 import ComponentsNavPage from "./pages/ComponentsNavPage";
-
-// FREE
 import AnimationPage from "./pages/AnimationPage";
 import AlertPage from "./pages/AlertPage";
 import HomePage from "./pages/HomePage";
@@ -78,21 +77,16 @@ import ModuleMultimediaPage from './dev/ModuleMultimediaPage';
 import ModuleConsultationPage from './dev/ModuleConsultationPage';
 import DashboardPage from './dev/DashboardPage';
 import ModulesPage from './dev/ModulesPage';
+import UsersManagementPage from './dev/UsersManagementPage';
+import CourseManagementDashboard from './dev/CourseManagementDashboard'
+import CourseManagementMyCourses from './dev/CourseManagementMyCourses';
+import CourseManagementExploreCourses from './dev/CourseManagementExploreCourses'
+
 
 class Routes extends React.Component {
   render() {
     return (
       <Switch>
-        <Route exact path="/" component={HomePage} />
-        <Route exact path="/analytics" component={AnalyticsPage} />
-        <Route exact path="/addons" component={AddonsNavPage} />
-        <Route exact path="/advanced" component={AdvancedNavPage} />
-        <Route exact path="/components" component={ComponentsNavPage} />
-        <Route exact path="/css" component={CSSNavPage} />
-        <Route exact path="/forms" component={FormsNavPage} />
-        <Route exact path="/modals" component={ModalsNavPage} />
-        <Route exact path="/navigation" component={NavigationNavPage} />
-        <Route exact path="/tables" component={TablesNavPage} />
 
         {/* LMS PAGES */}
         <Route exact path="/login" component={LoginPage} />
@@ -110,8 +104,22 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/quiz" component={ModuleQuizPage} />
         <Route exact path="/modules/:moduleId/multimedia" component={ModuleMultimediaPage} />
         <Route exact path="/modules/:moduleId/consultation" component={ModuleConsultationPage} />
+        <Route exact path="/users" component={UsersManagementPage} />
+        <Route exact path="/coursesDashboard" component={CourseManagementDashboard} />
+        <Route exact path="/myCourses" component={CourseManagementMyCourses} />
+        <Route exact path="/exploreCourses" component={CourseManagementExploreCourses} />
 
         {/* FREE Templates */}
+        <Route exact path="/" component={HomePage} />
+        <Route exact path="/analytics" component={AnalyticsPage} />
+        <Route exact path="/addons" component={AddonsNavPage} />
+        <Route exact path="/advanced" component={AdvancedNavPage} />
+        <Route exact path="/components" component={ComponentsNavPage} />
+        <Route exact path="/css" component={CSSNavPage} />
+        <Route exact path="/forms" component={FormsNavPage} />
+        <Route exact path="/modals" component={ModalsNavPage} />
+        <Route exact path="/navigation" component={NavigationNavPage} />
+        <Route exact path="/tables" component={TablesNavPage} />
         <Route path="/addons/iframe" component={IframePage} />
         <Route path="/addons/edge-header" component={EdgeHeaderPage} />
         <Route path="/addons/notifications" component={NotificationPage} />
