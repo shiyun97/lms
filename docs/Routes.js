@@ -69,7 +69,13 @@ import RegisterPage from './dev/RegisterPage';
 import ModuleOverviewPage from './dev/ModuleOverviewPage';
 import ModuleDetailsPage from './dev/ModuleDetailsPage';
 import ModuleAnnouncementsPage from './dev/ModuleAnnouncementsPage';
+import ModuleClassGroupsPage from './dev/ModuleClassGroupsPage';
 import ModuleFilesPage from './dev/ModuleFilesPage';
+import ModuleForumPage from './dev/ModuleForumPage';
+import ModuleGradebookPage from './dev/ModuleGradebookPage';
+import ModuleQuizPage from './dev/ModuleQuizPage';
+import ModuleMultimediaPage from './dev/ModuleMultimediaPage';
+import ModuleConsultationPage from './dev/ModuleConsultationPage';
 import DashboardPage from './dev/DashboardPage';
 import ModulesPage from './dev/ModulesPage';
 
@@ -93,10 +99,17 @@ class Routes extends React.Component {
         <Route exact path="/register" component={RegisterPage} />
         <Route exact path="/dashboard" component={DashboardPage} />
         <Route exact path="/modules" component={ModulesPage} />
-        <Route exact path="/modules/:moduleId/moduleOverview" component={ModuleOverviewPage} />
+        <Route exact path="/modules/:moduleId/" component={ModuleOverviewPage} />
         <Route exact path="/modules/:moduleId/moduleDetails" component={ModuleDetailsPage} />
         <Route exact path="/modules/:moduleId/announcements" component={ModuleAnnouncementsPage} />
         <Route exact path="/modules/:moduleId/files" component={ModuleFilesPage} />
+        <Route exact path="/modules/:moduleId/files/:folderId" component={ModuleFilesPage} />
+        <Route exact path="/modules/:moduleId/class-groups" component={ModuleClassGroupsPage} />
+        <Route exact path="/modules/:moduleId/forum" component={ModuleForumPage} />
+        <Route exact path="/modules/:moduleId/gradebook" component={ModuleGradebookPage} />
+        <Route exact path="/modules/:moduleId/quiz" component={ModuleQuizPage} />
+        <Route exact path="/modules/:moduleId/multimedia" component={ModuleMultimediaPage} />
+        <Route exact path="/modules/:moduleId/consultation" component={ModuleConsultationPage} />
 
         {/* FREE Templates */}
         <Route path="/addons/iframe" component={IframePage} />

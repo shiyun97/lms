@@ -35,12 +35,13 @@ class ModuleOverviewPage extends Component {
         let module = this.state.module;
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation></ModuleSideNavigation>
+                <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
                 <div className="module-content">
                     <MDBContainer>
                         <MDBRow>
                             <MDBCol>
-                                <SectionContainer header="Module Overview" className="justify-content d-flex">
+                                <h4 className="mb-4">Module Overview</h4>
+                                <SectionContainer className="justify-content d-flex">
                                     <p><div className="h5">{module.moduleCode}</div>
                                     <h6>{module.moduleTitle}</h6>
                                     <MDBIcon icon="graduation-cap" className="mr-2 fa-fw"/>{module.moduleSemester}
@@ -63,7 +64,7 @@ class ModuleOverviewPage extends Component {
 
 export default styled(ModuleOverviewPage)`
 .module-content{
-    margin-left: 200px;
+    margin-left: 270px;
     margin-top: 40px;
 }
 `;

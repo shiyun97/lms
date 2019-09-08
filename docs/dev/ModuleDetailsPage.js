@@ -29,12 +29,13 @@ class ModuleDetailsPage extends Component {
         let module = this.state.module;
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation></ModuleSideNavigation>
+                <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
                 <div className="module-content">
                     <MDBContainer>
                         <MDBRow>
                             <MDBCol>
-                                <SectionContainer header="Module Details" className="justify-content d-flex">
+                                <h4 className="mb-4">Module Details</h4>
+                                <SectionContainer className="justify-content d-flex">
                                     <p><div className="h5">Description</div>
                                     {module.moduleDescription}
                                     </p>
@@ -50,7 +51,7 @@ class ModuleDetailsPage extends Component {
 
 export default styled(ModuleDetailsPage)`
 .module-content{
-    margin-left: 200px;
+    margin-left: 270px;
     margin-top: 40px;
 }
 `;
