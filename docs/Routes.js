@@ -72,6 +72,10 @@ import ModuleAnnouncementsPage from './dev/ModuleAnnouncementsPage';
 import ModuleFilesPage from './dev/ModuleFilesPage';
 import DashboardPage from './dev/DashboardPage';
 import ModulesPage from './dev/ModulesPage';
+import CourseManagementDashboard from './dev/CourseManagementDashboard'
+import CourseManagementMyCourses from './dev/CourseManagementMyCourses';
+import CourseManagementExploreCourses from './dev/CourseManagementExploreCourses'
+
 
 class Routes extends React.Component {
   render() {
@@ -97,6 +101,9 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/moduleDetails" component={ModuleDetailsPage} />
         <Route exact path="/modules/:moduleId/announcements" component={ModuleAnnouncementsPage} />
         <Route exact path="/modules/:moduleId/files" component={ModuleFilesPage} />
+        <Route exact path="/coursesDashboard" component={CourseManagementDashboard} />
+        <Route exact path="/myCourses" component={CourseManagementMyCourses} />
+        <Route exact path="/exploreCourses" component={CourseManagementExploreCourses} />
 
         {/* FREE Templates */}
         <Route path="/addons/iframe" component={IframePage} />
