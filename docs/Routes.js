@@ -1,5 +1,6 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
+import { MDBIcon } from 'mdbreact';
 
 import NavigationNavPage from "./pages/NavigationNavPage";
 import FormsNavPage from "./pages/FormsNavPage";
@@ -61,13 +62,16 @@ import NotificationPage from './pages/NotificationPage';
 import InputGroupPage from './pages/InputGroupPage'
 import TreeviewPage from './pages/TreeviewPage'
 import AnalyticsPage from './pages/AnalyticsPage';
+
+// LMS IMPORTS
 import LoginPage from './dev/LoginPage';
 import RegisterPage from './dev/RegisterPage';
 import ModuleOverviewPage from './dev/ModuleOverviewPage';
 import ModuleDetailsPage from './dev/ModuleDetailsPage';
 import ModuleAnnouncementsPage from './dev/ModuleAnnouncementsPage';
 import ModuleFilesPage from './dev/ModuleFilesPage';
-
+import DashboardPage from './dev/DashboardPage';
+import ModulesPage from './dev/ModulesPage';
 
 class Routes extends React.Component {
   render() {
@@ -75,8 +79,6 @@ class Routes extends React.Component {
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route exact path="/analytics" component={AnalyticsPage} />
-        <Route exact path="/login" component={LoginPage} />
-        <Route exact path="/register" component={RegisterPage} />
         <Route exact path="/addons" component={AddonsNavPage} />
         <Route exact path="/advanced" component={AdvancedNavPage} />
         <Route exact path="/components" component={ComponentsNavPage} />
@@ -86,12 +88,17 @@ class Routes extends React.Component {
         <Route exact path="/navigation" component={NavigationNavPage} />
         <Route exact path="/tables" component={TablesNavPage} />
 
+        {/* LMS PAGES */}
+        <Route exact path="/login" component={LoginPage} />
+        <Route exact path="/register" component={RegisterPage} />
+        <Route exact path="/dashboard" component={DashboardPage} />
+        <Route exact path="/modules" component={ModulesPage} />
         <Route exact path="/modules/:moduleId/moduleOverview" component={ModuleOverviewPage} />
         <Route exact path="/modules/:moduleId/moduleDetails" component={ModuleDetailsPage} />
         <Route exact path="/modules/:moduleId/announcements" component={ModuleAnnouncementsPage} />
         <Route exact path="/modules/:moduleId/files" component={ModuleFilesPage} />
 
-        {/* FREE */}
+        {/* FREE Templates */}
         <Route path="/addons/iframe" component={IframePage} />
         <Route path="/addons/edge-header" component={EdgeHeaderPage} />
         <Route path="/addons/notifications" component={NotificationPage} />
@@ -141,10 +148,19 @@ class Routes extends React.Component {
         <Route path="/tables/table-styles" component={TableStylesPage} />
         <Route path="/tables/datatable-api" component={DatatableApiPage} />
         <Route path="/tables/datatable" component={DatatablePage} />
-        
+
         <Route
           render={function () {
-            return <h1>Not Found</h1>;
+            return (
+              <center>
+                <h1 style={{ paddingTop: 100 }}>
+                  <MDBIcon icon="exclamation-triangle" />
+                  <br />
+                  404 <br />
+                  Page Not Found
+                  </h1>
+              </center>
+            )
           }}
         />
       </Switch>
