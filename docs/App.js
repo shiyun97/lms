@@ -17,7 +17,7 @@ class App extends Component {
   state = {
     collapseID: ""
   };
-  
+
   toggleCollapse = collapseID => () =>
     this.setState(prevState => ({
       collapseID: prevState.collapseID !== collapseID ? collapseID : ""
@@ -41,13 +41,13 @@ class App extends Component {
 
     return (
       <Router>
-      {/* <SideNav /> */}
+        <SideNav />
         <div className="flyout">
           <MDBNavbar color="indigo" dark expand="md" scrolling fixed="top">
-            <MDBNavbarBrand href="/" className="py-0 font-weight-bold">
+            {/* <MDBNavbarBrand href="/" className="py-0 font-weight-bold" style={{ paddingLeft: "80px" }}>
               <img src="https://www.iconsdb.com/icons/preview/white/graduation-cap-xxl.png" style={{ height: "1.5rem", width: "2rem", paddingRight: "10px" }} />
               <strong className="align-middle">LUMINUS</strong>
-            </MDBNavbarBrand>
+            </MDBNavbarBrand> */}
             <MDBNavbarToggler
               onClick={this.toggleCollapse("mainNavbarCollapse")}
             />
@@ -69,9 +69,9 @@ class App extends Component {
                 <MDBNavItem>
                   <MDBNavLink
                     onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/dashboard"
+                    to="/analytics"
                   >
-                    <strong>Dashboard</strong>
+                    <strong>Analytics</strong>
                   </MDBNavLink>
                 </MDBNavItem>
                 <MDBNavItem>

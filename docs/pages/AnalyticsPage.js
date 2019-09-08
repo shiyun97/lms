@@ -9,7 +9,7 @@ import ChartSection2 from './sections/ChartSection2';
 import MapSection from './sections/MapSection';
 import ModalSection from './sections/ModalSection';
 
-const DashboardPage =  () => {
+const AnalyticsPage =  () => {
   return (
     <React.Fragment>
       <BreadcrumSection />
@@ -26,4 +26,4 @@ const DashboardPage =  () => {
   )
 }
 
-export default DashboardPage;
+export default AnalyticsPage;

@@ -60,7 +60,7 @@ import PillsPage from './pages/PillsPage';
 import NotificationPage from './pages/NotificationPage';
 import InputGroupPage from './pages/InputGroupPage'
 import TreeviewPage from './pages/TreeviewPage'
-import DashboardPage from './pages/DashboardPage';
+import AnalyticsPage from './pages/AnalyticsPage';
 import LoginPage from './dev/LoginPage';
 import RegisterPage from './dev/RegisterPage';
 import ModuleOverviewPage from './dev/ModuleOverviewPage';
@@ -74,7 +74,7 @@ class Routes extends React.Component {
     return (
       <Switch>
         <Route exact path="/" component={HomePage} />
-        <Route exact path="/dashboard" component={DashboardPage} />
+        <Route exact path="/analytics" component={AnalyticsPage} />
         <Route exact path="/login" component={LoginPage} />
         <Route exact path="/register" component={RegisterPage} />
         <Route exact path="/addons" component={AddonsNavPage} />
