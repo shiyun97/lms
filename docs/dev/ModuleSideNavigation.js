@@ -23,7 +23,7 @@ class ModuleSideNavigation extends Component {
                             Module Details
                         </MDBListGroupItem>
                     </NavLink>
-                    <NavLink to={`/modules/${moduleId}/class-groups`} activeClassName="activeClass">
+                    <NavLink to={`/modules/${moduleId}/student-roster`} activeClassName="activeClass">
                         <MDBListGroupItem>
                             <MDBIcon icon="users" className="mr-3 fa-fw"/>
                             Class & Groups
