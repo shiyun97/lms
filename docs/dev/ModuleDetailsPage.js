@@ -36,9 +36,9 @@ class ModuleDetailsPage extends Component {
                             <MDBCol>
                                 <h4 className="mb-4">Module Details</h4>
                                 <SectionContainer className="justify-content d-flex">
-                                    <p><div className="h5">Description</div>
+                                    <div className="new-paragraph"><div className="h5">Description</div>
                                     {module.moduleDescription}
-                                    </p>
+                                    </div>
                                 </SectionContainer>
                             </MDBCol>
                         </MDBRow>
@@ -53,5 +53,9 @@ export default styled(ModuleDetailsPage)`
 .module-content{
     margin-left: 270px;
     margin-top: 40px;
+}
+.new-paragraph{
+    margin-top: 0;
+    margin-bottom: 1rem;
 }
 `;

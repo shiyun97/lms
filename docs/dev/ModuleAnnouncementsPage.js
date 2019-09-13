@@ -102,7 +102,7 @@ class AnnouncementListItem extends Component {
     render(){
         let announcement = this.props.announcement;
         return <div className="container-fluid section border p-3 justify-content d-flex mb-2">
-            <p>
+            <div className="new-paragraph">
                 <div className="h6">{announcement.title} <MDBIcon icon="magic" className="ml-2"  onClick={e=>{this.edit(announcement.id)}}/></div>
                 <MDBIcon icon="user" className="mr-2 fa-fw" />
                 by {announcement.createdBy}<br />
@@ -110,10 +110,9 @@ class AnnouncementListItem extends Component {
                 on {announcement.createdDt}
                 <div className="mb-2"></div>
                 {announcement.content}
-            </p>
+            </div>
         </div>
-    }
-    
+    }  
 }
 
 export default styled(ModuleAnnouncementsPage)`
@@ -127,5 +126,9 @@ export default styled(ModuleAnnouncementsPage)`
 }
 .align-right{
     float: right;
+}
+.new-paragraph{
+    margin-top: 0;
+    margin-bottom: 1rem;
 }
 `;

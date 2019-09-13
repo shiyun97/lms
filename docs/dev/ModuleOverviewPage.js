@@ -42,16 +42,17 @@ class ModuleOverviewPage extends Component {
                             <MDBCol>
                                 <h4 className="mb-4">Module Overview</h4>
                                 <SectionContainer className="justify-content d-flex">
-                                    <p><div className="h5">{module.moduleCode}</div>
-                                    <h6>{module.moduleTitle}</h6>
-                                    <MDBIcon icon="graduation-cap" className="mr-2 fa-fw"/>{module.moduleSemester}
-                                    <br/>
-                                    <MDBIcon icon="building" className="mr-2 fa-fw"/>{module.moduleFaculty} (Dept of {module.moduleDepartment})
-                                    <br/>
-                                    <MDBIcon icon="calendar-alt" className="mr-2 fa-fw"/>{module.openDate} - {module.closeDate}
-                                    <br/>
-                                    <MDBIcon icon="cog" className="mr-2 fa-fw"/>{module.credits} MCs
-                                    </p>
+                                    <div className="new-paragraph">
+                                        <div className="h5">{module.moduleCode}</div>
+                                        <h6>{module.moduleTitle}</h6>
+                                        <MDBIcon icon="graduation-cap" className="mr-2 fa-fw" />{module.moduleSemester}
+                                        <br />
+                                        <MDBIcon icon="building" className="mr-2 fa-fw" />{module.moduleFaculty} (Dept of {module.moduleDepartment})
+                                        <br />
+                                        <MDBIcon icon="calendar-alt" className="mr-2 fa-fw" />{module.openDate} - {module.closeDate}
+                                        <br />
+                                        <MDBIcon icon="cog" className="mr-2 fa-fw" />{module.credits} MCs
+                                    </div>
                                 </SectionContainer>
                             </MDBCol>
                         </MDBRow>
@@ -64,7 +65,15 @@ class ModuleOverviewPage extends Component {
 
 export default styled(ModuleOverviewPage)`
 .module-content{
-    margin-left: 270px;
     margin-top: 40px;
+}
+@media (min-width: 1199.98px) {
+    .module-content{
+        margin-left: 270px;
+    }
+}
+.new-paragraph{
+    margin-top: 0;
+    margin-bottom: 1rem;
 }
 `;

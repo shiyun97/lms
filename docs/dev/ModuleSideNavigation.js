@@ -23,7 +23,7 @@ class ModuleSideNavigation extends Component {
                             Module Details
                         </MDBListGroupItem>
                     </NavLink>
-                    <NavLink to={`/modules/${moduleId}/student-roster`} activeClassName="activeClass">
+                    <NavLink to={`/modules/${moduleId}/students`} activeClassName="activeClass">
                         <MDBListGroupItem>
                             <MDBIcon icon="users" className="mr-3 fa-fw"/>
                             Class & Groups
@@ -69,6 +69,24 @@ class ModuleSideNavigation extends Component {
                         <MDBListGroupItem>
                             <MDBIcon icon="calendar-alt" className="mr-3 fa-fw"/>
                             Consultation
+                        </MDBListGroupItem>
+                    </NavLink>
+                    <NavLink to={`/modules/${moduleId}/attendance`} activeClassName="activeClass">
+                        <MDBListGroupItem>
+                            <MDBIcon icon="calendar-check" className="mr-3 fa-fw"/>
+                            Attendance
+                        </MDBListGroupItem>
+                    </NavLink>
+                    <NavLink to={`/modules/${moduleId}/feedback`} activeClassName="activeClass">
+                        <MDBListGroupItem>
+                            <MDBIcon icon="comment-alt" className="mr-3 fa-fw"/>
+                            Feedback
+                        </MDBListGroupItem>
+                    </NavLink>
+                    <NavLink to="#" activeClassName="activeClass">
+                        <MDBListGroupItem>
+                            <MDBIcon icon="chart-line" className="mr-3 fa-fw"/>
+                            Module Progress
                         </MDBListGroupItem>
                     </NavLink>
                 </MDBListGroup>

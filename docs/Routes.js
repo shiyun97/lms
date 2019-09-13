@@ -68,13 +68,15 @@ import RegisterPage from './dev/RegisterPage';
 import ModuleOverviewPage from './dev/ModuleOverviewPage';
 import ModuleDetailsPage from './dev/ModuleDetailsPage';
 import ModuleAnnouncementsPage from './dev/ModuleAnnouncementsPage';
-import ModuleClassGroupsPage from './dev/ModuleClassGroupsPage';
+import ModuleClassGroupsPage, { StudentRosterDetails, ClassGroupDetails, LectureGroupDetails, TutorialGroupDetails } from './dev/ModuleClassGroupsPage';
 import ModuleFilesPage from './dev/ModuleFilesPage';
 import ModuleForumPage from './dev/ModuleForumPage';
 import ModuleGradebookPage from './dev/ModuleGradebookPage';
 import ModuleQuizPage from './dev/ModuleQuizPage';
-import ModuleMultimediaPage from './dev/ModuleMultimediaPage';
+import ModuleMultimediaPage, { ModuleMultimediaDetailsPage } from './dev/ModuleMultimediaPage';
 import ModuleConsultationPage from './dev/ModuleConsultationPage';
+import ModuleAttendancePage from './dev/ModuleAttendancePage';
+import ModuleFeedbackPage from './dev/ModuleFeedbackPage';
 import DashboardPage from './dev/DashboardPage';
 import ModulesPage from './dev/ModulesPage';
 import UsersManagementPage from './dev/UsersManagementPage';
@@ -98,15 +100,23 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/announcements" component={ModuleAnnouncementsPage} />
         <Route exact path="/modules/:moduleId/files" component={ModuleFilesPage} />
         <Route exact path="/modules/:moduleId/files/:folderId" component={ModuleFilesPage} />
-        <Route exact path="/modules/:moduleId/student-roster" component={ModuleClassGroupsPage} />
-        <Route exact path="/modules/:moduleId/class-groups" component={ModuleClassGroupsPage} />
-        <Route exact path="/modules/:moduleId/lecture-groups" component={ModuleClassGroupsPage} />
-        <Route exact path="/modules/:moduleId/tutorial-groups" component={ModuleClassGroupsPage} />
+        <Route exact path="/modules/:moduleId/students/" component={ModuleClassGroupsPage} />
+        <Route exact path="/modules/:moduleId/students/student-roster" component={ModuleClassGroupsPage} />
+        <Route exact path="/modules/:moduleId/students/student-roster/:studentId" component={StudentRosterDetails} />
+        <Route exact path="/modules/:moduleId/students/class-groups" component={ModuleClassGroupsPage} />
+        <Route exact path="/modules/:moduleId/students/class-groups/:classGroupId" component={ClassGroupDetails} />
+        <Route exact path="/modules/:moduleId/students/lecture-groups" component={ModuleClassGroupsPage} />
+        <Route exact path="/modules/:moduleId/students/lecture-groups/:lectureGroupId" component={LectureGroupDetails} />
+        <Route exact path="/modules/:moduleId/students/tutorial-groups" component={ModuleClassGroupsPage} />
+        <Route exact path="/modules/:moduleId/students/tutorial-groups/:tutorialGroupId" component={TutorialGroupDetails} />
         <Route exact path="/modules/:moduleId/forum" component={ModuleForumPage} />
         <Route exact path="/modules/:moduleId/gradebook" component={ModuleGradebookPage} />
         <Route exact path="/modules/:moduleId/quiz" component={ModuleQuizPage} />
         <Route exact path="/modules/:moduleId/multimedia" component={ModuleMultimediaPage} />
+        <Route exact path="/modules/:moduleId/multimedia/:multimediaId" component={ModuleMultimediaDetailsPage} />
         <Route exact path="/modules/:moduleId/consultation" component={ModuleConsultationPage} />
+        <Route exact path="/modules/:moduleId/attendance" component={ModuleAttendancePage} />
+        <Route exact path="/modules/:moduleId/feedback" component={ModuleFeedbackPage} />
         <Route exact path="/users" component={UsersManagementPage} />
         <Route exact path="/coursesDashboard" component={CourseManagementDashboard} />
         <Route exact path="/myCourses" component={CourseManagementMyCourses} />

@@ -60,6 +60,9 @@ class ModuleFilesPage extends Component {
         let folderId = this.props.match.params.folderId;
         if (moduleId) {
             console.log(moduleId);
+            this.setState({
+                moduleId: moduleId
+            })
             // retrieve top level folders / files
         }
         if (folderId) {
@@ -138,7 +141,7 @@ class ModuleFilesPage extends Component {
                         {
                             folders.length > 0 &&
                             folders.map((folder) => (
-                                <FolderListItem key={folder.id} folder={folder}></FolderListItem>
+                                <FolderListItem key={folder.id} folder={folder} moduleId={this.state.moduleId}></FolderListItem>
                             ))
                             
                         }
@@ -187,10 +190,11 @@ class FolderListItem extends Component {
 
     render(){
         let folder = this.props.folder;
+        let moduleId = this.props.moduleId;
         return <div>
             {
                 folder.status &&
-                <NavLink to={`files/${folder.id}`} >
+                <NavLink to={`/modules/${moduleId}/files/${folder.id}`} >
                     <SectionContainer noBottom>
                         <MDBRow>
                             <MDBCol size="1">
