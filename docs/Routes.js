@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import { MDBIcon } from 'mdbreact';
+import { MDBContainer, MDBCol, MDBRow, MDBJumbotron } from "mdbreact";
 
 // FREE
 import NavigationNavPage from "./pages/NavigationNavPage";
@@ -84,6 +84,7 @@ import CourseManagementDashboard from './dev/CourseManagementDashboard'
 import CourseManagementMyCourses from './dev/CourseManagementMyCourses';
 import CourseManagementExploreCourses from './dev/CourseManagementExploreCourses'
 import UserProfilePage from "./dev/UserProfilePage";
+import UnderMaintenancePage from "./dev/UnderMaintenancePage";
 
 class Routes extends React.Component {
   render() {
@@ -122,6 +123,7 @@ class Routes extends React.Component {
         <Route exact path="/myCourses" component={CourseManagementMyCourses} />
         <Route exact path="/exploreCourses" component={CourseManagementExploreCourses} />
         <Route exact path="/account/:accountid" component={UserProfilePage} />
+        <Route exact path="/undermaintenance" component={UnderMaintenancePage} />
 
         {/* FREE Templates */}
         <Route exact path="/" component={HomePage} />
@@ -187,14 +189,21 @@ class Routes extends React.Component {
         <Route
           render={function () {
             return (
-              <center>
-                <h1 style={{ paddingTop: 100 }}>
-                  <MDBIcon icon="exclamation-triangle" />
-                  <br />
-                  404 <br />
-                  Page Not Found
-                  </h1>
-              </center>
+              <MDBContainer style={{ paddingTop: 50, paddingBottom: 50 }} align="center">
+                <MDBRow>
+                  <MDBCol md="12" className="mt-3 mx-auto">
+                    <MDBJumbotron>
+                      <h2 className="font-weight-bold blue-text">
+                        LUMINUS
+                      </h2>
+                      <p className="text-muted mb-1">
+                        Learning Management System
+                      </p>
+                      <img src="http://kalashreeheritage.com/wp-content/uploads/2018/08/maxresdefault.jpg" width="50%" />
+                    </MDBJumbotron>
+                  </MDBCol>
+                </MDBRow>
+              </MDBContainer>
             )
           }}
         />
