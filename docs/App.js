@@ -60,7 +60,7 @@ class App extends Component {
                 <MDBNavItem>
                   <MDBNavLink
                     exact
-                    to="/"
+                    to="/home"
                     onClick={this.closeCollapse("mainNavbarCollapse")}
                   >
                     <strong>Home</strong>
@@ -77,7 +77,7 @@ class App extends Component {
                 <MDBNavItem>
                   <MDBNavLink
                     onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/login"
+                    to="/"
                   >
                     <strong>Login</strong>
                   </MDBNavLink>
