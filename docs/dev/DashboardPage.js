@@ -1,6 +1,7 @@
 import React from "react";
 import Fab from '@material-ui/core/Fab';
 import { MDBEdgeHeader, MDBJumbotron, MDBCardBody, MDBCard, MDBCardTitle, MDBCardText, MDBIcon, MDBContainer, MDBRow, MDBCol, MDBAnimation } from "mdbreact";
+import { NavLink } from 'react-router-dom';
 
 const DashboardPage = () => {
   return (
@@ -35,74 +36,84 @@ const DashboardPage = () => {
                     </MDBCol>
                     <MDBCol md="4">
                       <MDBAnimation reveal type="fadeInUp">
-                        <MDBCard cascade className="my-3 grey lighten-4">
-                          <MDBCardBody cascade>
-                            <h6>XX1234</h6>
-                            <MDBCardTitle>MODULE NAME</MDBCardTitle>
-                            <MDBCardText style={{ paddingTop: 40 }}>
-                              AY XX/XX SEM XX <br />
-                              PROFESSOR'S NAME
+                        <NavLink to="/modules/:moduleId/" activeClassName="activeClass">
+                          <MDBCard cascade className="my-3 grey lighten-4">
+                            <MDBCardBody cascade>
+                              <h6>XX1234</h6>
+                              <MDBCardTitle>MODULE NAME</MDBCardTitle>
+                              <MDBCardText style={{ paddingTop: 40 }}>
+                                AY XX/XX SEM XX <br />
+                                PROFESSOR'S NAME
                           </MDBCardText>
-                          </MDBCardBody>
-                        </MDBCard>
+                            </MDBCardBody>
+                          </MDBCard>
+                        </NavLink>
                       </MDBAnimation>
                     </MDBCol>
                     <MDBCol md="4">
                       <MDBAnimation reveal type="fadeInUp">
-                        <MDBCard cascade className="my-3 grey lighten-4">
-                          <MDBCardBody cascade>
-                            <h6>XX1234</h6>
-                            <MDBCardTitle>MODULE NAME</MDBCardTitle>
-                            <MDBCardText style={{ paddingTop: 40 }}>
-                              AY XX/XX SEM XX <br />
-                              PROFESSOR'S NAME
+                        <NavLink to="/modules/:moduleId/" activeClassName="activeClass">
+                          <MDBCard cascade className="my-3 grey lighten-4">
+                            <MDBCardBody cascade>
+                              <h6>XX1234</h6>
+                              <MDBCardTitle>MODULE NAME</MDBCardTitle>
+                              <MDBCardText style={{ paddingTop: 40 }}>
+                                AY XX/XX SEM XX <br />
+                                PROFESSOR'S NAME
                           </MDBCardText>
-                          </MDBCardBody>
-                        </MDBCard>
+                            </MDBCardBody>
+                          </MDBCard>
+                        </NavLink>
                       </MDBAnimation>
                     </MDBCol>
                   </MDBRow>
                   <MDBRow id="categories">
                     <MDBCol md="4">
                       <MDBAnimation reveal type="fadeInUp">
-                        <MDBCard cascade className="my-3 grey lighten-4">
-                          <MDBCardBody cascade>
-                            <h6>XX1234</h6>
-                            <MDBCardTitle>MODULE NAME</MDBCardTitle>
-                            <MDBCardText style={{ paddingTop: 40 }}>
-                              AY XX/XX SEM XX <br />
-                              PROFESSOR'S NAME
+                        <NavLink to="/modules/:moduleId/" activeClassName="activeClass">
+                          <MDBCard cascade className="my-3 grey lighten-4">
+                            <MDBCardBody cascade>
+                              <h6>XX1234</h6>
+                              <MDBCardTitle>MODULE NAME</MDBCardTitle>
+                              <MDBCardText style={{ paddingTop: 40 }}>
+                                AY XX/XX SEM XX <br />
+                                PROFESSOR'S NAME
                           </MDBCardText>
-                          </MDBCardBody>
-                        </MDBCard>
+                            </MDBCardBody>
+                          </MDBCard>
+                        </NavLink>
                       </MDBAnimation>
                     </MDBCol>
                     <MDBCol md="4">
                       <MDBAnimation reveal type="fadeInUp">
-                        <MDBCard cascade className="my-3 grey lighten-4">
-                          <MDBCardBody cascade>
-                            <h6>XX1234</h6>
-                            <MDBCardTitle>MODULE NAME</MDBCardTitle>
-                            <MDBCardText style={{ paddingTop: 40 }}>
-                              AY XX/XX SEM XX <br />
-                              PROFESSOR'S NAME
+                        <NavLink to="/modules/:moduleId/" activeClassName="activeClass">
+                          <MDBCard cascade className="my-3 grey lighten-4">
+                            <MDBCardBody cascade>
+                              <h6>XX1234</h6>
+                              <MDBCardTitle>MODULE NAME</MDBCardTitle>
+                              <MDBCardText style={{ paddingTop: 40 }}>
+                                AY XX/XX SEM XX <br />
+                                PROFESSOR'S NAME
                           </MDBCardText>
-                          </MDBCardBody>
-                        </MDBCard>
+                            </MDBCardBody>
+                          </MDBCard>
+                        </NavLink>
                       </MDBAnimation>
                     </MDBCol>
                     <MDBCol md="4">
                       <MDBAnimation reveal type="fadeInUp">
-                        <MDBCard cascade className="my-3 grey lighten-4">
-                          <MDBCardBody cascade>
-                            <h6>XX1234</h6>
-                            <MDBCardTitle>MODULE NAME</MDBCardTitle>
-                            <MDBCardText style={{ paddingTop: 40 }}>
-                              AY XX/XX SEM XX <br />
-                              PROFESSOR'S NAME
+                        <NavLink to="/modules/:moduleId/" activeClassName="activeClass">
+                          <MDBCard cascade className="my-3 grey lighten-4">
+                            <MDBCardBody cascade>
+                              <h6>XX1234</h6>
+                              <MDBCardTitle>MODULE NAME</MDBCardTitle>
+                              <MDBCardText style={{ paddingTop: 40 }}>
+                                AY XX/XX SEM XX <br />
+                                PROFESSOR'S NAME
                           </MDBCardText>
-                          </MDBCardBody>
-                        </MDBCard>
+                            </MDBCardBody>
+                          </MDBCard>
+                        </NavLink>
                       </MDBAnimation>
                     </MDBCol>
                   </MDBRow>
