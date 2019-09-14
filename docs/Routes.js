@@ -83,7 +83,7 @@ import UsersManagementPage from './dev/UsersManagementPage';
 import CourseManagementDashboard from './dev/CourseManagementDashboard'
 import CourseManagementMyCourses from './dev/CourseManagementMyCourses';
 import CourseManagementExploreCourses from './dev/CourseManagementExploreCourses'
-
+import UserProfilePage from "./dev/UserProfilePage";
 
 class Routes extends React.Component {
   render() {
@@ -121,6 +121,7 @@ class Routes extends React.Component {
         <Route exact path="/coursesDashboard" component={CourseManagementDashboard} />
         <Route exact path="/myCourses" component={CourseManagementMyCourses} />
         <Route exact path="/exploreCourses" component={CourseManagementExploreCourses} />
+        <Route exact path="/account/:accountid" component={UserProfilePage} />
 
         {/* FREE Templates */}
         <Route exact path="/" component={HomePage} />

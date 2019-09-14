@@ -2,7 +2,6 @@ import React from "react";
 import { MDBDataTable, MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBCardBody } from "mdbreact";
 import data from '../test/users_data'
 
-
 const UsersManagementPage = () => {
 
     const widerData = {

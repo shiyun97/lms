@@ -1,6 +1,6 @@
 import React from "react";
 import Fab from '@material-ui/core/Fab';
-import { MDBEdgeHeader, MDBJumbotron, MDBCardBody, MDBCard, MDBCardTitle, MDBCardText, MDBIcon, MDBContainer, MDBRow, MDBCol, MDBAnimation, MDBListGroup, MDBListGroupItem } from "mdbreact";
+import { MDBEdgeHeader, MDBJumbotron, MDBCardBody, MDBCard, MDBCardTitle, MDBCardText, MDBIcon, MDBContainer, MDBRow, MDBCol, MDBAnimation } from "mdbreact";
 
 const DashboardPage = () => {
   return (
@@ -19,7 +19,21 @@ const DashboardPage = () => {
               <MDBRow>
                 <MDBCol md="8" className="mt-4">
                   <MDBRow id="categories">
-                    <MDBCol md="3">
+                    <MDBCol md="4">
+                      <MDBAnimation reveal type="fadeInUp">
+                        <MDBCard cascade className="my-3 white lighten-4">
+                          <MDBCardBody cascade align="center">
+                            <Fab color="primary" size="small" aria-label="add">
+                              <MDBIcon icon="plus" />
+                            </Fab>
+                            <MDBCardTitle align="center" style={{ paddingTop: 20 }} className="grey-text">
+                              Create New Module
+                          </MDBCardTitle>
+                          </MDBCardBody>
+                        </MDBCard>
+                      </MDBAnimation>
+                    </MDBCol>
+                    <MDBCol md="4">
                       <MDBAnimation reveal type="fadeInUp">
                         <MDBCard cascade className="my-3 grey lighten-4">
                           <MDBCardBody cascade>
@@ -33,35 +47,7 @@ const DashboardPage = () => {
                         </MDBCard>
                       </MDBAnimation>
                     </MDBCol>
-                    <MDBCol md="3">
-                      <MDBAnimation reveal type="fadeInUp">
-                        <MDBCard cascade className="my-3 grey lighten-4">
-                          <MDBCardBody cascade>
-                            <h6>XX1234</h6>
-                            <MDBCardTitle>MODULE NAME</MDBCardTitle>
-                            <MDBCardText style={{ paddingTop: 40 }}>
-                              AY XX/XX SEM XX <br />
-                              PROFESSOR'S NAME
-                          </MDBCardText>
-                          </MDBCardBody>
-                        </MDBCard>
-                      </MDBAnimation>
-                    </MDBCol>
-                    <MDBCol md="3">
-                      <MDBAnimation reveal type="fadeInUp">
-                        <MDBCard cascade className="my-3 grey lighten-4">
-                          <MDBCardBody cascade>
-                            <h6>XX1234</h6>
-                            <MDBCardTitle>MODULE NAME</MDBCardTitle>
-                            <MDBCardText style={{ paddingTop: 40 }}>
-                              AY XX/XX SEM XX <br />
-                              PROFESSOR'S NAME
-                          </MDBCardText>
-                          </MDBCardBody>
-                        </MDBCard>
-                      </MDBAnimation>
-                    </MDBCol>
-                    <MDBCol md="3">
+                    <MDBCol md="4">
                       <MDBAnimation reveal type="fadeInUp">
                         <MDBCard cascade className="my-3 grey lighten-4">
                           <MDBCardBody cascade>
@@ -77,7 +63,7 @@ const DashboardPage = () => {
                     </MDBCol>
                   </MDBRow>
                   <MDBRow id="categories">
-                    <MDBCol md="3">
+                    <MDBCol md="4">
                       <MDBAnimation reveal type="fadeInUp">
                         <MDBCard cascade className="my-3 grey lighten-4">
                           <MDBCardBody cascade>
@@ -91,7 +77,21 @@ const DashboardPage = () => {
                         </MDBCard>
                       </MDBAnimation>
                     </MDBCol>
-                    <MDBCol md="3">
+                    <MDBCol md="4">
+                      <MDBAnimation reveal type="fadeInUp">
+                        <MDBCard cascade className="my-3 grey lighten-4">
+                          <MDBCardBody cascade>
+                            <h6>XX1234</h6>
+                            <MDBCardTitle>MODULE NAME</MDBCardTitle>
+                            <MDBCardText style={{ paddingTop: 40 }}>
+                              AY XX/XX SEM XX <br />
+                              PROFESSOR'S NAME
+                          </MDBCardText>
+                          </MDBCardBody>
+                        </MDBCard>
+                      </MDBAnimation>
+                    </MDBCol>
+                    <MDBCol md="4">
                       <MDBAnimation reveal type="fadeInUp">
                         <MDBCard cascade className="my-3 grey lighten-4">
                           <MDBCardBody cascade>

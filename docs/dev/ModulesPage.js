@@ -1,14 +1,14 @@
 import React from "react";
-import { MDBInputGroup, MDBCardBody, MDBCard, MDBCardTitle, MDBCardText, MDBNavLink, MDBContainer, MDBRow, MDBCol, MDBAnimation } from "mdbreact";
+import { MDBInputGroup, MDBBtn, MDBCardBody, MDBCard, MDBCardTitle, MDBCardText, MDBNavLink, MDBContainer, MDBRow, MDBCol, MDBAnimation } from "mdbreact";
 
 const ModulesPage = () => {
     return (
         <MDBContainer style={{ paddingBottom: 240 }}>
             <MDBRow>
-                <MDBCol md="12" className="mt-4">
+                <MDBCol md="8" className="mt-4">
                     <h2 className="font-weight-bold" style={{ paddingTop: 50 }}>
                         Modules
-                </h2>
+                    </h2>
                     <MDBInputGroup
                         containerClassName="mb-3"
                         style={{ width: 300 }}
@@ -20,6 +20,11 @@ const ModulesPage = () => {
                             </select>
                         }
                     />
+                </MDBCol>
+                <MDBCol align="right" md="4" className="mt-4" style={{ paddingTop: 50 }}>
+                    <MDBBtn color="primary">Create Module</MDBBtn>
+                </MDBCol>
+                <MDBCol md="12">
                     <hr className="my-5" />
 
                     <MDBRow id="categories">

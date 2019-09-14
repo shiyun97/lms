@@ -22,6 +22,12 @@ const SideNav = () => {
                         <br /> <p style={{ fontSize: "10px" }}>Modules</p>
                     </MDBListGroupItem>
                 </NavLink>
+                <NavLink to="/vourses" activeClassName="activeClass">
+                    <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
+                        <MDBIcon icon="book" />
+                        <br /> <p style={{ fontSize: "10px" }}>Courses</p>
+                    </MDBListGroupItem>
+                </NavLink>
                 <NavLink to="/inbox/:accountid" activeClassName="activeClass">
                     <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
                         <MDBIcon icon="envelope" />
