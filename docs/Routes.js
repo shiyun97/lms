@@ -193,12 +193,6 @@ class Routes extends React.Component {
                 <MDBRow>
                   <MDBCol md="12" className="mt-3 mx-auto">
                     <MDBJumbotron>
-                      <h2 className="font-weight-bold blue-text">
-                        LUMINUS
-                      </h2>
-                      <p className="text-muted mb-1">
-                        Learning Management System
-                      </p>
                       <img src="http://kalashreeheritage.com/wp-content/uploads/2018/08/maxresdefault.jpg" width="50%" />
                     </MDBJumbotron>
                   </MDBCol>
