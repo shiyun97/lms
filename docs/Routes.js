@@ -97,7 +97,10 @@ class Routes extends React.Component {
         <Route exact path="/modules" component={ModulesPage} />
         <Route exact path="/modules/:moduleId/" component={ModuleOverviewPage} />
         <Route exact path="/modules/:moduleId/moduleDetails" component={ModuleDetailsPage} />
-        <Route exact path="/modules/:moduleId/announcements" component={ModuleAnnouncementsPage} />
+        <Route exact path="/modules/:moduleId/announcements/" component={ModuleAnnouncementsPage} />
+        <Route exact path="/modules/:moduleId/announcements/active" component={ModuleAnnouncementsPage} />
+        <Route exact path="/modules/:moduleId/announcements/upcoming" component={ModuleAnnouncementsPage} />
+        <Route exact path="/modules/:moduleId/announcements/expired" component={ModuleAnnouncementsPage} />
         <Route exact path="/modules/:moduleId/files" component={ModuleFilesPage} />
         <Route exact path="/modules/:moduleId/files/:folderId" component={ModuleFilesPage} />
         <Route exact path="/modules/:moduleId/students/" component={ModuleClassGroupsPage} />
