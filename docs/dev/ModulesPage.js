@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { MDBInputGroup, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter, MDBCardBody, MDBCard, MDBCardTitle, MDBCardText, MDBNavLink, MDBContainer, MDBRow, MDBCol, MDBAnimation
-} from "mdbreact";
+import { MDBInputGroup, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter, MDBCardBody, MDBCard, MDBCardTitle, MDBCardText, MDBNavLink, MDBContainer, MDBRow, MDBCol, MDBAnimation } from "mdbreact";
 import { NavLink } from 'react-router-dom';
 
 class ModulesPage extends Component {
@@ -49,19 +48,80 @@ class ModulesPage extends Component {
                         </MDBModalHeader>
                         <MDBModalBody>
                             <form className="mx-3 grey-text">
-                                <label className="grey-text">
-                                    Academic Career
-                                </label>
-                                <input type="text" className="form-control" />
-                                <br />
-                                <label className="grey-text">
-                                    Term
-                                </label>
-                                <input type="text" className="form-control" />
+                                <MDBRow>
+                                    <MDBCol md="6" className="mt-4">
+                                        <label className="grey-text">
+                                            Academic Career
+                                        </label>
+                                        <input type="text" className="form-control" />
+                                    </MDBCol>
+                                    <MDBCol md="6" className="mt-4">
+                                        <label className="grey-text">
+                                            Term
+                                        </label>
+                                        <input type="text" className="form-control" />
+                                    </MDBCol>
+                                    <br />
+                                    <MDBCol md="12" className="mt-4">
+                                        <MDBCard color="warning-color" text="white" className="text-center">
+                                            <MDBCardBody>
+                                                You are not able to change the Academic Career and Term once the module is created. Please check that you have indicated the correct academic year and semester.
+                                    </MDBCardBody>
+                                        </MDBCard>
+                                    </MDBCol>
+                                    <MDBCol md="12" className="mt-4">
+                                        <label className="grey-text">
+                                            Module Code
+                                        </label>
+                                    </MDBCol>
+                                    <MDBCol md="7">
+                                        <input type="text" className="form-control" />
+                                    </MDBCol>
+                                    <MDBCol md="5" align="right">
+                                        <MDBBtn outline size="sm" color="primary">Generate Code</MDBBtn>
+                                    </MDBCol>
+                                    <MDBCol md="12" className="mt-4">
+                                        <label className="grey-text">
+                                            Module Title
+                                        </label>
+                                        <input type="text" className="form-control" />
+                                    </MDBCol>
+                                    <MDBCol md="6" className="mt-4">
+                                        <label className="grey-text">
+                                            Faculty
+                                        </label>
+                                        <input type="text" className="form-control" />
+                                    </MDBCol>
+                                    <MDBCol md="6" className="mt-4">
+                                        <label className="grey-text">
+                                            Department
+                                        </label>
+                                        <input type="text" className="form-control" />
+                                    </MDBCol>
+                                    <MDBCol md="6" className="mt-4">
+                                        <label className="grey-text">
+                                            Start Date
+                                        </label>
+                                        <input type="text" className="form-control" />
+                                    </MDBCol>
+                                    <MDBCol md="6" className="mt-4">
+                                        <label className="grey-text">
+                                            End Date
+                                        </label>
+                                        <input type="text" className="form-control" />
+                                    </MDBCol>
+                                </MDBRow>
                             </form>
                         </MDBModalBody>
                         <MDBModalFooter className="justify-content-center">
-                            <MDBBtn onClick={this.toggle(1)}>Login</MDBBtn>
+                            <MDBRow>
+                                <MDBCol md="6">
+                                    <MDBBtn onClick={this.toggle(1)} color="grey">Cancel</MDBBtn>
+                                </MDBCol>
+                                <MDBCol md="6">
+                                    <MDBBtn onClick={this.toggle(1)} color="primary">Create</MDBBtn>
+                                </MDBCol>
+                            </MDBRow>
                         </MDBModalFooter>
                     </MDBModal>
                     <MDBCol md="12">
