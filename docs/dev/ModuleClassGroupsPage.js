@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBTabPane, MDBTabContent, MDBNav, MDBNavItem, MDBNavLink, MDBDataTable } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBTabPane, MDBTabContent, 
+    MDBNav, MDBNavItem, MDBNavLink, MDBDataTable, MDBModal, MDBModalHeader, 
+    MDBModalFooter, MDBModalBody, MDBBtn } from "mdbreact";
+import SectionContainer from "../components/sectionContainer";
 import ModuleSideNavigation from "./ModuleSideNavigation";
 
 class ModuleClassGroupsPage extends Component {
@@ -9,6 +12,7 @@ class ModuleClassGroupsPage extends Component {
     state = {
         moduleId: "123",
         activeItem: "Student Roster",
+        modalStudent: false,
         student: {
             studentId: ""
         },
@@ -235,6 +239,18 @@ class ModuleClassGroupsPage extends Component {
         }
     };
 
+    toggleModal = nr => () => {
+        console.log(nr)
+        let modalNumber = "modal" + nr;
+        this.setState({
+            [modalNumber]: !this.state[modalNumber]
+        });
+    };
+
+    submitAddStudent = () => {
+
+    }
+
     goToStudent = (studentId) => {
         console.log(studentId);
         this.props.history.push(`/modules/${this.state.moduleId}/students/student-roster/${studentId}`);
@@ -267,9 +283,7 @@ class ModuleClassGroupsPage extends Component {
                     <MDBContainer>
                         <MDBRow>
                             <MDBCol>
-                                <h4 className="mb-4">{this.state.activeItem}
-                                <MDBIcon icon="angle-right" className="ml-4" />
-                                </h4>
+                                <h4 className="mb-4">{this.state.activeItem}</h4>
                                 <hr className="my-4" />
                             </MDBCol>
                         </MDBRow>
@@ -317,20 +331,99 @@ class ModuleClassGroupsPage extends Component {
                         </MDBNav>
                         <MDBTabContent activeItem={this.state.activeItem}>
                             <MDBTabPane tabId="Student Roster" role="tabpanel">
-                                <div className="mb-4"></div>
-                                <MDBDataTable striped bordered hover searching={true} data={students} />
+                                <div className="mb-2"></div>
+                                <MDBRow>
+                                    <MDBCol>
+                                        <div style={{ "float": "right" }}>
+                                            <MDBBtn color="primary" outline className="mr-0 mb-2" size="md" onClick={this.toggleModal("Student")}>
+                                                <MDBIcon icon="plus" className="mr-1" /> Add
+                                            </MDBBtn>
+                                        </div>
+                                    </MDBCol>
+                                </MDBRow>
+                                <MDBRow>
+                                    <MDBCol>
+                                        <MDBDataTable striped bordered hover searching={true} data={students} />
+                                    </MDBCol>
+                                </MDBRow>
+                                <MDBModal isOpen={this.state.modalStudent} toggle={this.toggleModal("Student")}>
+                                    <MDBModalHeader
+                                        className="text-center"
+                                        titleClass="w-100 font-weight-bold"
+                                        toggle={this.toggleModal("Student")}
+                                    >
+                                        Add Student
+                                    </MDBModalHeader>
+                                    <MDBModalBody>
+                                        <form className="mx-3 grey-text">
+                                            <div className="form-group">
+                                                <label htmlFor="matriculationNo">Student Matric No.</label>
+                                                <select className="form-control" onChange={e => {}} placeholder="Matricultaion No.">
+                                                    <option value=""></option>
+                                                    <option value="A0000000B">A0000000B</option>
+                                                    <option value="A0430800B">A0430800B</option>
+                                                    <option value="A1502800B">A1502800B</option>
+                                                    <option value="A0229800B">A0229800B</option>
+                                                    <option value="A1007500B">A1007500B</option>
+                                                </select>
+                                            </div>
+                                        </form>
+                                    </MDBModalBody>
+                                    <MDBModalFooter className="justify-content-center">
+                                        <MDBBtn color="info" onClick={this.submitAddStudent()}>Submit</MDBBtn>
+                                    </MDBModalFooter>
+                                </MDBModal>
                             </MDBTabPane>
                             <MDBTabPane tabId="Class Groups" role="tabpanel">
-                                <div className="mb-4"></div>
-                                <MDBDataTable striped bordered hover searching={true} data={classGroups} />
+                                <div className="mb-2"></div>
+                                <MDBRow>
+                                    <MDBCol>
+                                        <div style={{ "float": "right" }}>
+                                            <MDBBtn color="primary" outline className="mr-0 mb-3" size="md" onClick={this.toggleModal("ClassGroup")}>
+                                                <MDBIcon icon="plus" className="mr-1" /> Add
+                                            </MDBBtn>
+                                        </div>
+                                    </MDBCol>
+                                </MDBRow>
+                                <MDBRow>
+                                    <MDBCol>
+                                        <MDBDataTable striped bordered hover searching={false} paging={false} data={classGroups} />
+                                    </MDBCol>
+                                </MDBRow>
                             </MDBTabPane>
                             <MDBTabPane tabId="Lecture Groups" role="tabpanel">
-                                <div className="mb-4"></div>
-                                <MDBDataTable striped bordered hover searching={true} data={lectureGroups} />
+                                <div className="mb-2"></div>
+                                <MDBRow>
+                                    <MDBCol>
+                                        <div style={{ "float": "right" }}>
+                                            <MDBBtn color="primary" outline className="mr-0 mb-3" size="md" onClick={this.toggleModal("LectureGroup")}>
+                                                <MDBIcon icon="plus" className="mr-1" /> Add
+                                            </MDBBtn>
+                                        </div>
+                                    </MDBCol>
+                                </MDBRow>
+                                <MDBRow>
+                                    <MDBCol>
+                                        <MDBDataTable striped bordered hover searching={false} paging={false} data={lectureGroups} />
+                                    </MDBCol>
+                                </MDBRow>
                             </MDBTabPane>
                             <MDBTabPane tabId="Tutorial Groups" role="tabpanel">
-                                <div className="mb-4"></div>
-                                <MDBDataTable striped bordered hover searching={true} data={tutorialGroups} />
+                            <div className="mb-2"></div>
+                                <MDBRow>
+                                    <MDBCol>
+                                        <div style={{ "float": "right" }}>
+                                            <MDBBtn color="primary" outline className="mr-0 mb-3" size="md" onClick={this.toggleModal("TutorialGroup")}>
+                                                <MDBIcon icon="plus" className="mr-1" /> Add
+                                            </MDBBtn>
+                                        </div>
+                                    </MDBCol>
+                                </MDBRow>
+                                <MDBRow>
+                                    <MDBCol>
+                                        <MDBDataTable striped bordered hover searching={false} paging={false} data={tutorialGroups} />
+                                    </MDBCol>
+                                </MDBRow>
                             </MDBTabPane>
                         </MDBTabContent>
                     </MDBContainer>
@@ -346,8 +439,22 @@ export class StudentRosterDetails extends Component {
         moduleId: "123",
         activeItem: "Student Roster",
         student: {
-            studentId: ""
+            studentId: "",
+            firstName: "",
+            lastName: "",
+            email: "",
+            gender: "",
+            photo: "",
+            major: "",
+            minor1: "",
+            minor2: "",
+            matriculationNo: "",
+            faculty: ""
         },
+        disabledStatus: {
+            saveButton: false
+        },
+        modalRemove: false
     }
 
     componentDidMount() {
@@ -365,7 +472,8 @@ export class StudentRosterDetails extends Component {
                 moduleId: moduleId,
                 student: {
                     studentId: studentId,
-                    name: "Student A",
+                    firstName: "Student",
+                    lastName: "A",
                     email: "studentX@u.nus.edu",
                     gender: "M",
                     photo: "",
@@ -387,7 +495,20 @@ export class StudentRosterDetails extends Component {
         }
     };
 
+    submit = () => {
+        console.log("hi")
+    }
+
+    toggleModal = nr => () => {
+        console.log(nr)
+        let modalNumber = "modal" + nr;
+        this.setState({
+            [modalNumber]: !this.state[modalNumber]
+        });
+    };
+
     render() {
+        let student = this.state.student;
         return (
             <div className={this.props.className}>
                 <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
@@ -396,7 +517,8 @@ export class StudentRosterDetails extends Component {
                         <MDBRow>
                             <MDBCol>
                                 <h4 className="mb-4">{this.state.activeItem}
-                                    <MDBIcon icon="angle-right" className="ml-4" />
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" />
+                                    {student.firstName + " " + student.lastName}
                                 </h4>
                                 <hr className="my-4" />
                             </MDBCol>
@@ -445,7 +567,82 @@ export class StudentRosterDetails extends Component {
                         </MDBNav>
                         <MDBTabContent activeItem={this.state.activeItem}>
                             <MDBTabPane tabId="Student Roster" role="tabpanel">
-
+                                <SectionContainer header="" noBorder>
+                                    <div className="mb-4"></div>
+                                    <form>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-6">
+                                                <label htmlFor="firstName">First Name</label>
+                                                <input type="text" className="form-control" id="firstName" placeholder="First Name" value={student.firstName} onChange={e => {}} />
+                                            </div>
+                                            <div className="form-group col-md-6">
+                                                <label htmlFor="lastName">Last Name</label>
+                                                <input type="text" className="form-control" id="lastName" placeholder="Last Name" value={student.lastName} onChange={e => {}}/>
+                                            </div>
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-2">
+                                                <label htmlFor="gender">Gender</label>
+                                                <input type="text" className="form-control" id="gender" placeholder="Gender" value={student.gender} onChange={e => {}}/>
+                                            </div>
+                                            <div className="form-group col-md-5">
+                                                <label htmlFor="email">Email</label>
+                                                <input type="email" className="form-control" id="email" placeholder="Email" value={student.email} onChange={e => {}}/>
+                                            </div>
+                                            <div className="form-group col-md-5">
+                                                <label htmlFor="matricNumber">Matric Number</label>
+                                                <input type="text" className="form-control" id="matricNumber" placeholder="Matric Number" value={student.matriculationNo} onChange={e => {}}/>
+                                            </div>
+                                        </div>
+                                        <div className="form-row">
+                                            <div className="form-group col-md-6">
+                                                <label htmlFor="password">Change Password</label>
+                                                <input type="password" className="form-control" id="password" placeholder="Password" />
+                                            </div>
+                                        </div>
+                                        <div style={{ "textAlign": "center" }}>
+                                            <button type="submit" className="btn btn-primary btn-md" onClick={this.submit()} disabled={this.state.disabledStatus && this.state.disabledStatus.saveButton}>
+                                                Save
+                                            </button>
+                                        </div>
+                                    </form>
+                                </SectionContainer>
+                                <div style={{ "float": "right" }}>
+                                    <button className="btn btn-danger btn-md" onClick={this.toggleModal("Remove")}>
+                                        <MDBIcon icon="trash" className="mr-1" /> Remove
+                                    </button>
+                                </div>
+                                <MDBModal
+                                    modalStyle="danger"
+                                    size="md"
+                                    className="text-white"
+                                    backdrop={true}
+                                    isOpen={this.state.modalRemove}
+                                    toggle={this.toggleModal("Remove")}
+                                >
+                                    <MDBModalHeader className="text-center" titleClass="w-100" tag="p"
+                                        toggle={this.toggleModal("Remove")}>
+                                        CONFIRM
+                                    </MDBModalHeader>
+                                    <MDBModalBody className="text-center">
+                                        <MDBIcon
+                                            icon="trash"
+                                            size="4x"
+                                            className="mb-4"
+                                        />
+                                        <p>
+                                            Confirm Remove {student.firstName + " " + student.lastName}?
+                                        </p>
+                                    </MDBModalBody>
+                                    <MDBModalFooter className="justify-content-center">
+                                        <MDBBtn color="danger" onClick={e => {}}>
+                                            Yes
+                                        </MDBBtn>
+                                        <MDBBtn color="danger" outline onClick={e => {}}>
+                                            No
+                                        </MDBBtn>
+                                    </MDBModalFooter>
+                                </MDBModal>
                             </MDBTabPane>
                         </MDBTabContent>
                     </MDBContainer>
@@ -480,7 +677,8 @@ export class ClassGroupDetails extends Component {
                 moduleId: moduleId,
                 classGroup: {
                     classGroupId: classGroupId,
-                    name: "Class Group A"
+                    name: "Class Group A",
+                    students: []
                 }
             });
         }

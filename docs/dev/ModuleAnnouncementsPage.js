@@ -256,9 +256,7 @@ class ModuleAnnouncementsPage extends Component {
                                     modalStyle="danger"
                                     className="text-white"
                                     size="sm"
-                                    side
-                                    position="top-right"
-                                    backdrop={false}
+                                    backdrop={true}
                                     isOpen={this.state.modalDelete}
                                     toggle={this.toggleAnnouncementModal("Delete")}
                                 >
@@ -271,7 +269,7 @@ class ModuleAnnouncementsPage extends Component {
                                         Are you sure?
                                     </MDBModalHeader>
                                     <MDBModalBody className="text-center">
-                                        <MDBIcon icon="times" size="4x" className="animated rotateIn" />
+                                        <MDBIcon icon="trash" size="4x" />
                                     </MDBModalBody>
                                     <MDBModalFooter className="justify-content-center">
                                         <MDBBtn color="danger" onClick={this.confirmDelete()}>

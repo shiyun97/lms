@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBIcon } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
 import SectionContainer from "../components/sectionContainer";
 
@@ -16,7 +16,8 @@ class ModuleOverviewPage extends Component {
             openDate: '6 Jun 2019 08:20 am',
             closeDate: '21 Dec 2019 11:59 pm',
             credits: 8
-        }
+        },
+        modalEdit: false
     }
 
     componentDidMount() {
@@ -31,6 +32,16 @@ class ModuleOverviewPage extends Component {
         }
     }
 
+    toggleModal = nr => () => {
+        let modalNumber = "modal" + nr;
+        this.setState({
+            [modalNumber]: !this.state[modalNumber]
+        });
+    };
+
+    submitEdit = () => {
+    }
+
     render() {
         let module = this.state.module;
         return (
@@ -40,8 +51,65 @@ class ModuleOverviewPage extends Component {
                     <MDBContainer>
                         <MDBRow>
                             <MDBCol>
-                                <h4 className="mb-4">Module Overview</h4>
-                                <SectionContainer className="justify-content d-flex">
+                                <h4 className="mb-2">Module Overview</h4>
+                            </MDBCol>
+                        </MDBRow>
+                        <MDBRow>
+                            <MDBCol>
+                                <div className="align-right">
+                                    <MDBBtn color="blue lighten-2" outline className="mr-0 mb-2" size="md" onClick={this.toggleModal("Edit")}>
+                                        <MDBIcon icon="edit" className="mr-1" /> Edit
+                                    </MDBBtn>
+                                </div>
+                            </MDBCol>
+                        </MDBRow>
+                        <MDBRow>
+                            <MDBCol>
+                                <MDBModal isOpen={this.state.modalEdit} toggle={this.toggleModal("Edit")}>
+                                    <MDBModalHeader
+                                        className="text-center"
+                                        titleClass="w-100 font-weight-bold"
+                                        toggle={this.toggleModal("Edit")}
+                                    >
+                                        Edit Overview
+                                    </MDBModalHeader>
+                                    <MDBModalBody>
+                                        <form className="mx-3 grey-text">
+                                            <div className="form-group">
+                                                <label htmlFor="title">Module Name</label>
+                                                <input type="text" className="form-control" id="title" value={module.moduleTitle} onChange={e => {}} />
+                                            </div>
+                                            <div className="form-group">
+                                                <label htmlFor="semester">Semester</label>
+                                                <input type="text" className="form-control" id="semester" value={module.moduleSemester} onChange={e => {}} />
+                                            </div>
+                                            <div className="form-group">
+                                                <label htmlFor="department">Department</label>
+                                                <select className="form-control" value={module.moduleDepartment} onChange={e => {}}>
+                                                    <option value="dep1">Information Systems</option>
+                                                    <option value="dep2">Information Systems</option>
+                                                    <option value="dep3">Information Systems</option>
+                                                </select>
+                                            </div>
+                                            <div className="form-group">
+                                                <label htmlFor="openDate">Open Date</label>
+                                                <input type="date" className="form-control" id="openDate" value={module.openDate} onChange={e => {}} />
+                                            </div>
+                                            <div className="form-group">
+                                                <label htmlFor="closeDate">Close Date</label>
+                                                <input type="date" className="form-control" id="closeDate" value={module.closeDate} onChange={e => {}} />
+                                            </div>
+                                        </form>
+                                    </MDBModalBody>
+                                    <MDBModalFooter className="justify-content-center">
+                                        <MDBBtn color="info" onClick={this.submitEdit()}>Submit</MDBBtn>
+                                    </MDBModalFooter>
+                                </MDBModal>
+                            </MDBCol>
+                        </MDBRow>
+                        <MDBRow>
+                            <MDBCol>
+                            <SectionContainer className="justify-content d-flex">
                                     <div className="new-paragraph">
                                         <div className="h5">{module.moduleCode}</div>
                                         <h6>{module.moduleTitle}</h6>
@@ -75,5 +143,8 @@ export default styled(ModuleOverviewPage)`
 .new-paragraph{
     margin-top: 0;
     margin-bottom: 1rem;
+}
+.align-right{
+    float: right;
 }
 `;
