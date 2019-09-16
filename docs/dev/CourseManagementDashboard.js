@@ -1,12 +1,26 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBCarouselInner, MDBView, MDBCarouselItem, MDBCarousel, MDBCard, MDBCardImage, MDBCardGroup, MDBCardBody, MDBCardText, MDBCardTitle } from "mdbreact";
+import {
+  MDBContainer,
+  MDBCarouselInner,
+  MDBView,
+  MDBCarouselItem,
+  MDBCarousel,
+  MDBCard,
+  MDBCardImage,
+  MDBCardGroup,
+  MDBCardBody,
+  MDBCardText,
+  MDBCardTitle
+} from "mdbreact";
 
 class CourseManagementDashboard extends Component {
   heading = () => {
     return (
       <div>
-        <h3><b>Welcome, (username)!</b></h3>
-        <hr/>
+        <h3>
+          <b>Welcome, (username)!</b>
+        </h3>
+        <hr />
       </div>
     );
   };
@@ -58,6 +72,9 @@ class CourseManagementDashboard extends Component {
 
   courseRecommendation = () => {
     return (
+      <div>
+      <h4>You might be interested</h4>
+
       <MDBCardGroup deck className="mt-3">
         <MDBCard>
           <MDBCardImage
@@ -126,21 +143,102 @@ class CourseManagementDashboard extends Component {
           </MDBCardBody>
         </MDBCard>
       </MDBCardGroup>
+      </div>
     );
+  };
+
+  lastAccessed = () => {
+    return (
+
+      <MDBCardGroup deck className="mt-3">
+        <MDBCard>
+          <MDBCardImage
+            src="https://mdbootstrap.com/img/Photos/Others/images/16.jpg"
+            alt="MDBCard image cap"
+            top
+            hover
+            overlay="white-slight"
+          />
+          <MDBCardBody>
+            <MDBCardTitle tag="h5">Course Title</MDBCardTitle>
+            <MDBCardText>Prof Name</MDBCardText>
+            <MDBCardText>Rating</MDBCardText>
+            <MDBCardText>Price</MDBCardText>
+          </MDBCardBody>
+        </MDBCard>
+
+        <MDBCard>
+          <MDBCardImage
+            src="https://mdbootstrap.com/img/Photos/Others/images/14.jpg"
+            alt="MDBCard image cap"
+            top
+            hover
+            overlay="white-slight"
+          />
+
+          <MDBCardBody>
+            <MDBCardTitle tag="h5">Course Title</MDBCardTitle>
+            <MDBCardText>Prof Name</MDBCardText>
+            <MDBCardText>Rating</MDBCardText>
+            <MDBCardText>Price</MDBCardText>
+          </MDBCardBody>
+        </MDBCard>
+
+        <MDBCard>
+          <MDBCardImage
+            src="https://mdbootstrap.com/img/Photos/Others/images/15.jpg"
+            alt="MDBCard image cap"
+            top
+            hover
+            overlay="white-slight"
+          />
+
+          <MDBCardBody>
+            <MDBCardTitle tag="h5">Course Title</MDBCardTitle>
+            <MDBCardText>Prof Name</MDBCardText>
+            <MDBCardText>Rating</MDBCardText>
+            <MDBCardText>Price</MDBCardText>
+          </MDBCardBody>
+        </MDBCard>
+
+        <MDBCard>
+          <MDBCardImage
+            src="https://mdbootstrap.com/img/Photos/Others/images/15.jpg"
+            alt="MDBCard image cap"
+            top
+            hover
+            overlay="white-slight"
+          />
+
+          <MDBCardBody>
+            <MDBCardTitle tag="h5">Course Title</MDBCardTitle>
+            <MDBCardText>Prof Name</MDBCardText>
+            <MDBCardText>Rating</MDBCardText>
+            <MDBCardText>Price</MDBCardText>
+          </MDBCardBody>
+        </MDBCard>
+      </MDBCardGroup>
+      
+    )
+  }
+
+  checkUserEnrolled = () => {
+    // if user is not enrolled into any courses
+    return this.mediaCarousel();
+    // else 
+   // return this.lastAccessed();
   };
 
   render() {
     return (
       <MDBContainer className="mt-5">
         {this.heading()}
-        {this.mediaCarousel()}
-        <br /><br />
-        <h4>You might be interested</h4>
-
-        {this.courseRecommendation()}
+        {this.checkUserEnrolled()}
+        <br />
+        <br />
         {this.courseRecommendation()}
 
-        <br/>
+        <br />
       </MDBContainer>
     );
   }

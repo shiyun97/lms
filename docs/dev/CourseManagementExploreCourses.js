@@ -2,18 +2,15 @@ import React, { Component } from "react";
 import {MDBContainer} from "mdbreact";
 
 class CourseManagementExploreCourses extends Component {
- 
 
-  heading = () => {
+heading = () => {
     return (
       <div>
-        <h3>
-          <b>Explore Courses</b>
-        </h3>
+        <h3><b>Explore Courses</b></h3>
         <hr />
       </div>
-    );
-  };
+    )
+}
 
   render() {
     return (
