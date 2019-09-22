@@ -1,0 +1,73 @@
+{
+    "moduleOverview": 
+    {
+        "moduleCode": "IS4103",
+        "moduleTitle": "Information Systems Capstone Project",
+        "moduleSemester": "2019/2020 Semester 1",
+        "moduleFaculty": "School of Computing",
+        "moduleDepartment": "Information Systems & Analytics",
+        "openDate": "6 Jun 2019 08:20 am",
+        "closeDate": "21 Dec 2019 11:59 pm",
+        "credits": "8"
+    },
+    "moduleFiles": [
+        {
+            "fileId": "file1",
+            "fileName": "File 1",
+            "lastModifiedBy": "Prof A",
+            "lastModifiedDt": "12 Aug 2019 7:27",
+            "createdDt": "12 Aug 2019 7:27",
+            "size": "47.09 KB"
+        },
+        {
+            "fileId": "file2",
+            "fileName": "File 2",
+            "lastModifiedBy": "Prof A",
+            "lastModifiedDt": "15 Aug 2019 11:45",
+            "createdDt": "15 Aug 2019 11:45",
+            "size": "38.55 KB"
+        }
+    ],
+    "moduleFolders": [
+        {
+            "folderId": "folder1",
+            "folderName": "Folder 1",
+            "openDt": "12 Aug 2019 00:00",
+            "closeDt": "20 Dec 2019 23:59",
+            "status": "open"
+        },
+        {
+            "folderId": "folder2",
+            "folderName": "Folder 2",
+            "openDt": "12 Aug 2019 00:00",
+            "closeDt": "20 Dec 2019 23:59",
+            "status": "closed"
+        }
+    ],
+    "moduleAdhocFeedback": [
+        {
+            "feedbackId": "feedback1",
+            "submittedDt": "15 Aug 2019 11:45",
+            "title": "Feedback 1",
+            "content": "Details of feedback"
+        },
+        {
+            "feedbackId": "feedback2",
+            "submittedDt": "22 Aug 2019 7:32",
+            "title": "Feedback 2",
+            "content": "Details of feedback"
+        },
+        {
+            "feedbackId": "feedback3",
+            "submittedDt": "8 Sep 2019 19:40",
+            "title": "Feedback 3",
+            "content": "Details of feedback"
+        },
+        {
+            "feedbackId": "feedback4",
+            "submittedDt": "20 Sep 2019 15:20",
+            "title": "Feedback 4",
+            "content": "Details of feedback"
+        }
+    ]
+}

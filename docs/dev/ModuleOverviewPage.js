@@ -3,19 +3,12 @@ import styled from 'styled-components';
 import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
 import SectionContainer from "../components/sectionContainer";
+import axios from "axios";
 
 class ModuleOverviewPage extends Component {
 
     state = {
         module:{
-            moduleCode: 'IS4103',
-            moduleTitle: 'Information Systems Capstone Project',
-            moduleSemester: '2019/2020 Semester 1',
-            moduleFaculty: 'School of Computing',
-            moduleDepartment: 'Information Systems & Analytics',
-            openDate: '6 Jun 2019 08:20 am',
-            closeDate: '21 Dec 2019 11:59 pm',
-            credits: 8
         },
         modalEdit: false
     }
@@ -29,6 +22,17 @@ class ModuleOverviewPage extends Component {
         if (moduleId) {
             console.log(moduleId);
             // retrieve module & set state
+            axios
+            .get("http://localhost:3001/moduleOverview")
+            .then(result => {
+                let data = result.data;
+                this.setState({
+                    module: data
+                });
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
         }
     }
 
@@ -51,9 +55,10 @@ class ModuleOverviewPage extends Component {
                     <MDBContainer>
                         <MDBRow>
                             <MDBCol>
-                                <h4 className="mb-2">Module Overview</h4>
+                                <h4 className="mb-4">Module Overview</h4>
                             </MDBCol>
                         </MDBRow>
+                        {/*
                         <MDBRow>
                             <MDBCol>
                                 <div className="align-right">
@@ -62,7 +67,7 @@ class ModuleOverviewPage extends Component {
                                     </MDBBtn>
                                 </div>
                             </MDBCol>
-                        </MDBRow>
+                        </MDBRow>*/}
                         <MDBRow>
                             <MDBCol>
                                 <MDBModal isOpen={this.state.modalEdit} toggle={this.toggleModal("Edit")}>
