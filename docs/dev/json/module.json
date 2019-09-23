@@ -10,6 +10,176 @@
         "closeDate": "21 Dec 2019 11:59 pm",
         "credits": "8"
     },
+    "studentRoster": [
+        {
+            "studentId": "A0001",
+            "studentName": "Student A"
+        },
+        {
+            "studentId": "A0002",
+            "studentName": "Student B"
+        },
+        {
+            "studentId": "A0003",
+            "studentName": "Student C"
+        },
+        {
+            "studentId": "A0004",
+            "studentName": "Student D"
+        },
+        {
+            "studentId": "A0005",
+            "studentName": "Student E"
+        },
+        {
+            "studentId": "A0006",
+            "studentName": "Student F"
+        },
+        {
+            "studentId": "A0007",
+            "studentName": "Student G"
+        },
+        {
+            "studentId": "A0008",
+            "studentName": "Student H"
+        }
+    ],
+    "classGroups": [
+        {
+            "classGroupId": "IS4103CG01",
+            "name": "Class Group 1",
+            "description": "Class Group 1",
+            "currentEnrollment": "3",
+            "maxEnrollment": "5",
+            "enrollmentStatus": "open",
+            "selfEnrol": "false",
+            "selfEnrolOpenDate": "0001-01-01T00:00:00+08:00",
+            "selfEnrolCloseDate": "0001-01-01T00:00:00+08:00",
+            "students": [
+                {
+                    "studentId": "A0001",
+                    "studentName": "Student A"
+                },
+                {
+                    "studentId": "A0002",
+                    "studentName": "Student B"
+                },
+                {
+                    "studentId": "A0003",
+                    "studentName": "Student C"
+                }
+            ]
+        }
+    ],
+    "classGroup": {
+        "classGroupId": "IS4103CG01",
+        "name": "Class Group 1",
+        "description": "Class Group 1",
+        "currentEnrollment": "3",
+        "maxEnrollment": "5",
+        "enrollmentStatus": "open",
+        "selfEnrol": "false",
+        "selfEnrolOpenDate": "0001-01-01T00:00:00+08:00",
+        "selfEnrolCloseDate": "0001-01-01T00:00:00+08:00",
+        "students": [
+            {
+                "studentId": "A0001",
+                "studentName": "Student A"
+            },
+            {
+                "studentId": "A0002",
+                "studentName": "Student B"
+            },
+            {
+                "studentId": "A0003",
+                "studentName": "Student C"
+            }
+        ]
+    },
+    "lectureGroups": [
+        {
+            "lectureGroupId": "IS4103LG01",
+            "name": "Lecture Group 1",
+            "description": "Lecture Group 1",
+            "currentEnrollment": "3",
+            "students": [
+                {
+                    "studentId": "A0001",
+                    "studentName": "Student A"
+                },
+                {
+                    "studentId": "A0002",
+                    "studentName": "Student B"
+                },
+                {
+                    "studentId": "A0003",
+                    "studentName": "Student C"
+                }
+            ]
+        }
+    ],
+    "lectureGroup": {
+        "lectureGroupId": "IS4103LG01",
+        "name": "Lecture Group 1",
+        "description": "Lecture Group 1",
+        "currentEnrollment": "3",
+        "students": [
+            {
+                "studentId": "A0001",
+                "studentName": "Student A"
+            },
+            {
+                "studentId": "A0002",
+                "studentName": "Student B"
+            },
+            {
+                "studentId": "A0003",
+                "studentName": "Student C"
+            }
+        ]
+    },
+    "tutorialGroups": [
+        {
+            "tutorialGroupId": "IS4103TG01",
+            "name": "Tutorial Group 1",
+            "description": "Tutorial Group 1",
+            "currentEnrollment": "3",
+            "students": [
+                {
+                    "studentId": "A0001",
+                    "studentName": "Student A"
+                },
+                {
+                    "studentId": "A0002",
+                    "studentName": "Student B"
+                },
+                {
+                    "studentId": "A0003",
+                    "studentName": "Student C"
+                }
+            ]
+        }
+    ],
+    "tutorialGroup": {
+        "tutorialGroupId": "IS4103TG01",
+        "name": "Tutorial Group 1",
+        "description": "Tutorial Group 1",
+        "currentEnrollment": "3",
+        "students": [
+            {
+                "studentId": "A0001",
+                "studentName": "Student A"
+            },
+            {
+                "studentId": "A0002",
+                "studentName": "Student B"
+            },
+            {
+                "studentId": "A0003",
+                "studentName": "Student C"
+            }
+        ]
+    },
     "moduleFiles": [
         {
             "fileId": "file1",
@@ -34,14 +204,30 @@
             "folderName": "Folder 1",
             "openDt": "12 Aug 2019 00:00",
             "closeDt": "20 Dec 2019 23:59",
-            "status": "open"
+            "status": "open",
+            "allowStudentUpload": "true",
+            "studentUploadOpenDt": "12 Aug 2019 23:59",
+            "studentUploadCloseDt": "20 Sep 2019 23:59"
         },
         {
             "folderId": "folder2",
             "folderName": "Folder 2",
             "openDt": "12 Aug 2019 00:00",
             "closeDt": "20 Dec 2019 23:59",
-            "status": "closed"
+            "status": "open",
+            "allowStudentUpload": "true",
+            "studentUploadOpenDt": "12 Aug 2019 23:59",
+            "studentUploadCloseDt": "20 Sep 2019 23:59"
+        },
+        {
+            "folderId": "folder3",
+            "folderName": "Folder 3",
+            "openDt": "12 Aug 2019 00:00",
+            "closeDt": "20 Dec 2019 23:59",
+            "status": "closed",
+            "allowStudentUpload": "false",
+            "studentUploadOpenDt": "",
+            "studentUploadCloseDt": ""
         }
     ],
     "moduleAdhocFeedback": [

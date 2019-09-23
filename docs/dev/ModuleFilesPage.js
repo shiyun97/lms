@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { NavLink } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { 
     MDBContainer, 
@@ -9,7 +9,11 @@ import {
     MDBBtn, 
     MDBTable, 
     MDBTableHead, 
-    MDBTableBody 
+    MDBTableBody,
+    MDBModal,
+    MDBModalHeader,
+    MDBModalBody,
+    MDBModalFooter 
 } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
 import SectionContainer from "../components/sectionContainer";
@@ -53,7 +57,12 @@ class ModuleFilesPage extends Component {
         folders: {
             columns: [
                 {
-                    label: [<div key={2}><input type="checkbox" className="mr-4" style={{ 'height': '17px', 'width': '17px', 'verticalAlign': 'middle' }} id={"foldersCheckboxAll"} key={"foldersCheckboxAll"} onClick={e => this.selectAllFoldersCheckbox()} />Name</div>],
+                    label: [<input type="checkbox" className="mr-4" style={{ 'height': '17px', 'width': '17px', 'verticalAlign': 'middle' }} id={"foldersCheckboxAll"} key={"foldersCheckboxAll"} onClick={e => this.selectAllFoldersCheckbox()} />],
+                    field: "check",
+                    sort: "asc"
+                },
+                {
+                    label: "Name",
                     field: "folderName",
                     sort: "asc"
                 },
@@ -74,7 +83,15 @@ class ModuleFilesPage extends Component {
                 }
             ],
             rows: []
-        }
+        },
+        modalNewFolder: false,
+        modalUploadFiles: false,
+        folderNameInput: "",
+        folderOpenDateInput: "",
+        folderCloseDateInput: "",
+        folderStudentUploadInput: "",
+        folderStudentUploadOpenDateInput: "",
+        folderStudentUploadCloseDateInput: ""
     }
 
     componentDidMount() {
@@ -124,18 +141,24 @@ class ModuleFilesPage extends Component {
                     console.error("error in axios " + error);
                 });
             
-                axios
+            axios
                 .get("http://localhost:3001/moduleFolders")
                 .then(result => {
                     let data = result.data;
                     let arr = [];
                     let folderIds = [];
+                    const method = this.goToFolder;
                     Object.keys(data).forEach(function (key) {
                         let temp = {
-                            folderName: (<div>
-                                <input type="checkbox" style={{ 'height': '17px', 'width': '17px', 'verticalAlign': 'middle' }} id={data[key].folderId} name="foldersCheckbox" />
-                                <MDBIcon icon="folder" className="mr-2 ml-4" />{data[key].folderName}
-                                </div>
+                            check: <input type="checkbox" style={{ 'height': '17px', 'width': '17px', 'verticalAlign': 'middle' }} id={data[key].folderId} name="foldersCheckbox" />,
+                            folderName: (<NavLink to={`/modules/${moduleId}/files/${data[key].folderId}`}>
+                                <MDBRow>
+                                    <MDBIcon icon="folder" className="mr-2 ml-4" />
+                                    <div style={{ "textDecoration": "underline", 'verticalAlign': 'middle', "color": "#3f51b5" }}>
+                                        {data[key].folderName}
+                                    </div>
+                                </MDBRow>
+                            </NavLink>
                             ),
                             openDt: data[key].openDt,
                             closeDt: data[key].closeDt,
@@ -163,6 +186,33 @@ class ModuleFilesPage extends Component {
 
     goToFolder = (folderId) => {
         console.log(folderId)
+        this.props.history.push(`/modules/${this.state.moduleId}/files/${folderId}`);
+    }
+
+    toggleModal = nr => () => {
+        let modalNumber = "modal" + nr;
+        this.setState({
+            [modalNumber]: !this.state[modalNumber]
+        });
+    };
+
+    newFolder = (e) => {
+        this.setState({
+            modalNewFolder: true
+        })
+    }
+
+    inputChangeHandler = (e) => {
+        e.preventDefault();
+        this.setState({
+            [e.target.name]: e.target.value
+        });
+        console.log(e.target.name + " " + e.target.value)
+    }
+
+    submitNewFolderHandler = event => {
+        event.preventDefault();
+        event.target.className += " was-validated";
     }
 
     uploadFiles = (e) => {
@@ -261,20 +311,118 @@ class ModuleFilesPage extends Component {
                         <MDBRow className="mb-3">
                             <MDBCol>
                                 <div className="align-right">
+                                    <MDBBtn color="primary lighten-2" outline className="mr-0" size="md" onClick={e => this.newFolder()}>
+                                        New Folder
+                                    </MDBBtn>
                                     <MDBBtn color="primary lighten-2" outline className="mr-0" size="md" onClick={e => this.uploadFiles()}>
-                                        <MDBIcon icon="upload" className="mr-1" /> Upload
+                                        Upload Files
                                     </MDBBtn>
                                     <MDBBtn color="primary lighten-2" outline className="mr-0" size="md" onClick={e => this.downloadFiles()}>
-                                        <MDBIcon icon="download" className="mr-1" /> Download
+                                        Download
                                     </MDBBtn>
                                     <MDBBtn color="danger" outline className="mr-0" size="md" onClick={e => this.deleteFiles()}>
-                                        <MDBIcon icon="trash" className="mr-1" /> Delete
+                                        Delete
                                     </MDBBtn>
                                 </div>
                                 <input id="uploadFilesInput" type="file" ref={(ref) => this.fileUpload = ref} style={{display: 'none'}} onChange={e => this.uploadFileOnChange()} />
                             </MDBCol>
                         </MDBRow>
-                        
+
+                        <MDBModal
+                            isOpen={this.state.modalNewFolder}
+                            toggle={this.toggleModal("NewFolder")}
+                            centered
+                        >
+                            <MDBModalHeader className="text-center"
+                                titleClass="w-100"
+                                toggle={this.toggleModal("NewFolder")}>
+                                New Folder
+                            </MDBModalHeader>
+                            <form className="needs-validation" noValidate onSubmit={this.submitNewFolderHandler}>
+                                <MDBModalBody>
+                                    <div className="form-row align-items-center mb-2">
+                                        <div className="col-12">
+                                            <label className="mb-1">Name</label>
+                                        </div>
+                                        <div className="col-12">
+                                            <input type="text" className="form-control" name="folderNameInput"
+                                                value={this.state.folderNameInput}
+                                                onChange={this.inputChangeHandler}
+                                                required />
+                                        </div>
+                                    </div>
+                                    <div className="form-row align-items-center mb-2">
+                                        <div className="col-12">
+                                            <label className="mb-1">Open Date</label>
+                                        </div>
+                                        <div className="col-12">
+                                            <input type="datetime-local" className="form-control" name="folderOpenDateInput"
+                                                value={this.state.folderOpenDateInput}
+                                                onChange={this.inputChangeHandler}
+                                                required />
+                                        </div>
+                                    </div>
+                                    <div className="form-row align-items-center mb-2">
+                                        <div className="col-12">
+                                            <label className="mb-1">Close Date</label>
+                                        </div>
+                                        <div className="col-12">
+                                            <input type="datetime-local" className="form-control" name="folderCloseDateInput"
+                                                value={this.state.folderCloseDateInput}
+                                                onChange={this.inputChangeHandler}
+                                                required />
+                                        </div>
+                                    </div>
+                                    <div className="form-row align-items-center mb-2">
+                                        <div className="col-12">
+                                            <label className="mb-1">Student Upload</label>
+                                        </div>
+                                        <div className="col-12">
+                                            <select className="form-control" onChange={this.inputChangeHandler}
+                                                name="folderStudentUploadInput"
+                                                value={this.state.folderStudentUploadInput}
+                                                required >
+                                                <option value="">--</option>
+                                                <option value={true}>Yes</option>
+                                                <option value={false}>No</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="form-row align-items-center mb-2">
+                                        <div className="col-12">
+                                            <label className="mb-1">Student Upload Opening Date</label>
+                                        </div>
+                                        <div className="col-12">
+                                            <input type="datetime-local" className="form-control" name="folderStudentUploadOpenDateInput"
+                                                value={this.state.folderStudentUploadOpenDateInput}
+                                                onChange={this.inputChangeHandler}
+                                                disabled={this.state.folderStudentUploadInput !== "true"}
+                                                required />
+                                        </div>
+                                    </div>
+                                    <div className="form-row align-items-center mb-2">
+                                        <div className="col-12">
+                                            <label className="mb-1">Student Upload Closing Date</label>
+                                        </div>
+                                        <div className="col-12">
+                                            <input type="datetime-local" className="form-control" name="folderStudentUploadCloseDateInput"
+                                                value={this.state.folderStudentUploadCloseDateInput}
+                                                onChange={this.inputChangeHandler}
+                                                disabled={this.state.folderStudentUploadInput !== "true"}
+                                                required />
+                                        </div>
+                                    </div>
+                                </MDBModalBody>
+                                <MDBModalFooter>
+                                    <MDBBtn color="secondary" onClick={this.toggleModal("NewFolder")}>
+                                        Cancel
+                                        </MDBBtn>
+                                    <MDBBtn color="primary" type="submit">Save</MDBBtn>
+                                </MDBModalFooter>
+                            </form>
+                        </MDBModal>
+
                         {
                             folders.rows.length == 0 && files.rows.length == 0 &&
                             <div className="mt-4"><h6>No Files or Folders to show</h6></div>
@@ -406,8 +554,12 @@ class FileListItem extends Component {
 
 export default styled(ModuleFilesPage)`
 .module-content{
-    margin-left: 270px;
     margin-top: 40px;
+}
+@media (min-width: 1199.98px) {
+    .module-content{
+        margin-left: 270px;
+    }
 }
 .checkbox-option{
     height: 15px;
