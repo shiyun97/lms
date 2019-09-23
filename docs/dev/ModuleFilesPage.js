@@ -13,11 +13,14 @@ import {
     MDBModal,
     MDBModalHeader,
     MDBModalBody,
-    MDBModalFooter 
+    MDBModalFooter,
+    MDBListGroup,
+    MDBListGroupItem 
 } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
 import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
+import Dropzone from 'react-dropzone';
 
 class ModuleFilesPage extends Component {
 
@@ -91,7 +94,8 @@ class ModuleFilesPage extends Component {
         folderCloseDateInput: "",
         folderStudentUploadInput: "",
         folderStudentUploadOpenDateInput: "",
-        folderStudentUploadCloseDateInput: ""
+        folderStudentUploadCloseDateInput: "",
+        uploadedFiles: []
     }
 
     componentDidMount() {
@@ -216,12 +220,33 @@ class ModuleFilesPage extends Component {
     }
 
     uploadFiles = (e) => {
-        document.getElementById('uploadFilesInput').click();
+        this.setState({
+            modalUploadFiles: true
+        })
     }
 
-    uploadFileOnChange = () => {
-        var files = this.fileUpload.files;
-        console.log(files)
+    onDrop = (uploadedFiles) => {
+        console.log(uploadedFiles);
+        this.setState({
+            ...this.state,
+            uploadedFiles: this.state.uploadedFiles.concat(uploadedFiles)
+        });
+    }
+
+    submitNewFilesHandler = event => {
+        event.preventDefault();
+        console.log(this.state.uploadedFiles);
+
+        // call api to send
+        let files = this.state.uploadedFiles;
+        var formData = new FormData();
+        files.map((file, index) => {
+            formData.append(`file${index}`, file);
+        });
+        
+        this.setState({
+            modalUploadFiles: false
+        })
     }
 
     selectAllFilesCheckbox = () => {
@@ -297,6 +322,7 @@ class ModuleFilesPage extends Component {
     render() {
         let files = this.state.files;
         let folders = this.state.folders;
+        let uploadedFiles = this.state.uploadedFiles;
         return (
             <div className={this.props.className}>
                 <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
@@ -324,7 +350,6 @@ class ModuleFilesPage extends Component {
                                         Delete
                                     </MDBBtn>
                                 </div>
-                                <input id="uploadFilesInput" type="file" ref={(ref) => this.fileUpload = ref} style={{display: 'none'}} onChange={e => this.uploadFileOnChange()} />
                             </MDBCol>
                         </MDBRow>
 
@@ -416,6 +441,44 @@ class ModuleFilesPage extends Component {
                                 </MDBModalBody>
                                 <MDBModalFooter>
                                     <MDBBtn color="secondary" onClick={this.toggleModal("NewFolder")}>
+                                        Cancel
+                                        </MDBBtn>
+                                    <MDBBtn color="primary" type="submit">Save</MDBBtn>
+                                </MDBModalFooter>
+                            </form>
+                        </MDBModal>
+
+                        <MDBModal
+                            isOpen={this.state.modalUploadFiles}
+                            toggle={this.toggleModal("UploadFiles")}
+                        >
+                            <MDBModalHeader className="text-center"
+                                titleClass="w-100"
+                                toggle={this.toggleModal("UploadFiles")}>
+                                Upload Files
+                            </MDBModalHeader>
+                            <form className="needs-validation" noValidate onSubmit={this.submitNewFilesHandler}>
+                                <MDBModalBody>
+                                    <div className="text-center mt-2">
+                                        <Dropzone onDrop={this.onDrop} multiple>
+                                            {({ getRootProps, getInputProps, isDragActive, isDragReject, rejectedFiles }) => (
+                                                <div {...getRootProps()}>
+                                                    <input {...getInputProps()} />
+                                                    <SectionContainer className="mb-0 p-5 mt-1">Click to Upload or Drag & Drop</SectionContainer>
+                                                </div>
+                                            )}
+                                        </Dropzone>
+                                    </div>
+                                    <MDBListGroup className="my-4 mx-4" style={{width: "26rem", height:"auto", maxHeight: "100px", overflowY: "auto"}}>
+                                        {uploadedFiles.length > 0 && uploadedFiles.map((uploadedFile, index) => (
+                                            <MDBListGroupItem key={index}>
+                                                {uploadedFile.name}
+                                            </MDBListGroupItem>
+                                        ))}
+                                    </MDBListGroup>
+                                </MDBModalBody>
+                                <MDBModalFooter>
+                                    <MDBBtn color="secondary" onClick={this.toggleModal("UploadFiles")}>
                                         Cancel
                                         </MDBBtn>
                                     <MDBBtn color="primary" type="submit">Save</MDBBtn>
