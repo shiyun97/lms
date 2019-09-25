@@ -255,5 +255,33 @@
             "title": "Feedback 4",
             "content": "Details of feedback"
         }
-    ]
+    ],
+    "multimedia": [
+        {
+            "multimediaId": "multimedia1",
+            "name": "Multimedia 1",
+            "openDt": "12 Aug 2019 00:00",
+            "closeDt": "20 Dec 2019 23:59",
+            "uploadDt": "18 Aug 2019 08:00"
+        },
+        {
+            "multimediaId": "multimedia2",
+            "name": "Multimedia 2",
+            "openDt": "12 Aug 2019 00:00",
+            "closeDt": "20 Dec 2019 23:59",
+            "uploadDt": "18 Aug 2019 08:00"
+        },
+        {
+            "multimediaId": "multimedia3",
+            "name": "Multimedia 3",
+            "openDt": "12 Aug 2019 00:00",
+            "closeDt": "20 Dec 2019 23:59",
+            "uploadDt": "18 Aug 2019 08:00"
+        }
+    ],
+    "selectedMultimedia": {
+        "multimediaId": "multimediaTest",
+        "name": "Multimedia Test",
+        "location": "test_video.mp4"
+    }
 }

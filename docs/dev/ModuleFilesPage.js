@@ -7,6 +7,7 @@ import {
     MDBCol, 
     MDBIcon, 
     MDBBtn, 
+    MDBDataTable,
     MDBTable, 
     MDBTableHead, 
     MDBTableBody,
@@ -32,27 +33,28 @@ class ModuleFilesPage extends Component {
                 {
                     label: [<div key={1}><input type="checkbox" className="mr-4" style={{ 'height': '17px', 'width': '17px', 'verticalAlign': 'middle' }} id={"filesCheckboxAll"} key={"filesCheckboxAll"} onClick={e => this.selectAllFilesCheckbox()} />Name</div>],
                     field: "fileName",
-                    sort: "asc",
+                    width: 150,
+                    sort: "asc"
                 },
                 {
                     label: "Last Modified By",
                     field: "lastModifiedBy",
-                    sort: "asc"
+                    width: 150
                 },
                 {
                     label: "Last Modified Dt",
                     field: "lastModifiedDt",
-                    sort: "asc"
+                    width: 150
                 },
                 {
                     label: "Created Dt",
                     field: "createdDt",
-                    sort: "asc"
+                    width: 150
                 },
                 {
                     label: "Size",
                     field: "size",
-                    sort: "asc"
+                    width: 150
                 }
             ],
             rows: []
@@ -62,27 +64,32 @@ class ModuleFilesPage extends Component {
                 {
                     label: [<input type="checkbox" className="mr-4" style={{ 'height': '17px', 'width': '17px', 'verticalAlign': 'middle' }} id={"foldersCheckboxAll"} key={"foldersCheckboxAll"} onClick={e => this.selectAllFoldersCheckbox()} />],
                     field: "check",
+                    width: 150,
                     sort: "asc"
                 },
                 {
                     label: "Name",
                     field: "folderName",
-                    sort: "asc"
+                    width: 150,
+                    attributes: {
+                        "aria-controls": "DataTable",
+                        "aria-label": "Name"
+                    }
                 },
                 {
                     label: "Opening Date",
                     field: "openDt",
-                    sort: "asc"
+                    width: 150
                 },
                 {
                     label: "Closing Date",
                     field: "closeDt",
-                    sort: "asc"
+                    width: 150
                 },
                 {
                     label: "Status",
                     field: "status",
-                    sort: "asc"
+                    width: 150
                 }
             ],
             rows: []
@@ -108,9 +115,10 @@ class ModuleFilesPage extends Component {
         if (moduleId) {
             console.log(moduleId);
             this.setState({
-                moduleId: moduleId
+                moduleId: moduleId,
+                folderId: folderId
             })
-            // retrieve top level folders / files
+            // retrieve folders / files based on folderId
             axios
                 .get("http://localhost:3001/moduleFiles")
                 .then(result => {
@@ -183,9 +191,6 @@ class ModuleFilesPage extends Component {
                     console.error("error in axios " + error);
                 });
         }
-        if (folderId) {
-            // retrieve folders / files in this folder
-        }
     }
 
     goToFolder = (folderId) => {
@@ -195,9 +200,19 @@ class ModuleFilesPage extends Component {
 
     toggleModal = nr => () => {
         let modalNumber = "modal" + nr;
-        this.setState({
-            [modalNumber]: !this.state[modalNumber]
-        });
+        if (nr == "UploadFiles") {
+            this.setState({
+                ...this.state,
+                uploadedFiles: [],
+                [modalNumber]: !this.state[modalNumber]
+            })
+        }
+        else {
+            this.setState({
+                ...this.state,
+                [modalNumber]: !this.state[modalNumber]
+            });
+        }
     };
 
     newFolder = (e) => {
@@ -221,6 +236,7 @@ class ModuleFilesPage extends Component {
 
     uploadFiles = (e) => {
         this.setState({
+            ...this.state,
             modalUploadFiles: true
         })
     }
@@ -245,7 +261,21 @@ class ModuleFilesPage extends Component {
         });
         
         this.setState({
-            modalUploadFiles: false
+            ...this.state,
+            modalUploadFiles: false,
+            uploadedFiles: []
+        })
+    }
+
+    removeFileUpload = (file) => {
+        console.log(file);
+        var array = this.state.uploadedFiles.filter(function(item) {
+            return item !== file
+        });
+        console.log(array)
+        this.setState({
+            ...this.state,
+            uploadedFiles: array
         })
     }
 
@@ -464,15 +494,18 @@ class ModuleFilesPage extends Component {
                                             {({ getRootProps, getInputProps, isDragActive, isDragReject, rejectedFiles }) => (
                                                 <div {...getRootProps()}>
                                                     <input {...getInputProps()} />
-                                                    <SectionContainer className="mb-0 p-5 mt-1">Click to Upload or Drag & Drop</SectionContainer>
+                                                    <SectionContainer className="mb-0 p-5 mt-1">
+                                                        <MDBIcon icon="upload" size="3x" className="mb-3 indigo-text"></MDBIcon><br></br>
+                                                        Click to Upload or Drag & Drop
+                                                    </SectionContainer>
                                                 </div>
                                             )}
                                         </Dropzone>
                                     </div>
-                                    <MDBListGroup className="my-4 mx-4" style={{width: "26rem", height:"auto", maxHeight: "100px", overflowY: "auto"}}>
+                                    <MDBListGroup className="my-4 mx-4" style={{width: "26rem", height:"auto", maxHeight: "120px", overflowY: "auto"}}>
                                         {uploadedFiles.length > 0 && uploadedFiles.map((uploadedFile, index) => (
                                             <MDBListGroupItem key={index}>
-                                                {uploadedFile.name}
+                                                <MDBIcon icon="times" className="mr-3" onClick={e => this.removeFileUpload(uploadedFile)}></MDBIcon>{uploadedFile.name}
                                             </MDBListGroupItem>
                                         ))}
                                     </MDBListGroup>
@@ -494,10 +527,7 @@ class ModuleFilesPage extends Component {
                             folders.rows.length > 0 && 
                             <MDBRow>
                                 <MDBCol>
-                                    <MDBTable bordered btn fixed>
-                                        <MDBTableHead columns={folders.columns} />
-                                        <MDBTableBody rows={folders.rows} />
-                                    </MDBTable>
+                                    <MDBDataTable striped bordered hover paging={false} searching={true} sortable={true} data={folders} />
                                 </MDBCol>
                             </MDBRow>
                         }
@@ -505,10 +535,7 @@ class ModuleFilesPage extends Component {
                             files.rows.length > 0 && 
                             <MDBRow>
                                 <MDBCol>
-                                    <MDBTable bordered btn fixed >
-                                        <MDBTableHead columns={files.columns} />
-                                        <MDBTableBody rows={files.rows} />
-                                    </MDBTable>
+                                    <MDBDataTable striped bordered hover paging={false} searching={true} sortable={true} data={files} />
                                 </MDBCol>
                             </MDBRow>
                         }
@@ -631,5 +658,8 @@ export default styled(ModuleFilesPage)`
 }
 .align-right{
     float: right;
+}
+tbody + thead{
+    display: none;
 }
 `;
