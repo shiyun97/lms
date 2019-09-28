@@ -35,16 +35,18 @@ class DashboardPage extends Component {
                     <MDBRow id="categories">
                       <MDBCol md="4">
                         <MDBAnimation reveal type="fadeInUp">
-                          <MDBCard cascade className="my-3 white lighten-4">
-                            <MDBCardBody cascade align="center">
-                              <Fab onClick={this.toggle(1)} color="primary" size="small" aria-label="add">
-                                <MDBIcon icon="plus" />
-                              </Fab>
-                              <MDBCardTitle align="center" style={{ paddingTop: 20 }} className="grey-text">
-                                Create New Module
-                          </MDBCardTitle>
-                            </MDBCardBody>
-                          </MDBCard>
+                          <NavLink to="/modules/:moduleId/" activeClassName="activeClass">
+                            <MDBCard cascade className="my-3 grey lighten-4">
+                              <MDBCardBody cascade>
+                                <h6>XX1234</h6>
+                                <MDBCardTitle>MODULE NAME</MDBCardTitle>
+                                <MDBCardText style={{ paddingTop: 40 }}>
+                                  AY XX/XX SEM XX <br />
+                                  PROFESSOR'S NAME
+                          </MDBCardText>
+                              </MDBCardBody>
+                            </MDBCard>
+                          </NavLink>
                         </MDBAnimation>
                       </MDBCol>
                       <MDBCol md="4">
@@ -131,7 +133,7 @@ class DashboardPage extends Component {
                       </MDBCol>
                     </MDBRow>
                   </MDBCol>
-                  <MDBCol md="4" className="mt-4">
+                  {/* <MDBCol md="4" className="mt-4">
                     <MDBAnimation reveal type="fadeInUp">
                       <MDBCard cascade className="my-3 white scrollbar scrollbar-primary m-auto" style={{ maxHeight: "300px" }}>
                         <MDBCardBody cascade>
@@ -151,8 +153,22 @@ class DashboardPage extends Component {
                                 <h6 style={{ fontWeight: "bold" }}>Title of Announcement</h6>
                               </MDBCol>
                               <MDBCol md="6" align="right">
-                                <h6 style={{ fontStyle: "italic", fontSize: "10px" }}>
-                                  {/* DATE OF POST */} xx/xx/xxxx
+                                <h6 style={{ fontStyle: "italic", fontSize: "10px" }}> 
+                                 xx/xx/xxxx
+                                 </h6>
+                              </MDBCol>
+                              <MDBCol md="12">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                    </MDBCol>
+                            </MDBRow>
+                            <hr />
+                            <MDBRow>
+                              <MDBCol md="6">
+                                <h6 style={{ fontWeight: "bold" }}>Title of Announcement</h6>
+                              </MDBCol>
+                              <MDBCol md="6" align="right">
+                                <h6 style={{ fontStyle: "italic", fontSize: "10px" }}> 
+                                 xx/xx/xxxx
                         </h6>
                               </MDBCol>
                               <MDBCol md="12">
@@ -166,21 +182,7 @@ class DashboardPage extends Component {
                               </MDBCol>
                               <MDBCol md="6" align="right">
                                 <h6 style={{ fontStyle: "italic", fontSize: "10px" }}>
-                                  {/* DATE OF POST */} xx/xx/xxxx
-                        </h6>
-                              </MDBCol>
-                              <MDBCol md="12">
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                    </MDBCol>
-                            </MDBRow>
-                            <hr />
-                            <MDBRow>
-                              <MDBCol md="6">
-                                <h6 style={{ fontWeight: "bold" }}>Title of Announcement</h6>
-                              </MDBCol>
-                              <MDBCol md="6" align="right">
-                                <h6 style={{ fontStyle: "italic", fontSize: "10px" }}>
-                                  {/* DATE OF POST */} xx/xx/xxxx
+                                  xx/xx/xxxx
                         </h6>
                               </MDBCol>
                               <MDBCol md="12">
@@ -213,7 +215,7 @@ class DashboardPage extends Component {
                         </MDBCardBody>
                       </MDBCard>
                     </MDBAnimation>
-                  </MDBCol>
+                  </MDBCol> */}
                 </MDBRow>
               </MDBJumbotron>
             </MDBCol>

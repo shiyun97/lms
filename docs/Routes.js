@@ -85,6 +85,7 @@ import CourseManagementMyCourses from './dev/CourseManagementMyCourses';
 import CourseManagementExploreCourses from './dev/CourseManagementExploreCourses'
 import UserProfilePage from "./dev/UserProfilePage";
 import UnderMaintenancePage from "./dev/UnderMaintenancePage";
+import AdminLoginPage from "./dev/Admin/AdminLoginPage";
 
 class Routes extends React.Component {
   render() {
@@ -93,6 +94,7 @@ class Routes extends React.Component {
 
         {/* LMS PAGES */}
         <Route exact path="/login" component={LoginPage} />
+        <Route exact path="/admin" component={AdminLoginPage} />
         <Route exact path="/register" component={RegisterPage} />
         <Route exact path="/dashboard" component={DashboardPage} />
         <Route exact path="/modules" component={ModulesPage} />

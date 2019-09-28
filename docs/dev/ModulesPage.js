@@ -35,7 +35,7 @@ class ModulesPage extends Component {
                             }
                         />
                     </MDBCol>
-                    <MDBCol align="right" md="4" className="mt-4" style={{ paddingTop: 50 }}>
+                    {/* <MDBCol align="right" md="4" className="mt-4" style={{ paddingTop: 50 }}>
                         <MDBBtn onClick={this.toggle(1)} color="primary">Create Module</MDBBtn>
                     </MDBCol>
                     <MDBModal isOpen={this.state.modal1} toggle={this.toggle(1)}>
@@ -123,7 +123,7 @@ class ModulesPage extends Component {
                                 </MDBCol>
                             </MDBRow>
                         </MDBModalFooter>
-                    </MDBModal>
+                    </MDBModal> */}
                     <MDBCol md="12">
                         <hr className="my-5" />
                         <MDBRow id="categories">

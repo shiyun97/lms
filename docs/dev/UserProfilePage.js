@@ -12,7 +12,7 @@ const UserProfilePage = () => {
                 </MDBCol>
                 <MDBCol md="4" align="right">
                     {/* to edit profile for coursepack users */}
-                    <MDBBtn color="primary">Edit Profile</MDBBtn>
+                    {/* <MDBBtn color="primary">Edit Profile</MDBBtn> */}
                 </MDBCol>
             </MDBRow>
             <MDBRow className="py-3">
@@ -58,7 +58,7 @@ const UserProfilePage = () => {
                                 <strong>Password</strong>
                                 <br />Your password will expire in XX days.
                     <br />
-                                <MDBBtn size="sm" outline color="primary">Change Password</MDBBtn>
+                                {/* <MDBBtn size="sm" outline color="primary">Change Password</MDBBtn> */}
                             </MDBCardText>
                         </MDBCardBody>
                     </MDBCard>
