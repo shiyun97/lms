@@ -59,10 +59,10 @@ class StudentLoginPage extends Component {
               <MDBCol md="8" className="mt-3 mx-auto">
                 <MDBJumbotron>
                   <h1 className="text-center" style={{ fontWeight: "bold" }}>
-                    MODREG
+                    LUMINUS
                 </h1>
                   <h3 className="text-center">
-                    Module Registration System
+                    Learning Management Platform
                 </h3>
                   <ul className="list-unstyled example-components-list">
                     <form onSubmit={this.checkLogIn}>

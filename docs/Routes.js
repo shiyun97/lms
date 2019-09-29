@@ -1,6 +1,7 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import { MDBContainer, MDBCol, MDBRow, MDBJumbotron } from "mdbreact";
+import { observer, inject } from 'mobx-react';
 
 // FREE
 import NavigationNavPage from "./pages/NavigationNavPage";
@@ -63,7 +64,7 @@ import TreeviewPage from './pages/TreeviewPage'
 import AnalyticsPage from './pages/AnalyticsPage';
 
 // LMS IMPORTS
-import LoginPage from './dev/LoginPage';
+import PublicLoginPage from './dev/PublicLoginPage';
 import RegisterPage from './dev/RegisterPage';
 import ModuleOverviewPage from './dev/ModuleOverviewPage';
 import ModuleDetailsPage from './dev/ModuleDetailsPage';
@@ -86,52 +87,94 @@ import CourseManagementExploreCourses from './dev/CourseManagementExploreCourses
 import UserProfilePage from "./dev/UserProfilePage";
 import UnderMaintenancePage from "./dev/UnderMaintenancePage";
 import AdminLoginPage from "./dev/Admin/AdminLoginPage";
+import StudentLoginPage from "./dev/Student/StudentLoginPage";
 
+@inject('dataStore')
+@observer
 class Routes extends React.Component {
+
   render() {
+
+    // print login status
+    // console.log(this.props.dataStore.getSignInStatus)
+
+    const PrivateRoute = ({ path: Path, component: Component, ...rest }) => (
+      <Route {...rest} render={(props) => (
+        this.props.dataStore.getSignInStatus === true
+          ? <Component {...props} />
+          :
+          <>
+            {this.props.dataStore.setPath(Path)}
+            <Redirect to='/login' />
+          </>
+      )
+      }
+      />
+    )
+
+    const AdminPrivateRoute = ({ path: Path, component: Component, ...rest }) => (
+      <Route {...rest} render={(props) => (
+        this.props.dataStore.getSignInStatus === true
+          ? <Component {...props} />
+          :
+          <>
+            {this.props.dataStore.setPath(Path)}
+            <Redirect to='/admin' />
+          </>
+      )
+      }
+      />
+    )
     return (
       <Switch>
 
-        {/* LMS PAGES */}
-        <Route exact path="/login" component={LoginPage} />
-        <Route exact path="/admin" component={AdminLoginPage} />
-        <Route exact path="/register" component={RegisterPage} />
-        <Route exact path="/dashboard" component={DashboardPage} />
-        <Route exact path="/modules" component={ModulesPage} />
-        <Route exact path="/modules/:moduleId/" component={ModuleOverviewPage} />
-        <Route exact path="/modules/:moduleId/moduleDetails" component={ModuleDetailsPage} />
-        <Route exact path="/modules/:moduleId/announcements/" component={ModuleAnnouncementsPage} />
-        <Route exact path="/modules/:moduleId/announcements/active" component={ModuleAnnouncementsPage} />
-        <Route exact path="/modules/:moduleId/announcements/upcoming" component={ModuleAnnouncementsPage} />
-        <Route exact path="/modules/:moduleId/announcements/expired" component={ModuleAnnouncementsPage} />
-        <Route exact path="/modules/:moduleId/files" component={ModuleFilesPage} />
-        <Route exact path="/modules/:moduleId/files/:folderId" component={ModuleFilesPage} />
-        <Route exact path="/modules/:moduleId/students/" component={ModuleClassGroupsPage} />
-        <Route exact path="/modules/:moduleId/students/student-roster" component={ModuleClassGroupsPage} />
-        <Route exact path="/modules/:moduleId/students/student-roster/:studentId" component={StudentRosterDetails} />
-        <Route exact path="/modules/:moduleId/students/class-groups" component={ModuleClassGroupsPage} />
-        <Route exact path="/modules/:moduleId/students/class-groups/:classGroupId" component={ClassGroupDetails} />
-        <Route exact path="/modules/:moduleId/students/lecture-groups" component={ModuleClassGroupsPage} />
-        <Route exact path="/modules/:moduleId/students/lecture-groups/:lectureGroupId" component={LectureGroupDetails} />
-        <Route exact path="/modules/:moduleId/students/tutorial-groups" component={ModuleClassGroupsPage} />
-        <Route exact path="/modules/:moduleId/students/tutorial-groups/:tutorialGroupId" component={TutorialGroupDetails} />
-        <Route exact path="/modules/:moduleId/forum" component={ModuleForumPage} />
-        <Route exact path="/modules/:moduleId/gradebook" component={ModuleGradebookPage} />
-        <Route exact path="/modules/:moduleId/quiz" component={ModuleQuizPage} />
-        <Route exact path="/modules/:moduleId/multimedia" component={ModuleMultimediaPage} />
-        <Route exact path="/modules/:moduleId/multimedia/:multimediaId" component={ModuleMultimediaDetailsPage} />
-        <Route exact path="/modules/:moduleId/consultation" component={ModuleConsultationPage} />
-        <Route exact path="/modules/:moduleId/attendance" component={ModuleAttendancePage} />
-        <Route exact path="/modules/:moduleId/feedback" component={ModuleFeedbackPage} />
-        <Route exact path="/users" component={UsersManagementPage} />
-        <Route exact path="/coursesDashboard" component={CourseManagementDashboard} />
-        <Route exact path="/myCourses" component={CourseManagementMyCourses} />
-        <Route exact path="/exploreCourses" component={CourseManagementExploreCourses} />
-        <Route exact path="/account/:accountid" component={UserProfilePage} />
         <Route exact path="/undermaintenance" component={UnderMaintenancePage} />
+        <PrivateRoute exact path="/account/:accountid" component={UserProfilePage} />
+
+        {/* LMS PAGES - Admin/ Teacher */}
+        <Route exact path="/admin" component={AdminLoginPage} />
+        <AdminPrivateRoute exact path="/users" component={UsersManagementPage} />
+
+        {/* LMS PAGES - Student */}
+        <Route exact path="/" component={StudentLoginPage} />
+        <Route exact path="/login" component={StudentLoginPage} />
+        <PrivateRoute exact path="/dashboard" component={DashboardPage} />
+        <PrivateRoute exact path="/modules" component={ModulesPage} />
+        <PrivateRoute exact path="/modules/:moduleId/" component={ModuleOverviewPage} />
+        <PrivateRoute exact path="/modules/:moduleId/moduleDetails" component={ModuleDetailsPage} />
+        <PrivateRoute exact path="/modules/:moduleId/announcements/" component={ModuleAnnouncementsPage} />
+        <PrivateRoute exact path="/modules/:moduleId/announcements/active" component={ModuleAnnouncementsPage} />
+        <PrivateRoute exact path="/modules/:moduleId/announcements/upcoming" component={ModuleAnnouncementsPage} />
+        <PrivateRoute exact path="/modules/:moduleId/announcements/expired" component={ModuleAnnouncementsPage} />
+        <PrivateRoute exact path="/modules/:moduleId/files" component={ModuleFilesPage} />
+        <PrivateRoute exact path="/modules/:moduleId/files/:folderId" component={ModuleFilesPage} />
+        <PrivateRoute exact path="/modules/:moduleId/students/" component={ModuleClassGroupsPage} />
+        <PrivateRoute exact path="/modules/:moduleId/students/student-roster" component={ModuleClassGroupsPage} />
+        <PrivateRoute exact path="/modules/:moduleId/students/student-roster/:studentId" component={StudentRosterDetails} />
+        <PrivateRoute exact path="/modules/:moduleId/students/class-groups" component={ModuleClassGroupsPage} />
+        <PrivateRoute exact path="/modules/:moduleId/students/class-groups/:classGroupId" component={ClassGroupDetails} />
+        <PrivateRoute exact path="/modules/:moduleId/students/lecture-groups" component={ModuleClassGroupsPage} />
+        <PrivateRoute exact path="/modules/:moduleId/students/lecture-groups/:lectureGroupId" component={LectureGroupDetails} />
+        <PrivateRoute exact path="/modules/:moduleId/students/tutorial-groups" component={ModuleClassGroupsPage} />
+        <PrivateRoute exact path="/modules/:moduleId/students/tutorial-groups/:tutorialGroupId" component={TutorialGroupDetails} />
+        <PrivateRoute exact path="/modules/:moduleId/forum" component={ModuleForumPage} />
+        <PrivateRoute exact path="/modules/:moduleId/gradebook" component={ModuleGradebookPage} />
+        <PrivateRoute exact path="/modules/:moduleId/quiz" component={ModuleQuizPage} />
+        <PrivateRoute exact path="/modules/:moduleId/multimedia" component={ModuleMultimediaPage} />
+        <PrivateRoute exact path="/modules/:moduleId/multimedia/:multimediaId" component={ModuleMultimediaDetailsPage} />
+        <PrivateRoute exact path="/modules/:moduleId/consultation" component={ModuleConsultationPage} />
+        <PrivateRoute exact path="/modules/:moduleId/attendance" component={ModuleAttendancePage} />
+        <PrivateRoute exact path="/modules/:moduleId/feedback" component={ModuleFeedbackPage} />
+        <PrivateRoute exact path="/coursesDashboard" component={CourseManagementDashboard} />
+        <PrivateRoute exact path="/myCourses" component={CourseManagementMyCourses} />
+        <Route exact path="/exploreCourses" component={CourseManagementExploreCourses} />
+
+        {/* LMS PAGES - Public Student */}
+        <Route exact path="/public/login" component={PublicLoginPage} />
+        <Route exact path="/register" component={RegisterPage} />
 
         {/* FREE Templates */}
-        <Route exact path="/" component={HomePage} />
+        {/* <Route exact path="/" component={HomePage} /> */}
         <Route exact path="/analytics" component={AnalyticsPage} />
         <Route exact path="/addons" component={AddonsNavPage} />
         <Route exact path="/advanced" component={AdvancedNavPage} />

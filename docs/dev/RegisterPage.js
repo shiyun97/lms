@@ -14,7 +14,7 @@ const RegisterPage = () => {
                                     LUMINUS
                 </h1>
                                 <h3 className="text-center">
-                                    Learning Management System
+                                    Learning Management Platform
                 </h3>
                                 <ul className="list-unstyled example-components-list">
                                     <form>

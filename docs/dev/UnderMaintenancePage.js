@@ -11,7 +11,7 @@ const UnderMaintenancePage = () => {
                             LUMINUS
                 </h2>
                         <p className="text-muted mb-1">
-                            Learning Management System
+                            Learning Management Platform
                 </p>
                         <img src="https://cdn.dribbble.com/users/2817186/screenshots/5956171/under-maintenance-design-224806.jpg" width="50%" />
                     </MDBJumbotron>

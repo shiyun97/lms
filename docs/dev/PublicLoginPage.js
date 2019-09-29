@@ -1,7 +1,7 @@
 import React from "react";
 import { MDBEdgeHeader, MDBContainer, MDBRow, MDBCol, MDBJumbotron, MDBAnimation } from "mdbreact";
 
-const LoginPage = () => {
+const PublicLoginPage = () => {
   return (
     <>
       <MDBEdgeHeader color="indigo darken-3" className="loginPage" />
@@ -14,7 +14,7 @@ const LoginPage = () => {
                   LUMINUS
                 </h1>
                 <h3 className="text-center">
-                  Learning Management System
+                  Learning Management Platform
                 </h3>
                 <ul className="list-unstyled example-components-list">
                   <form>
@@ -50,4 +50,4 @@ const LoginPage = () => {
   );
 }
 
-export default LoginPage;
+export default PublicLoginPage;

@@ -5,13 +5,16 @@ class DataStore {
   @observable email = ""
   @observable password = ""
   @observable userType = ""
-  @observable path = "/"
+  @observable path = "/dashboard"
 
   @action setSignInStatus(status, email, password, userType) {
     this.signInStatus = status;
     this.email = email;
     this.password = password;
     this.userType = userType;
+    localStorage.setItem("email", this.email)
+    localStorage.setItem("password", this.password)
+    localStorage.setItem("userType", this.userType)
   }
 
   @action setSignOutStatus() {
@@ -19,7 +22,8 @@ class DataStore {
     this.email = "";
     this.password = "";
     this.userType = "";
-    this.path = "/"
+    this.path = "/";
+    localStorage.clear();
   }
 
   @action setPath(path) {

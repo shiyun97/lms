@@ -15,10 +15,20 @@ import Routes from "./Routes";
 import { observer, inject } from 'mobx-react'
 
 @inject('dataStore')
+@observer
 class App extends Component {
   state = {
     collapseID: ""
   };
+
+  componentDidMount() {
+    if (localStorage.getItem("email") !== null) {
+      let email = localStorage.getItem("email")
+      let password = localStorage.getItem("password")
+      let userType = localStorage.getItem("userType")
+      this.props.dataStore.setSignInStatus(true, email, password, userType)
+    }
+  }
 
   toggleCollapse = collapseID => () =>
     this.setState(prevState => ({
@@ -43,11 +53,11 @@ class App extends Component {
 
     return (
       <Router>
-        <SideNav />
+        {this.props.dataStore.getSignInStatus && <SideNav />}
         <div className="flyout">
-          <MDBNavbar color="indigo" dark expand="md" scrolling fixed="top">
+          {/* <MDBNavbar color="indigo" dark expand="md" scrolling fixed="top">
             <MDBNavbarBrand href="/" className="py-0 font-weight-bold" style={{ paddingLeft: "80px" }}>
-              <img src="https://www.iconsdb.com/icons/preview/white/graduation-cap-xxl.png" style={{ height: "1.5rem", width: "2rem", paddingRight: "10px" }} />
+              <img src="https://img.icons8.com/ios-filled/50/ffffff/graduation-cap.png" style={{ height: "1.5rem", width: "2rem", paddingRight: "10px" }} />
               <strong className="align-middle">LUMINUS</strong>
             </MDBNavbarBrand>
             <MDBNavbarToggler
@@ -78,14 +88,15 @@ class App extends Component {
                 </MDBNavItem>
               </MDBNavbarNav>
             </MDBCollapse>
-          </MDBNavbar>
+          </MDBNavbar> */}
           {collapseID && overlay}
-          <main style={{ marginTop: "3rem" }}>
+          {/* <main style={{ marginTop: "3rem" }}> */}
+          <main>
             <Routes />
           </main>
           <MDBFooter color="indigo">
             <p className="footer-copyright mb-0 py-3 text-center">
-              &copy; {new Date().getFullYear()} Copyright Learning Management System
+              &copy; {new Date().getFullYear()} Copyright Learning Management Platform
             </p>
           </MDBFooter>
         </div>
