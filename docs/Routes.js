@@ -174,7 +174,7 @@ class Routes extends React.Component {
         <Route exact path="/register" component={RegisterPage} />
 
         {/* FREE Templates */}
-        {/* <Route exact path="/" component={HomePage} /> */}
+        <Route exact path="/home" component={HomePage} />
         <Route exact path="/analytics" component={AnalyticsPage} />
         <Route exact path="/addons" component={AddonsNavPage} />
         <Route exact path="/advanced" component={AdvancedNavPage} />
