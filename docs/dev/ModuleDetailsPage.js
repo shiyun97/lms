@@ -1,16 +1,30 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
+import { 
+    MDBContainer, 
+    MDBRow, 
+    MDBCol, 
+    MDBIcon, 
+    MDBBtn, 
+    MDBModal, 
+    MDBModalBody, 
+    MDBModalFooter,
+    MDBModalHeader 
+} from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
 import SectionContainer from "../components/sectionContainer";
+import axios from "axios";
+
+const API_URL = "http://localhost:8080/LMS-war/webresources";
 
 class ModuleDetailsPage extends Component {
 
     state = {
         module:{
-            moduleDescription: 'Students are required to work (in groups) through a complete Systems Development Life Cycle to develop a business information system based on techniques and tools taught in IS2102, IS2103 and IS3106. They will also sharpen their communication skills through closer team interactions, consultations, and formal presentations. Emphasis will be placed on architecture design and implementation, requirement analysis, system design, user interface design, database design and implementation efficiency. Students will be assessed based on their understanding and ability to apply software engineering knowledge on a real-life application system, as well as their communication skill.',
-            credits: 8
+            moduleId: "",
+            description: 'Students are required to work (in groups) through a complete Systems Development Life Cycle to develop a business information system based on techniques and tools taught in IS2102, IS2103 and IS3106. They will also sharpen their communication skills through closer team interactions, consultations, and formal presentations. Emphasis will be placed on architecture design and implementation, requirement analysis, system design, user interface design, database design and implementation efficiency. Students will be assessed based on their understanding and ability to apply software engineering knowledge on a real-life application system, as well as their communication skill.'
         },
+        descriptionInput: "",
         toggleEdit: false
     }
 
@@ -23,6 +37,24 @@ class ModuleDetailsPage extends Component {
         if (moduleId) {
             console.log(moduleId);
             // retrieve module & set state
+            axios
+                .get(API_URL + "/ModuleMounting/getModule/" + moduleId)
+                .then(result => {
+                    console.log(result)
+                    if (result.data) {
+                        let data = result.data;
+                        console.log(data)
+                        this.setState({
+                            module: {
+                                moduleId: moduleId,
+                                description: data.description
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
+                console.error("error in axios " + error);
+            });
         }
     }
 
@@ -32,6 +64,15 @@ class ModuleDetailsPage extends Component {
             [modalNumber]: !this.state[modalNumber]
         });
     };
+
+    inputChangeHandler = (e) => {
+        e.preventDefault();
+        if (e.target.name == "descriptionInput") {
+            this.setState({
+                descriptionInput: e.target.value
+            })
+        }
+    }
 
     submitEdit = () => {
     }
@@ -71,22 +112,7 @@ class ModuleDetailsPage extends Component {
                                         <form className="mx-3 grey-text">
                                             <div className="form-group">
                                                 <label htmlFor="description">Description</label>
-                                                <textarea className="form-control" id="description" value={this.state.module.moduleDescription} onChange={e => { }} rows={5} />
-                                            </div>
-                                            <label htmlFor="semester">Semester</label>
-                                            <div className="input-group mt-1">
-                                                <input
-                                                    type="number"
-                                                    className="form-control py-0"
-                                                    id="semester"
-                                                    value={module.moduleSemester} 
-                                                    onChange={e => { }}
-                                                />
-                                                <div className="input-group-prepend" style={{"marginRight":"0px"}}>
-                                                    <div className="input-group-text">
-                                                        MC
-                                                    </div>
-                                                </div>
+                                                <textarea className="form-control" id="description" value={this.state.module.description} onChange={e => { }} rows={5} />
                                             </div>
                                         </form>
                                     </MDBModalBody>
@@ -100,7 +126,7 @@ class ModuleDetailsPage extends Component {
                             <MDBCol>
                                 <SectionContainer className="justify-content d-flex">
                                     <div className="new-paragraph"><div className="h5">Description</div>
-                                        {module.moduleDescription}
+                                        {module.description}
                                     </div>
                                 </SectionContainer>
                             </MDBCol>

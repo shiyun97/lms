@@ -1,14 +1,34 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
+import { 
+    MDBContainer, 
+    MDBRow, 
+    MDBCol, 
+    MDBIcon, 
+    MDBBtn, 
+    MDBModal, 
+    MDBModalBody, 
+    MDBModalFooter, 
+    MDBModalHeader 
+} from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
 import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
+
+const API_URL = "http://localhost:8080/LMS-war/webresources";
 
 class ModuleOverviewPage extends Component {
 
     state = {
         module:{
+            moduleId: "",   
+            code: "",
+            title: "",
+            semesterOffered: "",
+            yearOffered: "",
+            creditUnit: "",
+            description: "",
+            department: ""
         },
         modalEdit: false
     }
@@ -23,14 +43,25 @@ class ModuleOverviewPage extends Component {
             console.log(moduleId);
             // retrieve module & set state
             axios
-            .get("http://localhost:3001/moduleOverview")
-            .then(result => {
-                let data = result.data;
-                this.setState({
-                    module: data
-                });
-            })
-            .catch(error => {
+                .get(API_URL + "/ModuleMounting/getModule/" + moduleId)
+                .then(result => {
+                    if (result.data) {
+                        let data = result.data;
+                        this.setState({
+                            module: {
+                                moduleId: moduleId,
+                                code: data.code,
+                                title: data.title,
+                                semesterOffered: data.semesterOffered,
+                                yearOffered: data.yearOffered,
+                                creditUnit: data.creditUnit,
+                                description: data.description,
+                                department: ""
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
                 console.error("error in axios " + error);
             });
         }
@@ -82,15 +113,15 @@ class ModuleOverviewPage extends Component {
                                         <form className="mx-3 grey-text">
                                             <div className="form-group">
                                                 <label htmlFor="title">Module Name</label>
-                                                <input type="text" className="form-control" id="title" value={module.moduleTitle} onChange={e => {}} />
+                                                <input type="text" className="form-control" id="title" value={module.title} onChange={e => {}} />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="semester">Semester</label>
-                                                <input type="text" className="form-control" id="semester" value={module.moduleSemester} onChange={e => {}} />
+                                                <input type="text" className="form-control" id="semester" value={module.semesterOffered} onChange={e => {}} />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="department">Department</label>
-                                                <select className="form-control" value={module.moduleDepartment} onChange={e => {}}>
+                                                <select className="form-control" value={module.department} onChange={e => {}}>
                                                     <option value="dep1">Information Systems</option>
                                                     <option value="dep2">Information Systems</option>
                                                     <option value="dep3">Information Systems</option>
@@ -116,15 +147,15 @@ class ModuleOverviewPage extends Component {
                             <MDBCol>
                             <SectionContainer className="justify-content d-flex">
                                     <div className="new-paragraph">
-                                        <div className="h5">{module.moduleCode}</div>
-                                        <h6>{module.moduleTitle}</h6>
-                                        <MDBIcon icon="graduation-cap" className="mr-2 fa-fw" />{module.moduleSemester}
+                                        <div className="h5">{module.code}</div>
+                                        <h6>{module.title}</h6>
+                                        <MDBIcon icon="graduation-cap" className="mr-2 fa-fw" />Semester {module.semesterOffered}
                                         <br />
                                         <MDBIcon icon="building" className="mr-2 fa-fw" />{module.moduleFaculty} (Dept of {module.moduleDepartment})
                                         <br />
                                         <MDBIcon icon="calendar-alt" className="mr-2 fa-fw" />{module.openDate} - {module.closeDate}
                                         <br />
-                                        <MDBIcon icon="cog" className="mr-2 fa-fw" />{module.credits} MCs
+                                        <MDBIcon icon="cog" className="mr-2 fa-fw" />{module.creditUnit} MCs
                                     </div>
                                 </SectionContainer>
                             </MDBCol>

@@ -396,7 +396,14 @@ class ModuleClassGroupsPage extends Component {
                                 </MDBRow>*/}
                                 <MDBRow>
                                     <MDBCol>
-                                        <MDBDataTable striped bordered hover searching={true} data={students} />
+                                        {
+                                            students.rows.length > 0 &&
+                                            <MDBDataTable striped bordered hover searching={true} data={students} />
+                                        }
+                                        {
+                                            students.rows.length == 0 &&
+                                            <div className="mt-5">No students enrolled in this module yet</div>
+                                        }
                                     </MDBCol>
                                 </MDBRow>
                                 <MDBModal isOpen={this.state.modalStudent} toggle={this.toggleModal("Student")}>
@@ -440,10 +447,17 @@ class ModuleClassGroupsPage extends Component {
                                 </MDBRow>
                                 <MDBRow>
                                     <MDBCol>
-                                        <MDBTable bordered={false} btn fixed>
-                                            <MDBTableHead columns={classGroups.columns} />
-                                            <MDBTableBody rows={classGroups.rows} />
-                                        </MDBTable>
+                                        {
+                                            classGroups.rows.length > 0 &&
+                                            <MDBTable bordered={false} btn fixed>
+                                                <MDBTableHead columns={classGroups.columns} />
+                                                <MDBTableBody rows={classGroups.rows} />
+                                            </MDBTable>
+                                        }
+                                        {
+                                            classGroups.rows.length == 0 &&
+                                            <div>No class groups created yet</div>
+                                        }
                                     </MDBCol>
                                 </MDBRow>
 
@@ -548,10 +562,17 @@ class ModuleClassGroupsPage extends Component {
                                 <MDBRow><MDBCol><div className="mb-4"></div></MDBCol></MDBRow>
                                 <MDBRow className="mt-2">
                                     <MDBCol>
-                                        <MDBTable bordered={false} btn fixed>
-                                            <MDBTableHead columns={lectureGroups.columns} />
-                                            <MDBTableBody rows={lectureGroups.rows} />
-                                        </MDBTable>
+                                        {
+                                            lectureGroups.rows.length > 0 &&
+                                            <MDBTable bordered={false} btn fixed>
+                                                <MDBTableHead columns={lectureGroups.columns} />
+                                                <MDBTableBody rows={lectureGroups.rows} />
+                                            </MDBTable>
+                                        }
+                                        {
+                                            lectureGroups.rows.length == 0 &&
+                                            <div>No lecture groups created yet</div>
+                                        }
                                     </MDBCol>
                                 </MDBRow>
                             </MDBTabPane>
@@ -560,10 +581,17 @@ class ModuleClassGroupsPage extends Component {
                                 <MDBRow><MDBCol><div className="mb-4"></div></MDBCol></MDBRow>
                                 <MDBRow className="mt-2">
                                     <MDBCol>
-                                        <MDBTable bordered={false} btn fixed>
-                                            <MDBTableHead columns={tutorialGroups.columns} />
-                                            <MDBTableBody rows={tutorialGroups.rows} />
-                                        </MDBTable>
+                                        {
+                                            tutorialGroups.rows.length > 0 &&
+                                            <MDBTable bordered={false} btn fixed>
+                                                <MDBTableHead columns={tutorialGroups.columns} />
+                                                <MDBTableBody rows={tutorialGroups.rows} />
+                                            </MDBTable>
+                                        }
+                                        {
+                                            tutorialGroups.rows.length == 0 &&
+                                            <div>No tutorial groups created yet</div>
+                                        }
                                     </MDBCol>
                                 </MDBRow>
                             </MDBTabPane>
@@ -1369,5 +1397,8 @@ export default styled(withRouter(ModuleClassGroupsPage))`
     .module-content{
         margin-left: 270px;
     }
+}
+tbody + thead{
+    display: none;
 }
 `;
