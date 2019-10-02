@@ -28,7 +28,8 @@ class ModuleOverviewPage extends Component {
             yearOffered: "",
             creditUnit: "",
             description: "",
-            department: ""
+            department: "",
+            faculty: ""
         },
         modalEdit: false
     }
@@ -56,7 +57,8 @@ class ModuleOverviewPage extends Component {
                                 yearOffered: data.yearOffered,
                                 creditUnit: data.creditUnit,
                                 description: data.description,
-                                department: ""
+                                department: data.department,
+                                faculty: data.faculty
                             }
                         });
                     }
@@ -151,9 +153,9 @@ class ModuleOverviewPage extends Component {
                                         <h6>{module.title}</h6>
                                         <MDBIcon icon="graduation-cap" className="mr-2 fa-fw" />Semester {module.semesterOffered}
                                         <br />
-                                        <MDBIcon icon="building" className="mr-2 fa-fw" />{module.moduleFaculty} (Dept of {module.moduleDepartment})
+                                        <MDBIcon icon="building" className="mr-2 fa-fw" />{module.faculty} (Department of {module.department})
                                         <br />
-                                        <MDBIcon icon="calendar-alt" className="mr-2 fa-fw" />{module.openDate} - {module.closeDate}
+                                        <MDBIcon icon="calendar-alt" className="mr-2 fa-fw" />{module.yearOffered}
                                         <br />
                                         <MDBIcon icon="cog" className="mr-2 fa-fw" />{module.creditUnit} MCs
                                     </div>

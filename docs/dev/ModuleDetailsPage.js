@@ -5,15 +5,15 @@ import {
     MDBRow, 
     MDBCol, 
     MDBIcon, 
-    MDBBtn, 
-    MDBModal, 
-    MDBModalBody, 
-    MDBModalFooter,
-    MDBModalHeader 
+    MDBBtn
 } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
 import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import 'react-quill/dist/quill.bubble.css';
+import ReactHtmlParser from 'react-html-parser';
 
 const API_URL = "http://localhost:8080/LMS-war/webresources";
 
@@ -22,10 +22,9 @@ class ModuleDetailsPage extends Component {
     state = {
         module:{
             moduleId: "",
-            description: 'Students are required to work (in groups) through a complete Systems Development Life Cycle to develop a business information system based on techniques and tools taught in IS2102, IS2103 and IS3106. They will also sharpen their communication skills through closer team interactions, consultations, and formal presentations. Emphasis will be placed on architecture design and implementation, requirement analysis, system design, user interface design, database design and implementation efficiency. Students will be assessed based on their understanding and ability to apply software engineering knowledge on a real-life application system, as well as their communication skill.'
+            description: ""
         },
-        descriptionInput: "",
-        toggleEdit: false
+        editMode: false
     }
 
     componentDidMount() {
@@ -35,12 +34,10 @@ class ModuleDetailsPage extends Component {
     initPage() {
         let moduleId = this.props.match.params.moduleId;
         if (moduleId) {
-            console.log(moduleId);
             // retrieve module & set state
             axios
                 .get(API_URL + "/ModuleMounting/getModule/" + moduleId)
                 .then(result => {
-                    console.log(result)
                     if (result.data) {
                         let data = result.data;
                         console.log(data)
@@ -58,27 +55,70 @@ class ModuleDetailsPage extends Component {
         }
     }
 
-    toggleModal = nr => () => {
-        let modalNumber = "modal" + nr;
+    setEditMode = () => {
         this.setState({
-            [modalNumber]: !this.state[modalNumber]
-        });
-    };
-
-    inputChangeHandler = (e) => {
-        e.preventDefault();
-        if (e.target.name == "descriptionInput") {
-            this.setState({
-                descriptionInput: e.target.value
-            })
-        }
+            editMode: !this.state.editMode
+        })
     }
 
-    submitEdit = () => {
+    submitTextEditor = (e, htmlText) => {
+        e.preventDefault()
+        const moduleId = this.state.module.moduleId
+        axios
+            .post(API_URL + "/ModuleMounting/updateModuleDescription/" + moduleId,
+            htmlText, {
+                headers: {
+                    "Accept": "application/json",
+                    "Content-type": "application/json"
+                }
+            })
+            .then(result => {
+                console.log(result)
+                if (result.data) {
+                    let data = result.data;
+                    this.setState({
+                        editMode: false
+                    })
+                    return this.initPage()
+                }
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+                this.setState({
+                    editMode: false
+                })
+                return this.initPage()
+            });
     }
 
     render() {
         let module = this.state.module;
+        if (this.state.editMode) {
+            return (
+                <div className={this.props.className}>
+                    <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
+                    <div className="module-content">
+                        <MDBContainer>
+                            <MDBRow>
+                                <MDBCol>
+                                    <h4 className="mb-2">Module Details</h4>
+                                </MDBCol>
+                            </MDBRow>
+                            <MDBRow>
+                                <MDBCol>
+                                    <div className="align-right">
+                                        <MDBBtn color="blue lighten-2" outline className="mr-0 mb-2" size="md" onClick={this.setEditMode}>
+                                            <MDBIcon icon="cross" className="mr-1" /> Cancel
+                                        </MDBBtn>
+                                    </div>
+                                </MDBCol>
+                            </MDBRow>
+                            <RichTextEditorStyled submitTextEditor={this.submitTextEditor} initial={module.description}></RichTextEditorStyled>
+                        </MDBContainer>
+                    </div>
+                </div>
+            )
+        }
         return (
             <div className={this.props.className}>
                 <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
@@ -92,7 +132,7 @@ class ModuleDetailsPage extends Component {
                         <MDBRow>
                             <MDBCol>
                                 <div className="align-right">
-                                    <MDBBtn color="blue lighten-2" outline className="mr-0 mb-2" size="md" onClick={this.toggleModal("Edit")}>
+                                    <MDBBtn color="blue lighten-2" outline className="mr-0 mb-2" size="md" onClick={this.setEditMode}>
                                         <MDBIcon icon="edit" className="mr-1" /> Edit
                                     </MDBBtn>
                                 </div>
@@ -100,37 +140,21 @@ class ModuleDetailsPage extends Component {
                         </MDBRow>
                         <MDBRow>
                             <MDBCol>
-                                <MDBModal isOpen={this.state.modalEdit} toggle={this.toggleModal("Edit")}>
-                                    <MDBModalHeader
-                                        className="text-center"
-                                        titleClass="w-100 font-weight-bold"
-                                        toggle={this.toggleModal("Edit")}
-                                    >
-                                        Edit Description
-                                    </MDBModalHeader>
-                                    <MDBModalBody>
-                                        <form className="mx-3 grey-text">
-                                            <div className="form-group">
-                                                <label htmlFor="description">Description</label>
-                                                <textarea className="form-control" id="description" value={this.state.module.description} onChange={e => { }} rows={5} />
-                                            </div>
-                                        </form>
-                                    </MDBModalBody>
-                                    <MDBModalFooter className="justify-content-center">
-                                        <MDBBtn color="info" onClick={this.submitEdit()}>Submit</MDBBtn>
-                                    </MDBModalFooter>
-                                </MDBModal>
+                                {
+                                    module.description &&
+                                    <SectionContainer className="justify-content d-flex">
+                                        <div className="new-paragraph"><div className="h5">Description</div>
+                                            {ReactHtmlParser(module.description)}
+                                        </div>
+                                    </SectionContainer>
+                                }
+                                {
+                                    !module.description &&
+                                    <div>No module description set yet</div>
+                                }
                             </MDBCol>
                         </MDBRow>
-                        <MDBRow>
-                            <MDBCol>
-                                <SectionContainer className="justify-content d-flex">
-                                    <div className="new-paragraph"><div className="h5">Description</div>
-                                        {module.description}
-                                    </div>
-                                </SectionContainer>
-                            </MDBCol>
-                        </MDBRow>
+                        
                     </MDBContainer>
                 </div>
             </div>
@@ -140,8 +164,12 @@ class ModuleDetailsPage extends Component {
 
 export default styled(ModuleDetailsPage)`
 .module-content{
-    margin-left: 270px;
     margin-top: 40px;
+}
+@media (min-width: 1199.98px) {
+    .module-content{
+        margin-left: 270px;
+    }
 }
 .new-paragraph{
     margin-top: 0;
@@ -150,4 +178,102 @@ export default styled(ModuleDetailsPage)`
 .align-right{
     float: right;
 }
+.ql-size-huge {
+    content: 'Huge';
+    font-size: 2.5em !important;
+}
+
+.ql-size-large {
+    content: 'Huge';
+    font-size: 1.5em !important;
+}
+
+.ql-size-small {
+    content: 'Huge';
+    font-size: 0.75em !important;
+}
+.ql-align-center {
+    text-align: center;
+    float: center;
+}
 `;
+
+
+class RichTextEditor extends Component {
+	constructor(props) {
+		super(props);
+
+		this.modules = {
+			toolbar: [
+		      [{ 'font': [] }],
+		      [{ 'size': ['small', false, 'large', 'huge'] }],
+		      ['bold', 'italic', 'underline'],
+		      [{'list': 'ordered'}, {'list': 'bullet'}],
+		      [{ 'align': [] }],
+		      [{ 'color': [] }, { 'background': [] }],
+		      ['clean']
+		    ]
+		};
+
+		this.formats = [
+		    'font',
+		    'size',
+		    'bold', 'italic', 'underline',
+		    'list', 'bullet',
+		    'align',
+		    'color', 'background'
+	  	];
+
+	  	this.state = {
+            comments: this.props.initial
+		}
+
+		this.rteChange = this.rteChange.bind(this);
+	}
+
+	rteChange = (content, delta, source, editor) => {
+		//console.log(editor.getHTML()); // rich text
+        //console.log(editor.getText()); // plain text
+        //var text = editor.getHTML();
+        this.setState({
+            ...this.state,
+            comments: content
+        })
+    }
+
+    render() {
+        const comments = this.state.comments
+        return (
+            <div className={this.props.className}>
+                <form onSubmit={e => this.props.submitTextEditor(e, comments)}>
+                    <MDBRow>
+                        <MDBCol>
+                            <ReactQuill modules={this.modules}
+                                formats={this.formats} onChange={this.rteChange}
+                                value={this.state.comments || ''} />
+                        </MDBCol>
+                    </MDBRow>
+                    <MDBRow>
+                        <MDBCol>
+                            <button type="submit" className="btn btn-primary btn-md mt-2 ml-0">
+                                Save
+                            </button>
+                        </MDBCol>
+                    </MDBRow>
+                </form>
+            </div>
+        );
+    }
+}
+
+const RichTextEditorStyled = styled(RichTextEditor)`
+.ql-container {
+    height: auto !important;
+  }
+
+  .ql-editor {
+    min-height: 100px !important;
+    height: auto !important;
+    max-width: 1000px;
+  }
+`
