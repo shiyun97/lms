@@ -25,8 +25,16 @@ class App extends Component {
     if (localStorage.getItem("email") !== null) {
       let email = localStorage.getItem("email")
       let password = localStorage.getItem("password")
-      let userType = localStorage.getItem("userType")
-      this.props.dataStore.setSignInStatus(true, email, password, userType)
+      let accessRight = localStorage.getItem("accessRight")
+      let userId = localStorage.getItem("userId")
+      let gender = localStorage.getItem("gender")
+      let firstName = localStorage.getItem("firstName")
+      let lastName = localStorage.getItem("lastName")
+      let username = localStorage.getItem("username")
+      let path = localStorage.getItem("path")
+      path !== null && this.props.dataStore.setPath(path)
+      this.props.dataStore.setSignInStatus(true, email, password, accessRight)
+      this.props.dataStore.setUserDetails(userId, gender, firstName, lastName, username)
     }
   }
 
@@ -58,7 +66,7 @@ class App extends Component {
           {/* <MDBNavbar color="indigo" dark expand="md" scrolling fixed="top">
             <MDBNavbarBrand href="/" className="py-0 font-weight-bold" style={{ paddingLeft: "80px" }}>
               <img src="https://img.icons8.com/ios-filled/50/ffffff/graduation-cap.png" style={{ height: "1.5rem", width: "2rem", paddingRight: "10px" }} />
-              <strong className="align-middle">LUMINUS</strong>
+              <strong className="align-middle">FLIPIT</strong>
             </MDBNavbarBrand>
             <MDBNavbarToggler
               onClick={this.toggleCollapse("mainNavbarCollapse")}
@@ -76,14 +84,6 @@ class App extends Component {
                     onClick={this.closeCollapse("mainNavbarCollapse")}
                   >
                     <strong>Home</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
-                <MDBNavItem>
-                  <MDBNavLink
-                    onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/login"
-                  >
-                    <strong>Login</strong>
                   </MDBNavLink>
                 </MDBNavItem>
               </MDBNavbarNav>

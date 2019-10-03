@@ -136,7 +136,7 @@ class Routes extends React.Component {
         <AdminPrivateRoute exact path="/users" component={UsersManagementPage} />
 
         {/* LMS PAGES - Student */}
-        <Route exact path="/" component={StudentLoginPage} />
+        <Route exact path="/" component={HomePage} />
         <Route exact path="/login" component={StudentLoginPage} />
         <PrivateRoute exact path="/dashboard" component={DashboardPage} />
         <PrivateRoute exact path="/modules" component={ModulesPage} />

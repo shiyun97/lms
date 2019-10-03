@@ -8,7 +8,7 @@ const UnderMaintenancePage = () => {
                 <MDBCol md="12" className="mt-3 mx-auto">
                     <MDBJumbotron>
                         <h2 className="font-weight-bold blue-text">
-                            LUMINUS
+                        FLIPIT
                 </h2>
                         <p className="text-muted mb-1">
                             Learning Management Platform
