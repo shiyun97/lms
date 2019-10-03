@@ -12,6 +12,7 @@ import {
     MDBModalHeader 
 } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
+import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
 import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
 
@@ -83,7 +84,10 @@ class ModuleOverviewPage extends Component {
         let module = this.state.module;
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'overview'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
                     <MDBContainer>
                         <MDBRow>
@@ -173,11 +177,26 @@ export default styled(ModuleOverviewPage)`
 .module-content{
     margin-top: 40px;
 }
-@media (min-width: 1199.98px) {
+@media screen and (min-width: 800px) {
     .module-content{
         margin-left: 270px;
     }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
 }
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+}
+
 .new-paragraph{
     margin-top: 0;
     margin-bottom: 1rem;

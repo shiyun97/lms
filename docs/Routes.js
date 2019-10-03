@@ -69,7 +69,7 @@ import RegisterPage from './dev/RegisterPage';
 import ModuleOverviewPage from './dev/ModuleOverviewPage';
 import ModuleDetailsPage from './dev/ModuleDetailsPage';
 import ModuleAnnouncementsPage from './dev/ModuleAnnouncementsPage';
-import ModuleClassGroupsPage, { StudentRosterDetails, ClassGroupDetails, LectureGroupDetails, TutorialGroupDetails } from './dev/ModuleClassGroupsPage';
+import ModuleClassGroupsPage, { StudentRosterDetails, ClassGroupDetailsStyled, LectureGroupDetailsStyled, TutorialGroupDetailsStyled } from './dev/ModuleClassGroupsPage';
 import ModuleFilesPage from './dev/ModuleFilesPage';
 import ModuleForumPage from './dev/ModuleForumPage';
 import ModuleGradebookPage from './dev/ModuleGradebookPage';
@@ -149,13 +149,12 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/files/:folderId" component={ModuleFilesPage} />
         <Route exact path="/modules/:moduleId/students/" component={ModuleClassGroupsPage} />
         <Route exact path="/modules/:moduleId/students/student-roster" component={ModuleClassGroupsPage} />
-        <Route exact path="/modules/:moduleId/students/student-roster/:studentId" component={StudentRosterDetails} />
         <Route exact path="/modules/:moduleId/students/class-groups" component={ModuleClassGroupsPage} />
-        <Route exact path="/modules/:moduleId/students/class-groups/:classGroupId" component={ClassGroupDetails} />
+        <Route exact path="/modules/:moduleId/students/class-groups/:classGroupId" component={ClassGroupDetailsStyled} />
         <Route exact path="/modules/:moduleId/students/lecture-groups" component={ModuleClassGroupsPage} />
-        <Route exact path="/modules/:moduleId/students/lecture-groups/:lectureGroupId" component={LectureGroupDetails} />
+        <Route exact path="/modules/:moduleId/students/lecture-groups/:lectureGroupId" component={LectureGroupDetailsStyled} />
         <Route exact path="/modules/:moduleId/students/tutorial-groups" component={ModuleClassGroupsPage} />
-        <Route exact path="/modules/:moduleId/students/tutorial-groups/:tutorialGroupId" component={TutorialGroupDetails} />
+        <Route exact path="/modules/:moduleId/students/tutorial-groups/:tutorialGroupId" component={TutorialGroupDetailsStyled} />
         <Route exact path="/modules/:moduleId/forum" component={ModuleForumPage} />
         <Route exact path="/modules/:moduleId/gradebook" component={ModuleGradebookPage} />
         <Route exact path="/modules/:moduleId/quiz" component={ModuleQuizPage} />

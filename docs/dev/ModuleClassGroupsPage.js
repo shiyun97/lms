@@ -24,11 +24,14 @@ import {
 import SectionContainer from "../components/sectionContainer";
 import ModuleSideNavigation from "./ModuleSideNavigation";
 import axios from "axios";
+import 'babel-polyfill';
+
+const API_URL = "http://localhost:8080/LMS-war/webresources";
 
 class ModuleClassGroupsPage extends Component {
 
     state = {
-        moduleId: "123",
+        moduleId: "",
         activeItem: "Student Roster",
         modalStudent: false,
         student: {
@@ -52,11 +55,6 @@ class ModuleClassGroupsPage extends Component {
                     sort: "asc"
                 },
                 {
-                    label: "Description",
-                    field: "description",
-                    sort: "asc"
-                },
-                {
                     label: "Current Enrollment",
                     field: "curentEnrollment",
                     sort: "asc"
@@ -67,8 +65,13 @@ class ModuleClassGroupsPage extends Component {
                     sort: "asc"
                 },
                 {
-                    label: "Enrollment Status",
-                    field: "enrollmentStatus",
+                    label: "Open Dt",
+                    field: "startTs",
+                    sort: "asc"
+                },
+                {
+                    label: "Close Dt",
+                    field: "closeTs",
                     sort: "asc"
                 },
                 {
@@ -121,9 +124,7 @@ class ModuleClassGroupsPage extends Component {
         },
         modalAddClassGroup: false,
         classGroupNameInput: "",
-        classGroupDescriptionInput: "",
         classGroupMaxEnrollmentInput: "",
-        classGroupSelfEnrollInput: "",
         classGroupSelfEnrollmentOpenDateInput: "",
         classGroupSelfEnrollmentCloseDateInput: "",
     }
@@ -132,12 +133,13 @@ class ModuleClassGroupsPage extends Component {
         this.initPage();
     }
 
-    initPage() {
+    async initPage() {
         let moduleId = this.props.match.params.moduleId;
         if (moduleId) {
             console.log(moduleId);
             let url = this.props.match.url;
             let current = url.split("/").pop();
+            console.log(current)
             let activeTab;
             if (current == "class-groups") {
                 activeTab = "Class Groups"
@@ -155,15 +157,17 @@ class ModuleClassGroupsPage extends Component {
                 activeItem: activeTab,
                 moduleId: moduleId
             })
+            let moduleEnrollment;
             // retrieve student roster
-            axios
-                .get("http://localhost:3001/studentRoster")
+            await axios
+                .get(API_URL + "/ModuleMounting/getAllStudentByModule?moduleId=" + moduleId)
                 .then(result => {
-                    let data = result.data;
+                    let data = result.data.userList;
+                    moduleEnrollment = data.length;
                     let arr = [];
                     Object.keys(data).forEach(function (key) {
                         let temp = {
-                            name: data[key].studentName,
+                            name: data[key].firstName + " " + data[key].lastName,
                         }
                         arr.push(temp);
                     });
@@ -180,23 +184,31 @@ class ModuleClassGroupsPage extends Component {
                 });
 
             // retrieve class groups
-            axios
-                .get("http://localhost:3001/classGroups")
+            await axios
+                .get(API_URL + "/ManageGroup/getAllClassGroupByModule?moduleId=" + moduleId)
                 .then(result => {
-                    let data = result.data;
+                    console.log(result)
+                    let currentEnrollmentArr = result.data.currentEnrollment;
+                    let classGroupsArr = result.data.classGroupList;
                     let arr = [];
                     const method = this.goToClassGroup;
-                    Object.keys(data).forEach(function (key) {
+                    for (var i=0; i<classGroupsArr.length; i++) {
+                        let classGroupId = classGroupsArr[i].classGroupId;
+                        let dateStart = classGroupsArr[i].startTs.substring(0,10);
+                        let timeStart = classGroupsArr[i].startTs.substring(11,16);
+                        let dateClose = classGroupsArr[i].closeTs.substring(0,10);
+                        let timeClose = classGroupsArr[i].closeTs.substring(11,16);
                         let temp = {
-                            name: data[key].name,
-                            description: data[key].description,
-                            currentEnrollment: data[key].currentEnrollment,
-                            maxEnrollment: data[key].maxEnrollment,
-                            enrollmentStatus: data[key].enrollmentStatus,
-                            viewButton: (<MDBBtn size="sm" onClick={e => method(data[key].classGroupId)}>View</MDBBtn>)
+                            name: classGroupsArr[i].name,
+                            currentEnrollment: currentEnrollmentArr[i],
+                            maxEnrollment: classGroupsArr[i].maxMember,
+                            startTs: dateStart + " " + timeStart,
+                            closeTs: dateClose + " " + timeClose,
+                            viewButton: (<MDBBtn size="sm" onClick={e => method(classGroupId)}>View</MDBBtn>)
                         }
                         arr.push(temp);
-                    });
+                    }
+
                     this.setState({
                         ...this.state,
                         classGroups: {
@@ -209,48 +221,38 @@ class ModuleClassGroupsPage extends Component {
                     console.error("error in axios " + error);
                 });
             
-            //retrieve lecture groups
-            axios
-                .get("http://localhost:3001/lectureGroups")
-                .then(result => {
-                    let data = result.data;
-                    let arr = [];
-                    const method = this.goToLectureGroup;
-                    Object.keys(data).forEach(function (key) {
-                        let temp = {
-                            name: data[key].name,
-                            currentEnrollment: data[key].currentEnrollment,
-                            viewButton: (<MDBBtn size="sm" onClick={e => method(data[key].lectureGroupId)}>View</MDBBtn>)
-                        }
-                        arr.push(temp);
-                    });
-                    this.setState({
-                        ...this.state,
-                        lectureGroups: {
-                            ...this.state.lectureGroups,
-                            rows: arr
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error("error in axios " + error);
-                });
+            //set lecture group
+            console.log(moduleEnrollment)
+            this.setState({
+                ...this.state,
+                lectureGroups: {
+                    ...this.state.lectureGroups,
+                    rows: [{
+                        name: "Lecture 1",
+                        currentEnrollment: moduleEnrollment,
+                        viewButton: (<MDBBtn size="sm" onClick={e => this.goToLectureGroup()} disabled={!moduleEnrollment}>View</MDBBtn>)
+                    }]
+                }
+            });
             
             //retrieve tutorial groups
-            axios
-                .get("http://localhost:3001/tutorialGroups")
+            await axios
+                .get(API_URL + "/ModuleMounting/getAllTutorialByModule?moduleId=" + moduleId)
                 .then(result => {
-                    let data = result.data;
+                    console.log(result)
+                    let currentEnrollmentArr = result.data.currentEnrollment;
+                    let tutorialsArr = result.data.tutorials;
                     let arr = [];
                     const method = this.goToTutorialGroup;
-                    Object.keys(data).forEach(function (key) {
+                    for (var i=0; i<tutorialsArr.length; i++) {
+                        let tutorialId = tutorialsArr[i].tutorialId;
                         let temp = {
-                            name: data[key].name,
-                            currentEnrollment: data[key].currentEnrollment,
-                            viewButton: (<MDBBtn size="sm" onClick={e => method(data[key].tutorialGroupId)}>View</MDBBtn>)
+                            name: "Tutorial " + tutorialsArr[i].tutorialId,
+                            currentEnrollment: currentEnrollmentArr[i],
+                            viewButton: (<MDBBtn size="sm" onClick={e => method(tutorialId)}>View</MDBBtn>)
                         }
                         arr.push(temp);
-                    });
+                    }
                     this.setState({
                         ...this.state,
                         tutorialGroups: {
@@ -263,6 +265,40 @@ class ModuleClassGroupsPage extends Component {
                     console.error("error in axios " + error);
                 });
         }
+    }
+
+    async retrieveClassGroups(moduleId) {
+        await axios
+            .get(API_URL + "/ManageGroup/getAllClassGroupByModule?moduleId=" + moduleId)
+            .then(result => {
+                let currentEnrollmentArr = result.data.currentEnrollment;
+                let classGroupsArr = result.data.classGroupList;
+                let arr = [];
+                const method = this.goToClassGroup;
+                for (var i = 0; i < classGroupsArr.length; i++) {
+                    let classGroupId = classGroupsArr[i].classGroupId;
+                    let temp = {
+                        name: classGroupsArr[i].name,
+                        currentEnrollment: currentEnrollmentArr[i],
+                        maxEnrollment: classGroupsArr[i].maxMember,
+                        startTs: classGroupsArr[i].openTs,
+                        closeTs: classGroupsArr[i].closeTs,
+                        viewButton: (<MDBBtn size="sm" onClick={e => method(classGroupId)}>View</MDBBtn>)
+                    }
+                    arr.push(temp);
+                }
+
+                this.setState({
+                    ...this.state,
+                    classGroups: {
+                        ...this.state.classGroups,
+                        rows: arr
+                    }
+                });
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
     }
 
     toggle = tab => e => {
@@ -301,6 +337,47 @@ class ModuleClassGroupsPage extends Component {
     submitAddClassGroupHandler = event => {
         event.preventDefault();
         event.target.className += " was-validated";
+        
+        let moduleId = this.state.moduleId;
+        let classGroupNameInput = this.state.classGroupNameInput;
+        let classGroupMaxEnrollmentInput = this.state.classGroupMaxEnrollmentInput;
+        let classGroupSelfEnrollmentOpenDateInput = this.state.classGroupSelfEnrollmentOpenDateInput + ":00+08:00";
+        let classGroupSelfEnrollmentCloseDateInput = this.state.classGroupSelfEnrollmentCloseDateInput + ":00+08:00";
+
+        console.log(classGroupSelfEnrollmentCloseDateInput)
+        let body = {
+            name: classGroupNameInput,
+            startTs: classGroupSelfEnrollmentOpenDateInput,
+            closeTs: classGroupSelfEnrollmentCloseDateInput,
+            moduleId: moduleId,
+            maxMember: classGroupMaxEnrollmentInput
+        }
+        if (moduleId && classGroupNameInput && classGroupSelfEnrollmentOpenDateInput && classGroupSelfEnrollmentCloseDateInput
+            && moduleId && classGroupMaxEnrollmentInput) {
+            axios({
+                method: 'post',
+                url: API_URL + "/ManageGroup/createClassGroup",
+                data: JSON.stringify(body),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then((result) => {
+                    this.setState({
+                        ...this.state,
+                        modalAddClassGroup: false,
+                        classGroupNameInput: "",
+                        classGroupMaxEnrollmentInput: "",
+                        classGroupSelfEnrollmentOpenDateInput: "",
+                        classGroupSelfEnrollmentCloseDateInput: "",
+                    });
+                    alert("Class group created successfully!")
+                    return this.initPage()
+                })
+                .catch(error => {
+                    console.error("error in axios " + error);
+                    return this.initPage()
+                });
+        }
     }
 
     goToStudent = (studentId) => {
@@ -314,8 +391,8 @@ class ModuleClassGroupsPage extends Component {
     }
 
     goToLectureGroup = (lectureGroupId) => {
-        console.log(lectureGroupId);
-        this.props.history.push(`/modules/${this.state.moduleId}/students/lecture-groups/${lectureGroupId}`);
+        console.log(this.state.moduleId);
+        this.props.history.push(`/modules/${this.state.moduleId}/students/lecture-groups/${1}`);
     }
 
     goToTutorialGroup = (tutorialGroupId) => {
@@ -328,6 +405,7 @@ class ModuleClassGroupsPage extends Component {
         let classGroups = this.state.classGroups;
         let lectureGroups = this.state.lectureGroups;
         let tutorialGroups = this.state.tutorialGroups;
+        const moduleId = this.props.match.params.moduleId;
         return (
             <div className={this.props.className}>
                 <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
@@ -342,7 +420,7 @@ class ModuleClassGroupsPage extends Component {
                         <MDBNav className="nav-tabs">
                             <MDBNavItem>
                                 <MDBNavLink
-                                    to={`/modules/${this.state.moduleId}/students/student-roster`}
+                                    to={`/modules/${moduleId}/students/student-roster`}
                                     active={this.state.activeItem === "Student Roster"}
                                     onClick={this.toggle("Student Roster")}
                                     role="tab"
@@ -352,7 +430,7 @@ class ModuleClassGroupsPage extends Component {
                             </MDBNavItem>
                             <MDBNavItem>
                                 <MDBNavLink
-                                    to={`/modules/${this.state.moduleId}/students/class-groups`}
+                                    to={`/modules/${moduleId}/students/class-groups`}
                                     active={this.state.activeItem === "Class Groups"}
                                     onClick={this.toggle("Class Groups")}
                                     role="tab"
@@ -362,7 +440,7 @@ class ModuleClassGroupsPage extends Component {
                             </MDBNavItem>
                             <MDBNavItem>
                                 <MDBNavLink
-                                    to={`/modules/${this.state.moduleId}/students/lecture-groups`}
+                                    to={`/modules/${moduleId}/students/lecture-groups`}
                                     active={this.state.activeItem === "Lecture Groups"}
                                     onClick={this.toggle("Lecture Groups")}
                                     role="tab"
@@ -372,7 +450,7 @@ class ModuleClassGroupsPage extends Component {
                             </MDBNavItem>
                             <MDBNavItem>
                                 <MDBNavLink
-                                    to={`/modules/${this.state.moduleId}/students/tutorial-groups`}
+                                    to={`/modules/${moduleId}/students/tutorial-groups`}
                                     active={this.state.activeItem === "Tutorial Groups"}
                                     onClick={this.toggle("Tutorial Groups")}
                                     role="tab"
@@ -384,16 +462,6 @@ class ModuleClassGroupsPage extends Component {
                         <MDBTabContent activeItem={this.state.activeItem}>
                             <MDBTabPane tabId="Student Roster" role="tabpanel">
                                 <div className="mb-2"></div>
-                                {/*
-                                <MDBRow>
-                                    <MDBCol>
-                                        <div style={{ "float": "right" }}>
-                                            <MDBBtn color="primary" outline className="mr-0 mb-2" size="md" onClick={this.toggleModal("Student")}>
-                                                <MDBIcon icon="plus" className="mr-1" /> Add
-                                            </MDBBtn>
-                                        </div>
-                                    </MDBCol>
-                                </MDBRow>*/}
                                 <MDBRow>
                                     <MDBCol>
                                         {
@@ -406,33 +474,6 @@ class ModuleClassGroupsPage extends Component {
                                         }
                                     </MDBCol>
                                 </MDBRow>
-                                <MDBModal isOpen={this.state.modalStudent} toggle={this.toggleModal("Student")}>
-                                    <MDBModalHeader
-                                        className="text-center"
-                                        titleClass="w-100 font-weight-bold"
-                                        toggle={this.toggleModal("Student")}
-                                    >
-                                        Add Student
-                                    </MDBModalHeader>
-                                    <MDBModalBody>
-                                        <form className="mx-3 grey-text">
-                                            <div className="form-group">
-                                                <label htmlFor="matriculationNo">Student Matric No.</label>
-                                                <select className="form-control" onChange={e => {}} placeholder="Matricultaion No.">
-                                                    <option value=""></option>
-                                                    <option value="A0000000B">A0000000B</option>
-                                                    <option value="A0430800B">A0430800B</option>
-                                                    <option value="A1502800B">A1502800B</option>
-                                                    <option value="A0229800B">A0229800B</option>
-                                                    <option value="A1007500B">A1007500B</option>
-                                                </select>
-                                            </div>
-                                        </form>
-                                    </MDBModalBody>
-                                    <MDBModalFooter className="justify-content-center">
-                                        <MDBBtn color="info" onClick={this.submitAddStudent()}>Submit</MDBBtn>
-                                    </MDBModalFooter>
-                                </MDBModal>
                             </MDBTabPane>
 
                             <MDBTabPane tabId="Class Groups" role="tabpanel">
@@ -449,10 +490,7 @@ class ModuleClassGroupsPage extends Component {
                                     <MDBCol>
                                         {
                                             classGroups.rows.length > 0 &&
-                                            <MDBTable bordered={false} btn fixed>
-                                                <MDBTableHead columns={classGroups.columns} />
-                                                <MDBTableBody rows={classGroups.rows} />
-                                            </MDBTable>
+                                            <MDBDataTable striped bordered hover searching={false} sortable={true} paging={false} data={classGroups} />
                                         }
                                         {
                                             classGroups.rows.length == 0 &&
@@ -464,7 +502,6 @@ class ModuleClassGroupsPage extends Component {
                                 <MDBModal
                                     isOpen={this.state.modalAddClassGroup}
                                     toggle={this.toggleModal("AddClassGroup")}
-                                    centered
                                 >
                                     <MDBModalHeader className="text-center"
                                         titleClass="w-100" 
@@ -486,17 +523,6 @@ class ModuleClassGroupsPage extends Component {
                                             </div>
                                             <div className="form-row align-items-center mb-2">
                                                 <div className="col-12">
-                                                    <label className="mb-1">Description</label>
-                                                </div>
-                                                <div className="col-12">
-                                                    <input type="text" className="form-control" name="classGroupDescriptionInput"
-                                                        value={this.state.classGroupDescriptionInput}
-                                                        onChange={this.inputChangeHandler}
-                                                        required />
-                                                </div>
-                                            </div>
-                                            <div className="form-row align-items-center mb-2">
-                                                <div className="col-12">
                                                     <label className="mb-1">Max Enrollment</label>
                                                 </div>
                                                 <div className="col-12">
@@ -506,6 +532,7 @@ class ModuleClassGroupsPage extends Component {
                                                         required />
                                                 </div>
                                             </div>
+                                            {/*
                                             <div className="form-row align-items-center mb-2">
                                                 <div className="col-12">
                                                     <label className="mb-1">Self-Enroll</label>
@@ -520,7 +547,7 @@ class ModuleClassGroupsPage extends Component {
                                                         <option value={false}>No</option>
                                                     </select>
                                                 </div>
-                                            </div>
+                                            </div>*/}
                                             
                                             <div className="form-row align-items-center mb-2">
                                                 <div className="col-12">
@@ -530,7 +557,6 @@ class ModuleClassGroupsPage extends Component {
                                                     <input type="datetime-local" className="form-control" name="classGroupSelfEnrollmentOpenDateInput"
                                                         value={this.state.classGroupSelfEnrollmentOpenDateInput}
                                                         onChange={this.inputChangeHandler}
-                                                        disabled={this.state.classGroupSelfEnrollInput !== "true"}
                                                         required />
                                                 </div>
                                             </div>
@@ -542,7 +568,6 @@ class ModuleClassGroupsPage extends Component {
                                                     <input type="datetime-local" className="form-control" name="classGroupSelfEnrollmentCloseDateInput"
                                                         value={this.state.classGroupSelfEnrollmentCloseDateInput}
                                                         onChange={this.inputChangeHandler}
-                                                        disabled={this.state.classGroupSelfEnrollInput !== "true"}
                                                         required />
                                                 </div>
                                             </div>
@@ -564,10 +589,7 @@ class ModuleClassGroupsPage extends Component {
                                     <MDBCol>
                                         {
                                             lectureGroups.rows.length > 0 &&
-                                            <MDBTable bordered={false} btn fixed>
-                                                <MDBTableHead columns={lectureGroups.columns} />
-                                                <MDBTableBody rows={lectureGroups.rows} />
-                                            </MDBTable>
+                                            <MDBDataTable striped bordered hover searching={false} sortable={true} paging={false} data={lectureGroups} />
                                         }
                                         {
                                             lectureGroups.rows.length == 0 &&
@@ -583,10 +605,7 @@ class ModuleClassGroupsPage extends Component {
                                     <MDBCol>
                                         {
                                             tutorialGroups.rows.length > 0 &&
-                                            <MDBTable bordered={false} btn fixed>
-                                                <MDBTableHead columns={tutorialGroups.columns} />
-                                                <MDBTableBody rows={tutorialGroups.rows} />
-                                            </MDBTable>
+                                            <MDBDataTable striped bordered hover searching={false} sortable={true} paging={false} data={tutorialGroups} />
                                         }
                                         {
                                             tutorialGroups.rows.length == 0 &&
@@ -606,7 +625,7 @@ class ModuleClassGroupsPage extends Component {
 export class StudentRosterDetails extends Component {
 
     state = {
-        moduleId: "123",
+        moduleId: "",
         activeItem: "Student Roster",
         student: {
             studentId: "",
@@ -823,10 +842,13 @@ export class StudentRosterDetails extends Component {
 export class ClassGroupDetails extends Component {
 
     state = {
-        moduleId: "123",
+        moduleId: "",
         activeItem: "Class Group",
         classGroupId: "",
         classGroupName: "",
+        maxMember: "",
+        startTs: "",
+        closeTs: "",
         students: {
             columns: [
                 {
@@ -845,11 +867,6 @@ export class ClassGroupDetails extends Component {
         allModuleStudents:{
             columns: [
                 {
-                    label: "",
-                    field: "check",
-                    sort: "asc"
-                },
-                {
                     label: "ID",
                     field: "studentId",
                     sort: "asc"
@@ -857,6 +874,11 @@ export class ClassGroupDetails extends Component {
                 {
                     label: "Name",
                     field: "studentName",
+                    sort: "asc"
+                },
+                {
+                    label: "",
+                    field: "addButton",
                     sort: "asc"
                 }
             ],
@@ -874,33 +896,41 @@ export class ClassGroupDetails extends Component {
         this.initPage();
     }
 
-    initPage() {
+    async initPage() {
         let classGroupId = this.props.match.params.classGroupId;
         let moduleId = this.props.match.params.moduleId;
-        if (classGroupId) {
+        if (moduleId && classGroupId) {
             // retrieve class group by id & set state
             console.log(classGroupId);
-            axios
-                .get("http://localhost:3001/classGroup")
+            await axios
+                .get(API_URL + "/ManageGroup/getClassGroup/" + classGroupId)
                 .then(result => {
                     let data = result.data;
-                    let students = data.students;
-                    let arr = [];
+                    let students = data.members;
+                    let arrTeacher = []; // teacher view
+                    let arrStudent = []; // student view
                     const method = this.removeStudent;
                     Object.keys(students).forEach(function (key) {
                         let temp = {
-                            studentName: students[key].studentName,
-                            removeButton: (<MDBBtn size="sm" color="danger" onClick={e => {method(students[key].studentId, students[key].studentName)}}>Remove</MDBBtn>)
+                            studentName: students[key].firstName + " " + students[key].lastName,
+                            removeButton: (<MDBBtn size="sm" color="danger" onClick={e => {method(students[key].userId, students[key].firstName + " " + students[key].lastName)}}>Remove</MDBBtn>)
                         }
-                        arr.push(temp);
+                        arrTeacher.push(temp);
+                        arrStudent.push({
+                            studentName: students[key].firstName + " " + students[key].lastName,
+                        })
                     });
                     this.setState({
                         ...this.state,
+                        moduleId: moduleId,
                         classGroupId: classGroupId,
                         classGroupName: data.name,
+                        maxMember: data.maxMember,
+                        startTs: data.startTs,
+                        closeTs: data.closeTs,
                         students: {
                             ...this.state.students,
-                            rows: arr
+                            rows: arrTeacher
                         }
                     });
                 })
@@ -927,14 +957,23 @@ export class ClassGroupDetails extends Component {
       };
 
     removeStudent = (studentId, studentName) => {
-        console.log(studentId);
-        this.setState({
+        let classGroupId = this.state.classGroupId;
+        axios
+            .post(API_URL + "/ManageGroup/quitClassGroup?classGroupId=" + classGroupId + "&userId=" + studentId)
+            .then((result) => {
+                return this.initPage();
+            })
+            .catch(error => {
+                alert(JSON.stringify(error.response.data.errorMessage));
+                return this.initPage();
+            })
+        /*this.setState({
             modalRemoveConfirm: true,
             studentToRemove: {
                 studentIdToRemove: studentId,
                 studentNameToRemove: studentName
             }
-        });
+        });*/
     }
 
     confirmRemove = () => {
@@ -943,17 +982,18 @@ export class ClassGroupDetails extends Component {
         })
     }
 
-    addStudent = () => {
+    addStudentRetrieve = () => {
         axios
-            .get("http://localhost:3001/studentRoster")
+            .get(API_URL + "/ModuleMounting/getAllStudentByModule?moduleId=" + this.state.moduleId)
             .then(result => {
-                let data = result.data;
+                let data = result.data && result.data.userList;
                 let arr = [];
+                const method = this.addStudent;
                 Object.keys(data).forEach(function (key) {
                     let temp = {
-                        check: <input type="checkbox" style={{ 'height': '20px', 'width': '20px' }} id={data[key].studentId} />,
-                        studentId: data[key].studentId,
-                        studentName: data[key].studentName
+                        studentId: data[key].userId,
+                        studentName: data[key].firstName + data[key].lastName,
+                        addButton: (<MDBBtn size="sm" color="primary" onClick={e => {method(data[key].userId, data[key].firstName + " " + data[key].lastName)}}>Add</MDBBtn>)
                     }
                     arr.push(temp);
                 });
@@ -969,6 +1009,50 @@ export class ClassGroupDetails extends Component {
             .catch(error => {
                 console.error("error in axios " + error);
             });
+    }
+
+    addStudent = (studentId) => {
+        let classGroupId = this.state.classGroupId;
+        axios
+            .post(API_URL + "/ManageGroup/joinClassGroup?classGroupId=" + classGroupId + "&userId=" + studentId)
+            .then((result) => {
+                this.setState({
+                    ...this.state,
+                    modalAddStudent: false
+                })
+                return this.initPage();
+            })
+            .catch(error => {
+                alert(JSON.stringify(error.response.data.errorMessage));
+                this.setState({
+                    ...this.state,
+                    modalAddStudent: false
+                })
+                return this.initPage();
+            })
+    }
+
+    signUp = () => {
+        let classGroupId = this.state.classGroupId;
+        // get student info from store
+        let studentId = 2;
+        axios
+            .post(API_URL + "/ManageGroup/joinClassGroup?classGroupId=" + classGroupId + "&userId=" + studentId)
+            .then((result) => {
+                this.setState({
+                    ...this.state,
+                    modalAddStudent: false
+                })
+                return this.initPage();
+            })
+            .catch(error => {
+                alert(JSON.stringify(error.response.data.errorMessage));
+                this.setState({
+                    ...this.state,
+                    modalAddStudent: false
+                })
+                return this.initPage();
+            })
     }
 
     confirmAddStudents = () => {
@@ -1047,14 +1131,17 @@ export class ClassGroupDetails extends Component {
                                 <MDBRow className="mt-4">
                                     <MDBCol>
                                         <div style={{ "float": "right" }}>
-                                            <MDBBtn color="primary" className="mr-0 mb-3" size="md" onClick={e => {this.addStudent()}}>
+                                            <MDBBtn color="primary" className="mr-0 mb-3" size="md" onClick={e => {this.addStudentRetrieve()}}>
                                                 Add
+                                            </MDBBtn>
+                                            <MDBBtn color="primary" className="mr-0 mb-3" size="md" onClick={e => {this.signUp()}}>
+                                                Sign Up
                                             </MDBBtn>
                                         </div>
                                     </MDBCol>
                                 </MDBRow>
 
-                                <MDBModal centered size="lg" isOpen={this.state.modalAddStudent} toggle={this.toggleModal("AddStudent")}>
+                                <MDBModal centered isOpen={this.state.modalAddStudent} toggle={this.toggleModal("AddStudent")}>
                                     <MDBModalHeader
                                         className="text-center"
                                         titleClass="w-100 font-weight-bold"
@@ -1070,17 +1157,19 @@ export class ClassGroupDetails extends Component {
                                             </MDBTable>
                                         </form>
                                     </MDBModalBody>
-                                    <MDBModalFooter className="justify-content-center">
-                                        <MDBBtn onClick={e => { this.confirmAddStudents() }}>Confirm</MDBBtn>
-                                    </MDBModalFooter>
+                                    
                                 </MDBModal>
 
                                 <MDBRow>
                                     <MDBCol>
-                                        <MDBTable bordered={false} btn fixed>
-                                            <MDBTableHead columns={students.columns} />
-                                            <MDBTableBody rows={students.rows} />
-                                        </MDBTable>
+                                        {
+                                            students.rows.length > 0 &&
+                                            <MDBDataTable striped bordered hover searching={true} sortable={true} data={students} />
+                                        }
+                                        {
+                                            students.rows.length == 0 &&
+                                            <div>No students signed up yet</div>
+                                        }
                                     </MDBCol>
                                 </MDBRow>
                                 <MDBModal centered isOpen={this.state.modalRemoveConfirm} toggle={this.toggleModal("RemoveConfirm")}>
@@ -1103,10 +1192,16 @@ export class ClassGroupDetails extends Component {
     }
 }
 
-export class LectureGroupDetails extends Component {
+export const ClassGroupDetailsStyled = styled(ClassGroupDetails)`
+tbody + thead{
+    display: none;
+}
+`
+
+class LectureGroupDetails extends Component {
 
     state = {
-        moduleId: "123",
+        moduleId: "",
         activeItem: "Lecture Groups",
         lectureGroupId: "",
         lectureGroupName: "",
@@ -1131,16 +1226,14 @@ export class LectureGroupDetails extends Component {
         let moduleId = this.props.match.params.moduleId;
         if (lectureGroupId) {
             // retrieve class group by id & set state
-            console.log(lectureGroupId);
             axios
-                .get("http://localhost:3001/lectureGroup")
+                .get(API_URL + "/ModuleMounting/getAllStudentByModule?moduleId=" + moduleId)
                 .then(result => {
-                    let data = result.data;
-                    let students = data.students;
+                    let data = result.data.userList;
                     let arr = [];
-                    Object.keys(students).forEach(function (key) {
+                    Object.keys(data).forEach(function (key) {
                         let temp = {
-                            studentName: students[key].studentName,
+                            name: data[key].firstName + " " + data[key].lastName,
                         }
                         arr.push(temp);
                     });
@@ -1149,7 +1242,7 @@ export class LectureGroupDetails extends Component {
                         activeItem: "Lecture Groups",
                         moduleId: moduleId,
                         lectureGroupId: lectureGroupId,
-                        lectureGroupName: data.name,
+                        lectureGroupName: "Lecture 1",
                         students: {
                             ...this.state.students,
                             rows: arr
@@ -1231,10 +1324,7 @@ export class LectureGroupDetails extends Component {
                             <MDBTabPane tabId="Lecture Groups" role="tabpanel">
                                 <MDBRow className="mt-4">
                                     <MDBCol>
-                                        <MDBTable bordered={false} btn fixed>
-                                            <MDBTableHead columns={students.columns} />
-                                            <MDBTableBody rows={students.rows} />
-                                        </MDBTable>
+                                        <MDBDataTable striped bordered hover searching={false} sortable={true} paging={false} data={students} />
                                     </MDBCol>
                                 </MDBRow>
                             </MDBTabPane>
@@ -1246,13 +1336,18 @@ export class LectureGroupDetails extends Component {
     }
 }
 
+export const LectureGroupDetailsStyled = styled(LectureGroupDetails)`
+tbody + thead{
+    display: none;
+}
+`
+
 export class TutorialGroupDetails extends Component {
 
     state = {
-        moduleId: "123",
+        moduleId: "",
         activeItem: "Tutorial Groups",
-        tutorialGroupId: "",
-        tutorialGroupName: "",
+        tutorialId: "",
         students: {
             columns: [
                 {
@@ -1270,20 +1365,20 @@ export class TutorialGroupDetails extends Component {
     }
 
     initPage() {
-        let tutorialGroupId = this.props.match.params.tutorialGroupId;
+        let tutorialId = this.props.match.params.tutorialGroupId;
         let moduleId = this.props.match.params.moduleId;
-        if (tutorialGroupId) {
+        if (tutorialId) {
             // retrieve class group by id & set state
-            console.log(tutorialGroupId);
+            console.log(tutorialId);
             axios
-                .get("http://localhost:3001/tutorialGroup")
+                .get(API_URL + "/ManageGroup/getAllStudentByTutorial?tutorialId=" + tutorialId)
                 .then(result => {
                     let data = result.data;
-                    let students = data.students;
+                    let students = data.userList;
                     let arr = [];
                     Object.keys(students).forEach(function (key) {
                         let temp = {
-                            studentName: students[key].studentName,
+                            studentName: students[key].firstName + " " + students[key].lastName,
                         }
                         arr.push(temp);
                     });
@@ -1291,8 +1386,7 @@ export class TutorialGroupDetails extends Component {
                         ...this.state,
                         activeItem: "Tutorial Groups",
                         moduleId: moduleId,
-                        tutorialGroupId: tutorialGroupId,
-                        tutorialGroupName: data.name,
+                        tutorialId: tutorialId,
                         students: {
                             ...this.state.students,
                             rows: arr
@@ -1323,7 +1417,7 @@ export class TutorialGroupDetails extends Component {
                         <MDBRow>
                             <MDBCol>
                                 <h4 className="mb-4">{this.state.activeItem}
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" />{this.state.tutorialGroupName}
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" />{"Tutorial " + this.state.tutorialId}
                                 </h4>
                                 <hr className="my-4" />
                             </MDBCol>
@@ -1374,10 +1468,14 @@ export class TutorialGroupDetails extends Component {
                             <MDBTabPane tabId="Tutorial Groups" role="tabpanel">
                                 <MDBRow className="mt-4">
                                     <MDBCol>
-                                        <MDBTable bordered={false} btn fixed>
-                                            <MDBTableHead columns={students.columns} />
-                                            <MDBTableBody rows={students.rows} />
-                                        </MDBTable>
+                                        {
+                                            students.rows.length > 0 &&
+                                            <MDBDataTable striped bordered hover searching={true} sortable={true} data={students} />
+                                        }
+                                        {
+                                            students.rows.length == 0 &&
+                                            <div>No student enrolled in this tutorial</div>
+                                        }
                                     </MDBCol>
                                 </MDBRow>
                             </MDBTabPane>
@@ -1388,6 +1486,12 @@ export class TutorialGroupDetails extends Component {
         );
     }
 }
+
+export const TutorialGroupDetailsStyled = styled(TutorialGroupDetails)`
+tbody + thead{
+    display: none;
+}
+`
 
 export default styled(withRouter(ModuleClassGroupsPage))`
 .module-content{

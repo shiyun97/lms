@@ -21,6 +21,7 @@ import axios from "axios";
 class ModuleFeedbackPage extends Component {
 
     state = {
+        accessRight: "",
         moduleId: "",
         modalViewFeedback: false,
         viewingFeedback: {
@@ -60,7 +61,7 @@ class ModuleFeedbackPage extends Component {
                     sort: "asc"
                 },
                 {
-                    label: "Submitted Dt",
+                    label: "Submitted Date",
                     field: "submittedDt",
                     sort: "asc"
                 },
@@ -84,10 +85,12 @@ class ModuleFeedbackPage extends Component {
     }
 
     initPage() {
+        let accessRight = localStorage.getItem("accessRight");
         let moduleId = this.props.match.params.moduleId;
-        if (moduleId) {
+        if (moduleId && accessRight) {
             console.log(moduleId);
             this.setState({
+                accessRight: accessRight,
                 moduleId: moduleId
             })
             // if admin or prof
@@ -100,9 +103,11 @@ class ModuleFeedbackPage extends Component {
                     let idx = 1;
                     const method = this.viewFeedback;
                     Object.keys(data).forEach(function (key) {
+                        let date = data[key].createTs.substring(0,10);
+                        let time = data[key].createTs.substring(11,16);
                         let temp = {
                             index: idx,
-                            createTs: data[key].createTs,
+                            createTs: date + " " + time,
                             viewButton: (<MDBBtn size="sm" color="primary" onClick={e => method(data[key].feedback)}>View</MDBBtn>)
                         }
                         arr.push(temp);
@@ -119,9 +124,7 @@ class ModuleFeedbackPage extends Component {
                     console.error("error in axios " + error);
                 });
 
-            // if student
-            // retrieve module & set state
-            axios
+            /*axios
                 .get("http://localhost:3001/moduleAdhocFeedback")
                 .then(result => {
                     let data = result.data;
@@ -148,7 +151,7 @@ class ModuleFeedbackPage extends Component {
                 })
                 .catch(error => {
                     console.error("error in axios " + error);
-                });
+                });*/
         }
     }
 
@@ -201,7 +204,6 @@ class ModuleFeedbackPage extends Component {
     submitHandler = event => {
         event.preventDefault();
         event.target.className += " was-validated";
-        console.log(this.state.addingFeedback);
         let addingFeedback = this.state.addingFeedback;
         let newData = {
             moduleId: this.state.moduleId,
@@ -247,57 +249,54 @@ class ModuleFeedbackPage extends Component {
                                     <MDBCol>
                                         <h4 className="mb-2">Feedback</h4>
                                         <hr className="my-3" />
-                                        <MDBBtn className="ml-0 mb-5" color="primary" onClick={e => { this.newAdhocFeedback()}}>New Adhoc Feedback</MDBBtn>
-                                    </MDBCol>
-                                </MDBRow>
-                                <MDBRow>
-                                    <MDBCol>
-                                        <h5>All Submitted Feedback</h5>
-                                        <div className="mb-3"></div>
+                                        {
+                                            this.state.accessRight == "Student" &&
+                                            <MDBBtn className="ml-0 mb-5" size="md" color="primary" onClick={e => { this.newAdhocFeedback()}}>New Adhoc Feedback</MDBBtn>
+                                        }
                                     </MDBCol>
                                 </MDBRow>
                                 {
-                                    feedbacks.rows.length > 0 &&
+                                    this.state.accessRight == "Teacher" &&
+                                    <MDBRow>
+                                        <MDBCol>
+                                            <h5>All Submitted Feedback</h5>
+                                            <div className="mb-3"></div>
+                                        </MDBCol>
+                                    </MDBRow>
+                                }
+                                {
+                                    this.state.accessRight == "Teacher" && feedbacks.rows.length > 0 &&
                                     <MDBDataTable striped bordered hover searching={false} paging={true} data={feedbacks} />
                                 }
                                 {
-                                    feedbacks.rows.length == 0 &&
-                                    <div>No modules available</div>
+                                    this.state.accessRight == "Teacher" && feedbacks.rows.length == 0 &&
+                                    <div>No feedback submitted</div>
                                 }
-                                        {/*<MDBRow>
-                                            <MDBCol>
-                                                <MDBTable bordered={false} btn fixed>
-                                                    <MDBTableHead columns={feedbacks.columns} />
-                                                    <MDBTableBody rows={feedbacks.rows} />
-                                                </MDBTable>
-                                            </MDBCol>
-                                        </MDBRow>*/}
-
-                                        <MDBModal
-                                            backdrop={true}
-                                            isOpen={this.state.modalViewFeedback}
-                                            toggle={this.toggle("ViewFeedback")}
-                                        >
-                                            <MDBModalHeader toggle={this.toggle("ViewFeedback")}>{this.state.viewingFeedback.title}</MDBModalHeader>
-                                            <MDBModalBody>
-                                                {this.state.viewingFeedback.content}
-                                            </MDBModalBody>
-                                            <MDBModalFooter>
-                                                <MDBBtn color="secondary" onClick={this.toggle("ViewFeedback")}>
-                                                    Close
+                                <MDBModal
+                                    backdrop={true}
+                                    isOpen={this.state.modalViewFeedback}
+                                    toggle={this.toggle("ViewFeedback")}
+                                >
+                                    <MDBModalHeader toggle={this.toggle("ViewFeedback")}>{this.state.viewingFeedback.title}</MDBModalHeader>
+                                    <MDBModalBody>
+                                        {this.state.viewingFeedback.content}
+                                    </MDBModalBody>
+                                    <MDBModalFooter>
+                                        <MDBBtn color="secondary" onClick={this.toggle("ViewFeedback")}>
+                                            Close
                                                 </MDBBtn>
-                                            </MDBModalFooter>
-                                        </MDBModal>
+                                    </MDBModalFooter>
+                                </MDBModal>
 
-                                        <MDBModal
-                                            backdrop={true}
-                                            isOpen={this.state.modalAddFeedback}
-                                            toggle={this.toggle("AddFeedback")}
-                                        >
-                                            <MDBModalHeader toggle={this.toggle("AddFeedback")}>New</MDBModalHeader>
-                                            <form className="needs-validation" noValidate onSubmit={this.submitHandler}>
-                                                <MDBModalBody>
-                                                    {/*<div className="form-row align-items-center">
+                                <MDBModal
+                                    backdrop={true}
+                                    isOpen={this.state.modalAddFeedback}
+                                    toggle={this.toggle("AddFeedback")}
+                                >
+                                    <MDBModalHeader toggle={this.toggle("AddFeedback")}>New</MDBModalHeader>
+                                    <form className="needs-validation" noValidate onSubmit={this.submitHandler}>
+                                        <MDBModalBody>
+                                            {/*<div className="form-row align-items-center">
                                                         <div className="col-12">
                                                             <label>Title</label>
                                                         </div>
@@ -310,29 +309,29 @@ class ModuleFeedbackPage extends Component {
                                                                 required />
                                                         </div>
                                                     </div>*/}
-                                                    <div className="form-row align-items-center">
-                                                        <div className="col-12">
-                                                            <label>Feedback</label>
-                                                        </div>
-                                                        <div className="col-12">
-                                                            <textarea type="text" className="form-control mb-2" 
-                                                                name="contentInput"
-                                                                onChange={this.inputChangeHandler}
-                                                                value={this.state.addingFeedback.content}
-                                                                rows={5}
-                                                                required />
-                                                        </div>
-                                                    </div>
-                                                </MDBModalBody>
-                                                <MDBModalFooter>
-                                                    <MDBBtn color="secondary" onClick={this.toggle("AddFeedback")}>
-                                                        Cancel
+                                            <div className="form-row align-items-center">
+                                                <div className="col-12">
+                                                    <label>Feedback</label>
+                                                </div>
+                                                <div className="col-12">
+                                                    <textarea type="text" className="form-control mb-2"
+                                                        name="contentInput"
+                                                        onChange={this.inputChangeHandler}
+                                                        value={this.state.addingFeedback.content}
+                                                        rows={5}
+                                                        required />
+                                                </div>
+                                            </div>
+                                        </MDBModalBody>
+                                        <MDBModalFooter>
+                                            <MDBBtn color="secondary" onClick={this.toggle("AddFeedback")}>
+                                                Cancel
                                                 </MDBBtn>
-                                                    <MDBBtn color="primary" type="submit">Submit</MDBBtn>
-                                                </MDBModalFooter>
-                                            </form>
-                                        </MDBModal>
-                                   </MDBCol>
+                                            <MDBBtn color="primary" type="submit">Submit</MDBBtn>
+                                        </MDBModalFooter>
+                                    </form>
+                                </MDBModal>
+                            </MDBCol>
                         </MDBRow>
                     </MDBContainer>
                 </div>

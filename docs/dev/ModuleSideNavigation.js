@@ -6,7 +6,7 @@ class ModuleSideNavigation extends Component {
 
     render() {
         let moduleId = this.props.moduleId;
-        let currentTab = this.props.currentTab;
+        let activeTab = this.props.activeTab;
         return (
             <div className="sidebar-module-fixed position-fixed">
                 
@@ -81,12 +81,6 @@ class ModuleSideNavigation extends Component {
                         <MDBListGroupItem>
                             <MDBIcon icon="comment-alt" className="mr-3 fa-fw"/>
                             Feedback
-                        </MDBListGroupItem>
-                    </NavLink>
-                    <NavLink to="#" activeClassName="activeClass">
-                        <MDBListGroupItem>
-                            <MDBIcon icon="chart-line" className="mr-3 fa-fw"/>
-                            Module Progress
                         </MDBListGroupItem>
                     </NavLink>
                 </MDBListGroup>

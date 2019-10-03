@@ -8,6 +8,7 @@ import {
     MDBBtn
 } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
+import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
 import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
 import ReactQuill from 'react-quill';
@@ -20,6 +21,7 @@ const API_URL = "http://localhost:8080/LMS-war/webresources";
 class ModuleDetailsPage extends Component {
 
     state = {
+        accessRight: "",
         module:{
             moduleId: "",
             description: ""
@@ -32,8 +34,9 @@ class ModuleDetailsPage extends Component {
     }
 
     initPage() {
+        let accessRight = localStorage.getItem("accessRight");
         let moduleId = this.props.match.params.moduleId;
-        if (moduleId) {
+        if (moduleId && accessRight) {
             // retrieve module & set state
             axios
                 .get(API_URL + "/ModuleMounting/getModule/" + moduleId)
@@ -45,12 +48,13 @@ class ModuleDetailsPage extends Component {
                             module: {
                                 moduleId: moduleId,
                                 description: data.description
-                            }
+                            },
+                            accessRight: accessRight
                         });
                     }
                 })
                 .catch(error => {
-                console.error("error in axios " + error);
+                alert("error in axios " + error);
             });
         }
     }
@@ -74,8 +78,7 @@ class ModuleDetailsPage extends Component {
             })
             .then(result => {
                 console.log(result)
-                if (result.data) {
-                    let data = result.data;
+                if (result) {
                     this.setState({
                         editMode: false
                     })
@@ -96,7 +99,10 @@ class ModuleDetailsPage extends Component {
         if (this.state.editMode) {
             return (
                 <div className={this.props.className}>
-                    <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
+                    <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
+                    <div className="module-navbar-small">
+                        <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'overview'}></ModuleSideNavigationDropdown>
+                    </div>
                     <div className="module-content">
                         <MDBContainer>
                             <MDBRow>
@@ -108,7 +114,7 @@ class ModuleDetailsPage extends Component {
                                 <MDBCol>
                                     <div className="align-right">
                                         <MDBBtn color="blue lighten-2" outline className="mr-0 mb-2" size="md" onClick={this.setEditMode}>
-                                            <MDBIcon icon="cross" className="mr-1" /> Cancel
+                                            Cancel
                                         </MDBBtn>
                                     </div>
                                 </MDBCol>
@@ -132,9 +138,12 @@ class ModuleDetailsPage extends Component {
                         <MDBRow>
                             <MDBCol>
                                 <div className="align-right">
-                                    <MDBBtn color="blue lighten-2" outline className="mr-0 mb-2" size="md" onClick={this.setEditMode}>
-                                        <MDBIcon icon="edit" className="mr-1" /> Edit
-                                    </MDBBtn>
+                                    {
+                                        this.state.accessRight == "Teacher" &&
+                                        <MDBBtn color="blue lighten-2" outline className="mr-0" size="md" onClick={this.setEditMode}>
+                                            <MDBIcon icon="edit" className="mr-1" /> Edit
+                                        </MDBBtn>
+                                    }
                                 </div>
                             </MDBCol>
                         </MDBRow>
@@ -142,7 +151,7 @@ class ModuleDetailsPage extends Component {
                             <MDBCol>
                                 {
                                     module.description &&
-                                    <SectionContainer className="justify-content d-flex">
+                                    <SectionContainer className="justify-content d-flex mt-2">
                                         <div className="new-paragraph"><div className="h5">Description</div>
                                             {ReactHtmlParser(module.description)}
                                         </div>
@@ -166,9 +175,23 @@ export default styled(ModuleDetailsPage)`
 .module-content{
     margin-top: 40px;
 }
-@media (min-width: 1199.98px) {
+@media screen and (min-width: 800px) {
     .module-content{
         margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
     }
 }
 .new-paragraph{
