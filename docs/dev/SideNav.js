@@ -49,7 +49,7 @@ class SideNav extends Component {
                             </MDBListGroupItem>
                         </NavLink>
                     }
-                    <NavLink to="/account/:accountid" activeClassName="activeClass" onClick={() => this.updatePath("/account")}>
+                    <NavLink to="/account" activeClassName="activeClass" onClick={() => this.updatePath("/account")}>
                         <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
                             <MDBIcon icon="user" />
                             <br /> <p style={{ fontSize: "10px" }}>Account</p>
