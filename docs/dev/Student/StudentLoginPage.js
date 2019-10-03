@@ -77,6 +77,7 @@ class StudentLoginPage extends Component {
                     </form>
                     {this.state.message === "error" && <h6 align="center" style={{ color: "red" }}>Invalid email/ password!</h6>}
                   </ul>
+                    <center>Go to <a href="/admin">Administrator Login Page</a></center>
                 </MDBJumbotron>
               </MDBCol>
             </MDBRow>

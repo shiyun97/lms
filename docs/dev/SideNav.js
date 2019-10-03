@@ -29,12 +29,14 @@ class SideNav extends Component {
                             <br /> <p style={{ fontSize: "10px" }}>Dashboard</p>
                         </MDBListGroupItem>
                     </NavLink>
+                    {this.props.dataStore.accessRight !== "Admin" &&
                     <NavLink to="/modules" activeClassName="activeClass" onClick={() => this.updatePath("/modules")}>
                         <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
                             <MDBIcon icon="table" />
                             <br /> <p style={{ fontSize: "10px" }}>Modules</p>
                         </MDBListGroupItem>
                     </NavLink>
+                    }
                     {/* <NavLink to="/coursesDashboard" activeClassName="activeClass" onClick={() => this.updatePath("/courses")}>
                         <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
                             <MDBIcon icon="book" />

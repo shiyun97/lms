@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { MDBEdgeHeader, MDBContainer } from "mdbreact";
+import { MDBEdgeHeader, MDBContainer, MDBRow, MDBCol, MDBJumbotron } from "mdbreact";
 import axios from "axios";
 import { observer, inject } from 'mobx-react';
 import DashboardPageTeacher from './Teacher/DashboardPageTeacher';
 import DashboardPageStudent from './Student/DashboardPageStudent';
+import UnderMaintenancePage from "./UnderMaintenancePage";
 
 @inject('dataStore')
 @observer
@@ -36,11 +37,10 @@ class DashboardPage extends Component {
       <>
         <MDBEdgeHeader color="indigo darken-3" className="loginPage" />
         <MDBContainer style={{ paddingBottom: 240 }}>
-          {this.props.dataStore.accessRight === "Student" ?
-            <DashboardPageStudent />
-            :
-            <DashboardPageTeacher />
-          }
+          {this.props.dataStore.accessRight === "Student" && <DashboardPageStudent />}
+          {this.props.dataStore.accessRight === "Teacher" && <DashboardPageTeacher />}
+          {this.props.dataStore.accessRight === "Admin" && <UnderMaintenancePage />}
+          {this.props.dataStore.accessRight === "Public" && <UnderMaintenancePage />}
         </MDBContainer>
       </>
     );
