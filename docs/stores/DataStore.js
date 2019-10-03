@@ -11,6 +11,7 @@ class DataStore {
   @observable username = ""
   @observable userId = ""
   @observable path = "/dashboard"
+  @observable modules = []
 
   @action setSignInStatus(status, email, password, accessRight) {
     this.signInStatus = status;
@@ -27,7 +28,7 @@ class DataStore {
     this.email = "";
     this.password = "";
     this.accessRight = "";
-    this.path = "/"
+    this.path = "/dashboard"
     localStorage.clear();
   }
 
@@ -78,6 +79,14 @@ class DataStore {
 
   @computed get getEmail() {
     return this.email;
+  }
+
+  @action updateModules(modules) {
+    this.modules = modules;
+  }
+
+  @computed get getModules() {
+    return this.modules;
   }
 }
 

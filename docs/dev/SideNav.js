@@ -12,8 +12,8 @@ class SideNav extends Component {
     }
 
     updatePath = (path) => {
-      this.props.dataStore.setPath(path);
-      console.log(this.props.dataStore.getPath)
+        this.props.dataStore.setPath(path);
+        console.log(this.props.dataStore.getPath)
     }
 
     render() {
@@ -42,13 +42,13 @@ class SideNav extends Component {
                             <br /> <p style={{ fontSize: "10px" }}>Courses</p>
                         </MDBListGroupItem>
                     </NavLink>
-                    { this.props.dataStore.acessRight === "Admin" &&
-                    <NavLink to="/users" activeClassName="activeClass" onClick={() => this.updatePath("/users")}>
-                        <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
-                            <MDBIcon icon="users-cog" />
-                            <br /> <p style={{ fontSize: "10px" }}>Users</p>
-                        </MDBListGroupItem>
-                    </NavLink>
+                    {this.props.dataStore.accessRight === "Admin" &&
+                        <NavLink to="/users" activeClassName="activeClass" onClick={() => this.updatePath("/users")}>
+                            <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
+                                <MDBIcon icon="users-cog" />
+                                <br /> <p style={{ fontSize: "10px" }}>Users</p>
+                            </MDBListGroupItem>
+                        </NavLink>
                     }
                     <NavLink to="/account/:accountid" activeClassName="activeClass" onClick={() => this.updatePath("/account")}>
                         <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
@@ -56,7 +56,7 @@ class SideNav extends Component {
                             <br /> <p style={{ fontSize: "10px" }}>Account</p>
                         </MDBListGroupItem>
                     </NavLink>
-                    <NavLink onClick={() => this.logOutUser()} to="/login" activeClassName="activeClass" onClick={() => this.updatePath("/dashboard")}>
+                    <NavLink onClick={() => this.logOutUser()} to="/login" activeClassName="activeClass">
                         <MDBListGroupItem style={{ backgroundColor: "#000", position: "absolute", bottom: "0px", paddingBottom: "2px", textAlign: "center" }}>
                             <MDBIcon icon="sign-out-alt" />
                             <br /> <p style={{ fontSize: "10px" }}>Logout</p>

@@ -127,7 +127,6 @@ class Routes extends React.Component {
     )
     return (
       <Switch>
-
         <Route exact path="/undermaintenance" component={UnderMaintenancePage} />
         <PrivateRoute exact path="/account/:accountid" component={UserProfilePage} />
 
