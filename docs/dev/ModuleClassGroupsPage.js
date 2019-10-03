@@ -31,6 +31,7 @@ const API_URL = "http://localhost:8080/LMS-war/webresources";
 class ModuleClassGroupsPage extends Component {
 
     state = {
+        accessRight: "",
         moduleId: "",
         activeItem: "Student Roster",
         modalStudent: false,
@@ -135,6 +136,7 @@ class ModuleClassGroupsPage extends Component {
 
     async initPage() {
         let moduleId = this.props.match.params.moduleId;
+        let accessRight = localStorage.getItem("accessRight");
         if (moduleId) {
             console.log(moduleId);
             let url = this.props.match.url;
@@ -155,7 +157,8 @@ class ModuleClassGroupsPage extends Component {
             }
             this.setState({
                 activeItem: activeTab,
-                moduleId: moduleId
+                moduleId: moduleId,
+                accessRight: accessRight
             })
             let moduleEnrollment;
             // retrieve student roster
@@ -478,23 +481,26 @@ class ModuleClassGroupsPage extends Component {
 
                             <MDBTabPane tabId="Class Groups" role="tabpanel">
                                 <MDBRow className="mt-4">
-                                    <MDBCol>
-                                        <div style={{ "float": "right" }}>
-                                            <MDBBtn color="primary" className="mr-0 mb-3" size="md" onClick={this.toggleModal("AddClassGroup")}>
-                                                Add
+                                    {
+                                        this.state.accessRight == "Teacher" &&
+                                        <MDBCol>
+                                            <div style={{ "float": "right" }}>
+                                                <MDBBtn color="primary" className="mr-0" size="md" onClick={this.toggleModal("AddClassGroup")}>
+                                                    Add
                                             </MDBBtn>
-                                        </div>
-                                    </MDBCol>
+                                            </div>
+                                        </MDBCol>
+                                    }
                                 </MDBRow>
                                 <MDBRow>
                                     <MDBCol>
                                         {
                                             classGroups.rows.length > 0 &&
-                                            <MDBDataTable striped bordered hover searching={false} sortable={true} paging={false} data={classGroups} />
+                                            <MDBDataTable striped bordered hover searching={false} sortable={true} paging={false} data={classGroups} className="mt-3" />
                                         }
                                         {
                                             classGroups.rows.length == 0 &&
-                                            <div>No class groups created yet</div>
+                                            <div className="mt-3">No class groups created yet</div>
                                         }
                                     </MDBCol>
                                 </MDBRow>
@@ -842,6 +848,7 @@ export class StudentRosterDetails extends Component {
 export class ClassGroupDetails extends Component {
 
     state = {
+        accessRight: "",
         moduleId: "",
         activeItem: "Class Group",
         classGroupId: "",
@@ -859,6 +866,16 @@ export class ClassGroupDetails extends Component {
                 {
                     label: "",
                     field: "removeButton",
+                    sort: "asc"
+                }
+            ],
+            rows: []
+        },
+        studentsStudentView: {
+            columns: [
+                {
+                    label: "Name",
+                    field: "studentName",
                     sort: "asc"
                 }
             ],
@@ -889,7 +906,8 @@ export class ClassGroupDetails extends Component {
         studentToRemove: {
             studentIdToRemove: "",
             studentNameToRemove: ""
-        }
+        },
+        allowSignUp: false
     }
 
     componentDidMount() {
@@ -899,6 +917,8 @@ export class ClassGroupDetails extends Component {
     async initPage() {
         let classGroupId = this.props.match.params.classGroupId;
         let moduleId = this.props.match.params.moduleId;
+        let accessRight = localStorage.getItem("accessRight");
+
         if (moduleId && classGroupId) {
             // retrieve class group by id & set state
             console.log(classGroupId);
@@ -920,8 +940,23 @@ export class ClassGroupDetails extends Component {
                             studentName: students[key].firstName + " " + students[key].lastName,
                         })
                     });
+
+                    let today = new Date();
+                    let timezoneTemp = today.toString().match(/([-\+][0-9]+)\s/)[1];
+                    let timezone = timezoneTemp.substring(0, 3) + ":" + timezoneTemp.substring(3);
+                    let currentDate = today.getUTCFullYear() + "-" + this.twoDigits(1 + today.getUTCMonth()) + "-"
+                        + this.twoDigits(today.getUTCDate()) + "T" + this.twoDigits(today.getHours())
+                        + ":" + this.twoDigits(today.getMinutes()) + ":"
+                        + this.twoDigits(today.getSeconds()) + timezone;
+                    
+                        let allowSignUp = false;
+                    if (currentDate >= data.startTs && currentDate <= data.closeTs) {
+                        allowSignUp = true;
+                    }
+
                     this.setState({
                         ...this.state,
+                        accessRight: accessRight,
                         moduleId: moduleId,
                         classGroupId: classGroupId,
                         classGroupName: data.name,
@@ -931,13 +966,24 @@ export class ClassGroupDetails extends Component {
                         students: {
                             ...this.state.students,
                             rows: arrTeacher
-                        }
+                        },
+                        studentsStudentView: {
+                            ...this.state.studentsStudentView,
+                            rows: arrStudent
+                        },
+                        allowSignUp: allowSignUp
                     });
                 })
                 .catch(error => {
                     console.error("error in axios " + error);
                 });
         }
+    }
+
+    twoDigits(d) {
+        if(0 <= d && d < 10) return "0" + d.toString();
+        if(-10 < d && d < 0) return "-0" + (-1*d).toString();
+        return d.toString();
     }
 
     toggle = tab => e => {
@@ -1035,7 +1081,7 @@ export class ClassGroupDetails extends Component {
     signUp = () => {
         let classGroupId = this.state.classGroupId;
         // get student info from store
-        let studentId = 2;
+        let studentId = localStorage.getItem("userId");
         axios
             .post(API_URL + "/ManageGroup/joinClassGroup?classGroupId=" + classGroupId + "&userId=" + studentId)
             .then((result) => {
@@ -1070,6 +1116,12 @@ export class ClassGroupDetails extends Component {
 
     render() {
         let students = this.state.students;
+        if (this.state.accessRight == "Student") {
+            students = this.state.studentsStudentView;
+        } 
+        else if (this.state.accessRight == "Teacher" || this.state.accessRight == "Admin") {
+            students = this.state.students;
+        }
         let allModuleStudents = this.state.allModuleStudents;
         return (
             <div className={this.props.className}>
@@ -1131,12 +1183,18 @@ export class ClassGroupDetails extends Component {
                                 <MDBRow className="mt-4">
                                     <MDBCol>
                                         <div style={{ "float": "right" }}>
-                                            <MDBBtn color="primary" className="mr-0 mb-3" size="md" onClick={e => {this.addStudentRetrieve()}}>
-                                                Add
-                                            </MDBBtn>
-                                            <MDBBtn color="primary" className="mr-0 mb-3" size="md" onClick={e => {this.signUp()}}>
-                                                Sign Up
-                                            </MDBBtn>
+                                            {
+                                                this.state.accessRight == "Teacher" &&
+                                                <MDBBtn color="primary" className="mr-0 mb-3" size="md" onClick={e => { this.addStudentRetrieve() }}>
+                                                    Add
+                                                </MDBBtn>
+                                            }
+                                            {
+                                                this.state.accessRight == "Student" &&
+                                                <MDBBtn color="primary" className="mr-0 mb-3" size="md" onClick={e => { this.signUp() }} disabled={!this.state.allowSignUp}>
+                                                    Sign Up
+                                                </MDBBtn>
+                                            }
                                         </div>
                                     </MDBCol>
                                 </MDBRow>
