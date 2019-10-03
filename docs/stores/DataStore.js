@@ -2,6 +2,9 @@ import { action, computed, observable } from "mobx"
 
 class DataStore {
   @observable signInStatus = false
+  @observable path = "/dashboard"
+
+  // student details
   @observable email = ""
   @observable password = ""
   @observable accessRight = ""
@@ -10,7 +13,12 @@ class DataStore {
   @observable lastName = ""
   @observable username = ""
   @observable userId = ""
-  @observable path = "/dashboard"
+
+  // year and sem details
+  @observable semester = 0
+  @observable year = ""
+
+  // module details
   @observable modules = []
 
   @action setSignInStatus(status, email, password, accessRight) {
@@ -87,6 +95,19 @@ class DataStore {
 
   @computed get getModules() {
     return this.modules;
+  }
+
+  @action updateYearSem(year, sem) {
+    this.year = year;
+    this.semester = sem;
+  }
+
+  @computed get getYear() {
+    return this.year;
+  }
+
+  @computed get getSem() {
+    return this.semester;
   }
 }
 

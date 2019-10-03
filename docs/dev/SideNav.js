@@ -13,7 +13,6 @@ class SideNav extends Component {
 
     updatePath = (path) => {
         this.props.dataStore.setPath(path);
-        console.log(this.props.dataStore.getPath)
     }
 
     render() {
@@ -36,12 +35,12 @@ class SideNav extends Component {
                             <br /> <p style={{ fontSize: "10px" }}>Modules</p>
                         </MDBListGroupItem>
                     </NavLink>
-                    <NavLink to="/coursesDashboard" activeClassName="activeClass" onClick={() => this.updatePath("/courses")}>
+                    {/* <NavLink to="/coursesDashboard" activeClassName="activeClass" onClick={() => this.updatePath("/courses")}>
                         <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
                             <MDBIcon icon="book" />
                             <br /> <p style={{ fontSize: "10px" }}>Courses</p>
                         </MDBListGroupItem>
-                    </NavLink>
+                    </NavLink> */}
                     {this.props.dataStore.accessRight === "Admin" &&
                         <NavLink to="/users" activeClassName="activeClass" onClick={() => this.updatePath("/users")}>
                             <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
