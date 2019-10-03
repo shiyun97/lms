@@ -53,4 +53,5 @@ npm install -g json-server
 
 ```
 npx json-server -p 3001 ./docs/dev/json/successLogin.json
+npx json-server -p 3001 ./docs/dev/json/consultation.json
 ```

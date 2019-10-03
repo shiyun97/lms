@@ -1,0 +1,39 @@
+{
+  "allConsultations": [
+    {
+      "id": 1,
+      "date": "30/09/19",
+      "startTime": "12:00",
+      "endTime": "13:00",
+      "studentId": 2
+    },
+    {
+      "studentId": 0,
+      "date": "30/09/19",
+      "startTime": "13:00",
+      "endTime": "14:00",
+      "id": 2
+    },
+    {
+      "id": 3,
+      "date": "30/09/19",
+      "startTime": "14:00",
+      "endTime": "15:00",
+      "studentId": 3
+    },
+    {
+      "id": 4,
+      "date": "30/09/19",
+      "startTime": "15:00",
+      "endTime": "16:00",
+      "studentId": 0
+    },
+    {
+      "date": "2019-10-17",
+      "startTime": "12:31",
+      "endTime": "12:33",
+      "studentId": 0,
+      "id": 7
+    }
+  ]
+}
