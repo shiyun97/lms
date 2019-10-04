@@ -20,6 +20,7 @@ class DataStore {
 
   // module details
   @observable modules = []
+  @observable currentModuleId = 0;
 
   @action setSignInStatus(status, email, password, accessRight) {
     this.signInStatus = status;
@@ -52,6 +53,14 @@ class DataStore {
 
   @computed get getPath() {
     return this.path;
+  }
+
+  @action setCurrModId(id) {
+    this.currentModuleId = id;
+  }
+
+  @computed get getCurrModId() {
+    return this.currentModuleId;
   }
 
   @action setUserDetails(id, gender, firstName, lastName, username) {

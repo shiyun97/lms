@@ -32,6 +32,8 @@ class DashboardPageTeacher extends Component {
       });
   }
 
+  setCurrModuleId = (moduleId) => { this.props.dataStore.setCurrModId(moduleId) }
+
   render() {
     return (
       <MDBRow>
@@ -50,7 +52,7 @@ class DashboardPageTeacher extends Component {
                   {this.props.dataStore.getModules.map((mod) =>
                     <MDBCol md="4" key={mod.moduleId}>
                       <MDBAnimation reveal type="fadeInUp">
-                        <NavLink to={`/modules/${mod.moduleId}/`} activeClassName="activeClass">
+                        <NavLink to={`/modules/${mod.moduleId}/`} onClick={() => this.setCurrModuleId(mod.moduleId)} activeClassName="activeClass">
                           <MDBCard cascade className="my-3 grey lighten-4">
                             <MDBCardBody cascade>
                               <h6>{mod.code}</h6>
