@@ -1,18 +1,18 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { 
-    MDBContainer, 
-    MDBRow, 
-    MDBCol, 
+import {
+    MDBContainer,
+    MDBRow,
+    MDBCol,
     MDBModal,
     MDBModalBody,
     MDBModalFooter,
     MDBModalHeader,
-    MDBBtn, 
+    MDBBtn,
     MDBTable,
-    MDBTableHead, 
+    MDBTableHead,
     MDBTableBody,
-    MDBDataTable 
+    MDBDataTable
 } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
 import SectionContainer from "../components/sectionContainer";
@@ -103,8 +103,8 @@ class ModuleFeedbackPage extends Component {
                     let idx = 1;
                     const method = this.viewFeedback;
                     Object.keys(data).forEach(function (key) {
-                        let date = data[key].createTs.substring(0,10);
-                        let time = data[key].createTs.substring(11,16);
+                        let date = data[key].createTs.substring(0, 10);
+                        let time = data[key].createTs.substring(11, 16);
                         let temp = {
                             index: idx,
                             createTs: date + " " + time,
@@ -247,11 +247,11 @@ class ModuleFeedbackPage extends Component {
                             <MDBCol>
                                 <MDBRow>
                                     <MDBCol>
-                                        <h4 className="mb-2">Feedback</h4>
+                                        <h2 className="font-weight-bold"> Feedback </h2>
                                         <hr className="my-3" />
                                         {
                                             this.state.accessRight == "Student" &&
-                                            <MDBBtn className="ml-0 mb-5" size="md" color="primary" onClick={e => { this.newAdhocFeedback()}}>New Adhoc Feedback</MDBBtn>
+                                            <MDBBtn className="ml-0 mb-5" size="md" color="primary" onClick={e => { this.newAdhocFeedback() }}>New Adhoc Feedback</MDBBtn>
                                         }
                                     </MDBCol>
                                 </MDBRow>
@@ -293,7 +293,7 @@ class ModuleFeedbackPage extends Component {
                                     isOpen={this.state.modalAddFeedback}
                                     toggle={this.toggle("AddFeedback")}
                                 >
-                                    <MDBModalHeader toggle={this.toggle("AddFeedback")}>New</MDBModalHeader>
+                                    <MDBModalHeader toggle={this.toggle("AddFeedback")}>Create New Feedback</MDBModalHeader>
                                     <form className="needs-validation" noValidate onSubmit={this.submitHandler}>
                                         <MDBModalBody>
                                             {/*<div className="form-row align-items-center">
@@ -336,7 +336,7 @@ class ModuleFeedbackPage extends Component {
                     </MDBContainer>
                 </div>
             </div>
-          );
+        );
     }
 }
 

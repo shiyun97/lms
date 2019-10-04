@@ -29,7 +29,7 @@ class ModuleQuizPage extends Component {
                     <MDBContainer>
                         <MDBRow>
                             <MDBCol>
-                                <h4 className="mb-4">Quiz</h4>
+                                <h4 className="font-weight-bold">Quiz</h4>
                                 <hr className="my-4" />
                             </MDBCol>
                         </MDBRow>

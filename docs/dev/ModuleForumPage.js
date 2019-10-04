@@ -29,7 +29,7 @@ class ModuleForumPage extends Component {
                     <MDBContainer>
                         <MDBRow>
                             <MDBCol>
-                                <h4 className="mb-4">Forum</h4>
+                                <h4 className="font-weight-bold">Forum</h4>
                                 <hr className="my-4" />
                             </MDBCol>
                         </MDBRow>

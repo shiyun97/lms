@@ -29,13 +29,14 @@ class ModuleAttendancePage extends Component {
                     <MDBContainer>
                         <MDBRow>
                             <MDBCol>
-                                <h4 className="mb-4">Attendance</h4>
+                                <h2 className="font-weight-bold"> Attendance </h2>
+                                <hr className="my-3" />
                             </MDBCol>
                         </MDBRow>
                     </MDBContainer>
                 </div>
             </div>
-          );
+        );
     }
 }
 

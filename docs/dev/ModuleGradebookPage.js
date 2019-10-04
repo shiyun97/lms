@@ -229,7 +229,7 @@ class ModuleGradebookPage extends Component {
                             <MDBCol>
                                 <MDBRow>
                                     <MDBCol>
-                                        <h4 className="mb-2">Gradebook</h4>
+                                        <h4 className="font-weight-bold">Gradebook</h4>
                                         <hr className="my-4" />
                                     </MDBCol>
                                 </MDBRow>
