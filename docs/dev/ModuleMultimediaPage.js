@@ -18,47 +18,70 @@ import {
 import ModuleSideNavigation from "./ModuleSideNavigation";
 import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
+import 'babel-polyfill';
 import Dropzone from 'react-dropzone';
+//import { access } from "fs";
+
+const API_URL = "http://localhost:8080/LMS-war/webresources";
+
+const FILE_SERVER = "http://127.0.0.1:8887/";
 
 class ModuleMultimediaPage extends Component {
 
     state = {
+        accessRight: "",
+        moduleId: "",
         multimedia: {
             columns: [
-                {
-                    label: [<input type="checkbox" className="mr-4" style={{ 'height': '17px', 'width': '17px', 'verticalAlign': 'middle' }} id={"multimediaCheckboxAll"} key={"multimediaCheckboxAll"} onClick={e => this.selectAllCheckbox()} />],
-                    field: "check",
-                    width: 150,
-                    sort: "asc"
-                },
                 {
                     label: "Name",
                     field: "name",
                     width: 150,
-                    sort: "asc",
-                    attributes: {
-                        "aria-controls": "DataTable",
-                        "aria-label": "Name"
-                    }
+                    sort: "asc"
                 },
                 {
-                    label: "Upload Date",
-                    field: "uploadDate",
-                    width: 150
+                    label: "Date Created",
+                    field: "createdDt",
+                    width: 150,
+                    sort: "asc"
                 },
                 {
-                    label: "Opening Date",
-                    field: "openingDate",
-                    width: 150
-                },
-                {
-                    label: "Close Date",
-                    field: "closingDate",
-                    width: 150
+                    label: "Created By",
+                    field: "uploadedBy",
+                    width: 150,
+                    sort: "asc"
                 },
                 {
                     label: "",
-                    field: "viewButton",
+                    field: "action",
+                    sort: "asc"
+                }
+            ],
+            rows: []
+        },
+        multimediaStudentView: {
+            columns: [
+                {
+                    label: "Name",
+                    field: "name",
+                    width: 150,
+                    sort: "asc"
+                },
+                {
+                    label: "Date Created",
+                    field: "createdDt",
+                    width: 150,
+                    sort: "asc"
+                },
+                {
+                    label: "Created By",
+                    field: "uploadedBy",
+                    width: 150,
+                    sort: "asc"
+                },
+                {
+                    label: "",
+                    field: "action",
                     sort: "asc"
                 }
             ],
@@ -72,41 +95,52 @@ class ModuleMultimediaPage extends Component {
         this.initPage();
     }
 
-    initPage() {
+    async initPage() {
         let moduleId = this.props.match.params.moduleId;
+        let accessRight = localStorage.getItem("accessRight");
         if (moduleId) {
-            console.log(moduleId);
-            this.setState({
-                moduleId: moduleId
-            })
             // retrieve module multimedia & set state
             // customise the clickEvent to pass id
-            axios
-                .get("http://localhost:3001/multimedia")
+            await axios
+                .get(API_URL + "/file/retrieveAllMultimediaForModule?moduleId=" + moduleId)
                 .then(result => {
-                    let data = result.data;
+                    let data = result && result.data && result.data.files;
                     let arr = [];
-                    let multimediaIds = [];
+                    let arrStudentView = [];
                     const method = this.clickMultimedia;
+                    const deleteMethod = this.deleteMultimedia;
                     Object.keys(data).forEach(function (key) {
+                        let dateCreatedDt = data[key].createdDt ? data[key].createdDt.substring(0,10) : "";
+                        let timeCreatedDt = data[key].createdDt ? data[key].createdDt.substring(11,16) : "";
                         let temp = {
-                            check: <input type="checkbox" style={{ 'height': '17px', 'width': '17px', 'verticalAlign': 'middle' }} id={data[key].multimediaId} name="multimediaCheckbox" />,
                             name: data[key].name,
-                            uploadDate: data[key].uploadDt,
-                            openingDate: data[key].openDt,
-                            closingDate: data[key].closeDt,
-                            viewButton: (<MDBBtn size="sm" onClick={e => method(data[key].multimediaId)}>View</MDBBtn>)
+                            createdDt: dateCreatedDt + " " + timeCreatedDt,
+                            uploadedBy: data[key].uploader.firstName + " " + data[key].uploader.lastName,
+                            action: (<div><MDBBtn size="sm" onClick={e => method(data[key].name)}>View</MDBBtn>
+                                    <MDBBtn size="sm" color="danger" onClick={e => deleteMethod(data[key].fileId)}>Delete</MDBBtn></div>)
                         }
                         arr.push(temp);
-                        multimediaIds.push(data[key].multimediaId);
+
+                        let temp2 = {
+                            name: data[key].name,
+                            createdDt: dateCreatedDt + " " + timeCreatedDt,
+                            uploadedBy: data[key].uploader.firstName + " " + data[key].uploader.lastName,
+                            action: (<MDBBtn size="sm" onClick={e => method(data[key].name)}>View</MDBBtn>)
+                        }
+                        arrStudentView.push(temp2);
                     });
                     this.setState({
                         ...this.state,
+                        accessRight: accessRight,
+                        moduleId: moduleId,
                         multimedia: {
                             ...this.state.multimedia,
                             rows: arr
                         },
-                        multimediaIds: multimediaIds
+                        multimediaStudentView: {
+                            ...this.state.multimediaStudentView,
+                            rows: arrStudentView
+                        } 
                     });
                 })
                 .catch(error => {
@@ -115,9 +149,17 @@ class ModuleMultimediaPage extends Component {
         }
     }
 
-    clickMultimedia = (id) => {
-        console.log(id);
-        this.props.history.push(`/modules/${this.state.moduleId}/multimedia/${id}`);
+    clickMultimedia = (name) => {
+        //console.log(id);
+        // this.props.history.push(`/modules/${this.state.moduleId}/multimedia/${id}`);
+        var a = document.createElement('a');
+        a.href = FILE_SERVER + name;
+        a.download = name;
+        a.style.display = "none";
+        document.body.appendChild(a);
+        a.target = "blank";
+        a.click();
+        document.body.removeChild(a);
     }
 
     selectAllCheckbox = () => {
@@ -135,15 +177,25 @@ class ModuleMultimediaPage extends Component {
         }
     }
 
-    deleteMultimedia = (e) => {
-        let arr = [];
+    deleteMultimedia = (fileId) => {
+        /*let arr = [];
         let multimediaIds = this.state.multimediaIds;
         for (var i=0; i < multimediaIds.length; i++) {
             if (document.getElementById(multimediaIds[i]).checked == true) {
                 arr.push(multimediaIds[i]);
             }
         }
-        console.log(arr)
+        console.log(arr)*/
+        console.log(fileId);
+        axios
+            .delete(API_URL + "/file/deleteFile?fileId=" + fileId)
+            .then((result) => {
+                return this.initPage();
+            })
+            .catch(error => {
+                console.error(error);
+                alert("An error occurred!");
+            });
     }
 
     toggleModal = nr => () => {
@@ -208,8 +260,44 @@ class ModuleMultimediaPage extends Component {
         })
     }
 
+    upload = () => {
+        document.getElementById('multimediaInput').click();
+    }
+
+    uploadFileOnChange = () => {
+        var file = this.fileUpload.files[0];
+        
+        if (file != null) {
+            const formData = new FormData();
+            formData.append('file', file)
+            fetch(`${API_URL}/file/upload?moduleId=${this.state.moduleId}&type=multimedia&userId=${localStorage.getItem("userId")}`, {
+                method: 'post',
+                body: formData
+            })
+            .then((result) => {
+                console.log(result)
+                this.setState({
+                    ...this.state,
+                    modalUploadMultimedia: false
+                })
+                return this.initPage();
+            })
+            .catch(error => {
+                console.error(error);
+                alert("An error occurred!");
+            });
+        }
+    }
+
     render() {
         let uploadedMultimedia = this.state.uploadedMultimedia;
+        let multimedia = this.state.multimedia;
+        if (this.state.accessRight == "Student") {
+            multimedia = this.state.multimediaStudentView;
+        }
+        else if (this.state.accessRight == "Teacher") {
+            multimedia = this.state.multimedia;
+        }
         return (
             <div className={this.props.className}>
                 <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
@@ -224,12 +312,12 @@ class ModuleMultimediaPage extends Component {
                         <MDBRow className="mb-3">
                             <MDBCol>
                                 <div className="align-right">
-                                    <MDBBtn color="primary lighten-2" outline className="mr-0" size="md" onClick={e => this.uploadMultimedia()}>
-                                        Upload
-                                    </MDBBtn>
-                                    <MDBBtn color="danger" outline className="mr-0" size="md" onClick={e => this.deleteMultimedia()}>
-                                        Delete
-                                    </MDBBtn>
+                                    {
+                                        this.state.accessRight == "Teacher" &&
+                                        <MDBBtn color="primary lighten-2" outline className="mr-0" size="md" onClick={e => this.uploadMultimedia()}>
+                                            Upload
+                                        </MDBBtn>
+                                    }
                                 </div>
                             </MDBCol>
                         </MDBRow>
@@ -246,6 +334,13 @@ class ModuleMultimediaPage extends Component {
                             <form className="needs-validation" noValidate onSubmit={this.submitNewMultimediaHandler}>
                                 <MDBModalBody>
                                     <div className="text-center mt-2">
+                                        <SectionContainer className="mb-0 p-5 mt-1">
+                                            <div onClick={e => this.upload()}>
+                                                <MDBIcon icon="upload" size="3x" className="mb-3 indigo-text"></MDBIcon><br></br>
+                                                Click to Upload Multimedia
+                                            </div>
+                                        </SectionContainer>
+                                        {/*
                                         <Dropzone onDrop={this.onDrop} multiple>
                                             {({ getRootProps, getInputProps, isDragActive, isDragReject, rejectedFiles }) => (
                                                 <div {...getRootProps()}>
@@ -256,8 +351,10 @@ class ModuleMultimediaPage extends Component {
                                                     </SectionContainer>
                                                 </div>
                                             )}
-                                        </Dropzone>
+                                        </Dropzone>*/}
                                     </div>
+                                    <input id="multimediaInput" type="file" value="" ref={(ref) => this.fileUpload = ref} style={{display: 'none'}} onChange={e => this.uploadFileOnChange()} accept=".mp4" />
+
                                     <MDBListGroup className="my-4 mx-4" style={{width: "26rem", height:"auto", maxHeight: "120px", overflowY: "auto"}}>
                                         {uploadedMultimedia.length > 0 && uploadedMultimedia.map((uploadedFile, index) => (
                                             <MDBListGroupItem key={index}>
@@ -277,7 +374,14 @@ class ModuleMultimediaPage extends Component {
 
                         <MDBRow>
                             <MDBCol>
-                            <MDBDataTable striped bordered hover searching={true} sortable={true} data={this.state.multimedia} />
+                                {
+                                    multimedia.rows.length > 0 &&
+                                    <MDBDataTable striped bordered hover searching={true} sortable={true} data={multimedia} />
+                                }
+                                {
+                                    multimedia.rows.length == 0 &&
+                                    <div>No multimedia uploaded yet</div>
+                                }
                             </MDBCol>
                         </MDBRow>
                     </MDBContainer>

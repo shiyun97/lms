@@ -342,12 +342,14 @@ class ModuleClassGroupsPage extends Component {
         event.target.className += " was-validated";
         
         let moduleId = this.state.moduleId;
+        if (!moduleId || !this.state.classGroupSelfEnrollmentOpenDateInput || !this.state.classGroupSelfEnrollmentCloseDateInput) {
+            return;
+        }
         let classGroupNameInput = this.state.classGroupNameInput;
         let classGroupMaxEnrollmentInput = this.state.classGroupMaxEnrollmentInput;
         let classGroupSelfEnrollmentOpenDateInput = this.state.classGroupSelfEnrollmentOpenDateInput + ":00+08:00";
         let classGroupSelfEnrollmentCloseDateInput = this.state.classGroupSelfEnrollmentCloseDateInput + ":00+08:00";
 
-        console.log(classGroupSelfEnrollmentCloseDateInput)
         let body = {
             name: classGroupNameInput,
             startTs: classGroupSelfEnrollmentOpenDateInput,
@@ -1209,10 +1211,17 @@ export class ClassGroupDetails extends Component {
                                     </MDBModalHeader>
                                     <MDBModalBody>
                                         <form className="mx-3 grey-text">
-                                            <MDBTable bordered striped btn scrollY maxHeight="300px">
-                                                <MDBTableHead columns={allModuleStudents.columns} />
-                                                <MDBTableBody rows={allModuleStudents.rows} />
-                                            </MDBTable>
+                                            {
+                                                allModuleStudents.rows.length > 0 &&
+                                                <MDBTable bordered striped btn scrollY maxHeight="300px">
+                                                    <MDBTableHead columns={allModuleStudents.columns} />
+                                                    <MDBTableBody rows={allModuleStudents.rows} />
+                                                </MDBTable>
+                                            }
+                                            {
+                                                allModuleStudents.rows.length == 0 &&
+                                                <div className="mt-2 mb-2">No students enrolled in module yet</div>
+                                            }
                                         </form>
                                     </MDBModalBody>
                                     
