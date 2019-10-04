@@ -1,5 +1,5 @@
 import React from 'react';
-import { MDBRow } from 'mdbreact';
+import { MDBRow, MDBContainer } from 'mdbreact';
 import AdminCardSection1 from './sections/AdminCardSection1';
 import AdminCardSection2 from './sections/AdminCardSection2';
 import TableSection from './sections/TableSection';
@@ -9,9 +9,9 @@ import ChartSection2 from './sections/ChartSection2';
 import MapSection from './sections/MapSection';
 import ModalSection from './sections/ModalSection';
 
-const DashboardPage =  () => {
+const AnalyticsPage =  () => {
   return (
-    <React.Fragment>
+    <MDBContainer>
       <BreadcrumSection />
       <AdminCardSection1 />
       <ChartSection1 />
@@ -22,8 +22,8 @@ const DashboardPage =  () => {
           <ModalSection />
       </MDBRow>
       <AdminCardSection2 />
-    </React.Fragment>
+    </MDBContainer>
   )
 }
 
-export default DashboardPage;
+export default AnalyticsPage;

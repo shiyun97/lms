@@ -1,0 +1,287 @@
+{
+    "moduleOverview": 
+    {
+        "moduleCode": "IS4103",
+        "moduleTitle": "Information Systems Capstone Project",
+        "moduleSemester": "2019/2020 Semester 1",
+        "moduleFaculty": "School of Computing",
+        "moduleDepartment": "Information Systems & Analytics",
+        "openDate": "6 Jun 2019 08:20 am",
+        "closeDate": "21 Dec 2019 11:59 pm",
+        "credits": "8"
+    },
+    "studentRoster": [
+        {
+            "studentId": "A0001",
+            "studentName": "Student A"
+        },
+        {
+            "studentId": "A0002",
+            "studentName": "Student B"
+        },
+        {
+            "studentId": "A0003",
+            "studentName": "Student C"
+        },
+        {
+            "studentId": "A0004",
+            "studentName": "Student D"
+        },
+        {
+            "studentId": "A0005",
+            "studentName": "Student E"
+        },
+        {
+            "studentId": "A0006",
+            "studentName": "Student F"
+        },
+        {
+            "studentId": "A0007",
+            "studentName": "Student G"
+        },
+        {
+            "studentId": "A0008",
+            "studentName": "Student H"
+        }
+    ],
+    "classGroups": [
+        {
+            "classGroupId": "IS4103CG01",
+            "name": "Class Group 1",
+            "description": "Class Group 1",
+            "currentEnrollment": "3",
+            "maxEnrollment": "5",
+            "enrollmentStatus": "open",
+            "selfEnrol": "false",
+            "selfEnrolOpenDate": "0001-01-01T00:00:00+08:00",
+            "selfEnrolCloseDate": "0001-01-01T00:00:00+08:00",
+            "students": [
+                {
+                    "studentId": "A0001",
+                    "studentName": "Student A"
+                },
+                {
+                    "studentId": "A0002",
+                    "studentName": "Student B"
+                },
+                {
+                    "studentId": "A0003",
+                    "studentName": "Student C"
+                }
+            ]
+        }
+    ],
+    "classGroup": {
+        "classGroupId": "IS4103CG01",
+        "name": "Class Group 1",
+        "description": "Class Group 1",
+        "currentEnrollment": "3",
+        "maxEnrollment": "5",
+        "enrollmentStatus": "open",
+        "selfEnrol": "false",
+        "selfEnrolOpenDate": "0001-01-01T00:00:00+08:00",
+        "selfEnrolCloseDate": "0001-01-01T00:00:00+08:00",
+        "students": [
+            {
+                "studentId": "A0001",
+                "studentName": "Student A"
+            },
+            {
+                "studentId": "A0002",
+                "studentName": "Student B"
+            },
+            {
+                "studentId": "A0003",
+                "studentName": "Student C"
+            }
+        ]
+    },
+    "lectureGroups": [
+        {
+            "lectureGroupId": "IS4103LG01",
+            "name": "Lecture Group 1",
+            "description": "Lecture Group 1",
+            "currentEnrollment": "3",
+            "students": [
+                {
+                    "studentId": "A0001",
+                    "studentName": "Student A"
+                },
+                {
+                    "studentId": "A0002",
+                    "studentName": "Student B"
+                },
+                {
+                    "studentId": "A0003",
+                    "studentName": "Student C"
+                }
+            ]
+        }
+    ],
+    "lectureGroup": {
+        "lectureGroupId": "IS4103LG01",
+        "name": "Lecture Group 1",
+        "description": "Lecture Group 1",
+        "currentEnrollment": "3",
+        "students": [
+            {
+                "studentId": "A0001",
+                "studentName": "Student A"
+            },
+            {
+                "studentId": "A0002",
+                "studentName": "Student B"
+            },
+            {
+                "studentId": "A0003",
+                "studentName": "Student C"
+            }
+        ]
+    },
+    "tutorialGroups": [
+        {
+            "tutorialGroupId": "IS4103TG01",
+            "name": "Tutorial Group 1",
+            "description": "Tutorial Group 1",
+            "currentEnrollment": "3",
+            "students": [
+                {
+                    "studentId": "A0001",
+                    "studentName": "Student A"
+                },
+                {
+                    "studentId": "A0002",
+                    "studentName": "Student B"
+                },
+                {
+                    "studentId": "A0003",
+                    "studentName": "Student C"
+                }
+            ]
+        }
+    ],
+    "tutorialGroup": {
+        "tutorialGroupId": "IS4103TG01",
+        "name": "Tutorial Group 1",
+        "description": "Tutorial Group 1",
+        "currentEnrollment": "3",
+        "students": [
+            {
+                "studentId": "A0001",
+                "studentName": "Student A"
+            },
+            {
+                "studentId": "A0002",
+                "studentName": "Student B"
+            },
+            {
+                "studentId": "A0003",
+                "studentName": "Student C"
+            }
+        ]
+    },
+    "moduleFiles": [
+        {
+            "fileId": "file1",
+            "fileName": "File 1",
+            "lastModifiedBy": "Prof A",
+            "lastModifiedDt": "12 Aug 2019 7:27",
+            "createdDt": "12 Aug 2019 7:27",
+            "size": "47.09 KB"
+        },
+        {
+            "fileId": "file2",
+            "fileName": "File 2",
+            "lastModifiedBy": "Prof A",
+            "lastModifiedDt": "15 Aug 2019 11:45",
+            "createdDt": "15 Aug 2019 11:45",
+            "size": "38.55 KB"
+        }
+    ],
+    "moduleFolders": [
+        {
+            "folderId": "folder1",
+            "folderName": "Folder 1",
+            "openDt": "12 Aug 2019 00:00",
+            "closeDt": "20 Dec 2019 23:59",
+            "status": "open",
+            "allowStudentUpload": "true",
+            "studentUploadOpenDt": "12 Aug 2019 23:59",
+            "studentUploadCloseDt": "20 Sep 2019 23:59"
+        },
+        {
+            "folderId": "folder2",
+            "folderName": "Folder 2",
+            "openDt": "12 Aug 2019 00:00",
+            "closeDt": "20 Dec 2019 23:59",
+            "status": "open",
+            "allowStudentUpload": "true",
+            "studentUploadOpenDt": "12 Aug 2019 23:59",
+            "studentUploadCloseDt": "20 Sep 2019 23:59"
+        },
+        {
+            "folderId": "folder3",
+            "folderName": "Folder 3",
+            "openDt": "12 Aug 2019 00:00",
+            "closeDt": "20 Dec 2019 23:59",
+            "status": "closed",
+            "allowStudentUpload": "false",
+            "studentUploadOpenDt": "",
+            "studentUploadCloseDt": ""
+        }
+    ],
+    "moduleAdhocFeedback": [
+        {
+            "feedbackId": "feedback1",
+            "submittedDt": "15 Aug 2019 11:45",
+            "title": "Feedback 1",
+            "content": "Details of feedback"
+        },
+        {
+            "feedbackId": "feedback2",
+            "submittedDt": "22 Aug 2019 7:32",
+            "title": "Feedback 2",
+            "content": "Details of feedback"
+        },
+        {
+            "feedbackId": "feedback3",
+            "submittedDt": "8 Sep 2019 19:40",
+            "title": "Feedback 3",
+            "content": "Details of feedback"
+        },
+        {
+            "feedbackId": "feedback4",
+            "submittedDt": "20 Sep 2019 15:20",
+            "title": "Feedback 4",
+            "content": "Details of feedback"
+        }
+    ],
+    "multimedia": [
+        {
+            "multimediaId": "multimedia1",
+            "name": "Multimedia 1",
+            "openDt": "12 Aug 2019 00:00",
+            "closeDt": "20 Dec 2019 23:59",
+            "uploadDt": "18 Aug 2019 08:00"
+        },
+        {
+            "multimediaId": "multimedia2",
+            "name": "Multimedia 2",
+            "openDt": "12 Aug 2019 00:00",
+            "closeDt": "20 Dec 2019 23:59",
+            "uploadDt": "18 Aug 2019 08:00"
+        },
+        {
+            "multimediaId": "multimedia3",
+            "name": "Multimedia 3",
+            "openDt": "12 Aug 2019 00:00",
+            "closeDt": "20 Dec 2019 23:59",
+            "uploadDt": "18 Aug 2019 08:00"
+        }
+    ],
+    "selectedMultimedia": {
+        "multimediaId": "multimediaTest",
+        "name": "Multimedia Test",
+        "location": "test_video.mp4"
+    }
+}

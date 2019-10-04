@@ -37,3 +37,19 @@ a.border.nav-link.border-light.rounded.mr-1:hover {
   background-size: cover;
   filter: opacity(.1);
 }
+.loginPage {
+  position: relative;
+  top: -15px;
+  margin-bottom: -125px;
+}
+
+.loginPage::after {
+  content: '';
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background: url('https://cdn.shopify.com/s/files/1/0075/7799/3331/products/Online_Education_331dab4d-bfee-4fba-a166-c78e531fa459_1024x1024@2x.jpg?v=1532341336');
+  background-position: center center;
+  background-size: cover;
+  filter: opacity(.5);
+}

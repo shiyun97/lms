@@ -1,6 +1,9 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
+import { MDBContainer, MDBCol, MDBRow, MDBJumbotron } from "mdbreact";
+import { observer, inject } from 'mobx-react';
 
+// FREE
 import NavigationNavPage from "./pages/NavigationNavPage";
 import FormsNavPage from "./pages/FormsNavPage";
 import TablesNavPage from "./pages/TablesNavPage";
@@ -8,8 +11,6 @@ import AddonsNavPage from "./pages/AddonsNavPage";
 import ModalsNavPage from "./pages/ModalsNavPage";
 import AdvancedNavPage from "./pages/AdvancedNavPage";
 import ComponentsNavPage from "./pages/ComponentsNavPage";
-
-// FREE
 import AnimationPage from "./pages/AnimationPage";
 import AlertPage from "./pages/AlertPage";
 import HomePage from "./pages/HomePage";
@@ -60,15 +61,119 @@ import PillsPage from './pages/PillsPage';
 import NotificationPage from './pages/NotificationPage';
 import InputGroupPage from './pages/InputGroupPage'
 import TreeviewPage from './pages/TreeviewPage'
-import DashboardPage from './pages/DashboardPage';
+import AnalyticsPage from './pages/AnalyticsPage';
 
+// LMS IMPORTS
+import PublicLoginPage from './dev/PublicLoginPage';
+import RegisterPage from './dev/RegisterPage';
+import ModuleOverviewPage from './dev/ModuleOverviewPage';
+import ModuleDetailsPage from './dev/ModuleDetailsPage';
+import ModuleAnnouncementsPage from './dev/ModuleAnnouncementsPage';
+import ModuleClassGroupsPage, { StudentRosterDetails, ClassGroupDetailsStyled, LectureGroupDetailsStyled, TutorialGroupDetailsStyled } from './dev/ModuleClassGroupsPage';
+import ModuleFilesPage from './dev/ModuleFilesPage';
+import ModuleForumPage from './dev/ModuleForumPage';
+import ModuleGradebookPage from './dev/ModuleGradebookPage';
+import ModuleQuizPage from './dev/ModuleQuizPage';
+import ModuleMultimediaPage, { ModuleMultimediaDetailsPage } from './dev/ModuleMultimediaPage';
+import ModuleConsultationPage from './dev/ModuleConsultationPage';
+import ModuleAttendancePage from './dev/ModuleAttendancePage';
+import ModuleFeedbackPage from './dev/ModuleFeedbackPage';
+import DashboardPage from './dev/DashboardPage';
+import ModulesPage from './dev/ModulesPage';
+import UsersManagementPage from './dev/UsersManagementPage';
+import CourseManagementDashboard from './dev/CourseManagementDashboard'
+import CourseManagementMyCourses from './dev/CourseManagementMyCourses';
+import CourseManagementExploreCourses from './dev/CourseManagementExploreCourses'
+import UserProfilePage from "./dev/UserProfilePage";
+import UnderMaintenancePage from "./dev/UnderMaintenancePage";
+import AdminLoginPage from "./dev/Admin/AdminLoginPage";
+import StudentLoginPage from "./dev/Student/StudentLoginPage";
 
+@inject('dataStore')
+@observer
 class Routes extends React.Component {
+
   render() {
+
+    // print login status
+    // console.log(this.props.dataStore.getSignInStatus)
+
+    const PrivateRoute = ({ path: Path, component: Component, ...rest }) => (
+      <Route {...rest} render={(props) => (
+        this.props.dataStore.getSignInStatus === true
+          ? <Component {...props} />
+          :
+          <>
+            {this.props.dataStore.setPath(Path)}
+            <Redirect to='/login' />
+          </>
+      )
+      }
+      />
+    )
+
+    const AdminPrivateRoute = ({ path: Path, component: Component, ...rest }) => (
+      <Route {...rest} render={(props) => (
+        this.props.dataStore.getSignInStatus === true
+          ? <Component {...props} />
+          :
+          <>
+            {this.props.dataStore.setPath(Path)}
+            <Redirect to='/admin' />
+          </>
+      )
+      }
+      />
+    )
     return (
       <Switch>
-        <Route exact path="/" component={HomePage} />
+        <Route exact path="/undermaintenance" component={UnderMaintenancePage} />
+        <Route exact path="/account" component={UserProfilePage} />
+
+        {/* LMS PAGES - Admin/ Teacher */}
+        <Route exact path="/admin" component={AdminLoginPage} />
+        <Route exact path="/users" component={UsersManagementPage} />
+
+        {/* LMS PAGES - Student */}
+        <Route exact path="/" component={StudentLoginPage} />
+        <Route exact path="/login" component={StudentLoginPage} />
         <Route exact path="/dashboard" component={DashboardPage} />
+        <Route exact path="/modules" component={ModulesPage} />
+        <Route exact path="/modules/:moduleId/" component={ModuleOverviewPage} />
+        <Route exact path="/modules/:moduleId/moduleDetails" component={ModuleDetailsPage} />
+        <Route exact path="/modules/:moduleId/announcements/" component={ModuleAnnouncementsPage} />
+        <Route exact path="/modules/:moduleId/announcements/active" component={ModuleAnnouncementsPage} />
+        <Route exact path="/modules/:moduleId/announcements/upcoming" component={ModuleAnnouncementsPage} />
+        <Route exact path="/modules/:moduleId/announcements/expired" component={ModuleAnnouncementsPage} />
+        <Route exact path="/modules/:moduleId/files" component={ModuleFilesPage} />
+        <Route exact path="/modules/:moduleId/files/:folderId" component={ModuleFilesPage} />
+        <Route exact path="/modules/:moduleId/students/" component={ModuleClassGroupsPage} />
+        <Route exact path="/modules/:moduleId/students/student-roster" component={ModuleClassGroupsPage} />
+        <Route exact path="/modules/:moduleId/students/class-groups" component={ModuleClassGroupsPage} />
+        <Route exact path="/modules/:moduleId/students/class-groups/:classGroupId" component={ClassGroupDetailsStyled} />
+        <Route exact path="/modules/:moduleId/students/lecture-groups" component={ModuleClassGroupsPage} />
+        <Route exact path="/modules/:moduleId/students/lecture-groups/:lectureGroupId" component={LectureGroupDetailsStyled} />
+        <Route exact path="/modules/:moduleId/students/tutorial-groups" component={ModuleClassGroupsPage} />
+        <Route exact path="/modules/:moduleId/students/tutorial-groups/:tutorialGroupId" component={TutorialGroupDetailsStyled} />
+        <Route exact path="/modules/:moduleId/forum" component={ModuleForumPage} />
+        <Route exact path="/modules/:moduleId/gradebook" component={ModuleGradebookPage} />
+        <Route exact path="/modules/:moduleId/quiz" component={ModuleQuizPage} />
+        <Route exact path="/modules/:moduleId/multimedia" component={ModuleMultimediaPage} />
+        <Route exact path="/modules/:moduleId/multimedia/:multimediaId" component={ModuleMultimediaDetailsPage} />
+        <Route exact path="/modules/:moduleId/consultation" component={ModuleConsultationPage} />
+        <Route exact path="/modules/:moduleId/attendance" component={ModuleAttendancePage} />
+        <Route exact path="/modules/:moduleId/feedback" component={ModuleFeedbackPage} />
+        <Route exact path="/coursesDashboard" component={CourseManagementDashboard} />
+        <Route exact path="/myCourses" component={CourseManagementMyCourses} />
+        <Route exact path="/exploreCourses" component={CourseManagementExploreCourses} />
+
+        {/* LMS PAGES - Public Student */}
+        <Route exact path="/public/login" component={PublicLoginPage} />
+        <Route exact path="/register" component={RegisterPage} />
+
+        {/* FREE Templates */}
+        <Route exact path="/home" component={HomePage} />
+        <Route exact path="/analytics" component={AnalyticsPage} />
         <Route exact path="/addons" component={AddonsNavPage} />
         <Route exact path="/advanced" component={AdvancedNavPage} />
         <Route exact path="/components" component={ComponentsNavPage} />
@@ -77,8 +182,6 @@ class Routes extends React.Component {
         <Route exact path="/modals" component={ModalsNavPage} />
         <Route exact path="/navigation" component={NavigationNavPage} />
         <Route exact path="/tables" component={TablesNavPage} />
-
-        {/* FREE */}
         <Route path="/addons/iframe" component={IframePage} />
         <Route path="/addons/edge-header" component={EdgeHeaderPage} />
         <Route path="/addons/notifications" component={NotificationPage} />
@@ -128,10 +231,20 @@ class Routes extends React.Component {
         <Route path="/tables/table-styles" component={TableStylesPage} />
         <Route path="/tables/datatable-api" component={DatatableApiPage} />
         <Route path="/tables/datatable" component={DatatablePage} />
-        
+
         <Route
           render={function () {
-            return <h1>Not Found</h1>;
+            return (
+              <MDBContainer style={{ paddingTop: 50, paddingBottom: 50 }} align="center">
+                <MDBRow>
+                  <MDBCol md="12" className="mt-3 mx-auto">
+                    <MDBJumbotron>
+                      <img src="http://kalashreeheritage.com/wp-content/uploads/2018/08/maxresdefault.jpg" width="50%" />
+                    </MDBJumbotron>
+                  </MDBCol>
+                </MDBRow>
+              </MDBContainer>
+            )
           }}
         />
       </Switch>

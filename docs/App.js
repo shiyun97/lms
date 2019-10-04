@@ -9,16 +9,35 @@ import {
   MDBFooter,
   MDBNavLink
 } from "mdbreact";
-import { ReactComponent as Logo } from "./assets/logo.svg";
 import { BrowserRouter as Router } from "react-router-dom";
-// import SideNavigation from './components/sideNavigation';
+import SideNav from './dev/SideNav';
 import Routes from "./Routes";
+import { observer, inject } from 'mobx-react'
 
+@inject('dataStore')
+@observer
 class App extends Component {
   state = {
     collapseID: ""
   };
-  
+
+  componentDidMount() {
+    if (localStorage.getItem("email") !== null) {
+      let email = localStorage.getItem("email")
+      let password = localStorage.getItem("password")
+      let accessRight = localStorage.getItem("accessRight")
+      let userId = localStorage.getItem("userId")
+      let gender = localStorage.getItem("gender")
+      let firstName = localStorage.getItem("firstName")
+      let lastName = localStorage.getItem("lastName")
+      let username = localStorage.getItem("username")
+      let path = localStorage.getItem("path")
+      path !== null && this.props.dataStore.setPath(path)
+      this.props.dataStore.setSignInStatus(true, email, password, accessRight)
+      this.props.dataStore.setUserDetails(userId, gender, firstName, lastName, username)
+    }
+  }
+
   toggleCollapse = collapseID => () =>
     this.setState(prevState => ({
       collapseID: prevState.collapseID !== collapseID ? collapseID : ""
@@ -42,12 +61,12 @@ class App extends Component {
 
     return (
       <Router>
-      {/* <SideNavigation /> */}
+        {this.props.dataStore.getSignInStatus && <SideNav />}
         <div className="flyout">
-          <MDBNavbar color="indigo" dark expand="md" scrolling>
-            <MDBNavbarBrand href="/" className="py-0 font-weight-bold">
-              <Logo style={{ height: "2.5rem", width: "2.5rem" }} />
-              <strong className="align-middle">MDB React</strong>
+          {/* <MDBNavbar color="indigo" dark expand="md" scrolling fixed="top">
+            <MDBNavbarBrand href="/" className="py-0 font-weight-bold" style={{ paddingLeft: "80px" }}>
+              <img src="https://img.icons8.com/ios-filled/50/ffffff/graduation-cap.png" style={{ height: "1.5rem", width: "2rem", paddingRight: "10px" }} />
+              <strong className="align-middle">FLIPIT</strong>
             </MDBNavbarBrand>
             <MDBNavbarToggler
               onClick={this.toggleCollapse("mainNavbarCollapse")}
@@ -61,95 +80,23 @@ class App extends Component {
                 <MDBNavItem>
                   <MDBNavLink
                     exact
-                    to="/"
+                    to="/home"
                     onClick={this.closeCollapse("mainNavbarCollapse")}
                   >
                     <strong>Home</strong>
                   </MDBNavLink>
                 </MDBNavItem>
-                <MDBNavItem>
-                  <MDBNavLink
-                    onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/dashboard"
-                  >
-                    <strong>Dashboard</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
-                <MDBNavItem>
-                  <MDBNavLink
-                    onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/css"
-                  >
-                    <strong>CSS</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
-                <MDBNavItem>
-                  <MDBNavLink
-                    onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/components"
-                  >
-                    <strong>Components</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
-                <MDBNavItem>
-                  <MDBNavLink
-                    onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/advanced"
-                  >
-                    <strong>Advanced</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
-                <MDBNavItem>
-                  <MDBNavLink
-                    onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/navigation"
-                  >
-                    <strong>Navigation</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
-                <MDBNavItem>
-                  <MDBNavLink
-                    onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/forms"
-                  >
-                    <strong>Forms</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
-                <MDBNavItem>
-                  <MDBNavLink
-                    onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/tables"
-                  >
-                    <strong>Tables</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
-                <MDBNavItem>
-                  <MDBNavLink
-                    onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/modals"
-                  >
-                    <strong>Modals</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
-                <MDBNavItem>
-                  <MDBNavLink
-                    onClick={this.closeCollapse("mainNavbarCollapse")}
-                    to="/addons"
-                  >
-                    <strong>Addons</strong>
-                  </MDBNavLink>
-                </MDBNavItem>
               </MDBNavbarNav>
             </MDBCollapse>
-          </MDBNavbar>
+          </MDBNavbar> */}
           {collapseID && overlay}
-          <main style={{ marginTop: "4rem" }}>
+          {/* <main style={{ marginTop: "3rem" }}> */}
+          <main>
             <Routes />
           </main>
           <MDBFooter color="indigo">
             <p className="footer-copyright mb-0 py-3 text-center">
-              &copy; {new Date().getFullYear()} Copyright:
-              <a href="https://www.MDBootstrap.com"> MDBootstrap.com </a>
+              &copy; {new Date().getFullYear()} Copyright Learning Management Platform
             </p>
           </MDBFooter>
         </div>
