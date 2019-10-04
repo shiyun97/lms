@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBRow, MDBCol, MDBDataTable, MDBBtn, MDBCard, MDBCardBody, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
+import { MDBRow, MDBCol, MDBDataTable, MDBBtn, MDBCard, MDBCardBody } from "mdbreact";
 import axios from 'axios';
 import { observer, inject } from 'mobx-react'
 

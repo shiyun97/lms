@@ -35,6 +35,7 @@ class ModulesPageStudent extends Component {
         return (
             <MDBCol md="12">
                 <hr className="my-5" />
+              {this.props.dataStore.getModules.length === 0 && <h5>No modules available.</h5>}
                 <MDBRow id="categories">
                 {this.props.dataStore.getModules.map((mod) =>
                   <MDBCol md="3" key={mod.moduleId}>

@@ -44,24 +44,25 @@ class DashboardPageStudent extends Component {
             </p>
             <MDBRow>
               <MDBCol md="12" className="mt-4">
+                {this.props.dataStore.getModules.length === 0 && <h5>No modules available.</h5>}
                 <MDBRow id="categories">
-                {this.props.dataStore.getModules.map((mod) =>
-                  <MDBCol md="4" key={mod.moduleId}>
-                    <MDBAnimation reveal type="fadeInUp">
-                      <NavLink to={`/modules/${mod.moduleId}/`} activeClassName="activeClass">
-                        <MDBCard cascade className="my-3 grey lighten-4">
-                          <MDBCardBody cascade>
-                            <h6>{mod.code}</h6>
-                            <MDBCardTitle>{mod.title}</MDBCardTitle>
-                            <MDBCardText style={{ paddingTop: 40 }}>
-                              AY{this.props.dataStore.getYear} SEM{this.props.dataStore.getSem} <br />
-                              Prof. {mod.assignedTeacher.firstName} {mod.assignedTeacher.lastName}
-                          </MDBCardText>
-                          </MDBCardBody>
-                        </MDBCard>
-                      </NavLink>
-                    </MDBAnimation>
-                  </MDBCol>
+                  {this.props.dataStore.getModules.map((mod) =>
+                    <MDBCol md="4" key={mod.moduleId}>
+                      <MDBAnimation reveal type="fadeInUp">
+                        <NavLink to={`/modules/${mod.moduleId}/`} activeClassName="activeClass">
+                          <MDBCard cascade className="my-3 grey lighten-4">
+                            <MDBCardBody cascade>
+                              <h6>{mod.code}</h6>
+                              <MDBCardTitle>{mod.title}</MDBCardTitle>
+                              <MDBCardText style={{ paddingTop: 40 }}>
+                                AY{this.props.dataStore.getYear} SEM{this.props.dataStore.getSem} <br />
+                                Prof. {mod.assignedTeacher.firstName} {mod.assignedTeacher.lastName}
+                              </MDBCardText>
+                            </MDBCardBody>
+                          </MDBCard>
+                        </NavLink>
+                      </MDBAnimation>
+                    </MDBCol>
                   )}
                 </MDBRow>
               </MDBCol>

@@ -44,6 +44,7 @@ class DashboardPageTeacher extends Component {
             </p>
             <MDBRow>
               <MDBCol md="12" className="mt-4">
+                {this.props.dataStore.getModules.length === 0 && <h5>No modules available.</h5>}
                 <MDBRow id="categories">
                   {this.props.dataStore.getModules.map((mod) =>
                     <MDBCol md="4" key={mod.moduleId}>
