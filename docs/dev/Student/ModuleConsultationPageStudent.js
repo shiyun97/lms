@@ -46,6 +46,7 @@ class ModuleConsultationPageStudent extends Component {
             }
         ],
         rows: [],
+        bookedRows: [],
         openSnackbar: false,
         message: ""
     }
@@ -59,6 +60,21 @@ class ModuleConsultationPageStudent extends Component {
             .then(result => {
                 // console.log(result.data.consultationTimeslots)
                 this.setState({ status: "done", rows: result.data.consultationTimeslot })
+            })
+            .catch(error => {
+                this.setState({ status: "error" })
+                console.error("error in axios " + error);
+            });
+    }
+
+    getBookedConsultations = () => {
+        const userId = this.props.dataStore.getUserId;
+        axios
+            // .get("http://localhost:3001/allConsultations")
+            .get(`http://localhost:8080/LMS-war/webresources/Consultation/viewConsultationByStudent?userId=${userId}`)
+            .then(result => {
+                // console.log(result.data.consultationTimeslots)
+                this.setState({ status: "done", bookedRows: result.data })
             })
             .catch(error => {
                 this.setState({ status: "error" })
@@ -80,11 +96,14 @@ class ModuleConsultationPageStudent extends Component {
 
     componentDidMount() {
         this.getAllAvailableConsultations();
+        this.getBookedConsultations();
     }
 
     componentDidUpdate() {
-        if (this.state.status === "recallConsultations")
+        if (this.state.status === "recallConsultations") {
             this.getAllAvailableConsultations();
+            this.getBookedConsultations();
+        }
     }
 
     bookConsultationSlot = (consultationId) => {
@@ -103,21 +122,17 @@ class ModuleConsultationPageStudent extends Component {
             });
     }
 
-    removeConsultationSlot = (row) => {
+    dropConsultationSlot = (consultationId) => {
         axios
-            .put(`http://localhost:3001/allConsultations/${row.id}`, {
-                studentId: 0,
-                date: row.date,
-                startTime: row.startTime,
-                endTime: row.endTime
-            })
+            // .put(`http://localhost:3001/allConsultations/${row.id}`)
+            .post(`http://localhost:8080/LMS-war/webresources/Consultation/dropConsultation?consultationTimeslotId=${consultationId}`)
             .then(result => {
                 // console.log(result.data)
-                this.setState({ message: "done" })
-                console.log("remove successful")
+                this.setState({ status: "recallConsultations", message: "Consultation slot dropped!", openSnackbar: true })
+                // console.log("remove successful")
             })
             .catch(error => {
-                this.setState({ message: "error" })
+                this.setState({ message: error.response.data.errorMessage, openSnackbar: true })
                 console.error("error in axios " + error);
             });
     }
@@ -128,10 +143,10 @@ class ModuleConsultationPageStudent extends Component {
     }
 
     render() {
-        var newRows = []
+        var availableConsultations = []
         const row = this.state.rows
         for (let i = 0; i < row.length; i++) {
-            newRows.push({
+            availableConsultations.push({
                 consultationId: row[i].consultationTsId,
                 // date: row[i].startD,
                 // startTime: row[i].startTs,
@@ -140,22 +155,42 @@ class ModuleConsultationPageStudent extends Component {
                 startTime: "",
                 endTime: "",
                 button: <MDBBtn size="small" onClick={() => this.bookConsultationSlot(row[i].consultationTsId)} color="primary">Book Slot</MDBBtn>
-                // : <MDBBtn size="small" onClick={() => this.removeConsultationSlot(row[i])} color="primary">Drop Slot</MDBBtn>
             })
         }
-        const data = { columns: this.state.columns, rows: newRows }
-        const widerData = {
-            columns: [...data.columns.map(col => {
+        const avaiData = { columns: this.state.columns, rows: availableConsultations }
+        const availableConsultationData = {
+            columns: [...avaiData.columns.map(col => {
                 col.width = 200;
                 return col;
-            })], rows: [...data.rows]
+            })], rows: [...avaiData.rows]
+        }
+        var bookedConsultations = []
+        const bookedRow = this.state.bookedRows
+        for (let i = 0; i < bookedRow.length; i++) {
+            bookedConsultations.push({
+                consultationId: bookedRow[i].consultationTsId,
+                // date: bookedRow[i].startD,
+                // startTime: bookedRow[i].startTs,
+                // endTime: bookedRow[i].endTs,
+                date: "",
+                startTime: "",
+                endTime: "",
+                button: <MDBBtn size="small" onClick={() => this.dropConsultationSlot(bookedRow[i].consultationTsId)} color="primary">Drop Slot</MDBBtn>
+            })
+        }
+        const bookedData = { columns: this.state.columns, rows: bookedConsultations }
+        const bookedConsultationData = {
+            columns: [...bookedData.columns.map(col => {
+                col.width = 200;
+                return col;
+            })], rows: [...bookedData.rows]
         }
         return (
             <>
                 <MDBRow style={{ paddingTop: 60 }}>
                     <MDBCol md="12">
                         <h2 className="font-weight-bold">
-                            Consultation Slots
+                            Available Consultation Slots
   </h2>
                     </MDBCol>
                 </MDBRow>
@@ -163,7 +198,23 @@ class ModuleConsultationPageStudent extends Component {
                     <MDBCol md="12">
                         <MDBCard>
                             <MDBCardBody>
-                                <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={widerData} pagesAmount={4} />
+                                <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={availableConsultationData} pagesAmount={4} />
+                            </MDBCardBody>
+                        </MDBCard>
+                    </MDBCol>
+                </MDBRow>
+                <MDBRow style={{ paddingTop: 60 }}>
+                    <MDBCol md="12">
+                        <h2 className="font-weight-bold">
+                            Booked Consultation Slots
+  </h2>
+                    </MDBCol>
+                </MDBRow>
+                <MDBRow className="py-3">
+                    <MDBCol md="12">
+                        <MDBCard>
+                            <MDBCardBody>
+                                <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={bookedConsultationData} pagesAmount={4} />
                             </MDBCardBody>
                         </MDBCard>
                     </MDBCol>
