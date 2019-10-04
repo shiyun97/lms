@@ -231,7 +231,7 @@ class ModuleFilesPage extends Component {
                             createdDt: dateCreatedDt + " " + timeCreatedDt,
                             uploadedBy: files[key].uploader.firstName + " " + files[key].uploader.lastName,
                             action: (<div>
-                                <MDBBtn color="primary" size="sm" onClick={e => downloadFileMethod(files[key].name)}>
+                                <MDBBtn color="primary" size="sm" onClick={e => downloadFileMethod(files[key].fileId, files[key].name)}>
                                     Download
                                 </MDBBtn>
                                 <MDBBtn color="danger" size="sm" onClick={e => deleteFileMethod(files[key].fileId)}>
@@ -326,16 +326,22 @@ class ModuleFilesPage extends Component {
             });
     }
 
-    downloadFile = (name) => {
-        console.log(name);
-        var a = document.createElement("a");
-        a.href = FILE_SERVER + name; // url
-        a.setAttribute("download", name);
-        a.style.display = "none";
-        //document.body.appendChild(a);
-        //a.target = "blank";
-        a.click();
-        //document.body.removeChild(a);
+    downloadFile = (fileId, fileName) => {
+        fetch(API_URL + "/file/downloadFile?fileId=" + fileId, {
+            method: 'get'
+        })
+        .then((response) => {
+            response.blob().then(blob => {
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.href = url;
+                link.download = fileName;
+                link.click();
+            })
+        }).catch(error => {
+            console.error(error);
+            alert("An error occurred!");
+        });
     }
 
     toggleModal = nr => () => {
