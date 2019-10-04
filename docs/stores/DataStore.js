@@ -36,6 +36,12 @@ class DataStore {
     this.email = "";
     this.password = "";
     this.accessRight = "";
+    this.modules = [];
+    this.userId = "";
+    this.username = "";
+    this.gender = "";
+    this.firstName = "";
+    this.lastName = "";
     this.path = "/dashboard"
     localStorage.clear();
   }
