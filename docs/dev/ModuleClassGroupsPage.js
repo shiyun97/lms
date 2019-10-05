@@ -25,6 +25,7 @@ import SectionContainer from "../components/sectionContainer";
 import ModuleSideNavigation from "./ModuleSideNavigation";
 import axios from "axios";
 import 'babel-polyfill';
+import Snackbar from '@material-ui/core/Snackbar';
 
 const API_URL = "http://localhost:8080/LMS-war/webresources";
 
@@ -128,7 +129,20 @@ class ModuleClassGroupsPage extends Component {
         classGroupMaxEnrollmentInput: "",
         classGroupSelfEnrollmentOpenDateInput: "",
         classGroupSelfEnrollmentCloseDateInput: "",
+        openSnackbar: false,
+        message: ""
     }
+
+    handleOpenSnackbar = () => {
+        this.setState({ openSnackbar: true });
+    };
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        this.setState({ openSnackbar: false });
+    };
 
     componentDidMount() {
         this.initPage();
@@ -183,7 +197,13 @@ class ModuleClassGroupsPage extends Component {
                     });
                 })
                 .catch(error => {
+                    this.setState({
+                        status: "error",
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    });
                     console.error("error in axios " + error);
+                    
                 });
 
             // retrieve class groups
@@ -221,6 +241,11 @@ class ModuleClassGroupsPage extends Component {
                     });
                 })
                 .catch(error => {
+                    this.setState({
+                        status: "error",
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    });
                     console.error("error in axios " + error);
                 });
             
@@ -265,6 +290,11 @@ class ModuleClassGroupsPage extends Component {
                     });
                 })
                 .catch(error => {
+                    this.setState({
+                        status: "error",
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    });
                     console.error("error in axios " + error);
                 });
         }
@@ -300,6 +330,11 @@ class ModuleClassGroupsPage extends Component {
                 });
             })
             .catch(error => {
+                this.setState({
+                    status: "error",
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                });
                 console.error("error in axios " + error);
             });
     }
@@ -374,11 +409,18 @@ class ModuleClassGroupsPage extends Component {
                         classGroupMaxEnrollmentInput: "",
                         classGroupSelfEnrollmentOpenDateInput: "",
                         classGroupSelfEnrollmentCloseDateInput: "",
+                        message: "Class group created successfully!",
+                        openSnackbar: true
                     });
-                    alert("Class group created successfully!")
+                    //alert("Class group created successfully!")
                     return this.initPage()
                 })
                 .catch(error => {
+                    this.setState({
+                        status: "error",
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    });
                     console.error("error in axios " + error);
                     return this.initPage()
                 });
@@ -537,6 +579,7 @@ class ModuleClassGroupsPage extends Component {
                                                     <input type="number" className="form-control" name="classGroupMaxEnrollmentInput"
                                                         value={this.state.classGroupMaxEnrollmentInput}
                                                         onChange={this.inputChangeHandler}
+                                                        min={1}
                                                         required />
                                                 </div>
                                             </div>
@@ -623,6 +666,22 @@ class ModuleClassGroupsPage extends Component {
                                 </MDBRow>
                             </MDBTabPane>
                         </MDBTabContent>
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            open={this.state.openSnackbar}
+                            autoHideDuration={6000}
+                            onClose={this.handleClose}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">{this.state.message}</span>}
+                            action={[
+                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                            ]}
+                        />
                     </MDBContainer>
                 </div>
             </div>
@@ -909,8 +968,22 @@ export class ClassGroupDetails extends Component {
             studentIdToRemove: "",
             studentNameToRemove: ""
         },
-        allowSignUp: false
+        allowSignUp: false,
+        message: "",
+        openSnackbar: false
     }
+
+    handleOpenSnackbar = () => {
+        this.setState({ openSnackbar: true });
+    };
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackbar: false });
+    };
 
     componentDidMount() {
         this.initPage();
@@ -977,6 +1050,11 @@ export class ClassGroupDetails extends Component {
                     });
                 })
                 .catch(error => {
+                    this.setState({
+                        status: "error",
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    });
                     console.error("error in axios " + error);
                 });
         }
@@ -1012,7 +1090,13 @@ export class ClassGroupDetails extends Component {
                 return this.initPage();
             })
             .catch(error => {
-                alert(JSON.stringify(error.response.data.errorMessage));
+                //alert(JSON.stringify(error.response.data.errorMessage));
+                this.setState({
+                    status: "error",
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                });
+                console.error("error in axios " + error);
                 return this.initPage();
             })
         /*this.setState({
@@ -1055,6 +1139,11 @@ export class ClassGroupDetails extends Component {
                 });
             })
             .catch(error => {
+                this.setState({
+                    status: "error",
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                });
                 console.error("error in axios " + error);
             });
     }
@@ -1066,16 +1155,20 @@ export class ClassGroupDetails extends Component {
             .then((result) => {
                 this.setState({
                     ...this.state,
+                    message: "Student (" + studentId + ") joined class group successfully!",
+                    openSnackbar: true,
                     modalAddStudent: false
                 })
                 return this.initPage();
             })
             .catch(error => {
-                alert(JSON.stringify(error.response.data.errorMessage));
                 this.setState({
                     ...this.state,
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true,
                     modalAddStudent: false
                 })
+                console.error("error in axios " + error);
                 return this.initPage();
             })
     }
@@ -1089,16 +1182,20 @@ export class ClassGroupDetails extends Component {
             .then((result) => {
                 this.setState({
                     ...this.state,
+                    message: "Student (" + studentId + ") joined class group successfully!",
+                    openSnackbar: true,
                     modalAddStudent: false
                 })
                 return this.initPage();
             })
             .catch(error => {
-                alert(JSON.stringify(error.response.data.errorMessage));
                 this.setState({
                     ...this.state,
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true,
                     modalAddStudent: false
                 })
+                console.error("error in axios " + error);
                 return this.initPage();
             })
     }
@@ -1201,7 +1298,7 @@ export class ClassGroupDetails extends Component {
                                     </MDBCol>
                                 </MDBRow>
 
-                                <MDBModal centered isOpen={this.state.modalAddStudent} toggle={this.toggleModal("AddStudent")}>
+                                <MDBModal isOpen={this.state.modalAddStudent} toggle={this.toggleModal("AddStudent")}>
                                     <MDBModalHeader
                                         className="text-center"
                                         titleClass="w-100 font-weight-bold"
@@ -1239,7 +1336,7 @@ export class ClassGroupDetails extends Component {
                                         }
                                     </MDBCol>
                                 </MDBRow>
-                                <MDBModal centered isOpen={this.state.modalRemoveConfirm} toggle={this.toggleModal("RemoveConfirm")}>
+                                <MDBModal isOpen={this.state.modalRemoveConfirm} toggle={this.toggleModal("RemoveConfirm")}>
                                     <MDBModalHeader toggle={this.toggleModal("RemoveConfirm")} className="text-center" titleClass="w-100">
                                         Remove {this.state.studentToRemove.studentNameToRemove}?
                                     </MDBModalHeader>
@@ -1252,6 +1349,22 @@ export class ClassGroupDetails extends Component {
                                 </MDBModal>
                             </MDBTabPane>
                         </MDBTabContent>
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            open={this.state.openSnackbar}
+                            autoHideDuration={6000}
+                            onClose={this.handleClose}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">{this.state.message}</span>}
+                            action={[
+                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                            ]}
+                        />
                     </MDBContainer>
                 </div>
             </div>
@@ -1281,8 +1394,22 @@ class LectureGroupDetails extends Component {
                 }
             ],
             rows: []
-        }
+        },
+        message: "",
+        openSnackbar: false
     }
+
+    handleOpenSnackbar = () => {
+        this.setState({ openSnackbar: true });
+    };
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackbar: false });
+    };
 
     componentDidMount() {
         this.initPage();
@@ -1317,6 +1444,11 @@ class LectureGroupDetails extends Component {
                     });
                 })
                 .catch(error => {
+                    this.setState({
+                        status: "error",
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    });
                     console.error("error in axios " + error);
                 });
         }
@@ -1396,6 +1528,22 @@ class LectureGroupDetails extends Component {
                                 </MDBRow>
                             </MDBTabPane>
                         </MDBTabContent>
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            open={this.state.openSnackbar}
+                            autoHideDuration={6000}
+                            onClose={this.handleClose}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">{this.state.message}</span>}
+                            action={[
+                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                            ]}
+                        />
                     </MDBContainer>
                 </div>
             </div>
@@ -1425,7 +1573,21 @@ export class TutorialGroupDetails extends Component {
             ],
             rows: []
         },
+        message: "",
+        openSnackbar: ""
     }
+
+    handleOpenSnackbar = () => {
+        this.setState({ openSnackbar: true });
+    };
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackbar: false });
+    };
 
     componentDidMount() {
         this.initPage();
@@ -1461,6 +1623,11 @@ export class TutorialGroupDetails extends Component {
                     });
                 })
                 .catch(error => {
+                    this.setState({
+                        status: "error",
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    });
                     console.error("error in axios " + error);
                 });
         }
@@ -1547,6 +1714,22 @@ export class TutorialGroupDetails extends Component {
                                 </MDBRow>
                             </MDBTabPane>
                         </MDBTabContent>
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            open={this.state.openSnackbar}
+                            autoHideDuration={6000}
+                            onClose={this.handleClose}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">{this.state.message}</span>}
+                            action={[
+                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                            ]}
+                        />
                     </MDBContainer>
                 </div>
             </div>

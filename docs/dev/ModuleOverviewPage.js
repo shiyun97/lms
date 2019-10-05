@@ -15,6 +15,7 @@ import ModuleSideNavigation from "./ModuleSideNavigation";
 import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
 import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
+import Snackbar from '@material-ui/core/Snackbar';
 
 const API_URL = "http://localhost:8080/LMS-war/webresources";
 
@@ -32,8 +33,22 @@ class ModuleOverviewPage extends Component {
             department: "",
             faculty: ""
         },
-        modalEdit: false
+        modalEdit: false,
+        message: "",
+        openSnackbar: ""
     }
+
+    handleOpenSnackbar = () => {
+        this.setState({ openSnackbar: true });
+    };
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackbar: false });
+    };
 
     componentDidMount() {
         this.initPage();
@@ -65,8 +80,12 @@ class ModuleOverviewPage extends Component {
                     }
                 })
                 .catch(error => {
-                console.error("error in axios " + error);
-            });
+                    this.setState({
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    });
+                    console.error("error in axios " + error);
+                });
         }
     }
 
@@ -166,6 +185,22 @@ class ModuleOverviewPage extends Component {
                                 </SectionContainer>
                             </MDBCol>
                         </MDBRow>
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            open={this.state.openSnackbar}
+                            autoHideDuration={6000}
+                            onClose={this.handleClose}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">{this.state.message}</span>}
+                            action={[
+                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                            ]}
+                        />
                     </MDBContainer>
                 </div>
             </div>

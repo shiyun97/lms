@@ -20,6 +20,7 @@ import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
 import 'babel-polyfill';
 import Dropzone from 'react-dropzone';
+import Snackbar from '@material-ui/core/Snackbar';
 //import { access } from "fs";
 
 const API_URL = "http://localhost:8080/LMS-war/webresources";
@@ -88,8 +89,22 @@ class ModuleMultimediaPage extends Component {
             rows: []
         },
         modalUploadMultimedia: false,
-        uploadedMultimedia: []
+        uploadedMultimedia: [],
+        message: "",
+        openSnackbar: ""
     }
+
+    handleOpenSnackbar = () => {
+        this.setState({ openSnackbar: true });
+    };
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackbar: false });
+    };
 
     componentDidMount() {
         this.initPage();
@@ -144,6 +159,10 @@ class ModuleMultimediaPage extends Component {
                     });
                 })
                 .catch(error => {
+                    this.setState({
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    })
                     console.error("error in axios " + error);
                 });
         }
@@ -190,11 +209,18 @@ class ModuleMultimediaPage extends Component {
         axios
             .delete(API_URL + "/file/deleteFile?fileId=" + fileId)
             .then((result) => {
+                this.setState({
+                    message: "File (" + fileId + ") deleted successfully!",
+                    openSnackbar: true
+                })
                 return this.initPage();
             })
             .catch(error => {
-                console.error(error);
-                alert("An error occurred!");
+                this.setState({
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                })
+                console.error("error in axios " + error);
             });
     }
 
@@ -275,16 +301,21 @@ class ModuleMultimediaPage extends Component {
                 body: formData
             })
             .then((result) => {
-                console.log(result)
                 this.setState({
                     ...this.state,
+                    message: "New multimedia file uploaded successfully!",
+                    openSnackbar: true,
                     modalUploadMultimedia: false
                 })
                 return this.initPage();
             })
             .catch(error => {
-                console.error(error);
-                alert("An error occurred!");
+                this.setState({
+                    modalUploadMultimedia: false,
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                })
+                console.error("error in axios " + error);
             });
         }
     }
@@ -384,6 +415,22 @@ class ModuleMultimediaPage extends Component {
                                 }
                             </MDBCol>
                         </MDBRow>
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            open={this.state.openSnackbar}
+                            autoHideDuration={6000}
+                            onClose={this.handleClose}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">{this.state.message}</span>}
+                            action={[
+                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                            ]}
+                        />
                     </MDBContainer>
                 </div>
             </div>

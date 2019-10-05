@@ -9,14 +9,12 @@ import {
     MDBModalFooter,
     MDBModalHeader,
     MDBBtn,
-    MDBTable,
-    MDBTableHead,
-    MDBTableBody,
-    MDBDataTable
+    MDBDataTable,
+    MDBIcon
 } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
-import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
+import Snackbar from '@material-ui/core/Snackbar';
 
 class ModuleFeedbackPage extends Component {
 
@@ -77,8 +75,22 @@ class ModuleFeedbackPage extends Component {
                 }
             ],
             rows: []
-        }
+        },
+        message: "",
+        openSnackbar: ""
     }
+
+    handleOpenSnackbar = () => {
+        this.setState({ openSnackbar: true });
+    };
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackbar: false });
+    };
 
     componentDidMount() {
         this.initPage();
@@ -121,6 +133,11 @@ class ModuleFeedbackPage extends Component {
                     })
                 })
                 .catch(error => {
+                    this.setState({
+                        editMode: false,
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    })
                     console.error("error in axios " + error);
                 });
 
@@ -218,20 +235,27 @@ class ModuleFeedbackPage extends Component {
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            }).then(() => {
+            })
+            .then(() => {
                 this.setState({
                     ...this.state,
                     modalAddFeedback: false,
                     addingFeedback: {
                         title: "",
                         content: ""
-                    }
+                    },
+                    message: "Feedback submitted successfully!",
+                    openSnackbar: true
                 });
-                alert("Feedback submitted successfully");
                 return this.initPage();
             })
                 .catch((error) => {
-                    console.log(error)
+                    this.setState({
+                        editMode: false,
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    })
+                    console.error("error in axios " + error);
                 })
         }
     }
@@ -270,7 +294,7 @@ class ModuleFeedbackPage extends Component {
                                 }
                                 {
                                     this.state.accessRight == "Teacher" && feedbacks.rows.length == 0 &&
-                                    <div>No feedback submitted</div>
+                                    <div className="mt-3">No feedback submitted</div>
                                 }
                                 <MDBModal
                                     backdrop={true}
@@ -333,6 +357,22 @@ class ModuleFeedbackPage extends Component {
                                 </MDBModal>
                             </MDBCol>
                         </MDBRow>
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            open={this.state.openSnackbar}
+                            autoHideDuration={6000}
+                            onClose={this.handleClose}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">{this.state.message}</span>}
+                            action={[
+                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                            ]}
+                        />
                     </MDBContainer>
                 </div>
             </div>

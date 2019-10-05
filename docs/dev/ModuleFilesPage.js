@@ -24,6 +24,7 @@ import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
 import 'babel-polyfill';
 import Dropzone from 'react-dropzone';
+import Snackbar from '@material-ui/core/Snackbar';
 
 const API_URL = "http://localhost:8080/LMS-war/webresources";
 
@@ -136,8 +137,22 @@ class ModuleFilesPage extends Component {
         folderStudentUploadInput: "",
         folderStudentUploadOpenDateInput: "",
         folderStudentUploadCloseDateInput: "",
-        uploadedFiles: []
+        uploadedFiles: [],
+        message: "",
+        openSnackbar: ""
     }
+
+    handleOpenSnackbar = () => {
+        this.setState({ openSnackbar: true });
+    };
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackbar: false });
+    };
 
     componentDidMount() {
         this.initPage();
@@ -288,6 +303,10 @@ class ModuleFilesPage extends Component {
                     });
                 })
                 .catch(error => {
+                    this.setState({
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    });
                     console.error("error in axios " + error);
                 });
         }
@@ -307,15 +326,22 @@ class ModuleFilesPage extends Component {
     }
 
     deleteFolder = (folderId) => {
-        console.log(folderId);
         axios
             .delete(API_URL + "/file/deleteFolder?folderId=" + folderId)
             .then((result) => {
+                this.setState({
+                    message: "Folder (" + folderId + ") deleted successfully!",
+                    openSnackbar: true
+                });
                 return this.initPage();
             })
             .catch(error => {
+                this.setState({
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                });
                 console.error("error in axios " + error);
-                alert("An error occurred!");
+                return this.initPage();
             });
         
     }
@@ -325,11 +351,19 @@ class ModuleFilesPage extends Component {
         axios
             .delete(API_URL + "/file/deleteFile?fileId=" + fileId)
             .then((result) => {
+                this.setState({
+                    message: "File (" + fileId + ") deleted successfully!",
+                    openSnackbar: true
+                });
                 return this.initPage();
             })
             .catch(error => {
-                console.error(error);
-                alert("An error occurred!");
+                this.setState({
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                });
+                console.error("error in axios " + error);
+                return this.initPage();
             });
     }
 
@@ -346,8 +380,12 @@ class ModuleFilesPage extends Component {
                 link.click();
             })
         }).catch(error => {
-            console.error(error);
-            alert("An error occurred!");
+            this.setState({
+                message: error.response.data.errorMessage,
+                openSnackbar: true
+            });
+            console.error("error in axios " + error);
+            return this.initPage();
         });
     }
 
@@ -433,13 +471,18 @@ class ModuleFilesPage extends Component {
                     folderStudentUploadInput: "",
                     folderStudentUploadOpenDateInput: "",
                     folderStudentUploadCloseDateInput: "",
+                    message: "New folder created successfully!",
+                    openSnackbar: true
                 });
-                alert("New folder created successfully!")
                 return this.initPage()
             })
                 .catch(error => {
+                    this.setState({
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    });
                     console.error("error in axios " + error);
-                    return this.initPage()
+                    return this.initPage();
                 });
         }
     }
@@ -489,9 +532,17 @@ class ModuleFilesPage extends Component {
             body: formData
         })
         .then((result) => {
-            console.log(result)
+            this.setState({
+                message: "File uploaded successfully!",
+                openSnackbar: true
+            });
+            return this.initPage()
         })
         .catch(error => {
+            this.setState({
+                message: error.response.data.errorMessage,
+                openSnackbar: true
+            });
             console.error("error in axios " + error);
             return this.initPage()
         });
@@ -605,13 +656,21 @@ class ModuleFilesPage extends Component {
                 console.log(result)
                 this.setState({
                     ...this.state,
-                    modalUploadFiles: false
+                    modalUploadFiles: false,
+                    message: "New file uploaded successfully!",
+                    openSnackbar: true
                 })
                 return this.initPage();
             })
             .catch(error => {
-                console.error(error);
-                alert("An error occurred!");
+                this.setState({
+                    ...this.state,
+                    modalUploadFiles: false,
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                });
+                console.error("error in axios " + error);
+                return this.initPage();
             });
         }
     }
@@ -637,8 +696,6 @@ class ModuleFilesPage extends Component {
             + ":" + this.twoDigits(today.getMinutes()) + ":"
             + this.twoDigits(today.getSeconds()) + timezone;
 
-        console.log(currentDate)
-        console.log(this.state)
         let allowStudentUpload = false;
         if (currentFolder.submission == true && (currentDate >= currentFolder.submissionOpenTs && currentDate <= currentFolder.submissionCloseTs)) {
             allowStudentUpload = true;
@@ -844,7 +901,22 @@ class ModuleFilesPage extends Component {
                                 </MDBCol>
                             </MDBRow>
                         }
-
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            open={this.state.openSnackbar}
+                            autoHideDuration={6000}
+                            onClose={this.handleClose}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">{this.state.message}</span>}
+                            action={[
+                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                            ]}
+                        />
                     </MDBContainer>
                 </div>
             </div>
