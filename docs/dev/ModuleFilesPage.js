@@ -262,7 +262,7 @@ class ModuleFilesPage extends Component {
                             createdDt: dateCreatedDt + " " + timeCreatedDt,
                             uploadedBy: files[key].uploader.firstName + " " + files[key].uploader.lastName,
                             action: (<div>
-                                <MDBBtn color="primary" size="sm" onClick={e => downloadFileMethod(files[key].name)}>
+                                <MDBBtn color="primary" size="sm" onClick={e => downloadFileMethod(files[key].fileId, files[key].name)}>
                                     Download
                                 </MDBBtn>
                                 {
@@ -368,6 +368,8 @@ class ModuleFilesPage extends Component {
     }
 
     downloadFile = (fileId, fileName) => {
+        console.log(fileName)
+        console.log(fileId)
         fetch(API_URL + "/file/downloadFile?fileId=" + fileId, {
             method: 'get'
         })
