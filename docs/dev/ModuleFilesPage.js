@@ -250,6 +250,13 @@ class ModuleFilesPage extends Component {
                                 <MDBBtn color="primary" size="sm" onClick={e => downloadFileMethod(files[key].name)}>
                                     Download
                                 </MDBBtn>
+                                {
+                                    files[key].uploader.userId == localStorage.getItem("userId") &&
+                                    <MDBBtn color="danger" size="sm" onClick={e => deleteFileMethod(files[key].fileId)}>
+                                        Delete
+                                    </MDBBtn>
+                                }
+                                
                             </div>)
                         }
                         filesArr.push(temp);
@@ -660,7 +667,7 @@ class ModuleFilesPage extends Component {
                                         </MDBBtn>
                                     }
                                     {
-                                        files.rows.length > 0 &&
+                                        files.rows.length > 0 && (this.state.accessRight == "Teacher" || (this.state.accessRight == "Student" && allowStudentUpload == true)) &&
                                         <MDBBtn color="primary lighten-2" outline className="mr-0" size="md" onClick={e => this.uploadFiles()}>
                                             Upload Files
                                         </MDBBtn>
@@ -676,7 +683,7 @@ class ModuleFilesPage extends Component {
                                             }
                                             {
                                                 (this.state.accessRight == "Teacher" || (this.state.accessRight == "Student" && allowStudentUpload == true)) &&
-                                                <MDBBtn color="primary lighten-2" outline className="mr-0" size="md" onClick={e => this.uploadFiles()}>
+                                                <MDBBtn color="primary lighten-2" outline className="mr-0" size="md" onClick={e => this.uploadFiles()} disabled={!this.state.folderId}>
                                                     Upload Files
                                                 </MDBBtn>
                                             }
