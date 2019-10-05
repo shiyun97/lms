@@ -148,12 +148,12 @@ class ModuleConsultationPageStudent extends Component {
         for (let i = 0; i < row.length; i++) {
             availableConsultations.push({
                 consultationId: row[i].consultationTsId,
-                // date: row[i].startD,
-                // startTime: row[i].startTs,
-                // endTime: row[i].endTs,
-                date: "",
-                startTime: "",
-                endTime: "",
+                date: row[i].startD,
+                startTime: row[i].startTs,
+                endTime: row[i].endTs,
+                // date: "",
+                // startTime: "",
+                // endTime: "",
                 button: <MDBBtn size="small" onClick={() => this.bookConsultationSlot(row[i].consultationTsId)} color="primary">Book Slot</MDBBtn>
             })
         }
@@ -169,12 +169,12 @@ class ModuleConsultationPageStudent extends Component {
         for (let i = 0; i < bookedRow.length; i++) {
             bookedConsultations.push({
                 consultationId: bookedRow[i].consultationTsId,
-                // date: bookedRow[i].startD,
-                // startTime: bookedRow[i].startTs,
-                // endTime: bookedRow[i].endTs,
-                date: "",
-                startTime: "",
-                endTime: "",
+                date: bookedRow[i].startD,
+                startTime: bookedRow[i].startTs,
+                endTime: bookedRow[i].endTs,
+                // date: "",
+                // startTime: "",
+                // endTime: "",
                 button: <MDBBtn size="small" onClick={() => this.dropConsultationSlot(bookedRow[i].consultationTsId)} color="primary">Drop Slot</MDBBtn>
             })
         }

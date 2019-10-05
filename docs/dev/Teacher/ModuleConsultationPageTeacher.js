@@ -229,13 +229,13 @@ class ModuleConsultationPageTeacher extends Component {
         for (let i = 0; i < row.length; i++) {
             newRows.push({
                 consultationId: row[i].consultationTsId,
-                // date: row[i].startD,
-                // startTime: row[i].startTs,
-                // endTime: row[i].endTs,
-                date: "",
-                startTime: "",
-                endTime: "",
-                booker: row[i].booker === null ? "-" : row[i].booker,
+                date: row[i].startD,
+                startTime: row[i].startTs,
+                endTime: row[i].endTs,
+                // date: "",
+                // startTime: "",
+                // endTime: "",
+                booker: row[i].booker === undefined ? "-" : row[i].booker,
                 button: <MDBBtn size="small" onClick={() => this.deleteConsultationSlot(row[i].consultationTsId)} color="primary">Delete</MDBBtn>
             })
         }
