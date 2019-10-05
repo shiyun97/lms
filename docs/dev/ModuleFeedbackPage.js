@@ -1,22 +1,20 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { 
-    MDBContainer, 
-    MDBRow, 
-    MDBCol, 
+import {
+    MDBContainer,
+    MDBRow,
+    MDBCol,
     MDBModal,
     MDBModalBody,
     MDBModalFooter,
     MDBModalHeader,
-    MDBBtn, 
-    MDBTable,
-    MDBTableHead, 
-    MDBTableBody,
-    MDBDataTable 
+    MDBBtn,
+    MDBDataTable,
+    MDBIcon
 } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
-import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
+import Snackbar from '@material-ui/core/Snackbar';
 
 class ModuleFeedbackPage extends Component {
 
@@ -77,8 +75,22 @@ class ModuleFeedbackPage extends Component {
                 }
             ],
             rows: []
-        }
+        },
+        message: "",
+        openSnackbar: ""
     }
+
+    handleOpenSnackbar = () => {
+        this.setState({ openSnackbar: true });
+    };
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackbar: false });
+    };
 
     componentDidMount() {
         this.initPage();
@@ -103,8 +115,8 @@ class ModuleFeedbackPage extends Component {
                     let idx = 1;
                     const method = this.viewFeedback;
                     Object.keys(data).forEach(function (key) {
-                        let date = data[key].createTs.substring(0,10);
-                        let time = data[key].createTs.substring(11,16);
+                        let date = data[key].createTs.substring(0, 10);
+                        let time = data[key].createTs.substring(11, 16);
                         let temp = {
                             index: idx,
                             createTs: date + " " + time,
@@ -121,6 +133,11 @@ class ModuleFeedbackPage extends Component {
                     })
                 })
                 .catch(error => {
+                    this.setState({
+                        editMode: false,
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    })
                     console.error("error in axios " + error);
                 });
 
@@ -218,20 +235,27 @@ class ModuleFeedbackPage extends Component {
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            }).then(() => {
+            })
+            .then(() => {
                 this.setState({
                     ...this.state,
                     modalAddFeedback: false,
                     addingFeedback: {
                         title: "",
                         content: ""
-                    }
+                    },
+                    message: "Feedback submitted successfully!",
+                    openSnackbar: true
                 });
-                alert("Feedback submitted successfully");
                 return this.initPage();
             })
                 .catch((error) => {
-                    console.log(error)
+                    this.setState({
+                        editMode: false,
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    })
+                    console.error("error in axios " + error);
                 })
         }
     }
@@ -247,11 +271,11 @@ class ModuleFeedbackPage extends Component {
                             <MDBCol>
                                 <MDBRow>
                                     <MDBCol>
-                                        <h4 className="mb-2">Feedback</h4>
+                                        <h2 className="font-weight-bold"> Feedback </h2>
                                         <hr className="my-3" />
                                         {
                                             this.state.accessRight == "Student" &&
-                                            <MDBBtn className="ml-0 mb-5" size="md" color="primary" onClick={e => { this.newAdhocFeedback()}}>New Adhoc Feedback</MDBBtn>
+                                            <MDBBtn className="ml-0 mb-5" size="md" color="primary" onClick={e => { this.newAdhocFeedback() }}>New Adhoc Feedback</MDBBtn>
                                         }
                                     </MDBCol>
                                 </MDBRow>
@@ -270,7 +294,7 @@ class ModuleFeedbackPage extends Component {
                                 }
                                 {
                                     this.state.accessRight == "Teacher" && feedbacks.rows.length == 0 &&
-                                    <div>No feedback submitted</div>
+                                    <div className="mt-3">No feedback submitted</div>
                                 }
                                 <MDBModal
                                     backdrop={true}
@@ -293,7 +317,7 @@ class ModuleFeedbackPage extends Component {
                                     isOpen={this.state.modalAddFeedback}
                                     toggle={this.toggle("AddFeedback")}
                                 >
-                                    <MDBModalHeader toggle={this.toggle("AddFeedback")}>New</MDBModalHeader>
+                                    <MDBModalHeader toggle={this.toggle("AddFeedback")}>Create New Feedback</MDBModalHeader>
                                     <form className="needs-validation" noValidate onSubmit={this.submitHandler}>
                                         <MDBModalBody>
                                             {/*<div className="form-row align-items-center">
@@ -333,10 +357,26 @@ class ModuleFeedbackPage extends Component {
                                 </MDBModal>
                             </MDBCol>
                         </MDBRow>
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            open={this.state.openSnackbar}
+                            autoHideDuration={6000}
+                            onClose={this.handleClose}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">{this.state.message}</span>}
+                            action={[
+                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                            ]}
+                        />
                     </MDBContainer>
                 </div>
             </div>
-          );
+        );
     }
 }
 

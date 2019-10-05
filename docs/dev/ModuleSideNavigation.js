@@ -4,6 +4,13 @@ import { NavLink } from 'react-router-dom';
 
 class ModuleSideNavigation extends Component {
 
+    clickLink = () => {
+        var a = document.createElement('a');
+        a.href = `/modules/${this.props.moduleId}/files`;
+        a.click();
+        return;
+    }
+
     render() {
         let moduleId = this.props.moduleId;
         let activeTab = this.props.activeTab;
@@ -36,7 +43,7 @@ class ModuleSideNavigation extends Component {
                         </MDBListGroupItem>
                     </NavLink>
                     <NavLink to={`/modules/${moduleId}/files`} activeClassName="activeClass">
-                        <MDBListGroupItem>
+                        <MDBListGroupItem onClick={e => this.clickLink()}>
                             <MDBIcon icon="file" className="mr-3 fa-fw"/>
                             Files
                         </MDBListGroupItem>

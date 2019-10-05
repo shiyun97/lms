@@ -15,6 +15,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.bubble.css';
 import ReactHtmlParser from 'react-html-parser';
+import Snackbar from '@material-ui/core/Snackbar';
 
 const API_URL = "http://localhost:8080/LMS-war/webresources";
 
@@ -26,8 +27,22 @@ class ModuleDetailsPage extends Component {
             moduleId: "",
             description: ""
         },
-        editMode: false
+        editMode: false,
+        message: "",
+        openSnackbar: ""
     }
+
+    handleOpenSnackbar = () => {
+        this.setState({ openSnackbar: true });
+    };
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackbar: false });
+    };
 
     componentDidMount() {
         this.initPage();
@@ -43,7 +58,6 @@ class ModuleDetailsPage extends Component {
                 .then(result => {
                     if (result.data) {
                         let data = result.data;
-                        console.log(data)
                         this.setState({
                             module: {
                                 moduleId: moduleId,
@@ -54,7 +68,12 @@ class ModuleDetailsPage extends Component {
                     }
                 })
                 .catch(error => {
-                alert("error in axios " + error);
+                    this.setState({
+                        editMode: false,
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    })
+                    console.error("error in axios " + error);
             });
         }
     }
@@ -77,19 +96,22 @@ class ModuleDetailsPage extends Component {
                 }
             })
             .then(result => {
-                console.log(result)
                 if (result) {
                     this.setState({
-                        editMode: false
+                        editMode: false,
+                        message: "Description updated successfully!",
+                        openSnackbar: true
                     })
                     return this.initPage()
                 }
             })
             .catch(error => {
-                console.error("error in axios " + error);
                 this.setState({
-                    editMode: false
+                    editMode: false,
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
                 })
+                console.error("error in axios " + error);
                 return this.initPage()
             });
     }
@@ -163,7 +185,22 @@ class ModuleDetailsPage extends Component {
                                 }
                             </MDBCol>
                         </MDBRow>
-                        
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            open={this.state.openSnackbar}
+                            autoHideDuration={6000}
+                            onClose={this.handleClose}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">{this.state.message}</span>}
+                            action={[
+                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                            ]}
+                        />
                     </MDBContainer>
                 </div>
             </div>

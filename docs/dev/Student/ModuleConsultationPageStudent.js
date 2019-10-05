@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBRow, MDBCol, MDBDataTable, MDBBtn, MDBCard, MDBCardBody } from "mdbreact";
+import { MDBRow, MDBCol, MDBDataTable, MDBBtn, MDBCard, MDBCardBody, MDBIcon } from "mdbreact";
 import axios from 'axios';
 import { observer, inject } from 'mobx-react'
+import { Snackbar } from '@material-ui/core';
 
 @inject('dataStore')
 @observer
@@ -45,56 +46,93 @@ class ModuleConsultationPageStudent extends Component {
             }
         ],
         rows: [],
+        bookedRows: [],
+        openSnackbar: false,
         message: ""
     }
 
+    getAllAvailableConsultations = () => {
+        const moduleId = this.props.dataStore.getCurrModId;
+        // console.log(moduleId);
+        axios
+            // .get("http://localhost:3001/allConsultations")
+            .get(`http://localhost:8080/LMS-war/webresources/Consultation/viewAllAvailableConsultation/${moduleId}`)
+            .then(result => {
+                // console.log(result.data.consultationTimeslots)
+                this.setState({ status: "done", rows: result.data.consultationTimeslot })
+            })
+            .catch(error => {
+                this.setState({ status: "error" })
+                console.error("error in axios " + error);
+            });
+    }
+
+    getBookedConsultations = () => {
+        const userId = this.props.dataStore.getUserId;
+        axios
+            // .get("http://localhost:3001/allConsultations")
+            .get(`http://localhost:8080/LMS-war/webresources/Consultation/viewConsultationByStudent?userId=${userId}`)
+            .then(result => {
+                // console.log(result.data.consultationTimeslots)
+                this.setState({ status: "done", bookedRows: result.data.consultationTimeslot })
+            })
+            .catch(error => {
+                this.setState({ status: "error" })
+                console.error("error in axios " + error);
+            });
+    }
+
+    handleOpenSnackbar = () => {
+        this.setState({ openSnackbar: true });
+    };
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackbar: false });
+    };
+
     componentDidMount() {
+        this.getAllAvailableConsultations();
+        this.getBookedConsultations();
+    }
+
+    componentDidUpdate() {
+        if (this.state.status === "recallConsultations") {
+            this.getAllAvailableConsultations();
+            this.getBookedConsultations();
+        }
+    }
+
+    bookConsultationSlot = (consultationId) => {
+        const userId = this.props.dataStore.getUserId;
         axios
-            .get("http://localhost:3001/allConsultations")
+            .post(`http://localhost:8080/LMS-war/webresources/Consultation/bookConsultation?consultationTimeslotId=${consultationId}&userId=${userId}`)
+            // .put(`http://localhost:3001/allConsultations/${row.id}`, {
             .then(result => {
                 // console.log(result.data)
-                this.setState({ message: "done", rows: result.data })
+                this.setState({ status: "recallConsultations", message: "Consultation slot booked!", openSnackbar: true })
+                // console.log("update successful")
             })
             .catch(error => {
-                this.setState({ message: "error" })
+                this.setState({ message: error.response.data.errorMessage, openSnackbar: true })
                 console.error("error in axios " + error);
             });
     }
 
-    bookConsultationSlot = (row) => {
+    dropConsultationSlot = (consultationId) => {
         axios
-            .put(`http://localhost:3001/allConsultations/${row.id}`, {
-                studentId: this.props.dataStore.getUserId,
-                date: row.date,
-                startTime: row.startTime,
-                endTime: row.endTime
-            })
+            // .put(`http://localhost:3001/allConsultations/${row.id}`)
+            .post(`http://localhost:8080/LMS-war/webresources/Consultation/dropConsultation?consultationTimeslotId=${consultationId}`)
             .then(result => {
                 // console.log(result.data)
-                this.setState({ message: "done" })
-                console.log("update successful")
+                this.setState({ status: "recallConsultations", message: "Consultation slot dropped!", openSnackbar: true })
+                // console.log("remove successful")
             })
             .catch(error => {
-                this.setState({ message: "error" })
-                console.error("error in axios " + error);
-            });
-    }
-
-    removeConsultationSlot = (row) => {
-        axios
-            .put(`http://localhost:3001/allConsultations/${row.id}`, {
-                studentId: 0,
-                date: row.date,
-                startTime: row.startTime,
-                endTime: row.endTime
-            })
-            .then(result => {
-                // console.log(result.data)
-                this.setState({ message: "done" })
-                console.log("remove successful")
-            })
-            .catch(error => {
-                this.setState({ message: "error" })
+                this.setState({ message: error.response.data.errorMessage, openSnackbar: true })
                 console.error("error in axios " + error);
             });
     }
@@ -105,34 +143,54 @@ class ModuleConsultationPageStudent extends Component {
     }
 
     render() {
-        var newRows = []
+        var availableConsultations = []
         const row = this.state.rows
         for (let i = 0; i < row.length; i++) {
-            if (row[i].studentId === 0 || row[i].studentId == this.props.dataStore.getUserId) {
-                newRows.push({
-                    consultationId: row[i].id,
-                    date: row[i].date,
-                    startTime: row[i].startTime,
-                    endTime: row[i].endTime,
-                    button: row[i].studentId === 0 ?
-                        <MDBBtn size="small" onClick={() => this.bookConsultationSlot(row[i])} color="primary">Book Slot</MDBBtn>
-                        : <MDBBtn size="small" onClick={() => this.removeConsultationSlot(row[i])} color="primary">Remove Slot</MDBBtn>
-                })
-            }
+            availableConsultations.push({
+                consultationId: row[i].consultationTsId,
+                date: row[i].startD,
+                startTime: row[i].startTs,
+                endTime: row[i].endTs,
+                // date: "",
+                // startTime: "",
+                // endTime: "",
+                button: <MDBBtn size="small" onClick={() => this.bookConsultationSlot(row[i].consultationTsId)} color="primary">Book Slot</MDBBtn>
+            })
         }
-        const data = { columns: this.state.columns, rows: newRows }
-        const widerData = {
-            columns: [...data.columns.map(col => {
+        const avaiData = { columns: this.state.columns, rows: availableConsultations }
+        const availableConsultationData = {
+            columns: [...avaiData.columns.map(col => {
                 col.width = 200;
                 return col;
-            })], rows: [...data.rows]
+            })], rows: [...avaiData.rows]
+        }
+        var bookedConsultations = []
+        const bookedRow = this.state.bookedRows
+        for (let i = 0; i < bookedRow.length; i++) {
+            bookedConsultations.push({
+                consultationId: bookedRow[i].consultationTsId,
+                date: bookedRow[i].startD,
+                startTime: bookedRow[i].startTs,
+                endTime: bookedRow[i].endTs,
+                // date: "",
+                // startTime: "",
+                // endTime: "",
+                button: <MDBBtn size="small" onClick={() => this.dropConsultationSlot(bookedRow[i].consultationTsId)} color="primary">Drop Slot</MDBBtn>
+            })
+        }
+        const bookedData = { columns: this.state.columns, rows: bookedConsultations }
+        const bookedConsultationData = {
+            columns: [...bookedData.columns.map(col => {
+                col.width = 200;
+                return col;
+            })], rows: [...bookedData.rows]
         }
         return (
             <>
-                <MDBRow style={{ paddingTop: 60 }}>
+                <MDBRow>
                     <MDBCol md="12">
                         <h2 className="font-weight-bold">
-                            Consultation Slots
+                            Available Consultation Slots
   </h2>
                     </MDBCol>
                 </MDBRow>
@@ -140,11 +198,43 @@ class ModuleConsultationPageStudent extends Component {
                     <MDBCol md="12">
                         <MDBCard>
                             <MDBCardBody>
-                                <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={widerData} pagesAmount={4} />
+                                <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={availableConsultationData} pagesAmount={4} />
                             </MDBCardBody>
                         </MDBCard>
                     </MDBCol>
                 </MDBRow>
+                <MDBRow style={{ paddingTop: 60 }}>
+                    <MDBCol md="12">
+                        <h2 className="font-weight-bold">
+                            Booked Consultation Slots
+  </h2>
+                    </MDBCol>
+                </MDBRow>
+                <MDBRow className="py-3">
+                    <MDBCol md="12">
+                        <MDBCard>
+                            <MDBCardBody>
+                                <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={bookedConsultationData} pagesAmount={4} />
+                            </MDBCardBody>
+                        </MDBCard>
+                    </MDBCol>
+                </MDBRow>
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.openSnackbar}
+                    autoHideDuration={6000}
+                    onClose={this.handleClose}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">{this.state.message}</span>}
+                    action={[
+                        <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                    ]}
+                />
             </>
         );
     }

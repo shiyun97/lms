@@ -1,18 +1,22 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBRow, MDBCol, MDBDataTable, MDBBtn, MDBCard, MDBCardBody, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
+import { MDBRow, MDBCol, MDBDataTable, MDBBtn, MDBCard, MDBCardBody, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader, MDBIcon } from "mdbreact";
 import axios from 'axios';
-import { TextField } from '@material-ui/core';
+import { TextField, Snackbar } from '@material-ui/core';
+import { observer, inject } from 'mobx-react';
+import moment from 'moment';
 
+@inject('dataStore')
+@observer
 class ModuleConsultationPageTeacher extends Component {
 
     state = {
         modal1: false,
         date: "",
+        status: "retrieving",
         startTime: "",
         endTime: "",
-        studentId: "",
-        booked: false,
+        booker: false,
         columns: [
             {
                 label: "Consultation Id",
@@ -39,8 +43,8 @@ class ModuleConsultationPageTeacher extends Component {
                 width: 270
             },
             {
-                label: "Student Id",
-                field: "studentId",
+                label: "Booker",
+                field: "booker",
                 width: 200
             },
             {
@@ -50,62 +54,91 @@ class ModuleConsultationPageTeacher extends Component {
             }
         ],
         rows: [],
+        openSnackbar: false,
         message: ""
     }
 
-    componentDidMount() {
+    getAllConsultations = () => {
+        const moduleId = this.props.dataStore.getCurrModId;
+        const userId = this.props.dataStore.getUserId;
+        // console.log(moduleId);
         axios
-            .get("http://localhost:3001/allConsultations")
+            // .get("http://localhost:3001/allConsultations")
+            .get(`http://localhost:8080/LMS-war/webresources/Consultation/viewAllConsultationslot?moduleId=${moduleId}&userId=${userId}`)
             .then(result => {
-                // console.log(result.data)
-                this.setState({ message: "done", rows: result.data })
+                // console.log(result.data.consultationTimeslots)
+                this.setState({ status: "done", rows: result.data.consultationTimeslots })
             })
             .catch(error => {
-                this.setState({ message: "error" })
+                this.setState({ status: "error" })
                 console.error("error in axios " + error);
             });
     }
 
-    toggle = (nr, row) => {
+    handleOpenSnackbar = () => {
+        this.setState({ openSnackbar: true });
+    };
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackbar: false });
+    };
+
+    componentDidMount() {
+        this.getAllConsultations();
+    }
+
+    componentDidUpdate() {
+        if (this.state.status === "recallConsultations")
+            this.getAllConsultations();
+    }
+
+    toggle = (nr) => {
         let modalNumber = "modal" + nr;
         this.setState({
             [modalNumber]: !this.state[modalNumber]
         });
-
-        if (row !== undefined) {
-            this.updateUserState(row);
-        }
     };
 
     createConsultationSlot = () => {
+        const moduleId = this.props.dataStore.getCurrModId;
+        const userId = this.props.dataStore.getUserId;
+        const newDate = moment(this.state.date).format('DD-MM-YYYY')
+        this.toggle(1);
         axios
-            .post(`http://localhost:3001/allConsultations`, {
-                "date": this.state.date,
-                "startTime": this.state.startTime,
-                "endTime": this.state.endTime,
-                "studentId": 0
+            // .post(`http://localhost:3001/allConsultations`, {
+            .put(`http://localhost:8080/LMS-war/webresources/Consultation/createConsultation?userId=${userId}&moduleId=${moduleId}`, {
+                "startDate": newDate,
+                "startTime": this.state.startTime + ":00",
+                "endTime": this.state.endTime + ":00"
             })
             .then(result => {
                 // console.log(result.data)
-                this.setState({ message: "done" })
-                console.log("creation successful")
+                this.setState({ status: "recallConsultations", message: "Successfully created consultation!", openSnackbar: true })
+                // console.log("creation successful")
             })
             .catch(error => {
-                this.setState({ message: "error" })
+                this.setState({ status: "error" })
                 console.error("error in axios " + error);
             });
     }
 
     deleteConsultationSlot = (consultationId) => {
+        const moduleId = this.props.dataStore.getCurrModId;
+        const userId = this.props.dataStore.getUserId;
         axios
-            .delete(`http://localhost:3001/allConsultations/${consultationId}`)
+            .delete(`http://localhost:8080/LMS-war/webresources/Consultation/deleteConsultation?consultationId=${consultationId}&userId=${userId}&moduleId=${moduleId}`)
+            // .delete(`http://localhost:3001/allConsultations/${consultationId}`)
             .then(result => {
                 // console.log(result.data)
-                this.setState({ message: "done" })
-                console.log("deletion successful")
+                this.setState({ status: "recallConsultations", message: "Successfully deleted consultation!", openSnackbar: true })
+                // console.log("deletion successful")
             })
             .catch(error => {
-                this.setState({ message: "error" })
+                this.setState({ status: "error" })
                 console.error("error in axios " + error);
             });
     }
@@ -113,6 +146,7 @@ class ModuleConsultationPageTeacher extends Component {
     handleChange = event => {
         event.preventDefault();
         this.setState({ [event.target.name]: event.target.value });
+        // console.log(event.target.value)
     }
 
     renderCreateConsultationModalBox = () => {
@@ -191,14 +225,18 @@ class ModuleConsultationPageTeacher extends Component {
     render() {
         var newRows = []
         const row = this.state.rows
+        // console.log(row[0])
         for (let i = 0; i < row.length; i++) {
             newRows.push({
-                consultationId: row[i].id,
-                date: row[i].date,
-                startTime: row[i].startTime,
-                endTime: row[i].endTime,
-                studentId: row[i].studentId === 0 ? "-" : row[i].studentId,
-                button: <MDBBtn size="small" onClick={() => this.deleteConsultationSlot(row[i].id)} color="primary">Delete</MDBBtn>
+                consultationId: row[i].consultationTsId,
+                date: row[i].startD,
+                startTime: row[i].startTs,
+                endTime: row[i].endTs,
+                // date: "",
+                // startTime: "",
+                // endTime: "",
+                booker: row[i].booker === undefined ? "-" : row[i].booker,
+                button: <MDBBtn size="small" onClick={() => this.deleteConsultationSlot(row[i].consultationTsId)} color="primary">Delete</MDBBtn>
             })
         }
         const data = { columns: this.state.columns, rows: newRows }
@@ -230,6 +268,22 @@ class ModuleConsultationPageTeacher extends Component {
                         </MDBCard>
                     </MDBCol>
                 </MDBRow>
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.openSnackbar}
+                    autoHideDuration={6000}
+                    onClose={this.handleClose}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">{this.state.message}</span>}
+                    action={[
+                        <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                    ]}
+                />
             </>
         );
     }

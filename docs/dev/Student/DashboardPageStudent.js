@@ -32,6 +32,8 @@ class DashboardPageStudent extends Component {
       });
   }
 
+  setCurrModuleId = (moduleId) => { this.props.dataStore.setCurrModId(moduleId) }
+
   render() {
     return (
       <MDBRow>
@@ -44,13 +46,13 @@ class DashboardPageStudent extends Component {
               AY {this.props.dataStore.getYear} SEMESTER {this.props.dataStore.getSem}
             </p>
             <MDBRow>
-              <MDBCol md="12" className="mt-4">
+              <MDBCol md="8" className="mt-4">
                 {this.props.dataStore.getModules.length === 0 && <h5>No modules available.</h5>}
                 <MDBRow id="categories">
                   {this.props.dataStore.getModules.map((mod) =>
                     <MDBCol md="4" key={mod.moduleId}>
                       <MDBAnimation reveal type="fadeInUp">
-                        <NavLink to={`/modules/${mod.moduleId}/`} activeClassName="activeClass">
+                        <NavLink to={`/modules/${mod.moduleId}/`} onClick={() => this.setCurrModuleId(mod.moduleId)} activeClassName="activeClass">
                           <MDBCard cascade className="my-3 grey lighten-4">
                             <MDBCardBody cascade>
                               <h6>{mod.code}</h6>

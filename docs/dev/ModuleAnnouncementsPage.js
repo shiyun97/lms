@@ -175,7 +175,7 @@ class ModuleAnnouncementsPage extends Component {
                             <MDBCol>
                                 {
                                     this.state.activeItem == "active" && 
-                                    <h4 className="mb-4">Announcements
+                                    <h4 className="font-weight-bold">Announcements
                                         <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Active
                                     </h4>
                                 }
