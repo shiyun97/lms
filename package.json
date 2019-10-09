@@ -48,6 +48,7 @@
     "react-numeric-input": "2.2.3",
     "react-popper": "^1.3.4",
     "react-quill": "^1.3.3",
+    "react-quiz-component": "^0.3.2",
     "react-router-dom": "^5.0.1",
     "react-scroll": "1.7.11",
     "react-toastify": "5.1.0",

@@ -89,6 +89,7 @@ import UnderMaintenancePage from "./dev/UnderMaintenancePage";
 import AdminLoginPage from "./dev/Admin/AdminLoginPage";
 import StudentLoginPage from "./dev/Student/StudentLoginPage";
 import ModuleQuizPageCreateQuiz from './dev/Teacher/ModuleQuizPageCreateQuiz';
+import ModuleQuizPageAnswerQuiz from "./dev/Student/ModuleQuizPageAnswerQuiz";
 
 @inject('dataStore')
 @observer
@@ -137,6 +138,9 @@ class Routes extends React.Component {
 
         {/* LMS PAGES - Teacher */}
         <Route exact path="/modules/:moduleId/quiz/create" component={ModuleQuizPageCreateQuiz} />
+
+        {/* LMS PAGES - Student */}
+        <Route exact path="/modules/:moduleId/quiz/:quizId" component={ModuleQuizPageAnswerQuiz} />
 
         {/* LMS PAGES - Student/ Teacher */}
         <Route exact path="/" component={StudentLoginPage} />
