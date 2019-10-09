@@ -58,7 +58,6 @@ class App extends Component {
     );
 
     const { collapseID } = this.state;
-
     return (
       <Router>
         {this.props.dataStore.getSignInStatus && <SideNav />}
