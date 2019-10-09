@@ -67,12 +67,12 @@ class AdminLoginPage extends Component {
                       <label htmlFor="defaultFormRegisterEmailEx" className="grey-text">
                         Email
                 </label>
-                      <input type="email" onChange={this.handleChangeEmail} id="defaultFormRegisterEmailEx" className="form-control" />
+                      <input type="email" onChange={this.handleChangeEmail} id="defaultFormRegisterEmailEx" className="form-control" required />
                       <br />
                       <label htmlFor="defaultFormRegisterPasswordEx" className="grey-text">
                         Password
                 </label>
-                      <input type="password" onChange={this.handleChangePassword} id="defaultFormRegisterPasswordEx" className="form-control" />
+                      <input type="password" onChange={this.handleChangePassword} id="defaultFormRegisterPasswordEx" className="form-control" required />
                       <div className="text-center mt-4">
                         <button className="btn btn-indigo">
                           Login

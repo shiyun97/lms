@@ -61,12 +61,12 @@ class StudentLoginPage extends Component {
                       <label htmlFor="defaultFormRegisterEmailEx" className="grey-text">
                         Email
                 </label>
-                      <input type="email" id="defaultFormRegisterEmailEx" onChange={this.handleChangeEmail} className="form-control" />
+                      <input type="email" id="defaultFormRegisterEmailEx" onChange={this.handleChangeEmail} className="form-control" required/>
                       <br />
                       <label htmlFor="defaultFormRegisterPasswordEx" className="grey-text">
                         Password
                 </label>
-                      <input type="password" id="defaultFormRegisterPasswordEx" onChange={this.handleChangePassword} className="form-control" />
+                      <input type="password" id="defaultFormRegisterPasswordEx" onChange={this.handleChangePassword} className="form-control" required/>
                       <div className="text-center mt-4">
                         <button className="btn btn-indigo">
                           Login
