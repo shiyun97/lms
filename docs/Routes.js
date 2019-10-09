@@ -69,12 +69,12 @@ import RegisterPage from './dev/RegisterPage';
 import ModuleOverviewPage from './dev/ModuleOverviewPage';
 import ModuleDetailsPage from './dev/ModuleDetailsPage';
 import ModuleAnnouncementsPage from './dev/ModuleAnnouncementsPage';
-import ModuleClassGroupsPage, { StudentRosterDetails, ClassGroupDetailsStyled, LectureGroupDetailsStyled, TutorialGroupDetailsStyled } from './dev/ModuleClassGroupsPage';
+import ModuleClassGroupsPage, { ClassGroupDetailsStyled, LectureGroupDetailsStyled, TutorialGroupDetailsStyled } from './dev/ModuleClassGroupsPage';
 import ModuleFilesPage from './dev/ModuleFilesPage';
 import ModuleForumPage from './dev/ModuleForumPage';
 import ModuleGradebookPage from './dev/ModuleGradebookPage';
 import ModuleQuizPage from './dev/ModuleQuizPage';
-import ModuleMultimediaPage, { ModuleMultimediaDetailsPage } from './dev/ModuleMultimediaPage';
+import ModuleMultimediaPage, { ModuleMultimediaDetailsPageStyled } from './dev/ModuleMultimediaPage';
 import ModuleConsultationPage from './dev/ModuleConsultationPage';
 import ModuleAttendancePage from './dev/ModuleAttendancePage';
 import ModuleFeedbackPage from './dev/ModuleFeedbackPage';
@@ -159,7 +159,7 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/gradebook" component={ModuleGradebookPage} />
         <Route exact path="/modules/:moduleId/quiz" component={ModuleQuizPage} />
         <Route exact path="/modules/:moduleId/multimedia" component={ModuleMultimediaPage} />
-        <Route exact path="/modules/:moduleId/multimedia/:multimediaId" component={ModuleMultimediaDetailsPage} />
+        <Route exact path="/modules/:moduleId/multimedia/:multimediaId" component={ModuleMultimediaDetailsPageStyled} />
         <Route exact path="/modules/:moduleId/consultation" component={ModuleConsultationPage} />
         <Route exact path="/modules/:moduleId/attendance" component={ModuleAttendancePage} />
         <Route exact path="/modules/:moduleId/feedback" component={ModuleFeedbackPage} />

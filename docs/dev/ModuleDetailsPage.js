@@ -123,7 +123,7 @@ class ModuleDetailsPage extends Component {
                 <div className={this.props.className}>
                     <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
                     <div className="module-navbar-small">
-                        <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'overview'}></ModuleSideNavigationDropdown>
+                        <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Module Details'}></ModuleSideNavigationDropdown>
                     </div>
                     <div className="module-content">
                         <MDBContainer>
@@ -149,7 +149,10 @@ class ModuleDetailsPage extends Component {
         }
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Module Details'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
                     <MDBContainer>
                         <MDBRow>

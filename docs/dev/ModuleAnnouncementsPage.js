@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBModal, MDBModalHeader, MDBModalBody, 
     MDBModalFooter, MDBInput, MDBNav, MDBNavItem, MDBNavLink, MDBTabContent, MDBTabPane } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
-import SectionContainer from "../components/sectionContainer";
-import SideNav from "./SideNav";
+import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
 
 class ModuleAnnouncementsPage extends Component {
 
@@ -168,14 +167,17 @@ class ModuleAnnouncementsPage extends Component {
         let announcementToEdit = this.state.announcementToEdit;
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Announcements'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
                 <MDBContainer>
                         <MDBRow>
                             <MDBCol>
                                 {
                                     this.state.activeItem == "active" && 
-                                    <h4 className="font-weight-bold">Announcements
+                                    <h4>Announcements
                                         <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Active
                                     </h4>
                                 }
@@ -414,9 +416,26 @@ class AnnouncementListItem extends Component {
 
 export default styled(ModuleAnnouncementsPage)`
 .module-content{
-    margin-left: 270px;
     margin-top: 40px;
-    z-index: 1031;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
 }
 .edit-button{
     border: none;

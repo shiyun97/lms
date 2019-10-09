@@ -5,6 +5,8 @@ import {
     MDBContainer, 
     MDBRow, 
     MDBCol, 
+    MDBCard,
+    MDBCardBody,
     MDBIcon, 
     MDBTabPane, 
     MDBTabContent, 
@@ -21,8 +23,8 @@ import {
     MDBModalBody, 
     MDBBtn 
 } from "mdbreact";
-import SectionContainer from "../components/sectionContainer";
 import ModuleSideNavigation from "./ModuleSideNavigation";
+import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
 import axios from "axios";
 import 'babel-polyfill';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -54,32 +56,38 @@ class ModuleClassGroupsPage extends Component {
                 {
                     label: "Group",
                     field: "name",
-                    sort: "asc"
+                    sort: "asc",
+                    width: 150
                 },
                 {
                     label: "Current Enrollment",
                     field: "curentEnrollment",
-                    sort: "asc"
+                    sort: "asc",
+                    width: 150
                 },
                 {
                     label: "Max Enrollment",
                     field: "maxEnrollment",
-                    sort: "asc"
+                    sort: "asc",
+                    width: 150
                 },
                 {
                     label: "Open Dt",
                     field: "startTs",
-                    sort: "asc"
+                    sort: "asc",
+                    width: 205
                 },
                 {
                     label: "Close Dt",
                     field: "closeTs",
-                    sort: "asc"
+                    sort: "asc",
+                    width: 200
                 },
                 {
                     label: "",
                     field: "viewButton",
-                    sort: "asc"
+                    sort: "asc",
+                    width: 200
                 }
             ],
             rows: []
@@ -89,17 +97,20 @@ class ModuleClassGroupsPage extends Component {
                 {
                     label: "Group Name",
                     field: "name",
-                    sort: "asc"
+                    sort: "asc",
+                    width: 200
                 },
                 {
                     label: "Members",
                     field: "currentEnrollment",
-                    sort: "asc"
+                    sort: "asc",
+                    width: 200
                 },
                 {
                     label: "",
                     field: "viewButton",
-                    sort: "asc"
+                    sort: "asc",
+                    width: 200
                 }
             ],
             rows: []
@@ -109,17 +120,20 @@ class ModuleClassGroupsPage extends Component {
                 {
                     label: "Group Name",
                     field: "name",
-                    sort: "asc"
+                    sort: "asc",
+                    width: 200
                 },
                 {
                     label: "Members",
                     field: "currentEnrollment",
-                    sort: "asc"
+                    sort: "asc",
+                    width: 200
                 },
                 {
                     label: "",
                     field: "viewButton",
-                    sort: "asc"
+                    sort: "asc",
+                    width: 200
                 }
             ],
             rows: []
@@ -455,7 +469,10 @@ class ModuleClassGroupsPage extends Component {
         const moduleId = this.props.match.params.moduleId;
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Class & Groups'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
                     <MDBContainer>
                         <MDBRow>
@@ -540,7 +557,9 @@ class ModuleClassGroupsPage extends Component {
                                     <MDBCol>
                                         {
                                             classGroups.rows.length > 0 &&
-                                            <MDBDataTable striped bordered hover searching={false} sortable={true} paging={false} data={classGroups} className="mt-3" />
+                                            <MDBCard><MDBCardBody>
+                                            <MDBDataTable striped bordered scrollX hover searching={false} sortable={true} paging={false} data={classGroups} className="mt-3" />
+                                            </MDBCardBody></MDBCard>
                                         }
                                         {
                                             classGroups.rows.length == 0 &&
@@ -689,6 +708,7 @@ class ModuleClassGroupsPage extends Component {
     }
 }
 
+/*
 export class StudentRosterDetails extends Component {
 
     state = {
@@ -904,7 +924,7 @@ export class StudentRosterDetails extends Component {
             </div>
         );
     }
-}
+}*/
 
 export class ClassGroupDetails extends Component {
 
@@ -1224,7 +1244,10 @@ export class ClassGroupDetails extends Component {
         let allModuleStudents = this.state.allModuleStudents;
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Class & Groups'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
                     <MDBContainer>
                         <MDBRow>
@@ -1376,6 +1399,28 @@ export const ClassGroupDetailsStyled = styled(ClassGroupDetails)`
 tbody + thead{
     display: none;
 }
+.module-content{
+    margin-top: 40px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+}
 `
 
 class LectureGroupDetails extends Component {
@@ -1466,7 +1511,10 @@ class LectureGroupDetails extends Component {
         let students = this.state.students;
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Class & Groups'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
                     <MDBContainer>
                         <MDBRow>
@@ -1552,6 +1600,28 @@ class LectureGroupDetails extends Component {
 }
 
 export const LectureGroupDetailsStyled = styled(LectureGroupDetails)`
+.module-content{
+    margin-top: 40px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+}
 tbody + thead{
     display: none;
 }
@@ -1645,7 +1715,10 @@ export class TutorialGroupDetails extends Component {
         let students = this.state.students;
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Class & Groups'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
                     <MDBContainer>
                         <MDBRow>
@@ -1738,6 +1811,28 @@ export class TutorialGroupDetails extends Component {
 }
 
 export const TutorialGroupDetailsStyled = styled(TutorialGroupDetails)`
+.module-content{
+    margin-top: 40px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+}
 tbody + thead{
     display: none;
 }
@@ -1747,9 +1842,23 @@ export default styled(withRouter(ModuleClassGroupsPage))`
 .module-content{
     margin-top: 40px;
 }
-@media (min-width: 1199.98px) {
+@media screen and (min-width: 800px) {
     .module-content{
         margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
     }
 }
 tbody + thead{
