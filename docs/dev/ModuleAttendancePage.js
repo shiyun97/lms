@@ -15,7 +15,7 @@ class ModuleAttendancePage extends Component {
 
     componentDidMount() {
         this.initPage();
-    } 
+    }
 
     initPage() {
 
@@ -25,12 +25,15 @@ class ModuleAttendancePage extends Component {
         } */
 
     }
+    
 
     generateQRCode = event => {
         return (
 
             //set the time for the qr code to expire
-            <QRCode value="http://facebook.github.io/react/" />
+            <MDBCol align="center">
+                <QRCode value="http://192.168.1.135:3100" size='450' />
+            </MDBCol>
         )
 
     }
@@ -47,7 +50,6 @@ class ModuleAttendancePage extends Component {
         //attendance for the week
         // breadcrumb to go back and forth of the week
 
-        
         return (
             <MDBTable>
                 <MDBTableHead>
@@ -82,29 +84,46 @@ class ModuleAttendancePage extends Component {
         )
     }
 
+    getCurrenDate = () => {
+        var currentDate = new Date()
+        console.log(currentDate)
+        return (
+            <MDBCol align="right">
+                <h3>{currentDate.getDate()}/{currentDate.getMonth()}/{currentDate.getFullYear()}</h3>
+            </MDBCol>
+        )
+    }
+
     render() {
+
         return (
             <div className={this.props.className}>
                 <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
                 <div className="module-content">
                     <MDBContainer>
                         <MDBRow>
-                            <MDBCol>
-                                <h2 className="font-weight-bold"> Attendance </h2>
-                                <hr className="my-3" />
+                            <MDBCol size="8">
+                                <h2 className="font-weight-bold"> Attendance </h2></MDBCol>
+                            <MDBCol align="right" size="4">
                                 <MDBBtn onClick={this.handleClickOpen} color="primary" >Generate QR Code</MDBBtn>
-                                <Dialog open={this.state.open} maxWidth="sm" fullWidth={true} fullScreen={true}>
-                                    <DialogTitle>Insert Date Attendance</DialogTitle>
-                                    <DialogContent>
-                                        {this.generateQRCode()}
-                                        <DialogActions>
-                                            <MDBBtn variant="contained" color="primary" onClick={this.handleClickClose}>Close</MDBBtn>
-                                        </DialogActions>
-                                    </DialogContent>
-                                </Dialog>
-                                {this.showAttendance()}
                             </MDBCol>
                         </MDBRow>
+
+                        <hr className="my-3" />
+
+                        <MDBRow>
+                            <Dialog open={this.state.open} maxWidth="sm" fullWidth={true} fullScreen={true}>
+                                <DialogTitle>{this.getCurrenDate()}</DialogTitle>
+                                <DialogContent>
+                                    {this.generateQRCode()}
+                                    <DialogActions>
+                                        <MDBBtn variant="contained" color="primary" onClick={this.handleClickClose}>Close</MDBBtn>
+                                    </DialogActions>
+                                </DialogContent>
+                            </Dialog>
+                        </MDBRow>
+
+                        {this.showAttendance()}
                     </MDBContainer>
                 </div>
             </div>

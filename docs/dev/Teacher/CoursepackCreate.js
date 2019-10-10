@@ -153,20 +153,6 @@ class CoursePackCreate extends Component {
                         </MDBCol>
                     </MDBRow>
 
-                    <MDBRow style={{ paddingTop: "20px" }}>
-                        <MDBCol sm="4">End Date: </MDBCol>
-                        <MDBCol sm="8">
-                            <input
-                                value={this.state.endDate}
-                                name="endDate"
-                                type="date"
-                                className="form-control"
-                                placeholder="End Date"
-                                onChange={this.handleOnChange}
-                            />
-                        </MDBCol>
-                    </MDBRow>
-
                     <MDBCol align="right">
                         <MDBBtn color="primary" onClick={this.createCoursepack}>Create</MDBBtn>
                         <MDBBtn color="primary" onClick={this.cancel}>Cancel</MDBBtn>
