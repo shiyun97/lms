@@ -1,0 +1,45 @@
+{
+  "coursepack": [
+    {
+    "courseCode": "IS4103",
+    "courseTitle": "Capstone",
+    "courseDescription": "test1",
+    "category": "Information Systems",
+    "startDate": "",
+    "endDate": "",
+    "rating": 1,
+    "price": 100,
+    "teacher": "Dr TWK",
+    "id": 1
+  },
+  {
+    "courseCode": "IS4100",
+    "courseTitle": "Project Management",
+    "courseDescription": "test2",
+    "category": "Information Systems",
+    "startDate": "",
+    "endDate": "",
+    "rating": 2,
+    "price": 20,
+    "teacher": "Prof Tan",
+    "id": 2
+  },
+  {
+    "courseCode": "IS3103",
+    "courseTitle": "Capstone",
+    "courseDescription": "description",
+    "category": "Information Systems",
+    "startDate": "",
+    "endDate": "",
+    "rating": 1,
+    "price": 0,
+    "teacher": "Prof OLB",
+    "id": 3
+  }
+],
+  "category": [
+    "Computer Science",
+    "Information Systems",
+    "Business Analytics"
+  ]
+}

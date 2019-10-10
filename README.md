@@ -1,5 +1,5 @@
 # learning-management-system
-This is a learning management paltform for administration, tracking, reporting, and delivery of educational programs or classes.
+This is a learning management platform for administration, tracking, reporting, and delivery of educational programs or classes.
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), supported with Java EE Backend using NetBeans to supply the RESTful APIs.
 
 ## Overview of Components

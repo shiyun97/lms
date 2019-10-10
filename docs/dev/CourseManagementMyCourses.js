@@ -1,12 +1,26 @@
 import React, { Component } from "react";
 import { MDBContainer, MDBTabPane, MDBNavItem, MDBNavLink, MDBTabContent, MDBRow, MDBCol, MDBNav, MDBFormInline, MDBIcon,
    MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBCardBody, MDBCardText, MDBCardImage, MDBCard, MDBCardTitle, MDBCardGroup } from "mdbreact";
+   import axios from "axios";
+
+   const API = "http://localhost:3001"
 
 class CourseManagementMyCourses extends Component {
   state = {
     activeItem: "1",
-    searchItem: ""
+    searchItem: "", 
+    enrolled: "",
   };
+
+  componentDidMount() {
+    axios.get(`${API}/coursepack`)
+    .then(result => {
+        this.setState({ userList: result.data.userList })
+    })
+    .catch(error => {
+        console.error("error in axios " + error);
+    });
+  }
 
   heading = () => {
     return (
@@ -136,10 +150,6 @@ class CourseManagementMyCourses extends Component {
     )
   }
 
-  getWishList = () => {
-    return <h1> wishlist</h1>;
-  };
-
   tab = () => {
     return (
       <MDBContainer>
@@ -163,7 +173,17 @@ class CourseManagementMyCourses extends Component {
                   onClick={this.toggle("2")}
                   role="tab"
                 >
-                  Wish List
+                  In progress
+                </MDBNavLink>
+              </MDBNavItem>
+              <MDBNavItem>
+                <MDBNavLink
+                  to="#"
+                  active={this.state.activeItem === "3"}
+                  onClick={this.toggle("3")}
+                  role="tab"
+                >
+                  Completed
                 </MDBNavLink>
               </MDBNavItem>
             </MDBNav>
@@ -172,7 +192,10 @@ class CourseManagementMyCourses extends Component {
                 {this.getAllEnrolledCourses()}
               </MDBTabPane>
               <MDBTabPane tabId="2" role="tabpanel">
-                {this.getWishList()}
+                {/* {this.getWishList()} */}
+              </MDBTabPane>
+              <MDBTabPane tabId="2" role="tabpanel">
+                {/* {this.getWishList()} */}
               </MDBTabPane>
             </MDBTabContent>
           </MDBCol>
@@ -186,7 +209,6 @@ class CourseManagementMyCourses extends Component {
       <MDBContainer className="mt-5">
         {this.heading()}
         {this.tab()}
-
         <br />
       </MDBContainer>
     );
