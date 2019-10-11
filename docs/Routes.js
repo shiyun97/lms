@@ -72,6 +72,7 @@ import ModuleAnnouncementsPage from './dev/ModuleAnnouncementsPage';
 import ModuleClassGroupsPage, { ClassGroupDetailsStyled, LectureGroupDetailsStyled, TutorialGroupDetailsStyled } from './dev/ModuleClassGroupsPage';
 import ModuleFilesPage from './dev/ModuleFilesPage';
 import ModuleForumPage from './dev/ModuleForumPage';
+import ModuleForumDetailsPage from './dev/ModuleForumDetailsPage';
 import ModuleGradebookPage from './dev/ModuleGradebookPage';
 import ModuleQuizPage from './dev/ModuleQuizPage';
 import ModuleMultimediaPage, { ModuleMultimediaDetailsPageStyled } from './dev/ModuleMultimediaPage';
@@ -166,6 +167,7 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/students/tutorial-groups" component={ModuleClassGroupsPage} />
         <Route exact path="/modules/:moduleId/students/tutorial-groups/:tutorialGroupId" component={TutorialGroupDetailsStyled} />
         <Route exact path="/modules/:moduleId/forum" component={ModuleForumPage} />
+        <Route exact path="/modules/:moduleId/forum/:forumId" component={ModuleForumDetailsPage} />
         <Route exact path="/modules/:moduleId/gradebook" component={ModuleGradebookPage} />
         <Route exact path="/modules/:moduleId/quiz" component={ModuleQuizPage} />
         <Route exact path="/modules/:moduleId/multimedia" component={ModuleMultimediaPage} />
