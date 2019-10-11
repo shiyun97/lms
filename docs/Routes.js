@@ -83,7 +83,6 @@ import ModulesPage from './dev/ModulesPage';
 import UsersManagementPage from './dev/UsersManagementPage';
 import CourseManagementDashboard from './dev/CourseManagementDashboard'
 import CourseManagementMyCourses from './dev/CourseManagementMyCourses';
-import CourseManagementExploreCourses from './dev/CourseManagementExploreCourses'
 import UserProfilePage from "./dev/UserProfilePage";
 import UnderMaintenancePage from "./dev/UnderMaintenancePage";
 import AdminLoginPage from "./dev/Admin/AdminLoginPage";
@@ -177,7 +176,6 @@ class Routes extends React.Component {
         <Route exact path="/coursepack/coursesDashboard" component={CourseManagementDashboard} />
         <Route exact path="/myCourses" component={CourseManagementMyCourses} />
         <Route exact path="/coursepack/create/" component={CoursePackCreate} />
-        <Route exact path="/coursepack/exploreCourses" component={CourseManagementExploreCourses} />
 
         {/* LMS PAGES - Public Student */}
         <Route exact path="/public/login" component={PublicLoginPage} />

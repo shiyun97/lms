@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { MDBContainer, MDBRow, MDBCol, MDBBtn } from "mdbreact";
 import SectionContainer from "../../components/sectionContainer";
 import axios from "axios";
+import { NavLink } from 'react-router-dom'
 
 const API = "http://localhost:3001"
 
@@ -16,12 +17,12 @@ class CoursePackCreate extends Component {
         startDate: "",
         endDate: "",
         price: "",
-        categories: ""
+        categories: "",
     }
 
     componentDidMount() {
         let userId = localStorage.getItem("userId")
-        this.setState({userId: userId})
+        this.setState({ userId: userId })
         axios.get(`${API}/category`)
             .then(result => {
                 this.setState({ categories: result.data })
@@ -40,6 +41,8 @@ class CoursePackCreate extends Component {
         this.setState({ category: event.target.value }, () => event);
     }
 
+
+
     //userid
     createCoursepack = event => {
         axios.post(`${API}/coursepack`, {
@@ -57,10 +60,6 @@ class CoursePackCreate extends Component {
                 this.setState({ status: "error" })
                 console.error("error in axios " + error);
             });
-    }
-
-    cancel = event => {
-        this.props.history.go(-1)
     }
 
     form = () => {
@@ -113,7 +112,7 @@ class CoursePackCreate extends Component {
                     <MDBRow style={{ paddingTop: "20px" }}>
                         <MDBCol sm="4">Category: </MDBCol>
                         <MDBCol sm="8">
-                        <select value={this.state.category} onChange={this.handleSelectCategory} className="browser-default custom-select">
+                            <select value={this.state.category} onChange={this.handleSelectCategory} className="browser-default custom-select">
                                 <option>Choose your option</option>
                                 {this.state.categories && this.state.categories.map(
                                     (category, index) => <option key={index} value={category}>{category}</option>)
@@ -155,10 +154,10 @@ class CoursePackCreate extends Component {
 
                     <MDBCol align="right">
                         <MDBBtn color="primary" onClick={this.createCoursepack}>Create</MDBBtn>
-                        <MDBBtn color="primary" onClick={this.cancel}>Cancel</MDBBtn>
+                        <MDBBtn color="primary">
+                            <NavLink to="/coursepack/coursesDashboard" style={{ color: 'white' }}> Cancel</NavLink>
+                        </MDBBtn>
                     </MDBCol>
-
-
                 </MDBContainer>
             </SectionContainer>
         )
