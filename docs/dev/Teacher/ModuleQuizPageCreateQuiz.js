@@ -30,6 +30,10 @@ class ModuleQuizPageCreateQuiz extends Component {
         this.initPage();
     }
 
+    handleSubmit = () => {
+
+    }
+
     render() {
         return (
             <div className={this.props.className}>
@@ -46,11 +50,24 @@ class ModuleQuizPageCreateQuiz extends Component {
                         <MDBRow className="py-3">
                             <MDBCol md="12">
                                 <MDBCard cascade className="my-3 grey lighten-4">
-                                    <MDBCardBody cascade>
-                                        <MDBCardText style={{ paddingTop: 10 }}>
-                                            Create Quiz Form
-                                </MDBCardText>
-                                    </MDBCardBody>
+                                    <form name="quiz-form" onSubmit={() => { this.handleSubmit() }}>
+                                        {/* <Field
+	        name="quizTitle"
+	        type="text"
+	        component={this.renderInputField}
+	        label="Quiz Title"
+	      />
+        <Field
+	        name="quizSynopsis"
+	        type="text"
+	        component={this.renderTextareaField}
+	        label="Quiz Synopsis"
+	      />
+	      <FieldArray name="questions" component={this.renderQuestions} /> */}
+                                        <div>
+                                            <MDBBtn type="submit" color="blue">Submit</MDBBtn>
+                                        </div>
+                                    </form>
                                 </MDBCard>
                             </MDBCol>
                         </MDBRow>

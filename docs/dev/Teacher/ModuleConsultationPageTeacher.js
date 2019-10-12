@@ -12,7 +12,8 @@ class ModuleConsultationPageTeacher extends Component {
 
     state = {
         modal1: false,
-        date: "",
+        startDate: "",
+        endDate: "",
         status: "retrieving",
         startTime: "",
         endTime: "",
@@ -106,12 +107,14 @@ class ModuleConsultationPageTeacher extends Component {
     createConsultationSlot = () => {
         const moduleId = this.props.dataStore.getCurrModId;
         const userId = this.props.dataStore.getUserId;
-        const newDate = moment(this.state.date).format('DD-MM-YYYY')
+        const newStartDate = moment(this.state.startDate).format('DD-MM-YYYY')
+        // const newEndDate = moment(this.state.endDate).format('DD-MM-YYYY')
         this.toggle(1);
         axios
             // .post(`http://localhost:3001/allConsultations`, {
             .put(`http://localhost:8080/LMS-war/webresources/Consultation/createConsultation?userId=${userId}&moduleId=${moduleId}`, {
-                "startDate": newDate,
+                "startDate": newStartDate,
+                "endDate" : newEndDate,
                 "startTime": this.state.startTime + ":00",
                 "endTime": this.state.endTime + ":00"
             })
@@ -162,13 +165,27 @@ class ModuleConsultationPageTeacher extends Component {
                 <MDBModalBody>
                     <form className="mx-3 grey-text">
                         <MDBRow>
-                            <MDBCol md="12" className="mt-4">
+                            <MDBCol md="6" className="mt-4">
                                 <TextField
-                                    id="date"
-                                    label="Date"
+                                    id="startDate"
+                                    label="Start Date"
                                     type="date"
-                                    name="date"
-                                    value={this.state.date}
+                                    name="startDate"
+                                    value={this.state.startDate}
+                                    onChange={this.handleChange}
+                                    fullWidth
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                />
+                            </MDBCol>
+                            <MDBCol md="6" className="mt-4">
+                                <TextField
+                                    id="endDate"
+                                    label="End Date"
+                                    type="date"
+                                    name="endDate"
+                                    value={this.state.endDate}
                                     onChange={this.handleChange}
                                     fullWidth
                                     InputLabelProps={{
@@ -229,10 +246,11 @@ class ModuleConsultationPageTeacher extends Component {
         for (let i = 0; i < row.length; i++) {
             newRows.push({
                 consultationId: row[i].consultationTsId,
-                date: row[i].startD,
+                startDate: row[i].startD,
+                // endDate: row[i].startE,
                 startTime: row[i].startTs,
                 endTime: row[i].endTs,
-                // date: "",
+                // startDate: "",
                 // startTime: "",
                 // endTime: "",
                 booker: row[i].booker === undefined ? "-" : row[i].booker,
