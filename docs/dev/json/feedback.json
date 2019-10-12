@@ -1,0 +1,158 @@
+{
+    "feedbackEvaluation": {
+        "pages": [
+            {
+                "questions": [
+                    {
+                        "type": "html",
+                        "html": "Welcome to the feedback exercise. <br />Please take time to review your learning experience in the past semester and be honest in your replies. <br /><br />Please click on <b>'Next'</b> to proceed with the exercise."
+                    }
+                ]
+            },
+            {
+                "questions": [
+                    {
+                        "type": "html",
+                        "html": "<h5>Quantitative on Content</h5>"
+                    },
+                    {
+                        "type": "matrix",
+                        "name": "qualityContent",
+                        "title": "Please indicate if you agree or disagree with the following statements *",
+                        "isAllRowRequired": "true",
+                        "columns": [
+                            {
+                                "value": 1,
+                                "text": "Strongly Disagree"
+                            }, {
+                                "value": 2,
+                                "text": "Disagree"
+                            }, {
+                                "value": 3,
+                                "text": "Neutral"
+                            }, {
+                                "value": 4,
+                                "text": "Agree"
+                            }, {
+                                "value": 5,
+                                "text": "Strongly Agree"
+                            }
+                        ],
+                        "rows": [
+                            {
+                                "value": "easy to understand",
+                                "text": "The content taught is easy to understand."
+                            },
+                            {
+                                "value": "organised",
+                                "text": "The content covered are clearly structured and well-organised."
+                            },
+                            {
+                                "value": "applicable",
+                                "text": "The content covered are applicable in my field of study."
+                            }, 
+                            {
+                                "value": "useful",
+                                "text": "The content covered are useful."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "dropdown",
+                        "name": "estimatedGrade",
+                        "title": "Grade likely to get for this module",
+                        "isRequired": "true",
+                        "choices": [
+                            "A+",
+                            "A",
+                            "A-",
+                            "B+",
+                            "B",
+                            "B-",
+                            "C+",
+                            "C",
+                            "D+",
+                            "D",
+                            "F"
+                        ]
+                    },
+                    {
+                        "type": "comment",
+                        "name": "moduleComments",
+                        "title": "Other comments?"
+                    },
+                    {
+                        "type": "html",
+                        "html": "<br /><h5>Quantitative on Teacher</h5>"
+                    },
+                    {
+                        "type": "matrix",
+                        "name": "qualityTeacher",
+                        "title": "Please indicate if you agree or disagree with the following statements *",
+                        "isAllRowRequired": "true",
+                        "columns": [
+                            {
+                                "value": 1,
+                                "text": "Strongly Disagree"
+                            }, {
+                                "value": 2,
+                                "text": "Disagree"
+                            }, {
+                                "value": 3,
+                                "text": "Neutral"
+                            }, {
+                                "value": 4,
+                                "text": "Agree"
+                            }, {
+                                "value": 5,
+                                "text": "Strongly Agree"
+                            }
+                        ],
+                        "rows": [
+                            {
+                                "value": "enhancedThinkingAbility",
+                                "text": "The teacher has enhanced my thinking ability."
+                            }, 
+                            {
+                                "value": "usefulFeedback",
+                                "text": "The teacher provides timely and useful feedback."
+                            }, 
+                            {
+                                "value": "approachableForConsultation",
+                                "text": "The teacher is approachable for consultation."
+                            }, 
+                            {
+                                "value": "increasedInterest",
+                                "text": "The teacher has increased my interest in the subject."
+                            }, 
+                            {
+                                "value": "independentLearning",
+                                "text": "The teacher has enhanced my ability to learn independently."
+                            }, 
+                            {
+                                "value": "applyConcepts",
+                                "text": "The teacher encourages me to apply concepts learnt."
+                            },
+                            {
+                                "value": "effectiveTeacher",
+                                "text": "Overall the teacher is effective."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "comment",
+                        "name": "strengths",
+                        "title": "What are the teacher's strengths?",
+                        "isRequired": "true"
+                    },
+                    {
+                        "type": "comment",
+                        "name": "improvements",
+                        "title": "What improvements would you suggest to the teacher?",
+                        "isRequired": "true"
+                    }
+                ]
+            }
+        ]
+    }
+}

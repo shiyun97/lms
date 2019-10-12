@@ -261,8 +261,13 @@ class ModuleFeedbackPage extends Component {
         }
     }
 
+    goToSemesterEvaluation = () => {
+        this.props.history.push(`/modules/${this.state.moduleId}/feedback/evaluation`);
+    }
+
     render() {
         let feedbacks = this.state.allFeedbacksTable;
+        let accessRight = "Student";
         return (
             <div className={this.props.className}>
                 <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
@@ -312,7 +317,7 @@ class ModuleFeedbackPage extends Component {
                                     <MDBModalFooter>
                                         <MDBBtn color="secondary" onClick={this.toggle("ViewFeedback")}>
                                             Close
-                                                </MDBBtn>
+                                        </MDBBtn>
                                     </MDBModalFooter>
                                 </MDBModal>
 
@@ -359,6 +364,16 @@ class ModuleFeedbackPage extends Component {
                                         </MDBModalFooter>
                                     </form>
                                 </MDBModal>
+                                {
+                                    accessRight == "Student" &&
+                                    <MDBRow>
+                                        <MDBCol>
+                                            <h5 className="mt-5">End-of-Semester Evaluation</h5>
+                                            <div className="mb-3"></div>
+                                            <MDBBtn className="ml-0 mb-5" size="md" color="primary" onClick={e => { this.goToSemesterEvaluation() }}>Start Evaluation</MDBBtn>
+                                        </MDBCol>
+                                    </MDBRow>
+                                }
                             </MDBCol>
                         </MDBRow>
                         <Snackbar

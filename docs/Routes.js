@@ -79,6 +79,7 @@ import ModuleMultimediaPage, { ModuleMultimediaDetailsPageStyled } from './dev/M
 import ModuleConsultationPage from './dev/ModuleConsultationPage';
 import ModuleAttendancePage from './dev/ModuleAttendancePage';
 import ModuleFeedbackPage from './dev/ModuleFeedbackPage';
+import ModuleFeedbackEvaluationPage from './dev/ModuleFeedbackEvaluationPage';
 import DashboardPage from './dev/DashboardPage';
 import ModulesPage from './dev/ModulesPage';
 import UsersManagementPage from './dev/UsersManagementPage';
@@ -175,6 +176,7 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/consultation" component={ModuleConsultationPage} />
         <Route exact path="/modules/:moduleId/attendance" component={ModuleAttendancePage} />
         <Route exact path="/modules/:moduleId/feedback" component={ModuleFeedbackPage} />
+        <Route exact path="/modules/:moduleId/feedback/evaluation" component={ModuleFeedbackEvaluationPage} />
         <Route exact path="/coursepack/coursesDashboard" component={CourseManagementDashboard} />
         <Route exact path="/myCourses" component={CourseManagementMyCourses} />
         <Route exact path="/coursepack/create/" component={CoursePackCreate} />

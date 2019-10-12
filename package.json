@@ -56,7 +56,8 @@
     "react-toastify": "5.1.0",
     "react-transition-group": "4.0.1",
     "semantic-ui-react": "^0.88.1",
-    "styled-components": "^4.3.2"
+    "styled-components": "^4.3.2",
+    "survey-react": "^1.1.15"
   },
   "peerDependencies": {
     "react": "*",
