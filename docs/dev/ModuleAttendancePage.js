@@ -1,13 +1,10 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBModal, MDBModalHeader, MDBRow, MDBModalBody, MDBModalFooter, MDBCol, MDBIcon, MDBBtn, MDBTable, MDBTableBody, MDBTableHead } from "mdbreact";
+import { MDBContainer, MDBModal, MDBModalHeader, MDBRow, MDBModalBody, MDBModalFooter, MDBCol, MDBBtn } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
-import SectionContainer from "../components/sectionContainer";
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, Modal, AppBar, Tabs, Tab, Typography, Paper } from '@material-ui/core';
-import { Table, TabPane } from 'semantic-ui-react'
+import { Dialog, DialogTitle, DialogContent, DialogActions, AppBar, Tabs, Tab, Typography, Paper, InputLabel, Select } from '@material-ui/core';
 import axios from "axios";
 import SwipeableViews from 'react-swipeable-views';
-
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 var QRCode = require('qrcode.react');
@@ -22,19 +19,18 @@ class ModuleAttendancePage extends Component {
     tutorialList: "",
     moduleId: "",
     classgroup: "",
-    index: 0
+    index: 0,
+    value: 0,
+    moduleTitle: "",
+    selectedLectureAttendance: "",
+    selectedTutorialAttendance: ""
   }
 
   componentDidMount() {
     this.initPage();
-
   }
 
   initPage() {
-    /* if (moduleId) {
-        console.log(moduleId);
-        // retrieve module & set state
-    } */
     // get all lectures
     let moduleId = this.props.match.params.moduleId;
     this.setState({ moduleId: moduleId })
@@ -42,9 +38,7 @@ class ModuleAttendancePage extends Component {
 
     axios.get(`${API}ModuleMounting/getModule/${moduleId}`)
       .then(result => {
-        console.log("lecture list: " + result.data.lectureDetails)
-
-        this.setState({ lectureList: result.data.lectureDetails })
+        this.setState({ lectureList: result.data.lectureDetails, moduleTitle: result.data.title })
       })
       .catch(error => {
         console.error("error in axios " + error);
@@ -53,7 +47,6 @@ class ModuleAttendancePage extends Component {
     //get all tutorials
     axios.get(`${API}ModuleMounting/getAllTutorialByModule?moduleId=${moduleId}`)
       .then(result => {
-        console.log("tutorial list: " + result.data.tutorials)
         this.setState({ tutorialList: result.data.tutorials })
       })
       .catch(error => {
@@ -70,7 +63,7 @@ class ModuleAttendancePage extends Component {
     return (
       //set the time for the qr code to expire
       <MDBCol align="center">
-        <QRCode value="http://172.25.103.184:3100/" size={450} />
+        <QRCode value="http://192.168.1.135:8082/myCourses" size={450} />
       </MDBCol>
     )
     /*  })
@@ -91,9 +84,8 @@ class ModuleAttendancePage extends Component {
   }
 
   handleClickClose = event => {
-    window.location.reload()
     this.setState({ open: false })
-    //TODO: axios display updated attendance list
+    this.initPage()
   }
 
   toggle = event => {
@@ -122,7 +114,7 @@ class ModuleAttendancePage extends Component {
 
     return (
       <div data-test="component-mediaUploadPage">
-{/*         <AppBar position="static" color="default">
+        <AppBar position="static" color="default">
           <Tabs
             value={this.state.value}
             onChange={this.handleChange}
@@ -131,8 +123,8 @@ class ModuleAttendancePage extends Component {
             variant="fullWidth"
             aria-label="full width tabs example"
           >
-            <Tab label="Item One" />
-            <Tab label="Item Two" />
+            <Tab label="Lecture" />
+            <Tab label="Tutorial" />
           </Tabs>
         </AppBar>
         <Paper>
@@ -141,26 +133,103 @@ class ModuleAttendancePage extends Component {
             index={this.state.value}
             onChangeIndex={this.handleChangeIndex}
           >
-            <Typography
-              component="div"
-              role="tabpanel"
-              hidden={this.state.value !== this.state.index}
-              id={`full-width-tabpanel-${this.state.index}`}
-              aria-labelledby={`full-width-tab-${this.state.index}`}
-            >fist
-            </Typography>
-            <Typography
-              component="div"
-              role="tabpanel"
-              hidden={this.state.value !== this.state.index}
-              id={`full-width-tabpanel-${this.state.index}`}
-              aria-labelledby={`full-width-tab-${this.state.index}`}
-            >second
-            </Typography>
+            <Typography component="div">{this.displayLectureSlots()}</Typography>
+            <Typography component="div">{this.displayTutorialSlots()}</Typography>
           </SwipeableViews>
-        </Paper> */}
+        </Paper>
       </div>
     )
+  }
+
+  displayLectureSlots = () => {
+    return (
+      <div>
+        <MDBRow>
+          <MDBCol align="right">
+            <select className="browser-default custom-select" style={{ maxWidth: 250 }}>
+              <option>Group</option>
+              <option value="1">Group 1</option>
+            </select>
+
+            <select className="browser-default custom-select" style={{ maxWidth: 250 }}>
+              <option>Date</option>
+              {/**TODO: map the attendance dates */}
+              <option value="1">{this.state.lectureList}</option>
+            </select>
+            <MDBBtn onClick={this.getLectureAttendance}>Get</MDBBtn>
+          </MDBCol>
+        </MDBRow>
+        {this.displaySelectedLectureAttendance()}
+      </div>
+    )
+  }
+
+  getLectureAttendance = event => {
+    //TODO:
+    console.log("get lecture attendance by id")
+    /*     axios.get(`${API}Attendance/getAllAttendance?moduleId=${moduleId}`)
+          .then(result => {
+            this.setState({ selectedLectureAttendance: result.data.lectureDetails, moduleTitle: result.data.title })
+          })
+          .catch(error => {
+            console.error("error in axios " + error);
+          }); */
+  }
+
+  displaySelectedLectureAttendance = () => {
+    //TODO:
+    if (this.state.selectedLectureAttendance.length !== 0) {
+      return (
+        <h2>display lecture attendance</h2>
+      )
+    }
+  }
+
+  displayTutorialSlots = () => {
+    return (
+      <div>
+        <MDBRow>
+          <MDBCol align="right">
+            <select className="browser-default custom-select" style={{ maxWidth: 250 }}>
+              <option>Group</option>
+              {this.state.tutorialList && this.state.tutorialList.map(
+                (group) => <option key={group.tutorialId} value={group.timing}>{group.tutorialId}</option>)
+              }
+            </select>
+            <select className="browser-default custom-select" style={{ maxWidth: 250 }}>
+              <option>Date</option>
+              {/**TODO: map the attendance dates */}
+              {this.state.tutorialList && this.state.tutorialList.map(
+                (group) => <option key={group.tutorialId} value={group.timing}>{group.tutorialId}</option>)
+              }
+            </select>
+            <MDBBtn onClick={this.getTutorialAttendance}>Get</MDBBtn>
+          </MDBCol>
+        </MDBRow>
+        {this.displaySelectedTutorialAttendance()}
+      </div>
+    )
+  }
+
+  getTutorialAttendance = event => {
+    //TODO:
+    console.log("get tutorial attendance by id")
+    /*     axios.get(`${API}Attendance/getAllAttendance?moduleId=${moduleId}`)
+      .then(result => {
+        this.setState({ selectedLectureAttendance: result.data.lectureDetails, moduleTitle: result.data.title })
+      })
+      .catch(error => {
+        console.error("error in axios " + error);
+      }); */
+  }
+
+  displaySelectedTutorialAttendance = () => {
+    //TODO:
+    if (this.state.selectedTutorialAttendance.length !== 0) {
+      return (
+        <h2>display tutorial attendance</h2>
+      )
+    }
   }
 
   getCurrenDate = () => {
@@ -169,12 +238,6 @@ class ModuleAttendancePage extends Component {
       <MDBCol align="right">
         <h3>{currentDate.getDate()}/{currentDate.getMonth()}/{currentDate.getFullYear()}</h3>
       </MDBCol>
-    )
-  }
-  //TODO:
-  createAttendance = () => {
-    return (
-      <div>hello</div>
     )
   }
 
@@ -207,7 +270,7 @@ class ModuleAttendancePage extends Component {
   displayVariousClasses = () => {
     if (this.state.classType === "lecture") {
       return (
-        <select value={this.state.classType} onChange={this.handleSelectClassgroup} className="browser-default custom-select">
+        <select value={this.state.classgroup} onChange={this.handleSelectClassgroup} className="browser-default custom-select">
           <option>Choose an option</option>
           <option>{this.state.lectureList}</option>
         </select>
@@ -233,6 +296,7 @@ class ModuleAttendancePage extends Component {
       <div className={this.props.className}>
         <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
         <div className="module-content">
+
           <MDBContainer>
             <MDBRow>
               <MDBCol size="8">
@@ -241,6 +305,7 @@ class ModuleAttendancePage extends Component {
                 <MDBBtn onClick={this.toggle} color="primary" >Create Attendance</MDBBtn>
               </MDBCol>
             </MDBRow>
+
             <MDBModal isOpen={this.state.modal} toggle={this.toggle}>
               <MDBModalHeader toggle={this.toggle}>Create Attendance</MDBModalHeader>
               <MDBModalBody>
@@ -249,18 +314,19 @@ class ModuleAttendancePage extends Component {
                     {this.displaySelect()}
                   </MDBCol>
                 </MDBRow>
-
                 <MDBRow style={{ paddingTop: "20px" }}>
                   <MDBCol>
                     {this.displayVariousClasses()}
                   </MDBCol>
                 </MDBRow>
               </MDBModalBody>
+
               <MDBModalFooter>
                 <MDBBtn color="secondary" onClick={this.toggle}>Close</MDBBtn>
                 <MDBBtn color="primary" onClick={this.handleClickOpen}>Generate QRCode</MDBBtn> {/**generate qr code */}
               </MDBModalFooter>
             </MDBModal>
+
             <Dialog
               open={this.state.open}
               onClose={this.handleClickClose}
@@ -277,8 +343,10 @@ class ModuleAttendancePage extends Component {
                 <MDBBtn variant="contained" color="primary" onClick={this.handleClickClose}>Close</MDBBtn>
               </DialogActions>
             </Dialog>
+
             <hr className="my-3" />
             {this.showAttendance()}
+
           </MDBContainer>
         </div>
       </div>
@@ -288,7 +356,7 @@ class ModuleAttendancePage extends Component {
 
 export default styled(ModuleAttendancePage)`
 .module-content{
-    margin-left: 270px;
-    margin-top: 40px;
-}
+          margin - left: 270px;
+        margin-top: 40px;
+    }
 `;

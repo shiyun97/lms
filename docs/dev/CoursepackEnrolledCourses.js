@@ -5,7 +5,7 @@ import { MDBContainer, MDBTabPane, MDBNavItem, MDBNavLink, MDBTabContent, MDBRow
 
    const API = "http://localhost:3001"
 
-class CourseManagementMyCourses extends Component {
+class CoursepackEnrolledCourses extends Component {
   state = {
     activeItem: "1",
     searchItem: "", 
@@ -215,4 +215,4 @@ class CourseManagementMyCourses extends Component {
   }
 }
 
-export default CourseManagementMyCourses;
+export default CoursepackEnrolledCourses;

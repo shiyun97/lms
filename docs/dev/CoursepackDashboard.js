@@ -7,11 +7,9 @@ import axios from "axios";
 import { NavLink, Redirect, Route } from 'react-router-dom'
 import { CardActionArea, CardMedia, CardContent, Typography, CardActions, Button, Card } from "@material-ui/core";
 
-
-
 const API = "http://localhost:3001"
 
-class CourseManagementDashboard extends Component {
+class CoursepackDashboard extends Component {
   state = {
     coursepackList: "",
     redirect: false,
@@ -243,4 +241,4 @@ class CourseManagementDashboard extends Component {
   }
 }
 
-export default CourseManagementDashboard;
+export default CoursepackDashboard;

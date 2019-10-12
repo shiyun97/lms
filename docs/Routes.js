@@ -83,8 +83,6 @@ import ModuleFeedbackEvaluationPage from './dev/ModuleFeedbackEvaluationPage';
 import DashboardPage from './dev/DashboardPage';
 import ModulesPage from './dev/ModulesPage';
 import UsersManagementPage from './dev/UsersManagementPage';
-import CourseManagementDashboard from './dev/CourseManagementDashboard'
-import CourseManagementMyCourses from './dev/CourseManagementMyCourses';
 import UserProfilePage from "./dev/UserProfilePage";
 import UnderMaintenancePage from "./dev/UnderMaintenancePage";
 import AdminLoginPage from "./dev/Admin/AdminLoginPage";
@@ -93,7 +91,11 @@ import ModuleQuizPageCreateQuiz from './dev/Teacher/ModuleQuizPageCreateQuiz';
 import ModuleQuizPageAnswerQuiz from "./dev/Student/ModuleQuizPageAnswerQuiz";
 
 //COURSEPACK IMPORTS
+import CoursepackEnrolledCourses from './dev/CoursepackEnrolledCourses';
 import CoursePackCreate from "./dev/Teacher/CoursepackCreate";
+import CoursepackDashboard from './dev/CoursepackDashboard'
+import CoursepackDashboardTeacher from './dev/Teacher/CoursepackDashboardTeacher'
+import CoursepackDetailsTeacher from "./dev/Teacher/CoursepackDetailsTeacher";
 
 @inject('dataStore')
 @observer
@@ -177,9 +179,11 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/attendance" component={ModuleAttendancePage} />
         <Route exact path="/modules/:moduleId/feedback" component={ModuleFeedbackPage} />
         <Route exact path="/modules/:moduleId/feedback/evaluation" component={ModuleFeedbackEvaluationPage} />
-        <Route exact path="/coursepack/coursesDashboard" component={CourseManagementDashboard} />
-        <Route exact path="/myCourses" component={CourseManagementMyCourses} />
+        <Route exact path="/coursepack/enrolledCourses" component={CoursepackEnrolledCourses} />
         <Route exact path="/coursepack/create/" component={CoursePackCreate} />
+        <Route exact path="/coursepack/dashboard/:userId" component={CoursepackDashboardTeacher} />
+        <Route exact path="/coursepack/details/:userId/:coursepackId" component={CoursepackDetailsTeacher} />
+        <Route exact path="/coursepack/dashboard" component={CoursepackDashboard} />
 
         {/* LMS PAGES - Public Student */}
         <Route exact path="/public/login" component={PublicLoginPage} />
