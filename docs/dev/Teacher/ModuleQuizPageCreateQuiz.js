@@ -21,12 +21,13 @@ class ModuleQuizPageCreateQuiz extends Component {
         activeStep: 0,
         steps: ['Quiz Configuration', 'Build Quiz'],
         quizType: "",
-        shuffle: true,
+        shuffle: false,
         noOfAttempts: 1,
         timeLimit: 60,
         openingDate: "",
         closingDate: "",
         points: 1,
+        level: 1,
         question: "",
         answer: ""
     }
@@ -41,8 +42,9 @@ class ModuleQuizPageCreateQuiz extends Component {
     }
 
     handleSwitchChange = () => {
+        const currState = this.state.shuffle
         this.setState({
-            shuffle: !this.state.shuffle
+            shuffle: !currState
         });
         console.log(this.state.shuffle)
     }
@@ -111,7 +113,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                                 <label className="grey-text">
                                     Shuffle Questions
                     </label>
-                                <Switch checked={this.state.shuffle} onChange={() => this.handleSwitchChange()} color="primary" name="shuffle" value={this.state.shuffle} />
+                                <Switch checked={this.state.shuffle} onChange={() => this.handleSwitchChange()} color="primary" name="shuffle" />
                             </MDBCol>
                             <MDBCol md="6">
                                 <br />
@@ -187,7 +189,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                     </label>
                                 <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} className="form-control" />
                             </MDBCol>
-                            <MDBCol md="10" className="mt-4" style={{ paddingTop: 28 }}>
+                            <MDBCol md="8" className="mt-4" style={{ paddingTop: 28 }}>
                                 <MDBInputGroup
                                     containerClassName="mb-3"
                                     prepend="Correct Answer"
@@ -199,6 +201,16 @@ class ModuleQuizPageCreateQuiz extends Component {
                                         </select>
                                     }
                                 />
+                            </MDBCol>
+                            <MDBCol md="2" className="mt-4">
+                                <label className="grey-text">
+                                    Level
+                    </label>
+                                <input type="number" className="form-control" name="level"
+                                    value={this.state.level}
+                                    onChange={this.handleChange}
+                                    min={1}
+                                    required />
                             </MDBCol>
                             <MDBCol md="2" className="mt-4">
                                 <label className="grey-text">
