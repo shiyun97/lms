@@ -31,16 +31,19 @@ class ModuleAttendancePage extends Component {
   }
 
   render() {
+    //TODO: remove the top bar
     return (
       <div className={this.props.className}>
-        <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
+        <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
         <div className="module-navbar-small">
-          <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Consultation'}></ModuleSideNavigationDropdown>
+
+          <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Attendance'}></ModuleSideNavigationDropdown>
         </div>
         <div className="module-content">
           <MDBContainer className="mt-3">
             {this.props.dataStore.accessRight === "Teacher" && <ModuleAttendanceTeacher moduleId={this.props.match.params.moduleId} />}
-            {this.props.dataStore.accessRight === "Student" && <ModuleAttendanceStudent moduleId={this.props.match.params.moduleId}/>}
+            {this.props.dataStore.accessRight === "Student" && <ModuleAttendanceStudent moduleId={this.props.match.params.moduleId} />}
+
           </MDBContainer>
         </div>
       </div>
@@ -50,7 +53,7 @@ class ModuleAttendancePage extends Component {
 
 export default styled(ModuleAttendancePage)`
 .module-content{
-          margin - left: 270px;
+            margin - left: 270px;
         margin-top: 40px;
     }
 `;

@@ -4,7 +4,7 @@ import { MDBContainer, MDBModal, MDBModalHeader, MDBRow, MDBModalBody, MDBModalF
 import { Dialog, DialogTitle, DialogContent, DialogActions, AppBar, Tabs, Tab, Typography, Paper, InputLabel, Select } from '@material-ui/core';
 import axios from "axios";
 import SwipeableViews from 'react-swipeable-views';
-import ModuleSideNavigation from "../ModuleSideNavigation";
+import { Table } from 'semantic-ui-react'
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 var QRCode = require('qrcode.react');
@@ -23,7 +23,8 @@ class ModuleAttendanceTeacher extends Component {
     value: 0,
     moduleTitle: "",
     selectedLectureAttendance: "",
-    selectedTutorialAttendance: ""
+    selectedTutorialAttendance: "",
+    studentListLecture: ""
   }
 
   componentDidMount() {
@@ -31,11 +32,11 @@ class ModuleAttendanceTeacher extends Component {
   }
 
   initPage() {
-    // get all lectures
     let moduleId = this.props.moduleId;
     this.setState({ moduleId: moduleId })
     console.log(moduleId)
 
+    //get all lectures
     axios.get(`${API}ModuleMounting/getModule/${moduleId}`)
       .then(result => {
         this.setState({ lectureList: result.data.lectureDetails, moduleTitle: result.data.title })
@@ -52,6 +53,17 @@ class ModuleAttendanceTeacher extends Component {
       .catch(error => {
         console.error("error in axios " + error);
       });
+
+    //get all students in the module (fot lecture)
+    axios.get(`${API}ModuleMounting/getAllStudentByModule?moduleId=${moduleId}`)
+      .then(result => {
+        this.setState({ studentListLecture: result.data.userList })
+        console.log(this.state.studentListLecture)
+      })
+      .catch(error => {
+        console.error("error in axios " + error);
+      });
+
   }
 
   //TODO: create attendance
@@ -110,10 +122,10 @@ class ModuleAttendanceTeacher extends Component {
   //TODO:
   showAttendance = () => {
     //attendance for the week
-    // breadcrumb to go back and forth of the week
+    // button to go back and forth of the week?
 
     return (
-      <div data-test="component-mediaUploadPage">
+      <div>
         <AppBar position="static" color="default">
           <Tabs
             value={this.state.value}
@@ -177,12 +189,82 @@ class ModuleAttendanceTeacher extends Component {
   }
 
   displaySelectedLectureAttendance = () => {
-    //TODO:
-    if (this.state.selectedLectureAttendance.length !== 0) {
-      return (
-        <h2>display lecture attendance</h2>
-      )
-    }
+    //TODO: update table. map out. put onclick on all cells
+    /* if (this.state.selectedLectureAttendance.length !== 0) { */
+    return (
+      <div>
+        <br />
+        <MDBCol align="right">
+          <h6 style={{ color: "red" }}>Click on the cells to mark the attendance</h6>
+        </MDBCol>
+        <Table celled striped>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell >Name</Table.HeaderCell>
+              <Table.HeaderCell>Attendance</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+
+          <Table.Body>
+            <Table.Row>
+              <Table.Cell style={{ width: 550 }}>John</Table.Cell>
+              <Table.Cell selectable>
+                <a href='#'>Edit</a>
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell>Jamie</Table.Cell>
+              <Table.Cell>Approved</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell>Jill</Table.Cell>
+              <Table.Cell>Denied</Table.Cell>
+            </Table.Row>
+            <Table.Row warning>
+              <Table.Cell>John</Table.Cell>
+              <Table.Cell>No Action</Table.Cell>
+
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell>Jamie</Table.Cell>
+              <Table.Cell style={{ color: this.handleAttendanceColour() }} onClick={this.testClick}>Approved</Table.Cell>
+
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell>Jill</Table.Cell>
+              <Table.Cell negative>Denied</Table.Cell>
+            </Table.Row>
+          </Table.Body>
+        </Table>
+        <MDBCol align="right">
+          <MDBBtn color="danger" onClick={this.deleteLectureAttendance}>Delete</MDBBtn>
+        </MDBCol>
+      </div>
+    )
+    /* } */
+  }
+
+  //TODO: manual attendance marking
+  testClick = event => {
+    console.log("test")
+  }
+
+  //TODO: update colour based on click
+  handleAttendanceColour = () => {
+    return "green"
+  }
+
+  //TODO: lecture attendance id
+  deleteLectureAttendance = event => {
+    console.log("deleteLectureAttendance")
+    /*     axios.delete(`${API}Attendance/deleteAttendance?moduleId=${this.props.moduleId}&attendanceId=${}`)
+          .then(result => {
+            console.log("Deleted")
+            this.initPage()
+          })
+          .catch(error => {
+            console.error("error in axios " + error);
+          }); */
   }
 
   displayTutorialSlots = () => {
@@ -230,6 +312,19 @@ class ModuleAttendanceTeacher extends Component {
         <h2>display tutorial attendance</h2>
       )
     }
+  }
+
+  //TODO: tutorial attendance id and tutorial id
+  deleteTutorialAttendance = event => {
+    console.log("deleteTutorialAttendance")
+    /*     axios.delete(`${API}Attendance/deleteAttendance?tutorialId=${}&attendanceId=${}`)
+          .then(result => {
+            console.log("Deleted")
+            this.initPage()
+          })
+          .catch(error => {
+            console.error("error in axios " + error);
+          }); */
   }
 
   getCurrenDate = () => {
@@ -293,63 +388,59 @@ class ModuleAttendanceTeacher extends Component {
 
   render() {
     return (
-      <div className={this.props.className}>
-        <ModuleSideNavigation moduleId={this.props.moduleId}></ModuleSideNavigation>
-        <div className="module-content">
 
-          <MDBContainer>
-            <MDBRow>
-              <MDBCol size="8">
-                <h2 className="font-weight-bold"> Attendance </h2></MDBCol>
-              <MDBCol align="right" size="4">
-                <MDBBtn onClick={this.toggle} color="primary" >Create Attendance</MDBBtn>
+      <MDBContainer>
+        <MDBRow>
+          <MDBCol size="8">
+            <h2 className="font-weight-bold"> Attendance </h2></MDBCol>
+          <MDBCol align="right" size="4">
+            <MDBBtn onClick={this.toggle} color="primary" >Create Attendance</MDBBtn>
+          </MDBCol>
+        </MDBRow>
+
+        <MDBModal isOpen={this.state.modal} toggle={this.toggle}>
+          <MDBModalHeader toggle={this.toggle}>Create Attendance</MDBModalHeader>
+          <MDBModalBody>
+            <MDBRow >
+              <MDBCol>
+                {this.displaySelect()}
               </MDBCol>
             </MDBRow>
+            <MDBRow style={{ paddingTop: "20px" }}>
+              <MDBCol>
+                {this.displayVariousClasses()}
+              </MDBCol>
+            </MDBRow>
+          </MDBModalBody>
 
-            <MDBModal isOpen={this.state.modal} toggle={this.toggle}>
-              <MDBModalHeader toggle={this.toggle}>Create Attendance</MDBModalHeader>
-              <MDBModalBody>
-                <MDBRow >
-                  <MDBCol>
-                    {this.displaySelect()}
-                  </MDBCol>
-                </MDBRow>
-                <MDBRow style={{ paddingTop: "20px" }}>
-                  <MDBCol>
-                    {this.displayVariousClasses()}
-                  </MDBCol>
-                </MDBRow>
-              </MDBModalBody>
+          <MDBModalFooter>
+            <MDBBtn color="secondary" onClick={this.toggle}>Close</MDBBtn>
+            <MDBBtn color="primary" onClick={this.handleClickOpen}>Generate QRCode</MDBBtn> {/**generate qr code */}
+          </MDBModalFooter>
+        </MDBModal>
 
-              <MDBModalFooter>
-                <MDBBtn color="secondary" onClick={this.toggle}>Close</MDBBtn>
-                <MDBBtn color="primary" onClick={this.handleClickOpen}>Generate QRCode</MDBBtn> {/**generate qr code */}
-              </MDBModalFooter>
-            </MDBModal>
+        <Dialog
+          open={this.state.open}
+          onClose={this.handleClickClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          fullScreen={true}
+          fullWidth={true}
+        >
+          <DialogTitle id="alert-dialog-title">{this.getCurrenDate()}</DialogTitle>
+          <DialogContent>
+            {this.generateQRCode()}
+          </DialogContent>
+          <DialogActions>
+            <MDBBtn variant="contained" color="primary" onClick={this.handleClickClose}>Close</MDBBtn>
+          </DialogActions>
+        </Dialog>
 
-            <Dialog
-              open={this.state.open}
-              onClose={this.handleClickClose}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-              fullScreen={true}
-              fullWidth={true}
-            >
-              <DialogTitle id="alert-dialog-title">{this.getCurrenDate()}</DialogTitle>
-              <DialogContent>
-                {this.generateQRCode()}
-              </DialogContent>
-              <DialogActions>
-                <MDBBtn variant="contained" color="primary" onClick={this.handleClickClose}>Close</MDBBtn>
-              </DialogActions>
-            </Dialog>
+        <hr className="my-3" />
+        {this.showAttendance()}
 
-            <hr className="my-3" />
-            {this.showAttendance()}
+      </MDBContainer>
 
-          </MDBContainer>
-        </div>
-      </div>
     );
   }
 }
