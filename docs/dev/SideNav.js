@@ -15,7 +15,12 @@ class SideNav extends Component {
         this.props.dataStore.setPath(path);
     }
 
-    render() {
+    renderCoursepackSideNav = () => {
+        // LMS Dashboard
+        // My Courses
+        // Users (Admin)
+        // Account
+        // Login / Logout
         return (
             <div className="sidebar-fixed position-fixed">
                 <div style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "70px", textAlign: "center", color: "#fff" }}>
@@ -23,26 +28,16 @@ class SideNav extends Component {
                     <br /> <p style={{ fontSize: "10px" }}>FLIPIT</p>
                 </div>
                 <MDBListGroup className="list-group-flush">
-                    {(this.props.dataStore.accessRight !== "Public") &&
                     <NavLink to="/dashboard" activeClassName="activeClass" onClick={() => this.updatePath("/dashboard")}>
                         <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
                             <MDBIcon icon="chart-pie" />
                             <br /> <p style={{ fontSize: "10px" }}>Dashboard</p>
                         </MDBListGroupItem>
                     </NavLink>
-                    }
-                    {(this.props.dataStore.accessRight !== "Admin" && this.props.dataStore.accessRight !== "Public") &&
-                        <NavLink to="/modules" activeClassName="activeClass" onClick={() => this.updatePath("/modules")}>
-                            <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
-                                <MDBIcon icon="table" />
-                                <br /> <p style={{ fontSize: "10px" }}>Modules</p>
-                            </MDBListGroupItem>
-                        </NavLink>
-                    }
-                    <NavLink to="/coursesDashboard" activeClassName="activeClass" onClick={() => this.updatePath("/courses")}>
+                    <NavLink to="/coursepack/enrolledCourses" activeClassName="activeClass" onClick={() => this.updatePath("/courses")}>
                         <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
                             <MDBIcon icon="book" />
-                            <br /> <p style={{ fontSize: "10px" }}>Courses</p>
+                            <br /> <p style={{ fontSize: "10px" }}> My Courses</p>
                         </MDBListGroupItem>
                     </NavLink>
                     {this.props.dataStore.accessRight === "Admin" &&
@@ -68,6 +63,63 @@ class SideNav extends Component {
                 </MDBListGroup>
             </div>
         )
+    }
+
+    renderFlipItSideNav = () => {
+        // LMS Dashboard
+        // Modules
+        // Coursepack
+        // Account
+        // Logout
+        return (
+            <div className="sidebar-fixed position-fixed">
+                <div style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "70px", textAlign: "center", color: "#fff" }}>
+                    <MDBIcon icon="graduation-cap" />
+                    <br /> <p style={{ fontSize: "10px" }}>FLIPIT</p>
+                </div>
+                <MDBListGroup className="list-group-flush">=
+                        <NavLink to="/dashboard" activeClassName="activeClass" onClick={() => this.updatePath("/dashboard")}>
+                        <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
+                            <MDBIcon icon="chart-pie" />
+                            <br /> <p style={{ fontSize: "10px" }}>Dashboard</p>
+                        </MDBListGroupItem>
+                    </NavLink>=
+                    {(this.props.dataStore.accessRight !== "Admin") &&
+                        <NavLink to="/modules" activeClassName="activeClass" onClick={() => this.updatePath("/modules")}>
+                            <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
+                                <MDBIcon icon="table" />
+                                <br /> <p style={{ fontSize: "10px" }}>Modules</p>
+                            </MDBListGroupItem>
+                        </NavLink>
+                    }
+                    <NavLink to="/coursepack/dashboard" activeClassName="activeClass" onClick={() => this.updatePath("/courses")}>
+                        <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
+                            <MDBIcon icon="book" />
+                            <br /> <p style={{ fontSize: "10px" }}>Courses</p>
+                        </MDBListGroupItem>
+                    </NavLink>
+                    <NavLink to="/account" activeClassName="activeClass" onClick={() => this.updatePath("/account")}>
+                        <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
+                            <MDBIcon icon="user" />
+                            <br /> <p style={{ fontSize: "10px" }}>Account</p>
+                        </MDBListGroupItem>
+                    </NavLink>
+                    <NavLink onClick={() => this.logOutUser()} to="/login" activeClassName="activeClass">
+                        <MDBListGroupItem style={{ backgroundColor: "#000", position: "absolute", bottom: "0px", paddingBottom: "2px", textAlign: "center" }}>
+                            <MDBIcon icon="sign-out-alt" />
+                            <br /> <p style={{ fontSize: "10px" }}>Logout</p>
+                        </MDBListGroupItem>
+                    </NavLink>
+                </MDBListGroup>
+            </div>
+        )
+    }
+
+    render() {
+        if (this.props.dataStore.accessRight !== "Public")
+            return this.renderFlipItSideNav();
+        else 
+            return this.renderCoursepackSideNav();
     };
 }
 

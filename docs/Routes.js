@@ -257,7 +257,7 @@ class Routes extends React.Component {
                 <MDBRow>
                   <MDBCol md="12" className="mt-3 mx-auto">
                     <MDBJumbotron>
-                      <img src="http://kalashreeheritage.com/wp-content/uploads/2018/08/maxresdefault.jpg" width="50%" />
+                      <img src="https://image.freepik.com/free-vector/design-404-error-page-is-lost-found-message-template-web-page-with-404-error-modern-line-design_6280-165.jpg" width="50%" />
                     </MDBJumbotron>
                   </MDBCol>
                 </MDBRow>
