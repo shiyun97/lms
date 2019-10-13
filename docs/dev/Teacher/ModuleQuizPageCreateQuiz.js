@@ -25,7 +25,10 @@ class ModuleQuizPageCreateQuiz extends Component {
         noOfAttempts: 1,
         timeLimit: 60,
         openingDate: "",
-        closingDate: ""
+        closingDate: "",
+        points: 1,
+        question: "",
+        answer: ""
     }
 
     initPage() {
@@ -169,16 +172,75 @@ class ModuleQuizPageCreateQuiz extends Component {
                         <h4 className="text-center">
                             Build Quiz
                     </h4>
-                        <br />
-                        <label className="grey-text">
-                            Quiz Title
+                        <hr />
+                        <MDBRow>
+                            {/* Add Questions List here */}
+                            <MDBCol md="12" className="mt-4">
+                                <label className="grey-text">
+                                    Question
                     </label>
-                        <input type="text" name="quizTitle" onChange={this.handleChange} className="form-control" />
-                        <br />
-                        <label className="grey-text">
-                            Instructions
+                                <textarea rows="3" type="text" name="question" onChange={this.handleChange} className="form-control" />
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-4">
+                                <label className="grey-text">
+                                    Explanation
                     </label>
-                        <textarea type="text" rows="3" name="instructions" onChange={this.handleChange} className="form-control" />
+                                <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} className="form-control" />
+                            </MDBCol>
+                            <MDBCol md="10" className="mt-4" style={{ paddingTop: 28 }}>
+                                <MDBInputGroup
+                                    containerClassName="mb-3"
+                                    prepend="Correct Answer"
+                                    required
+                                    inputs={
+                                        <select name="questionType" onChange={this.handleChange} className="browser-default custom-select">
+                                            <option value="0">Choose...</option>
+                                            {/* based on how many answers are created */}
+                                        </select>
+                                    }
+                                />
+                            </MDBCol>
+                            <MDBCol md="2" className="mt-4">
+                                <label className="grey-text">
+                                    Points
+                    </label>
+                                <input type="number" className="form-control" name="points"
+                                    value={this.state.points}
+                                    onChange={this.handleChange}
+                                    min={1}
+                                    required />
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-4" align="center">
+                                <MDBBtn size="small" color="grey">Add Answer</MDBBtn>
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-4">
+                                <label className="grey-text">
+                                    Answer
+                    </label>
+                                <input type="text" name="answer" onChange={this.handleChange} className="form-control" />
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-4" align="center">
+                                <hr />
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-4" align="center">
+                                <MDBInputGroup
+                                    style={{ paddingTop: 22, width: 350 }}
+                                    containerClassName="mb-3"
+                                    prepend="Question Type"
+                                    required
+                                    inputs={
+                                        <select name="questionType" onChange={this.handleChange} className="browser-default custom-select">
+                                            <option value="0">Choose...</option>
+                                            <option value="Normal">MCQ</option>
+                                            <option value="Adaptive">Short Answer</option>
+                                        </select>
+                                    }
+                                />
+                            </MDBCol>
+                            <MDBCol md="12" align="center">
+                                <MDBBtn size="small" color="blue">Add Question</MDBBtn>
+                            </MDBCol>
+                        </MDBRow>
                     </div>
                 );
             default:
@@ -229,6 +291,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                                                         <div>
                                                             <Typography>{this.getStepContent(activeStep)}</Typography>
                                                             <div align="center">
+                                                                <hr />
                                                                 <MDBBtn
                                                                     disabled={activeStep === 0}
                                                                     onClick={() => this.handleBack()}
@@ -237,7 +300,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                                                                     Back
                                                                 </MDBBtn>
                                                                 &nbsp;&nbsp;&nbsp;&nbsp;
-                                                                <MDBBtn color="blue darken-4" onClick={() => this.handleNext()}>
+                                                                <MDBBtn color="grey" onClick={() => this.handleNext()}>
                                                                     {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                                                                 </MDBBtn>
                                                             </div>
