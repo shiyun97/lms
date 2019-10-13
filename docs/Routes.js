@@ -94,7 +94,6 @@ import ModuleQuizPageAnswerQuiz from "./dev/Student/ModuleQuizPageAnswerQuiz";
 import CoursepackEnrolledCourses from './dev/CoursepackEnrolledCourses';
 import CoursePackCreate from "./dev/Teacher/CoursepackCreate";
 import CoursepackDashboard from './dev/CoursepackDashboard'
-import CoursepackDashboardTeacher from './dev/Teacher/CoursepackDashboardTeacher'
 import CoursepackDetailsTeacher from "./dev/Teacher/CoursepackDetailsTeacher";
 
 @inject('dataStore')
@@ -186,7 +185,6 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/feedback/evaluation" component={ModuleFeedbackEvaluationPage} />
         <Route exact path="/coursepack/enrolledCourses" component={CoursepackEnrolledCourses} />
         <Route exact path="/coursepack/create/" component={CoursePackCreate} />
-        <Route exact path="/coursepack/dashboard/:userId" component={CoursepackDashboardTeacher} />
         <Route exact path="/coursepack/details/:userId/:coursepackId" component={CoursepackDetailsTeacher} />
         <Route exact path="/coursepack/dashboard" component={CoursepackDashboard} />
 

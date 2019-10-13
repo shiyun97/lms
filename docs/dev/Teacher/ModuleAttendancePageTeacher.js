@@ -9,7 +9,7 @@ import { Table } from 'semantic-ui-react'
 const API = "http://localhost:8080/LMS-war/webresources/"
 var QRCode = require('qrcode.react');
 
-class ModuleAttendanceTeacher extends Component {
+class ModuleAttendancePageTeacher extends Component {
 
   state = {
     modal: false,
@@ -445,7 +445,7 @@ class ModuleAttendanceTeacher extends Component {
   }
 }
 
-export default styled(ModuleAttendanceTeacher)`
+export default styled(ModuleAttendancePageTeacher)`
 .module-content{
           margin - left: 270px;
         margin-top: 40px;

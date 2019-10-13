@@ -6,14 +6,10 @@ import {
 import axios from "axios";
 import { NavLink, Redirect, Route } from 'react-router-dom'
 import { CardActionArea, CardMedia, CardContent, Typography, CardActions, Button, Card } from "@material-ui/core";
-import ModuleSideNavigation from "./ModuleSideNavigation";
-import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
-import CoursepackDashboardPageTeacher from "./Teacher/CoursepackDashboardPageTeacher";
-import CoursepackDashboardPageStudent from "./Student/CoursepackDashbaordPageStudent";
 
 const API = "http://localhost:3001"
 
-class CoursepackDashboard extends Component {
+class CoursepackDashboardPageStudent extends Component {
   state = {
     coursepackList: "",
     redirect: false,
@@ -47,17 +43,17 @@ class CoursepackDashboard extends Component {
     );
   };
 
-  /*   handleCard = id => {
-      return <Redirect to="/myCourses"/>
-    } */
+/*   handleCard = id => {
+    return <Redirect to="/myCourses"/>
+  } */
 
   setRedirect = event => {
-    this.setState({ redirect: true })
+    this.setState({redirect: true})
   }
 
   renderRediect = () => {
     if (this.state.redirect) {
-      return <Redirect to='/myCourses' />
+      return <Redirect to='/myCourses'/> 
     }
   }
 
@@ -117,7 +113,7 @@ class CoursepackDashboard extends Component {
             return (
               <MDBCol size="3" key={course.id}>
                 <Card style={{ maxHeight: 300 }}>
-                  {this.renderRediect()}
+                  {this.renderRediect() }
                   <CardActionArea /* onClick={() => this.handleCard(course.id)} */ onClick={this.setRedirect}>
                     <CardMedia
                       style={{ height: 140 }}
@@ -232,22 +228,16 @@ class CoursepackDashboard extends Component {
 
   render() {
     return (
-      <div className={this.props.className}>
-        <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
-        <div className="module-navbar-small">
-          <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Attendance'}></ModuleSideNavigationDropdown>
-        </div>
-        <div className="module-content">
-          <MDBContainer className="mt-3">
-          <CoursepackDashboardPageTeacher moduleId={this.props.match.params.moduleId} />{/* 
-            {this.props.dataStore.accessRight === "Teacher" && <CoursepackDashboardPageTeacher moduleId={this.props.match.params.moduleId} />}
-            {this.props.dataStore.accessRight === "Student" && <CoursepackDashboardPageStudent moduleId={this.props.match.params.moduleId} />}
+      <MDBContainer className="mt-5">
+        {this.heading()}
+        {this.checkUserEnrolled()}
+        <br />
+        <br />
+        {this.courseRecommendation()}
 
-           */}</MDBContainer>
-        </div>
-      </div>
+        <br />
+      </MDBContainer>
     );
   }
 }
-
-export default CoursepackDashboard;
+export default CoursepackDashboardPageStudent;

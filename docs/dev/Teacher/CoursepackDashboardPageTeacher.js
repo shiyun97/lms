@@ -10,7 +10,7 @@ import { NavLink, Redirect, Route } from 'react-router-dom'
 
 const API = "http://localhost:3001"
 
-class CoursepackDashboardTeacher extends Component {
+class CoursepackDashboardPageTeacher extends Component {
 
     state = {
         activeItem: "1",
@@ -161,4 +161,4 @@ class CoursepackDashboardTeacher extends Component {
     }
 }
 
-export default CoursepackDashboardTeacher
+export default CoursepackDashboardPageTeacher

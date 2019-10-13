@@ -8,7 +8,7 @@ import { Table } from 'semantic-ui-react'
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 
-class ModuleAttendanceStudent extends Component {
+class ModuleAttendancePageStudent extends Component {
 
     state = {
         value: 0,
@@ -97,9 +97,9 @@ class ModuleAttendanceStudent extends Component {
     }
 }
 
-export default styled(ModuleAttendanceStudent)`
+export default styled(ModuleAttendancePageStudent)`
 .module-content{
-                    margin - left: 270px;
-              margin-top: 40px;
-          }
+    margin - left: 270px;
+    margin-top: 40px;
+}
 `;

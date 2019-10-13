@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { MDBContainer } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
 import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
-import ModuleAttendanceTeacher from "./Teacher/ModuleAttendanceTeacher";
-import ModuleAttendanceStudent from "./Student/ModuleAttendanceStudent";
+import ModuleAttendancePageTeacher from "./Teacher/ModuleAttendancePageTeacher";
+import ModuleAttendancePageStudent from "./Student/ModuleAttendancePageStudent";
 import { observer, inject } from 'mobx-react'
 
 
@@ -41,8 +41,8 @@ class ModuleAttendancePage extends Component {
         </div>
         <div className="module-content">
           <MDBContainer className="mt-3">
-            {this.props.dataStore.accessRight === "Teacher" && <ModuleAttendanceTeacher moduleId={this.props.match.params.moduleId} />}
-            {this.props.dataStore.accessRight === "Student" && <ModuleAttendanceStudent moduleId={this.props.match.params.moduleId} />}
+            {this.props.dataStore.accessRight === "Teacher" && <ModuleAttendancePageTeacher moduleId={this.props.match.params.moduleId} />}
+            {this.props.dataStore.accessRight === "Student" && <ModuleAttendancePageStudent moduleId={this.props.match.params.moduleId} />}
 
           </MDBContainer>
         </div>
