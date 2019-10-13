@@ -60,7 +60,7 @@ class App extends Component {
     const { collapseID } = this.state;
     return (
       <Router>
-        {this.props.dataStore.getSignInStatus && <SideNav />}
+        <SideNav />
         <div className="flyout">
           {/* <MDBNavbar color="indigo" dark expand="md" scrolling fixed="top">
             <MDBNavbarBrand href="/" className="py-0 font-weight-bold" style={{ paddingLeft: "80px" }}>

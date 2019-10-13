@@ -2,7 +2,7 @@ import { action, computed, observable } from "mobx"
 
 class DataStore {
   @observable signInStatus = false
-  @observable path = "/coursesDashboard"
+  @observable path = "/coursepack/dashboard"
 
   // student details
   @observable email = ""
@@ -31,7 +31,7 @@ class DataStore {
     localStorage.setItem("password", this.password)
     localStorage.setItem("accessRight", this.accessRight)
     if (this.accessRight === "Public")
-      this.path = "/coursesDashboard"
+      this.path = "/coursepack/dashboard"
     else
       this.path = "/dashboard"
   }
@@ -39,7 +39,7 @@ class DataStore {
   @action setSignOutStatus() {
     this.signInStatus = false;
     if (this.accessRight === "Public")
-      this.path = "/coursesDashboard"
+      this.path = "/coursepack/dashboard"
     else
       this.path = "/dashboard"
     this.email = "";

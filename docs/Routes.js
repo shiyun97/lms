@@ -64,8 +64,8 @@ import TreeviewPage from './pages/TreeviewPage'
 import AnalyticsPage from './pages/AnalyticsPage';
 
 // LMS IMPORTS
-import PublicLoginPage from './dev/PublicLoginPage';
-import RegisterPage from './dev/RegisterPage';
+import PublicLoginPage from './dev/Public/PublicLoginPage';
+import RegisterPage from './dev/Public/RegisterPage';
 import ModuleOverviewPage from './dev/ModuleOverviewPage';
 import ModuleDetailsPage from './dev/ModuleDetailsPage';
 import ModuleAnnouncementsPage from './dev/ModuleAnnouncementsPage';

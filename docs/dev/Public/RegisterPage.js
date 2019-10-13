@@ -174,7 +174,7 @@ class RegisterPage extends Component {
                                             </MDBRow>
                                         </form>
                                     </ul>
-                                    <center>Already have an account?<a href="/public/login"> Login here.</a></center>
+                                    <center>Already have an account?<a href="/coursepack/login"> Login here.</a></center>
                                 </MDBJumbotron>
                             </MDBCol>
                         </MDBRow>
