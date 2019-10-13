@@ -138,7 +138,9 @@ class Routes extends React.Component {
         <Route exact path="/undermaintenance" component={UnderMaintenancePage} />
         <Route exact path="/account" component={UserProfilePage} />
 
-        {/* LMS PAGES - Public */}
+        {/* LMS PAGES - Public Student */}
+        <Route exact path="/coursepack/login" component={PublicLoginPage} />
+        <Route exact path="/coursepack/register" component={RegisterPage} />
         <Route exact path="/coursepack/account" component={UserProfilePage} />
 
         {/* LMS PAGES - Admin */}
@@ -187,10 +189,6 @@ class Routes extends React.Component {
         <Route exact path="/coursepack/dashboard/:userId" component={CoursepackDashboardTeacher} />
         <Route exact path="/coursepack/details/:userId/:coursepackId" component={CoursepackDetailsTeacher} />
         <Route exact path="/coursepack/dashboard" component={CoursepackDashboard} />
-
-        {/* LMS PAGES - Public Student */}
-        <Route exact path="/public/login" component={PublicLoginPage} />
-        <Route exact path="/register" component={RegisterPage} />
 
         {/* FREE Templates */}
         <Route exact path="/home" component={HomePage} />
