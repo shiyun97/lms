@@ -13,7 +13,7 @@ class CoursePackCreate extends Component {
 
     state = {
         activeStep: 1,
-        steps: ['Basic Course Information', 'Upload Videos', 'Upload Quiz'],
+        steps: ['Basic Course Information', 'Upload Videos', 'Create Quiz'],
         userId: "",
         courseCode: "",
         courseTitle: "",
@@ -25,7 +25,7 @@ class CoursePackCreate extends Component {
         categories: "",
         heading: "",
         uploadedFile: "",
-        section: [{ heading: "", file: "" }]
+        section: [{ heading: "", file: "" }],
     }
 
     componentDidMount() {
@@ -45,30 +45,8 @@ class CoursePackCreate extends Component {
         this.setState({ [event.target.name]: event.target.value })
     }
 
-    handleOnChangeDynamic = event => {
-        console.log(event.target.className)
-        this.setState({ [event.target.className]: event.target.value })
-    }
-
     handleSelectCategory = event => {
         this.setState({ category: event.target.value }, () => event);
-    }
-
-    handleChange = event => {
-        console.log(event.target.className)
-        if (["heading", "file"].includes(event.target.className)) {
-            let section = [...this.state.section]
-            section[event.target.dataset.id][event.target.className] = event.target.value.toUpperCase()
-            this.setState({ section }, () => console.log(this.state.section))
-        } else {
-            this.setState({ [event.target.className]: event.target.value.toUpperCase() })
-        }
-    }
-
-    addSection = event => {
-        this.setState((prevState) => ({
-            section: [...prevState.section, { heading: "", file: "" }],
-        }))
     }
 
     courseInformation = () => {
@@ -123,7 +101,7 @@ class CoursePackCreate extends Component {
                         <MDBCol sm="4">Category: </MDBCol>
                         <MDBCol sm="8">
                             <select value={this.state.category} onChange={this.handleSelectCategory} className="browser-default custom-select">
-                                <option>Choose an option</option>
+                                <option>Choose a category</option>
                                 {this.state.categories && this.state.categories.map(
                                     (category, index) => <option key={index} value={category}>{category}</option>)
                                 }
@@ -175,36 +153,60 @@ class CoursePackCreate extends Component {
         console.log("file on change")
     }
 
-    courseStructure = () => {
-        return (
-            <MDBContainer>
-                <form onChange={this.handleChange}>
-                    <MDBCol align="right">
-                        <MDBBtn onClick={this.addSection}>Add section</MDBBtn>
-                    </MDBCol>
+    //FIXME: file upload state change
+    handleCourseStructureChange = e => {
+        if (["heading", "file"].includes(e.target.className)) {
+            let section = [...this.state.section]
+            section[e.target.dataset.id][e.target.className] = e.target.value.toUpperCase()
+            this.setState({ section }, () => console.log(this.state.section))
+        } else {
+            this.setState({ [e.target.name]: e.target.value.toUpperCase() })
+        }
+    }
 
-                    {this.state.section && this.state.section.map((each, index) => {
-                        let headingId = `heading-${index}`, fileId = `file-${index}`
+    addSection = (e) => {
+        this.setState((prevState) => ({
+            section: [...prevState.section, { heading: "", file: "" }],
+        }));
+    }
+    handleSubmit = (e) => { e.preventDefault() }
+
+    courseStructure = () => {
+        let { section } = this.state
+        return (
+            <div>
+                <MDBCol align="right">
+                    <MDBBtn onClick={this.addSection}>Add Section</MDBBtn>
+                </MDBCol>
+                {
+                    section.map((val, idx) => {
+                        let sectionId = `section-${idx}`, fileId = `file-${idx}`
                         return (
-                            <SectionContainer key={index}>
-                                <MDBRow size="12">
-                                    <MDBCol size="4">Heading:</MDBCol>
+                            <SectionContainer key={idx}>
+                                <MDBRow>
+                                    <MDBCol size="4">
+                                        <label htmlFor={sectionId}>{`Heading #${idx + 1}: `}</label>
+                                    </MDBCol>
                                     <MDBCol size="8">
                                         <input
-                                            value={this.state.heading}
-                                            name={headingId}
                                             type="text"
+                                            name={sectionId}
+                                            data-id={idx}
+                                            id={sectionId}
+                                            value={section[idx].heading}
                                             className="heading"
+                                            onChange={this.handleCourseStructureChange}
+                                            style={{ width: '100%' }}
                                             placeholder="Eg. Introduction"
-                                            onChange={this.handleOnChangeDynamic}
-                                            width={'100%'}
                                         />
                                     </MDBCol>
                                 </MDBRow>
-                                <MDBRow size="12">
-                                    <MDBCol size='4'>Video:</MDBCol>
-                                    <MDBCol size='8'>
-                                        <Dropzone onDrop={this.onDrop}>
+                                <MDBRow>
+                                    <MDBCol size="4">
+                                        <label htmlFor={fileId}>File:</label>
+                                    </MDBCol>
+                                    <MDBCol size="8">
+                                        <Dropzone onDrop={this.onDrop} multiple>
                                             {({ getRootProps, getInputProps, isDragActive, isDragReject, rejectedFiles }) => (
                                                 <div {...getRootProps()}>
                                                     <input {...getInputProps()} />
@@ -215,16 +217,24 @@ class CoursePackCreate extends Component {
                                                 </div>
                                             )}
                                         </Dropzone>
-                                        <input id="fileInput" type="file" value="" ref={(ref) => this.fileUpload = ref} style={{ display: 'none' }} onChange={e => this.uploadFileOnChange()} />
-
+                                        {/*  <input
+                                            type="text"
+                                            name={fileId}
+                                            data-id={idx}
+                                            id={fileId}
+                                            value={section[idx].file}
+                                            className="file"
+                                            onChange={this.handleCourseStructureChange}
+                                        /> */}
                                     </MDBCol>
                                 </MDBRow>
                             </SectionContainer>
                         )
-                    })}
-                </form>
-            </MDBContainer >
+                    })
+                }
+            </div>
         )
+
     }
 
     getStepContent = step => {
@@ -234,7 +244,7 @@ class CoursePackCreate extends Component {
             case 1:
                 return this.courseStructure()
             case 2:
-                return 'file upload';
+                return 'Create quiz';
             default:
                 return 'Unknown step';
         }
@@ -268,7 +278,6 @@ class CoursePackCreate extends Component {
     }
 
     stepper = () => {
-
         return (
             <div style={{ width: '90%' }}>
                 <Stepper activeStep={this.state.activeStep}>
@@ -299,7 +308,7 @@ class CoursePackCreate extends Component {
                                     Back
                                     </MDBBtn>
                                 <MDBBtn onClick={this.handleStepperNext}>
-                                    {this.state.activeStep === this.state.steps.length - 1 ? 'Create' : 'Next'}
+                                    {this.state.activeStep === this.state.steps.length - 1 ? 'Create Course' : 'Next'}
                                 </MDBBtn>
                             </div>
                         )}
@@ -320,6 +329,4 @@ class CoursePackCreate extends Component {
         );
     }
 }
-
-
 export default CoursePackCreate
