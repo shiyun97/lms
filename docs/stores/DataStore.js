@@ -2,7 +2,7 @@ import { action, computed, observable } from "mobx"
 
 class DataStore {
   @observable signInStatus = false
-  @observable path = "/coursepack/dashboard"
+  @observable path = "/dashboard"
 
   // student details
   @observable email = ""

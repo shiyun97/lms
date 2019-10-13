@@ -50,7 +50,7 @@ class PublicLoginPage extends Component {
               <MDBCol md="8" className="mt-3 mx-auto">
                 <MDBJumbotron>
                   <h1 className="text-center" style={{ fontWeight: "bold" }}>
-                    FLIPIT
+                    COURSEPACK
                 </h1>
                   <h3 className="text-center">
                     Learning Management Platform

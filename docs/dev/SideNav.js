@@ -144,8 +144,12 @@ class SideNav extends Component {
             if (this.props.dataStore.getPath.includes("/coursepack"))
                 return this.renderCoursepackSideNav();
             return this.renderFlipItSideNav();
-        } else
-            return this.renderCoursepackSideNav();
+        } else {
+            console.log(this.props.dataStore.getPath)
+            if (this.props.dataStore.getPath.includes("/coursepack"))
+                return this.renderCoursepackSideNav();
+            return <div></div>
+        }
     };
 }
 
