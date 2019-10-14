@@ -3,7 +3,7 @@
     {
     "courseCode": "IS4103",
     "courseTitle": "Capstone",
-    "courseDescription": "test1",
+    "courseDescription": "description",
     "category": "Information Systems",
     "startDate": "",
     "endDate": "",
@@ -15,7 +15,7 @@
   {
     "courseCode": "IS4100",
     "courseTitle": "Project Management",
-    "courseDescription": "test2",
+    "courseDescription": "description",
     "category": "Information Systems",
     "startDate": "",
     "endDate": "",

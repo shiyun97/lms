@@ -75,7 +75,7 @@ class ModuleAttendancePageTeacher extends Component {
     return (
       //set the time for the qr code to expire
       <MDBCol align="center">
-        <QRCode value="http://192.168.1.135:8082/myCourses" size={450} />
+        <QRCode value="http://172.25.99.9:8081/" size={450} />
       </MDBCol>
     )
     /*  })

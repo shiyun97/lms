@@ -5,6 +5,7 @@
   "files": [
     "dist/*"
   ],
+  "proxy": "",
   "jest": {
     "verbose": true,
     "clearMocks": true,

@@ -22,6 +22,16 @@ class DataStore {
   @observable modules = []
   @observable currentModuleId = 0;
 
+  @observable test=0
+
+  @action setTest(test) {
+    this.test=1
+  }
+
+  @computed get getTest() {
+    return this.test;
+  }
+
   @action setSignInStatus(status, email, password, accessRight) {
     this.signInStatus = status;
     this.email = email;

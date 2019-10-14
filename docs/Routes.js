@@ -78,6 +78,7 @@ import ModuleQuizPage from './dev/ModuleQuizPage';
 import ModuleMultimediaPage, { ModuleMultimediaDetailsPageStyled } from './dev/ModuleMultimediaPage';
 import ModuleConsultationPage from './dev/ModuleConsultationPage';
 import ModuleAttendancePage from './dev/ModuleAttendancePage';
+import MarkAttendanceStudent from './dev/Student/MarkAttendanceStudent';
 import ModuleFeedbackPage from './dev/ModuleFeedbackPage';
 import ModuleFeedbackEvaluationPage from './dev/ModuleFeedbackEvaluationPage';
 import DashboardPage from './dev/DashboardPage';
@@ -151,6 +152,8 @@ class Routes extends React.Component {
 
         {/* LMS PAGES - Student */}
         <Route exact path="/modules/:moduleId/quiz/:quizId" component={ModuleQuizPageAnswerQuiz} />
+        <Route exact path="/modules/:moduleId/markAttendanceStudent" component={MarkAttendanceStudent} />
+
 
         {/* LMS PAGES - Student/ Teacher */}
         <Route exact path="/" component={StudentLoginPage} />
@@ -185,7 +188,7 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/feedback/evaluation" component={ModuleFeedbackEvaluationPage} />
         <Route exact path="/coursepack/enrolledCourses" component={CoursepackEnrolledCourses} />
         <Route exact path="/coursepack/create/" component={CoursePackCreate} />
-        <Route exact path="/coursepack/details/:userId/:coursepackId" component={CoursepackDetailsTeacher} />
+        <Route exact path="/coursepack/:coursepackId" component={CoursepackDetailsTeacher} />
         <Route exact path="/coursepack/dashboard" component={CoursepackDashboard} />
 
         {/* FREE Templates */}
