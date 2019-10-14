@@ -71,7 +71,7 @@ class DashboardPageTeacher extends Component {
               </MDBCol>
               <MDBCol md="4" className="mt-4">
                 <MDBAnimation reveal type="fadeInUp">
-                  <MDBCard cascade className="my-3 white scrollbar scrollbar-primary m-auto" style={{ maxHeight: "300px" }}>
+                  <MDBCard cascade className="my-3 white scrollbar scrollbar-primary m-auto" style={{ maxHeight: "600px" }}>
                     <MDBCardBody cascade>
                       <MDBRow>
                         <MDBCol md="9">
@@ -126,28 +126,6 @@ class DashboardPageTeacher extends Component {
                     </MDBCol>
                         </MDBRow>
                       </MDBCardText>
-                    </MDBCardBody>
-                  </MDBCard>
-                  <br />
-                  <MDBCard cascade className="my-3 white scrollbar scrollbar-primary m-auto" style={{ maxHeight: "300px" }}>
-                    <MDBCardBody cascade>
-                      <MDBCardTitle style={{ fontSize: "20px" }}>What's Due</MDBCardTitle>
-                      <MDBCardText style={{ paddingTop: 40 }}>
-                        <strong>Task Name</strong>
-                        <br />Due Date
-                  <hr />
-                        <strong>Task Name</strong>
-                        <br />Due Date
-                  <hr />
-                        <strong>Task Name</strong>
-                        <br />Due Date
-                  <hr />
-                        <strong>Task Name</strong>
-                        <br />Due Date
-                  <hr />
-                        <strong>Task Name</strong>
-                        <br />Due Date
-                </MDBCardText>
                     </MDBCardBody>
                   </MDBCard>
                 </MDBAnimation>

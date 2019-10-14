@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBCardBody, MDBCardText, MDBIcon } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBCard } from "mdbreact";
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import * as Survey from "survey-react";
@@ -11,87 +11,144 @@ class ModuleQuizPageAnswerQuiz extends Component {
   json = {
     title: "Quiz 1",
     showProgressBar: "top",
-      "pages": [
-       {
+    description: "This is to test your knowledge on [topic].", //instructions
+    quizType: "normal",
+    questionsOrder: "random", // normal => "initial"
+    openingDate: "", //datetime
+    closingDate: "", //datetime
+    noOfAttempts: 1,
+    completedHtml: "<p><h4>You have completed the quiz!</h4></p>",
+    startSurveyText: "Start",
+    completeText: "Submit",
+    showTimerPanel: "top",
+    maxTimeToFinish: 60, // in seconds
+    "pages": [
+      {
         "name": "page1",
         "elements": [
-         {
-          "type": "text",
-          "name": "question1",
-          "title": "Short Answer Question?",
-          "level": 1
-         },
-         {
-          "type": "radiogroup",
-          "name": "question2",
-          "title": "MCQ Question",
-          "level": 1,
-          "choices": [
-           "item1",
-           "item2",
-           "item3"
-          ]
-         }
+          {
+            "type": "radiogroup", //mcq
+            "name": "question1",
+            "questionId": 1,
+            "title": "What is a MCQ question?",
+            "isRequired": true,
+            // "level": 1, //only for adaptive
+            //"explanation" : "Explanation/ Feedback of Question"
+            // "correctAnswer" : "a"
+            // "points": 1
+            "choices": [
+              {
+                "value": "a",
+                "text": "Answer Choice 1"
+              },
+              {
+                "value": "b",
+                "text": "Answer Choice 2"
+              },
+              {
+                "value": "c",
+                "text": "Answer Choice 3"
+              },
+              {
+                "value": "d",
+                "text": "Answer Choice 4"
+              }
+            ],
+          },
+          {
+            "type": "radiogroup",
+            "name": "question2",
+            "questionId": 2,
+            "title": "Do you ask questions?",
+            "isRequired": true,
+            // "level": 1, //only for adaptive
+            "choices": [
+              {
+                "value": "a",
+                "text": "Answer Choice 1"
+              },
+              {
+                "value": "b",
+                "text": "Answer Choice 2"
+              },
+              {
+                "value": "c",
+                "text": "Answer Choice 3"
+              },
+              {
+                "value": "d",
+                "text": "Answer Choice 4"
+              }
+            ]
+          },
+          {
+            "type": "text", //text
+            "name": "question3",
+            "questionId": 3,
+            "title": "What is a multiple choice question?",
+            "isRequired": true,
+            // "level": 1, //only for adaptive
+          }
         ]
-       }
-      ],
-      completedHtml: "<p><h4>You have completed the quiz.</h4></p>"
-     };
+      }
+    ]
+  };
 
-    state = {
-        studentName: "",
-        username: "",
-        userId: "",
-        email: "",
-        moduleId: 0,
-        message: ""
-    }
+  state = {
+    studentName: "",
+    username: "",
+    userId: "",
+    email: "",
+    moduleId: 0,
+    message: ""
+  }
 
-    initPage() {
-        let moduleId = this.props.match.params.moduleId;
-        if (moduleId) {
-            // console.log(moduleId);
-            // retrieve module & set state
-            this.setState({ moduleId: moduleId })
-        }
+  initPage() {
+    let moduleId = this.props.match.params.moduleId;
+    if (moduleId) {
+      // console.log(moduleId);
+      // retrieve module & set state
+      this.setState({ moduleId: moduleId })
     }
+  }
 
-    componentDidMount() {
-        this.initPage();
-    }
+  componentDidMount() {
+    this.initPage();
+  }
 
-    onValueChanged(result) {
-      console.log("value changed!");
-    }
-  
-    onComplete(result) {
-      console.log("Complete! " + result);
-    }
+  onValueChanged(result) {
+    console.log("value changed!");
+  }
 
-    render() {
-      var model = new Survey.Model(this.json);
-        return (
-            <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
-                <div className="module-content">
-            <MDBContainer className="mt-3">
-                <MDBRow className="py-3">
-                    <MDBCol md="12">
-                        <MDBCard cascade className="my-3 grey lighten-4">
-                          {/* content */}
-          <Survey.Survey
-            model={model}
-            onComplete={this.onComplete}
-            onValueChanged={this.onValueChanged}
-          />
-                        </MDBCard>
-                    </MDBCol>
-                </MDBRow>
-            </MDBContainer>
-            </div>
-            </div>
-        );
-    }
+  onComplete(result) {
+    console.log("Complete!");
+    console.log(result);
+  }
+
+  render() {
+    var model = new Survey.Model(this.json);
+    return (
+      <div className={this.props.className}>
+        <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
+        <div className="module-content">
+          <MDBContainer className="mt-3">
+            <MDBRow className="py-3">
+              <MDBCol md="12">
+                <MDBCard cascade className="my-3 grey lighten-4">
+                  {/* content */}
+                  <Survey.Survey
+                    model={model}
+                    onComplete={this.onComplete}
+                    onValueChanged={this.onValueChanged}
+                  />
+                </MDBCard>
+              </MDBCol>
+            </MDBRow>
+          </MDBContainer>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default styled(ModuleQuizPageAnswerQuiz)`
