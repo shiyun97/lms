@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import {
-    MDBContainer, MDBNav, MDBNavItem, MDBNavLink, MDBTabContent, MDBTabPane, MDBCarouselInner, MDBView, MDBCarouselItem, MDBCarousel, MDBCol, MDBBtn, MDBRow,
-    MDBCard, MDBCardImage, MDBCardGroup, MDBCardBody, MDBCardText, MDBCardTitle
+    MDBContainer, MDBNav, MDBNavItem, MDBNavLink, MDBTabContent, MDBTabPane, MDBCarouselInner, MDBView, MDBCarouselItem, MDBCarousel, MDBBtn,
+    MDBCard, MDBCardImage, MDBCardGroup, MDBCardBody, MDBCardText,
+    MDBJumbotron, MDBCardTitle, MDBIcon, MDBRow, MDBCol, MDBAnimation
 } from "mdbreact";
 import axios from "axios";
 import { CardActionArea, CardMedia, CardContent, Typography, Card } from "@material-ui/core";
 import { NavLink, Redirect, Route } from 'react-router-dom'
+import SectionContainer from "../../components/sectionContainer";
+
 
 
 const API = "http://localhost:3001"
@@ -16,7 +19,7 @@ class CoursepackDashboardPageTeacher extends Component {
         activeItem: "1",
         createdCoursepacks: "",
         redirect: false,
-        courseId: ""
+        coursepackId: ""
     }
 
     componentDidMount() {
@@ -45,9 +48,9 @@ class CoursepackDashboardPageTeacher extends Component {
     //TODO: userid and coursepackid
     renderRediect = () => {
         if (this.state.redirect) {
-            return <Redirect to={{ pathname: '/coursepack/details/:userId/', state: { courseId: this.state.courseId } }} />
+            return <Redirect to={{ pathname: '/coursepack/:coursepackId/', state: { coursepackId: this.state.coursepackId } }} />
         }
-    }
+    } 
 
     //TODO: check start date against current
     showAllPublishedCourses = () => {
@@ -66,17 +69,17 @@ class CoursepackDashboardPageTeacher extends Component {
                                             title="Contemplative Reptile"
                                         />
                                         <CardContent>
-                                           {/*  <Typography gutterBottom variant="h5" component="h2"> */}
-                                                {course.courseTitle}
-                                           {/*  </Typography>
+                                            {/*  <Typography gutterBottom variant="h5" component="h2"> */}
+                                            {course.courseTitle}
+                                            {/*  </Typography>
                                             <Typography variant="body2" color="textSecondary" component="p"> */}
-                                                {course.category}
-                                           {/*  </Typography>
+                                            {course.category}
+                                            {/*  </Typography>
                                             <Typography variant="body2" color="textSecondary" component="p"> */}
-                                                {course.price}
-                                          {/*   </Typography>
+                                            {course.price}
+                                            {/*   </Typography>
                                             <Typography variant="body2" color="textSecondary" component="p"> */}
-                                                {course.teacher}
+                                            {course.teacher}
                                             {/* </Typography> */}
                                         </CardContent>
                                     </CardActionArea>
@@ -97,7 +100,7 @@ class CoursepackDashboardPageTeacher extends Component {
                     {this.state.createdCoursepacks && this.state.createdCoursepacks.map((course) => {
                         return (
                             <MDBCol size="3" key={course.id}>
-                                <Card style={{ maxHeight: 300 }}>
+                                <Card style={{ maxHeight: 300, minHeight:200 }}>
                                     {this.renderRediect()}
                                     <CardActionArea onClick={this.setRedirect}>
                                         <CardMedia
@@ -106,18 +109,18 @@ class CoursepackDashboardPageTeacher extends Component {
                                             title="Contemplative Reptile"
                                         />
                                         <CardContent>
-                                           {/*  <Typography gutterBottom variant="h5" component="h2"> */}
-                                                {course.courseTitle}
-                                           {/*  </Typography>
+                                            {/*  <Typography gutterBottom variant="h5" component="h2"> */}
+                                            {course.courseTitle}
+                                            {/*  </Typography>
                                             <Typography variant="body2" color="textSecondary" component="p"> */}
-                                                {course.category}
+                                            {course.category}
                                             {/* </Typography>
                                             <Typography variant="body2" color="textSecondary" component="p"> */}
-                                                {course.price}
-                                           {/*  </Typography>
+                                            {course.price}
+                                            {/*  </Typography>
                                             <Typography variant="body2" color="textSecondary" component="p"> */}
-                                                {course.teacher}
-                                           {/*  </Typography> */}
+                                            {course.teacher}
+                                            {/*  </Typography> */}
                                         </CardContent>
                                     </CardActionArea>
                                 </Card>
@@ -134,10 +137,10 @@ class CoursepackDashboardPageTeacher extends Component {
             <MDBContainer>
                 <MDBNav className="nav-tabs mt-5">
                     <MDBNavItem>
-                        <MDBNavLink to="#" active={this.state.activeItem === "1"} onClick={this.toggle("2")} role="tab" >Published Courses</MDBNavLink>
+                        <MDBNavLink to="#" active={this.state.activeItem === "1"} onClick={this.toggle("1")} role="tab" >Published Courses</MDBNavLink>
                     </MDBNavItem>
                     <MDBNavItem>
-                        <MDBNavLink to="#" active={this.state.activeItem === "2"} onClick={this.toggle("3")} role="tab" >Scheduled Courses</MDBNavLink>
+                        <MDBNavLink to="#" active={this.state.activeItem === "2"} onClick={this.toggle("2")} role="tab" >Scheduled Courses</MDBNavLink>
                     </MDBNavItem>
                 </MDBNav>
                 <MDBTabContent activeItem={this.state.activeItem} >

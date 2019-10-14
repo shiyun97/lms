@@ -80,6 +80,7 @@ class ModuleAttendancePageTeacher extends Component {
       <MDBCol align="center">
         {/*<QRCode value="http://192.168.1.135:8082/myCourses" size={450} />*/}
         <QRCode value={qrcode_url} size={450} />
+        {/*<QRCode value="http://172.25.99.9:8081/" size={450} />*/}
       </MDBCol>
     )
     /*  })

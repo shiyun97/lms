@@ -9,7 +9,6 @@ import { observer, inject } from 'mobx-react'
 
 
 const API = "http://localhost:8080/LMS-war/webresources/"
-var QRCode = require('qrcode.react');
 
 @inject('dataStore')
 @observer
@@ -53,7 +52,7 @@ class ModuleAttendancePage extends Component {
 
 export default styled(ModuleAttendancePage)`
 .module-content{
-            margin - left: 270px;
+        margin - left: 270px;
         margin-top: 40px;
     }
 `;

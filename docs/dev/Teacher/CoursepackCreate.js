@@ -6,14 +6,13 @@ import { NavLink } from 'react-router-dom'
 import { Stepper, StepLabel, Typography, Step, StepContent, Button } from '@material-ui/core';
 import Dropzone from 'react-dropzone';
 
-
 const API = "http://localhost:3001"
 
 class CoursePackCreate extends Component {
 
     state = {
         activeStep: 1,
-        steps: ['Basic Course Information', 'Upload Videos', 'Create Quiz'],
+        steps: ['Course Information', 'Upload Videos', 'Create Quiz', 'Arrangements'],
         userId: "",
         courseCode: "",
         courseTitle: "",
@@ -25,7 +24,7 @@ class CoursePackCreate extends Component {
         categories: "",
         heading: "",
         uploadedFile: "",
-        section: [{ heading: "", file: "" }],
+        outline: [],
     }
 
     componentDidMount() {
@@ -139,6 +138,10 @@ class CoursePackCreate extends Component {
                             />
                         </MDBCol>
                     </MDBRow>
+
+                    <MDBRow style={{ paddingTop: "20px" }}>
+                        {this.outline()}
+                    </MDBRow>
                 </MDBContainer>
             </SectionContainer>
         )
@@ -153,98 +156,55 @@ class CoursePackCreate extends Component {
         console.log("file on change")
     }
 
-    //FIXME: file upload state change
-    handleCourseStructureChange = e => {
-        if (["heading", "file"].includes(e.target.className)) {
-            let section = [...this.state.section]
-            section[e.target.dataset.id][e.target.className] = e.target.value.toUpperCase()
-            this.setState({ section }, () => console.log(this.state.section))
-        } else {
-            this.setState({ [e.target.name]: e.target.value.toUpperCase() })
-        }
+    addSection = event => {
+        this.setState(prevState => ({ outline: [...prevState.outline, ''] }))
     }
 
-    addSection = (e) => {
-        this.setState((prevState) => ({
-            section: [...prevState.section, { heading: "", file: "" }],
-        }));
+    handleChange = (index, event) => {
+        let outline = [...this.state.outline];
+        outline[index] = event.target.value;
+        this.setState({ outline });
+        console.log(this.state.outline)
     }
-    handleSubmit = (e) => { e.preventDefault() }
 
-    courseStructure = () => {
-        let { section } = this.state
-        return (
-            <div>
-                <MDBCol align="right">
-                    <MDBBtn onClick={this.addSection}>Add Section</MDBBtn>
-                </MDBCol>
-                {
-                    section.map((val, idx) => {
-                        let sectionId = `section-${idx}`, fileId = `file-${idx}`
-                        return (
-                            <SectionContainer key={idx}>
-                                <MDBRow>
-                                    <MDBCol size="4">
-                                        <label htmlFor={sectionId}>{`Heading #${idx + 1}: `}</label>
-                                    </MDBCol>
-                                    <MDBCol size="8">
-                                        <input
-                                            type="text"
-                                            name={sectionId}
-                                            data-id={idx}
-                                            id={sectionId}
-                                            value={section[idx].heading}
-                                            className="heading"
-                                            onChange={this.handleCourseStructureChange}
-                                            style={{ width: '100%' }}
-                                            placeholder="Eg. Introduction"
-                                        />
-                                    </MDBCol>
-                                </MDBRow>
-                                <MDBRow>
-                                    <MDBCol size="4">
-                                        <label htmlFor={fileId}>File:</label>
-                                    </MDBCol>
-                                    <MDBCol size="8">
-                                        <Dropzone onDrop={this.onDrop} multiple>
-                                            {({ getRootProps, getInputProps, isDragActive, isDragReject, rejectedFiles }) => (
-                                                <div {...getRootProps()}>
-                                                    <input {...getInputProps()} />
-                                                    <SectionContainer className="mb-0 p-5 mt-1">
-                                                        <MDBIcon icon="upload" size="3x" className="mb-3 indigo-text"></MDBIcon><br></br>
-                                                        Click to Upload or Drag & Drop
-                                                    </SectionContainer>
-                                                </div>
-                                            )}
-                                        </Dropzone>
-                                        {/*  <input
-                                            type="text"
-                                            name={fileId}
-                                            data-id={idx}
-                                            id={fileId}
-                                            value={section[idx].file}
-                                            className="file"
-                                            onChange={this.handleCourseStructureChange}
-                                        /> */}
-                                    </MDBCol>
-                                </MDBRow>
-                            </SectionContainer>
-                        )
-                    })
-                }
+    removeSection = index => {
+        let outline = [...this.state.outline];
+        outline.splice(index, 1);
+        this.setState({ outline });
+    }
+
+    createUI = () => {
+        return this.state.outline.map((outline, index) =>
+            <div key={index}>
+                <input type="text" value={outline || ''} onChange={this.handleChange.bind(this, index)} />
+                <input type='button' value='remove' onClick={() => this.removeSection(index)} />
             </div>
         )
-
     }
+
+
+    outline = () => {
+        return (
+            <div>
+                {this.createUI()}
+                <MDBBtn onClick={this.addSection}>Add</MDBBtn>
+            </div>
+        )
+    }
+
+
+    handleSubmit = (e) => { e.preventDefault() }
 
     getStepContent = step => {
         switch (step) {
             case 0:
                 return this.courseInformation()
             case 1:
-                return this.courseStructure()
+                return /* this.courseStructure() */ "Upload videos"
             case 2:
                 return 'Create quiz';
+            case 3:
+                return 'Arrange videos and quiz';
             default:
                 return 'Unknown step';
         }
