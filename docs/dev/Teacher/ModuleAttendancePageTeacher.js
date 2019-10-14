@@ -68,6 +68,9 @@ class ModuleAttendancePageTeacher extends Component {
 
   //TODO: create attendance
   generateQRCode = event => {
+    let url = window.location.href.split('/');
+    console.log(url)
+    let qrcode_url = url[0] + "/" + url[1] + "/" + url[2] + "/login";
     /*  axios.put(`${API}Attendance/createAttendance?moduleId=${this.state.moduleId}`, {
        // what to send in 
      })
@@ -75,7 +78,8 @@ class ModuleAttendancePageTeacher extends Component {
     return (
       //set the time for the qr code to expire
       <MDBCol align="center">
-        <QRCode value="http://192.168.1.135:8082/myCourses" size={450} />
+        {/*<QRCode value="http://192.168.1.135:8082/myCourses" size={450} />*/}
+        <QRCode value={qrcode_url} size={450} />
       </MDBCol>
     )
     /*  })

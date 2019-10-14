@@ -53,7 +53,13 @@ const config = {
     historyApiFallback: true,
     open: true,
     compress: true,
-    port: 3100
+    port: 3100,
+    host: '127.0.0.1',
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "*",
+      "Access-Control-Allow-Headers": "*"
+    }
   },
   plugins: [
     new HtmlWebpackPlugin({
