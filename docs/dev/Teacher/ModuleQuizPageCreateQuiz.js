@@ -28,8 +28,8 @@ class ModuleQuizPageCreateQuiz extends Component {
         closingDate: "",
         points: 1,
         level: 1,
-        question: "",
-        answer: ""
+        questionsList: [],
+        answersList: []
     }
 
     initPage() {

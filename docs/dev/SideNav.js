@@ -36,7 +36,7 @@ class SideNav extends Component {
                                     <br /> <p style={{ fontSize: "10px" }}>Dashboard</p>
                                 </MDBListGroupItem>
                             </NavLink>
-                            {(this.props.dataStore.accessRight !== "Admin" || this.props.dataStore.accessRight !== "Public") &&
+                            {(this.props.dataStore.accessRight !== "Admin" && this.props.dataStore.accessRight !== "Public") &&
                                 <NavLink to="/modules" activeClassName="activeClass" onClick={() => this.updatePath("/modules")}>
                                     <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
                                         <MDBIcon icon="table" />
@@ -49,14 +49,6 @@ class SideNav extends Component {
                                     <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
                                         <MDBIcon icon="book" />
                                         <br /> <p style={{ fontSize: "10px" }}>My Courses</p>
-                                    </MDBListGroupItem>
-                                </NavLink>
-                            }
-                            {this.props.dataStore.accessRight === "Admin" &&
-                                <NavLink to="/coursepack/users" activeClassName="activeClass" onClick={() => this.updatePath("/coursepack/users")}>
-                                    <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
-                                        <MDBIcon icon="users-cog" />
-                                        <br /> <p style={{ fontSize: "10px" }}>Users</p>
                                     </MDBListGroupItem>
                                 </NavLink>
                             }
@@ -115,12 +107,22 @@ class SideNav extends Component {
                             </MDBListGroupItem>
                         </NavLink>
                     }
-                    <NavLink to="/coursepack/dashboard" activeClassName="activeClass" onClick={() => this.updatePath("/coursepack/dashboard")}>
-                        <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
-                            <MDBIcon icon="book" />
-                            <br /> <p style={{ fontSize: "10px" }}>Courses</p>
-                        </MDBListGroupItem>
-                    </NavLink>
+                    {this.props.dataStore.accessRight !== "Admin" &&
+                        <NavLink to="/coursepack/dashboard" activeClassName="activeClass" onClick={() => this.updatePath("/coursepack/dashboard")}>
+                            <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
+                                <MDBIcon icon="book" />
+                                <br /> <p style={{ fontSize: "10px" }}>Courses</p>
+                            </MDBListGroupItem>
+                        </NavLink>
+                    }
+                    {this.props.dataStore.accessRight === "Admin" &&
+                        <NavLink to="/users" activeClassName="activeClass" onClick={() => this.updatePath("/users")}>
+                            <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
+                                <MDBIcon icon="users-cog" />
+                                <br /> <p style={{ fontSize: "10px" }}>Public Users</p>
+                            </MDBListGroupItem>
+                        </NavLink>
+                    }
                     <NavLink to="/account" activeClassName="activeClass" onClick={() => this.updatePath("/account")}>
                         <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
                             <MDBIcon icon="user" />

@@ -145,7 +145,7 @@ class Routes extends React.Component {
 
         {/* LMS PAGES - Admin */}
         <Route exact path="/admin" component={AdminLoginPage} />
-        <Route exact path="/coursepack/users" component={UsersManagementPage} />
+        <Route exact path="/users" component={UsersManagementPage} />
 
         {/* LMS PAGES - Teacher */}
         <Route exact path="/modules/:moduleId/quiz/create" component={ModuleQuizPageCreateQuiz} />
