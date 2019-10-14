@@ -6,8 +6,6 @@ import {
 import axios from "axios";
 import { NavLink } from 'react-router-dom'
 
-
-
 const API = "http://localhost:3001"
 
 class CoursepackDashboardPageTeacher extends Component {
@@ -45,7 +43,7 @@ class CoursepackDashboardPageTeacher extends Component {
                     {this.state.createdCoursepacks && this.state.createdCoursepacks.map((course) => {
                         return (
                             <MDBCol size="3" key={course.id}>
-                                <NavLink to='#' activeClassName="activeClass">
+                                <NavLink to={`/coursepack/${course.id}/`}activeClassName="activeClass">
                                     <MDBCard>
                                         <MDBCardBody>
                                             <MDBMedia object src="https://mdbootstrap.com/img/Photos/Others/placeholder1.jpg" alt="" />
