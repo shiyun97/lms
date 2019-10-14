@@ -3,7 +3,6 @@ import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBIcon } from "mdbreact";
 import SectionContainer from "../../components/sectionContainer";
 import axios from "axios";
 import { NavLink } from 'react-router-dom'
-import { Stepper, StepLabel, Typography, Step, StepContent, Button } from '@material-ui/core';
 import Dropzone from 'react-dropzone';
 
 const API = "http://localhost:3001"
@@ -11,8 +10,6 @@ const API = "http://localhost:3001"
 class CoursePackCreate extends Component {
 
     state = {
-        activeStep: 1,
-        steps: ['Course Information', 'Upload Videos', 'Create Quiz', 'Arrangements'],
         userId: "",
         courseCode: "",
         courseTitle: "",
@@ -22,8 +19,6 @@ class CoursePackCreate extends Component {
         endDate: "",
         price: "",
         categories: "",
-        heading: "",
-        uploadedFile: "",
         outline: [],
     }
 
@@ -48,7 +43,7 @@ class CoursePackCreate extends Component {
         this.setState({ category: event.target.value }, () => event);
     }
 
-    courseInformation = () => {
+    form = () => {
         return (
             <SectionContainer>
                 <MDBContainer>
@@ -138,22 +133,10 @@ class CoursePackCreate extends Component {
                             />
                         </MDBCol>
                     </MDBRow>
-
-                    <MDBRow style={{ paddingTop: "20px" }}>
-                        {this.outline()}
-                    </MDBRow>
+                    {this.outline()}
                 </MDBContainer>
             </SectionContainer>
         )
-    }
-
-    onDrop = (uploadedFile) => {
-        console.log(uploadedFile)
-        this.setState({ uploadedFile: uploadedFile });
-    }
-
-    uploadFileOnChange = () => {
-        console.log("file on change")
     }
 
     addSection = event => {
@@ -173,118 +156,46 @@ class CoursePackCreate extends Component {
         this.setState({ outline });
     }
 
-    createUI = () => {
-        return this.state.outline.map((outline, index) =>
-            <div key={index}>
-                <input type="text" value={outline || ''} onChange={this.handleChange.bind(this, index)} />
-                <input type='button' value='remove' onClick={() => this.removeSection(index)} />
-            </div>
-        )
-    }
-
-
     outline = () => {
         return (
             <div>
-                {this.createUI()}
-                <MDBBtn onClick={this.addSection}>Add</MDBBtn>
+                {this.state.outline.map((outline, index) => {
+                    return (
+                        <MDBRow style={{ paddingTop: "20px" }} key={index}>
+                            <MDBCol size="4">Section {index + 1}:</MDBCol>
+                            <MDBCol size="8">
+                                <input
+                                    value={outline}
+                                    name="outline"
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Eg. Introduction"
+                                    onChange={this.handleChange.bind(this, index)} />
+                                <input type='button' value='remove' onClick={() => this.removeSection(index)} />
+                            </MDBCol>
+                        </MDBRow>
+                    )
+                })}
+                <MDBBtn onClick={this.addSection}> Add Section</MDBBtn>
             </div>
         )
     }
 
-
-    handleSubmit = (e) => { e.preventDefault() }
-
-    getStepContent = step => {
-        switch (step) {
-            case 0:
-                return this.courseInformation()
-            case 1:
-                return /* this.courseStructure() */ "Upload videos"
-            case 2:
-                return 'Create quiz';
-            case 3:
-                return 'Arrange videos and quiz';
-            default:
-                return 'Unknown step';
-        }
-    }
-
-    handleStepperNext = event => {
-        this.setState({ activeStep: this.state.activeStep + 1 })
-        if (this.state.activeStep === this.state.steps.length - 1) {
-            console.log("create")
-            //TODO: send in userid. this is the last step
-            axios.post(`${API}/coursepack`, {
-                courseCode: this.state.courseCode,
-                courseTitle: this.state.courseTitle,
-                courseDescription: this.state.courseDescription,
-                category: this.state.category,
-                startDate: this.state.startDate,
-            })
-                .then(result => {
-                    console.log(result.data)
-                    //TODO: go to teacher's dashboard
-                })
-                .catch(error => {
-                    this.setState({ status: "error" })
-                    console.error("error in axios " + error);
-                });
-        }
-    }
-
-    handleBack = event => {
-        this.setState({ activeStep: this.state.activeStep - 1 })
-    }
-
-    stepper = () => {
-        return (
-            <div style={{ width: '90%' }}>
-                <Stepper activeStep={this.state.activeStep}>
-                    {this.state.steps.map((label, index) => {
-                        return (
-                            <Step key={label} >
-                                <StepLabel>{label}</StepLabel>
-                            </Step>
-                        )
-                    })}
-                </Stepper>
-                <div>
-                    {this.state.activeStep === this.state.steps.length ? (
-                        <div>
-                            {/*TODO: redirect to dashboard*/}
-                            <Typography>
-                                Course created!
-                            </Typography>
-                        </div>
-
-                    ) : (
-                            <div>
-                                {this.getStepContent(this.state.activeStep)}
-                                <MDBBtn color="primary">
-                                    <NavLink to="/coursepack/coursesDashboard" style={{ color: 'white' }}> Cancel</NavLink>
-                                </MDBBtn>
-                                <MDBBtn disabled={this.state.activeStep === 0} onClick={this.handleBack}>
-                                    Back
-                                    </MDBBtn>
-                                <MDBBtn onClick={this.handleStepperNext}>
-                                    {this.state.activeStep === this.state.steps.length - 1 ? 'Create Course' : 'Next'}
-                                </MDBBtn>
-                            </div>
-                        )}
-                </div>
-            </div>
-        )
+    handleCreate = event => {
+        console.log("create coursepack")
     }
 
     render() {
         return (
-            <MDBContainer className="mt-5">
+            <MDBContainer className="mt-5" >
                 <h3><b>Create Course</b></h3>
                 <hr />
                 <br />
-                {this.stepper()}
-
+                {this.form()}
+                <MDBBtn color="primary">
+                    <NavLink to="/coursepack/dashboard" style={{ color: 'white' }}> Cancel</NavLink>
+                </MDBBtn>
+                <MDBBtn onClick={this.handleCreate}>Create</MDBBtn>
             </MDBContainer>
         );
     }

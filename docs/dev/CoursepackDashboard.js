@@ -14,21 +14,7 @@ import CoursepackDashboardPageStudent from "./Student/CoursepackDashbaordPageStu
 const API = "http://localhost:3001"
 
 class CoursepackDashboard extends Component {
-  state = {
-    coursepackList: "",
-    redirect: false,
-  }
 
-  componentDidMount() {
-    axios.get(`${API}/coursepack`)
-      .then(result => {
-        this.setState({ coursepackList: result.data })
-        console.log(this.state.coursepackList)
-      })
-      .catch(error => {
-        console.error("error in axios " + error);
-      });
-  }
 
   heading = () => {
     return (
@@ -47,22 +33,7 @@ class CoursepackDashboard extends Component {
     );
   };
 
-  /*   handleCard = id => {
-      return <Redirect to="/myCourses"/>
-    } */
-
-  setRedirect = event => {
-    this.setState({ redirect: true })
-  }
-
-  renderRediect = () => {
-    if (this.state.redirect) {
-      return <Redirect to='/myCourses' />
-    }
-  }
-
-  //will display carousel if student has no exisitng courses
-  //will display student's current courses if he has enrolled into some
+ 
   mediaCarousel = () => {
     return (
       <MDBCarousel
@@ -231,22 +202,22 @@ class CoursepackDashboard extends Component {
   };
 
   render() {
+    let accessRight = localStorage.getItem("accessRight")
     return (
-      <div className={this.props.className}>
-        <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
-        <div className="module-navbar-small">
-          <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Attendance'}></ModuleSideNavigationDropdown>
-        </div>
-        <div className="module-content">
-          <MDBContainer className="mt-3">
-          <CoursepackDashboardPageTeacher moduleId={this.props.match.params.moduleId} />{/* 
-            {this.props.dataStore.accessRight === "Teacher" && <CoursepackDashboardPageTeacher moduleId={this.props.match.params.moduleId} />}
-            {this.props.dataStore.accessRight === "Student" && <CoursepackDashboardPageStudent moduleId={this.props.match.params.moduleId} />}
+      <MDBContainer style={{ paddingBottom: 240 }}>
+        <MDBRow>
+          <MDBCol md="8" className="mt-4">
+            <h2 className="font-weight-bold" style={{ paddingTop: 50 }}>
+              Coursepack
+          </h2>
+          </MDBCol>
+          {accessRight === "Student" && <CoursepackDashboardPageStudent />}
+          {/*  {accessRight === "Public" && <CoursepackDashboardPageStudent />} TODO: */}
+          {accessRight === "Teacher" && <CoursepackDashboardPageTeacher />}
 
-           */}</MDBContainer>
-        </div>
-      </div>
-    );
+        </MDBRow>
+      </MDBContainer>
+    )
   }
 }
 
