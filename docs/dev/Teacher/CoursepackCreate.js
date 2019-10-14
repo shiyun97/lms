@@ -16,7 +16,6 @@ class CoursePackCreate extends Component {
         courseDescription: "",
         category: "",
         startDate: "",
-        endDate: "",
         price: "",
         categories: "",
         outline: [],
@@ -182,7 +181,24 @@ class CoursePackCreate extends Component {
     }
 
     handleCreate = event => {
+        const { courseCode, courseTitle, courseDescription, category, startDate, price, outline } = this.state
         console.log("create coursepack")
+        axios.post(`${API}/category`, {
+            courseCode: courseCode,
+            courseTitle: courseTitle,
+            courseDescription: courseDescription,
+            category: category,
+            startDate: startDate,
+            price: price,
+            outline: outline
+        })
+            .then(result => {
+                alert("created")
+                console.log(this.state.categories)
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
     }
 
     render() {

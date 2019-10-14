@@ -6,10 +6,10 @@
     "courseDescription": "description",
     "category": "Information Systems",
     "startDate": "",
-    "endDate": "",
     "rating": 1,
     "price": 100,
     "teacher": "Dr TWK",
+    "outline": ["Introduction", "OOP", "Recursion", "Summary"],
     "id": 1
   },
   {
@@ -18,10 +18,10 @@
     "courseDescription": "description",
     "category": "Information Systems",
     "startDate": "",
-    "endDate": "",
     "rating": 2,
     "price": 20,
     "teacher": "Prof Tan",
+    "outline": ["Introduction", "Project", "Summary"],
     "id": 2
   },
   {
@@ -34,6 +34,7 @@
     "rating": 1,
     "price": 0,
     "teacher": "Prof OLB",
+    "outline": ["Introduction", "Presentation", "Summary"],
     "id": 3
   }
 ],

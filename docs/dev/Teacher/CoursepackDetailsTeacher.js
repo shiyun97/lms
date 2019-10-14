@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBCol, MDBBtn, MDBRow, MDBMedia, MDBCard } from "mdbreact";
+import { MDBContainer, MDBCol, MDBBtn, MDBRow, MDBMedia, MDBCard, MDBIcon } from "mdbreact";
 import axios from "axios";
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Slide } from "@material-ui/core";
-
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
+import CoursepackSideNavigation from "../CoursepackSideNavigation";
 
 const API = "http://localhost:3001"
 
@@ -15,7 +15,8 @@ class CoursepackDetailsTeacher extends Component {
     }
 
     componentDidMount() {
-        axios.get(`${API}/coursepack/1`)
+        let coursepackId = this.props.match.params.coursepackId;
+        axios.get(`${API}/coursepack/${coursepackId}`)
             .then(result => {
                 this.setState({ courseDetails: result.data })
                 console.log(this.state.courseDetails)
@@ -49,11 +50,32 @@ class CoursepackDetailsTeacher extends Component {
 
     showCoursepackOutline = () => {
         return (
-            <h3>course outline</h3>
+            <MDBContainer>
+                {this.state.courseDetails.outline && this.state.courseDetails.outline.map((outline, index) => {
+                    return (
+                        <ExpansionPanel key={index}>
+                            <ExpansionPanelSummary
+                                expandIcon={<MDBIcon icon="angle-down" />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                            >
+                                <Typography >{outline}</Typography>
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails>
+                                <Typography>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
+                                    sit amet blandit leo lobortis eget.
+                        </Typography>
+                            </ExpansionPanelDetails>
+                        </ExpansionPanel>
+
+                    )
+                })}
+            </MDBContainer>
         )
     }
 
-   
+
     handleClickOpen = event => {
         this.setState({ open: true })
     }
@@ -73,7 +95,10 @@ class CoursepackDetailsTeacher extends Component {
 
     render() {
         return (
-            <div style={{ paddingTop: 50 }}>
+
+            <div className="module-content">
+                <CoursepackSideNavigation courseId={this.props.match.params.coursepackId}/>
+
                 <MDBContainer>
                     <MDBCol align="right">
                         <MDBBtn onClick={this.editCourseInformation}>Edit</MDBBtn>
@@ -86,7 +111,7 @@ class CoursepackDetailsTeacher extends Component {
                         </MDBContainer>
                     </div>
                 </div>
-                <MDBContainer>
+                <MDBContainer style={{ paddingTop: 50 }}>
                     {this.showCoursepackOutline()}
                     <MDBCol align="right">
                         <MDBBtn color="danger" onClick={this.handleClickOpen}>Delete Course</MDBBtn>
