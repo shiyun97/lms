@@ -121,6 +121,10 @@ class DataStore {
     return this.email;
   }
 
+  @computed get getGender() {
+    return this.gender;
+  }
+
   @action updateModules(modules) {
     this.modules = modules;
   }

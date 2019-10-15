@@ -15,7 +15,6 @@ class UsersManagementPage extends Component {
 
     state = {
         modal1: false,
-        modal2: false,
         userId: 0,
         firstName: "",
         lastName: "",
@@ -138,36 +137,6 @@ class UsersManagementPage extends Component {
         this.setState({ openSnackbar: false });
     };
 
-    addNewUser = () => {
-        event.preventDefault();
-        this.toggle(1);
-        axios
-            // .post("http://localhost:3001/newUser", {
-            .put(`http://localhost:8080/LMS-war/webresources/User/createUser`, {
-                firstName: this.state.firstName,
-                lastName: this.state.lastName,
-                email: this.state.email,
-                password: this.state.password,
-                gender: this.state.gender,
-                accessRight: this.state.accessRight,
-                username: this.state.username
-            })
-            .then(result => {
-                this.setState({
-                    status: "recallUsers",
-                    message: "New user successfully created!",
-                    openSnackbar: true
-                });
-            })
-            .catch(error => {
-                this.setState({
-                    message: error.response.data.errorMessage,
-                    openSnackbar: true
-                });
-                console.error("error in axios " + error);
-            });
-    }
-
     updateUserState = (user) => {
         console.log(user.accessRight)
         this.setState({
@@ -184,7 +153,7 @@ class UsersManagementPage extends Component {
 
     editUser = () => {
         event.preventDefault();
-        this.toggle(2);
+        this.toggle(1);
         axios
             // .post("http://localhost:3001/newUser", {
             .post(`http://localhost:8080/LMS-war/webresources/User/updateUser`, {
@@ -269,11 +238,11 @@ class UsersManagementPage extends Component {
 
     renderEditUserModalBox = () => {
         return (
-            <MDBModal isOpen={this.state.modal2} toggle={() => this.toggle(2)}>
+            <MDBModal isOpen={this.state.modal1} toggle={() => this.toggle(1)}>
                 <MDBModalHeader
                     className="text-center"
                     titleClass="w-100 font-weight-bold"
-                    toggle={() => this.toggle(2)}
+                    toggle={() => this.toggle(1)}
                 >
                     Update User Details
                         </MDBModalHeader>
@@ -350,7 +319,7 @@ class UsersManagementPage extends Component {
                 <MDBModalFooter className="justify-content-center">
                     <MDBRow>
                         <MDBCol md="6">
-                            <MDBBtn onClick={() => this.toggle(2)} color="grey">Cancel</MDBBtn>
+                            <MDBBtn onClick={() => this.toggle(1)} color="grey">Cancel</MDBBtn>
                         </MDBCol>
                         <MDBCol md="6">
                             <MDBBtn onClick={() => this.editUser()} color="primary">Update</MDBBtn>
@@ -464,7 +433,7 @@ class UsersManagementPage extends Component {
                 accessRight: row[i].accessRight,
                 username: row[i].username,
                 editButton: <MDBRow align="center">
-                    <MDBCol md={6}><MDBIcon onClick={() => this.toggle(2, row[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
+                    <MDBCol md={6}><MDBIcon onClick={() => this.toggle(1, row[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
                     <MDBCol md={6}><MDBIcon onClick={() => this.deleteUser(row[i].userId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
                 </MDBRow>
             })
