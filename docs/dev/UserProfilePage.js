@@ -25,7 +25,9 @@ class UserProfilePage extends Component {
                     </MDBCol>
                     <MDBCol md="4" align="right">
                         {/* to edit profile for coursepack users */}
-                        {/* <MDBBtn color="primary">Edit Profile</MDBBtn> */}
+                        {this.props.dataStore.accessRight === "Public" &&
+                            <MDBBtn color="primary">Edit Profile</MDBBtn>
+                        }
                     </MDBCol>
                 </MDBRow>
                 <MDBRow className="py-3">
@@ -55,10 +57,12 @@ class UserProfilePage extends Component {
                                     <br />
                                     <MDBRow>
                                         <MDBCol md="2">
-                                            Email:
+                                            Email: <br />
+                                            Password:
                 </MDBCol>
                                         <MDBCol md="10">
-                                            {this.props.dataStore.getEmail}
+                                            {this.props.dataStore.getEmail} <br />
+                                            ********
                                         </MDBCol>
                                     </MDBRow>
                                 </MDBCardText>
