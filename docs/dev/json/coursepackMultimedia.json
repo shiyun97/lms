@@ -1,0 +1,18 @@
+{
+    "coursepackMultimedia": [
+        {
+            "createdDt": "2019-10-09T19:51:21+08:00",
+            "fileId": 601,
+            "isDelete": false,
+            "location": "C:/glassfish-4.1.1-uploadedfiles/uploadedFiles\\1570621881447_test_video.mp4",
+            "name": "test_video.mp4",
+            "type": "multimedia",
+            "uploader": {
+                "firstName": "Alice",
+                "id": 3,
+                "lastName": "Tan",
+                "userId": 3
+            }
+        }
+    ]
+}

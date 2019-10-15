@@ -96,6 +96,7 @@ import CoursepackEnrolledCourses from './dev/CoursepackEnrolledCourses';
 import CoursePackCreate from "./dev/Teacher/CoursepackCreate";
 import CoursepackDashboard from './dev/CoursepackDashboard'
 import CoursepackDetailsTeacher from "./dev/Teacher/CoursepackDetailsTeacher";
+import CoursepackMultimediaPage from './dev/CoursepackMultimediaPage';
  
 @inject('dataStore')
 @observer
@@ -188,8 +189,9 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/feedback/evaluation" component={ModuleFeedbackEvaluationPage} />
         <Route exact path="/coursepack/enrolledCourses" component={CoursepackEnrolledCourses} />
         <Route exact path="/coursepack/create/" component={CoursePackCreate} />
-         <Route exact path="/coursepack/dashboard" component={CoursepackDashboard} />
-         <Route exact path="/coursepack/:coursepackId/" component={CoursepackDetailsTeacher}/>
+        <Route exact path="/coursepack/dashboard" component={CoursepackDashboard} />
+        <Route exact path="/coursepack/:coursepackId/" component={CoursepackDetailsTeacher}/>
+        <Route exact path="/coursepack/:coursepackId/multimedia" component={CoursepackMultimediaPage}/>
 
         {/* FREE Templates */}
         <Route exact path="/home" component={HomePage} />
