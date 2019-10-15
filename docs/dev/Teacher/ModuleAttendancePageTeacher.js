@@ -69,24 +69,15 @@ class ModuleAttendancePageTeacher extends Component {
   //TODO: create attendance
   generateQRCode = event => {
     let url = window.location.href.split('/');
-    console.log(url)
+    //     console.log(url)
     let qrcode_url = url[0] + "/" + url[1] + "/" + url[2] + "/login";
-    /*  axios.put(`${API}Attendance/createAttendance?moduleId=${this.state.moduleId}`, {
-       // what to send in 
-     })
-       .then(result => { */
+
     return (
-      //set the time for the qr code to expire
       <MDBCol align="center">
-        {/*<QRCode value="http://192.168.1.135:8082/myCourses" size={450} />*/}
-        <QRCode value={qrcode_url} size={450} />
-        {/*<QRCode value="http://172.25.99.9:8081/" size={450} />*/}
+        <QRCode value="http://172.25.99.9:8081/" size={450} />
+        {/* <QRCode value={qrcode_url} size={450} /> */}
       </MDBCol>
     )
-    /*  })
-     .catch(error => {
-       console.error("error in axios " + error);
-     }); */
   }
 
   handleClickOpen = event => {
@@ -97,6 +88,16 @@ class ModuleAttendancePageTeacher extends Component {
       )
     } else {
       this.setState({ open: true, modal: false })
+      let date = new Date()
+      axios.post(`${API}Attendance/createAttendance?moduleId=${this.state.moduleId}`, { date })
+        .then(result => {
+          console.log(this.state.createdCoursepacks)
+          alert("attendance lsit created")
+          this.generateQRCode()
+        })
+        .catch(error => {
+          console.error("error in axios " + error);
+        });
     }
   }
 
