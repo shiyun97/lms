@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBCardBody, MDBInputGroup, MDBCardText, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBIcon, MDBCardBody, MDBInputGroup, MDBCardText, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from "mdbreact";
 import { observer, inject } from 'mobx-react';
+import axios from "axios";
+import { Snackbar } from '@material-ui/core';
 
 @inject('dataStore')
 @observer
@@ -19,7 +21,14 @@ class UserProfilePage extends Component {
         password: "",
         gender: "",
         userRole: "",
-        username: ""
+        username: "",
+        status: ""
+    }
+
+    componentDidUpdate() {
+        if (this.state.status === "recallUsers"){
+            //call user specific api
+        }
     }
 
     editUser = () => {
@@ -121,14 +130,14 @@ class UserProfilePage extends Component {
                                         </label>
                                 <input type="text" className="form-control" defaultValue={this.state.email} onChange={this.handleChange} name="email" />
                             </MDBCol>
-                            {/* <MDBCol md="12" className="mt-4">
+                            <MDBCol md="12" className="mt-4">
                                 <label className="grey-text">
                                     Password
                                         </label>
                             </MDBCol>
                             <MDBCol md="12">
                                 <input type="text" className="form-control" onChange={this.handleChange} defaultValue={this.state.password} name="password" />
-                            </MDBCol> */}
+                            </MDBCol>
                             <MDBCol md="12" className="mt-4">
                                 <MDBInputGroup
                                     style={{ paddingTop: 32 }}
@@ -143,22 +152,6 @@ class UserProfilePage extends Component {
                                     }
                                 />
                             </MDBCol>
-                            {/* <MDBCol md="6" className="mt-4">
-                                <MDBInputGroup
-                                    style={{ paddingTop: 32 }}
-                                    containerClassName="mb-3"
-                                    prepend="User Role"
-                                    inputs={
-                                        <select name="accessRight" value={this.state.accessRight} onChange={this.handleChange} className="browser-default custom-select">
-                                            <option value="0">Choose...</option>
-                                            <option value="Teacher">Teacher</option>
-                                            <option value="Student">Student</option>
-                                            <option value="Admin">Admin</option>
-                                            <option value="Public">Public</option>
-                                        </select>
-                                    }
-                                />
-                            </MDBCol> */}
                         </MDBRow>
                     </form>
                 </MDBModalBody>
@@ -250,7 +243,6 @@ class UserProfilePage extends Component {
                                             <br />{this.props.dataStore.getUserId}
                                         </MDBCol>
                                     </MDBRow>
-                                    {/* <MDBBtn size="sm" outline color="primary">Change Password</MDBBtn> */}
                                 </MDBCardText>
                                 <MDBCardText style={{ paddingTop: 10 }}>
                                     <strong>Contact Details</strong>
@@ -271,6 +263,22 @@ class UserProfilePage extends Component {
                     </MDBCol>
                 </MDBRow>
                 {this.renderEditUserModalBox()}
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.openSnackbar}
+                    autoHideDuration={6000}
+                    onClose={this.handleClose}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">{this.state.message}</span>}
+                    action={[
+                        <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                    ]}
+                />
             </MDBContainer>
         );
     }

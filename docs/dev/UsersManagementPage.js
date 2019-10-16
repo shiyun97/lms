@@ -3,7 +3,7 @@ import { MDBDataTable, MDBInputGroup, MDBModal, MDBModalBody, MDBModalHeader, MD
 import axios from "axios";
 import { RandomPassword } from "./utils/RandomPassword";
 import { observer, inject } from 'mobx-react';
-import { Snackbar, Fab } from '@material-ui/core';
+import { Snackbar } from '@material-ui/core';
 
 // function goToProfilePage(userId) {
 //     console.log(userId);
