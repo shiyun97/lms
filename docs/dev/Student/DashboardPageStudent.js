@@ -78,9 +78,9 @@ class DashboardPageStudent extends Component {
                           <MDBCardTitle style={{ fontSize: "20px" }}>Announcements</MDBCardTitle>
                         </MDBCol>
                         <MDBCol md="3" align="right">
-                          <Fab color="default" size="small" aria-label="add">
+                          {/* <Fab color="default" size="small" aria-label="add">
                             <MDBIcon icon="plus" />
-                          </Fab>
+                          </Fab> */}
                         </MDBCol>
                       </MDBRow>
                       <MDBCardText style={{ paddingTop: 40 }}>

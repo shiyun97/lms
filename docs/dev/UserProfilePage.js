@@ -253,8 +253,8 @@ class UserProfilePage extends Component {
                                             Password:
                                         </MDBCol>
                                         <MDBCol md="10">
-                                            {this.props.dataStore.getEmail} <br />
-                                            ********
+                                            {this.props.dataStore.getEmail} 
+                                            <br />********
                                         </MDBCol>
                                     </MDBRow>
                                 </MDBCardText>
