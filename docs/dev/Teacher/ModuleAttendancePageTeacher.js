@@ -24,7 +24,8 @@ class ModuleAttendancePageTeacher extends Component {
     moduleTitle: "",
     selectedLectureAttendance: "",
     selectedTutorialAttendance: "",
-    studentListLecture: ""
+    studentListLecture: "",
+    allLectureAttendance: ""
   }
 
   componentDidMount() {
@@ -54,7 +55,7 @@ class ModuleAttendancePageTeacher extends Component {
         console.error("error in axios " + error);
       });
 
-    //get all students in the module (fot lecture)
+    //get all students in the module (for lecture)
     axios.get(`${API}ModuleMounting/getAllStudentByModule?moduleId=${moduleId}`)
       .then(result => {
         this.setState({ studentListLecture: result.data.userList })
@@ -64,12 +65,20 @@ class ModuleAttendancePageTeacher extends Component {
         console.error("error in axios " + error);
       });
 
+    //get all attendance for lecture
+    axios.get(`${API}Attendance/getAllAttendance?moduleId=${moduleId}`)
+      .then(result => {
+        this.setState({ allLectureAttendance: result.data.attendanceList })
+        console.log(this.state.allLectureAttendance)
+      })
+      .catch(error => {
+        console.error("error in axios " + error);
+      });
   }
 
-  //TODO: create attendance
   generateQRCode = event => {
     let url = window.location.href.split('/');
-    //     console.log(url)
+    // console.log(url)
     let qrcode_url = url[0] + "/" + url[1] + "/" + url[2] + "/login";
 
     return (
@@ -81,18 +90,26 @@ class ModuleAttendancePageTeacher extends Component {
   }
 
   handleClickOpen = event => {
-    if (this.state.classType === "") {
+    let date = new Date()
+    if ((this.state.classType === "") || (this.state.classType==="lecture" && this.state.classgroup==="") || (this.state.classType==='tutorial' && this.state.classgroup==="")) {
       return (
         //TODO: add alert/ snackbar
-        <h6>Please select a classtype!</h6>
+        <h6>Please select all fields!</h6>
       )
-    } else {
+    } else if (this.state.classType === 'lecture') { //create lecture attendance
       this.setState({ open: true, modal: false })
-      let date = new Date()
-      axios.post(`${API}Attendance/createAttendance?moduleId=${this.state.moduleId}`, { date })
+      axios.post(`${API}Attendance/createAttendance?moduleId=${this.state.moduleId}`, { startTs: date })
         .then(result => {
-          console.log(this.state.createdCoursepacks)
-          alert("attendance lsit created")
+          alert("lecture attendance list created")
+          this.generateQRCode()
+        })
+        .catch(error => {
+          console.error("error in axios " + error);
+        });
+    } else { //create tutorial attendance
+      axios.post(`${API}Attendance/createAttendance?tutoriald=${this.state.classgroup}`, { date })
+        .then(result => {
+          alert("tutorial attendance lsit created")
           this.generateQRCode()
         })
         .catch(error => {
@@ -103,7 +120,7 @@ class ModuleAttendancePageTeacher extends Component {
 
   handleClickClose = event => {
     this.setState({ open: false })
-    this.initPage()
+    this.initPage() //TODO: refresh the page
   }
 
   toggle = event => {
@@ -160,6 +177,11 @@ class ModuleAttendancePageTeacher extends Component {
   }
 
   displayLectureSlots = () => {
+    //get all attendance dates for lecture
+    /* var lectureAttendanceDate =[]
+    for (var i=-0; i<lectureAttendanceDate.length; i++) {
+      lectureAttendanceDate.push((this.state.allLectureAttendance.startTs).split) //FIXME: split the string to get the date
+    } */
     return (
       <div>
         <MDBRow>
@@ -382,7 +404,7 @@ class ModuleAttendancePageTeacher extends Component {
         <select value={this.state.classgroup} onChange={this.handleSelectClassgroup} className="browser-default custom-select">
           <option>Choose an option</option>
           {this.state.tutorialList && this.state.tutorialList.map(
-            (group) => <option key={group.tutorialId} value={group.timing}>{group.timing}</option>)
+            (group) => <option key={group.tutorialId} value={group.tutorialId}>{group.timing}</option>)
           }
         </select>
       )
