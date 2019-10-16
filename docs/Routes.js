@@ -100,6 +100,8 @@ import CoursepackMultimediaPage from './dev/CoursepackMultimediaPage';
 import CoursepackArrangements from "./dev/Teacher/CoursepackArrangement";
 import CoursePackEdit from "./dev/Teacher/CoursepackEdit";
 import CoursepackView from "./dev/CoursepackView";
+import AccessDeniedPage from "./dev/AccessDeniedPage";
+import DashboardPageAdmin from "./dev/Admin/DashboardPageAdmin";
  
 @inject('dataStore')
 @observer
@@ -139,6 +141,7 @@ class Routes extends React.Component {
     )
     return (
       <Switch>
+        <Route exact path="/accessdenied" component={AccessDeniedPage} />
         <Route exact path="/undermaintenance" component={UnderMaintenancePage} />
         <Route exact path="/account" component={UserProfilePage} />
 
@@ -150,6 +153,9 @@ class Routes extends React.Component {
         {/* LMS PAGES - Admin */}
         <Route exact path="/admin" component={AdminLoginPage} />
         <Route exact path="/users" component={UsersManagementPage} />
+        <Route exact path="/dashboard/active" component={DashboardPageAdmin} />
+        <Route exact path="/dashboard/upcoming" component={DashboardPageAdmin} />
+        <Route exact path="/dashboard/expired" component={DashboardPageAdmin} />
 
         {/* LMS PAGES - Teacher */}
         <Route exact path="/modules/:moduleId/quiz/create" component={ModuleQuizPageCreateQuiz} />
@@ -157,12 +163,9 @@ class Routes extends React.Component {
         <Route exact path="/coursepack/:coursepackId/edit/" component={CoursePackEdit} />
         <Route exact path="/coursepack/:coursepackId/view/" component={CoursepackView} />
 
-
-
         {/* LMS PAGES - Student */}
         <Route exact path="/modules/:moduleId/quiz/:quizId" component={ModuleQuizPageAnswerQuiz} />
         <Route exact path="/modules/:moduleId/markAttendanceStudent" component={MarkAttendanceStudent} />
-
 
         {/* LMS PAGES - Student/ Teacher */}
         <Route exact path="/" component={StudentLoginPage} />

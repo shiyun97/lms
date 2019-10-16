@@ -4,7 +4,9 @@ import axios from "axios";
 import { observer, inject } from 'mobx-react';
 import DashboardPageTeacher from './Teacher/DashboardPageTeacher';
 import DashboardPageStudent from './Student/DashboardPageStudent';
-import UnderMaintenancePage from "./UnderMaintenancePage";
+// import UnderMaintenancePage from "./UnderMaintenancePage";
+import AccessDeniedPage from "./AccessDeniedPage";
+import DashboardPageAdmin from "./Admin/DashboardPageAdmin";
 
 @inject('dataStore')
 @observer
@@ -33,17 +35,19 @@ class DashboardPage extends Component {
   }
 
   render() {
-    return (
-      <>
-        <MDBEdgeHeader color="indigo darken-3" className="loginPage" />
-        <MDBContainer style={{ paddingBottom: 240 }}>
-          {this.props.dataStore.accessRight === "Student" && <DashboardPageStudent />}
-          {this.props.dataStore.accessRight === "Teacher" && <DashboardPageTeacher />}
-          {this.props.dataStore.accessRight === "Admin" && <UnderMaintenancePage />}
-          {this.props.dataStore.accessRight === "Public" && <UnderMaintenancePage />}
-        </MDBContainer>
-      </>
-    );
+    if (this.props.dataStore.accessRight === "Admin")
+      return <DashboardPageAdmin />
+    else
+      return (
+        <>
+          <MDBEdgeHeader color="indigo darken-3" className="loginPage" />
+          <MDBContainer style={{ paddingBottom: 240 }}>
+            {this.props.dataStore.accessRight === "Student" && <DashboardPageStudent />}
+            {this.props.dataStore.accessRight === "Teacher" && <DashboardPageTeacher />}
+            {this.props.dataStore.accessRight === "Public" && <AccessDeniedPage />}
+          </MDBContainer>
+        </>
+      );
   }
 }
 
