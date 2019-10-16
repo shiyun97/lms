@@ -25,7 +25,9 @@ class ModuleAttendancePageTeacher extends Component {
     selectedLectureAttendance: "",
     selectedTutorialAttendance: "",
     studentListLecture: "",
-    allLectureAttendance: ""
+    allLectureAttendance: "",
+    lectureAttendees: "",
+    presence: "Absent"
   }
 
   componentDidMount() {
@@ -35,7 +37,6 @@ class ModuleAttendancePageTeacher extends Component {
   initPage() {
     let moduleId = this.props.moduleId;
     this.setState({ moduleId: moduleId })
-    console.log(moduleId)
 
     //get all lectures
     axios.get(`${API}ModuleMounting/getModule/${moduleId}`)
@@ -59,7 +60,6 @@ class ModuleAttendancePageTeacher extends Component {
     axios.get(`${API}ModuleMounting/getAllStudentByModule?moduleId=${moduleId}`)
       .then(result => {
         this.setState({ studentListLecture: result.data.userList })
-        console.log(this.state.studentListLecture)
       })
       .catch(error => {
         console.error("error in axios " + error);
@@ -69,7 +69,6 @@ class ModuleAttendancePageTeacher extends Component {
     axios.get(`${API}Attendance/getAllAttendance?moduleId=${moduleId}`)
       .then(result => {
         this.setState({ allLectureAttendance: result.data.attendanceList })
-        console.log(this.state.allLectureAttendance)
       })
       .catch(error => {
         console.error("error in axios " + error);
@@ -78,20 +77,21 @@ class ModuleAttendancePageTeacher extends Component {
 
   generateQRCode = event => {
     let url = window.location.href.split('/');
-    // console.log(url)
-    let qrcode_url = url[0] + "/" + url[1] + "/" + url[2] + "/login";
-
+/*     console.log(url)
+ */    let qrcode_url = url[0] + "/" + url[1] + "/" + url[2] + "/login";
+    /*     console.log(qrcode_url)
+     */
     return (
       <MDBCol align="center">
-        <QRCode value="http://172.25.99.9:8081/" size={450} />
-        {/* <QRCode value={qrcode_url} size={450} /> */}
+        {/* <QRCode value="http://172.25.99.9:8081/" size={450} /> */}
+        <QRCode value={qrcode_url} size={450} />
       </MDBCol>
     )
   }
 
   handleClickOpen = event => {
     let date = new Date()
-    if ((this.state.classType === "") || (this.state.classType==="lecture" && this.state.classgroup==="") || (this.state.classType==='tutorial' && this.state.classgroup==="")) {
+    if ((this.state.classType === "") || (this.state.classType === "lecture" && this.state.classgroup === "") || (this.state.classType === 'tutorial' && this.state.classgroup === "")) {
       return (
         //TODO: add alert/ snackbar
         <h6>Please select all fields!</h6>
@@ -107,7 +107,7 @@ class ModuleAttendancePageTeacher extends Component {
           console.error("error in axios " + error);
         });
     } else { //create tutorial attendance
-      axios.post(`${API}Attendance/createAttendance?tutoriald=${this.state.classgroup}`, { date })
+      axios.post(`${API}Attendance/createAttendance?tutoriald=${this.state.classgroup}`, { startTs: date })
         .then(result => {
           alert("tutorial attendance lsit created")
           this.generateQRCode()
@@ -133,6 +133,12 @@ class ModuleAttendancePageTeacher extends Component {
 
   handleSelectClassgroup = event => {
     this.setState({ classgroup: event.target.value })
+    console.log(event.target.value)
+  }
+
+  handleLectureDate = event => {
+    this.setState({ selectedLectureAttendance: event.target.value })
+    console.log("selected lecture id" + event.target.value)
   }
 
   handleChangeIndex = index => {
@@ -142,10 +148,8 @@ class ModuleAttendancePageTeacher extends Component {
   handleChange = (event, value) => {
     this.setState({ value });
   };
-  //TODO:
+
   showAttendance = () => {
-    //attendance for the week
-    // button to go back and forth of the week?
 
     return (
       <div>
@@ -178,10 +182,16 @@ class ModuleAttendancePageTeacher extends Component {
 
   displayLectureSlots = () => {
     //get all attendance dates for lecture
-    /* var lectureAttendanceDate =[]
-    for (var i=-0; i<lectureAttendanceDate.length; i++) {
-      lectureAttendanceDate.push((this.state.allLectureAttendance.startTs).split) //FIXME: split the string to get the date
-    } */
+
+    var lectureAttendanceDate = []
+    var allLectureAttendance = this.state.allLectureAttendance;
+    for (var i = -0; i < allLectureAttendance.length; i++) {
+      lectureAttendanceDate.push({
+        date: (allLectureAttendance[i].startTs).substring(0, 9),
+        id: allLectureAttendance[i].attendanceId
+      })
+    }
+
     return (
       <div>
         <MDBRow>
@@ -191,10 +201,11 @@ class ModuleAttendancePageTeacher extends Component {
               <option value="1">Group 1</option>
             </select>
 
-            <select className="browser-default custom-select" style={{ maxWidth: 250 }}>
+            <select className="browser-default custom-select" style={{ maxWidth: 250 }} onChange={this.handleLectureDate}>
               <option>Date</option>
-              {/**TODO: map the attendance dates */}
-              <option value="1">{this.state.lectureList}</option>
+              {lectureAttendanceDate && lectureAttendanceDate.map(
+                (lecture) => <option key={lecture.id} value={lecture.id}>{lecture.date}</option>)
+              }
             </select>
             <MDBBtn onClick={this.getLectureAttendance}>Get</MDBBtn>
           </MDBCol>
@@ -207,92 +218,84 @@ class ModuleAttendancePageTeacher extends Component {
   getLectureAttendance = event => {
     //TODO:
     console.log("get lecture attendance by id")
-    /*     axios.get(`${API}Attendance/getAllAttendance?moduleId=${moduleId}`)
-          .then(result => {
-            this.setState({ selectedLectureAttendance: result.data.lectureDetails, moduleTitle: result.data.title })
-          })
-          .catch(error => {
-            console.error("error in axios " + error);
-          }); */
+    axios.get(`${API}Attendance/getAttendees?attendanceId=${this.state.selectedLectureAttendance}`)
+      .then(result => {
+        this.setState({ lectureAttendees: result.data.attendees })
+        console.log(this.state.lectureAttendees)
+      })
+      .catch(error => {
+        console.error("error in axios " + error);
+      });
   }
 
   displaySelectedLectureAttendance = () => {
-    //TODO: update table. map out. put onclick on all cells
-    /* if (this.state.selectedLectureAttendance.length !== 0) { */
-    return (
-      <div>
-        <br />
-        <MDBCol align="right">
-          <h6 style={{ color: "red" }}>Click on the cells to mark the attendance</h6>
-        </MDBCol>
-        <Table celled striped>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell >Name</Table.HeaderCell>
-              <Table.HeaderCell>Attendance</Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
+    console.log(this.state.studentListLecture)
+    //TODO: put onclick on all cells
+    if (this.state.lectureAttendees.length !== 0) {
+      return (
+        <div>
+          <br />
+          <MDBCol align="right">
+            <h6 style={{ color: "red" }}>Click on the cells to mark attendance</h6>
+          </MDBCol>
+          <Table celled striped>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell >Name</Table.HeaderCell>
+                <Table.HeaderCell>Attendance</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
 
-          <Table.Body>
-            <Table.Row>
-              <Table.Cell style={{ width: 550 }}>John</Table.Cell>
-              <Table.Cell selectable>
-                <a href='#'>Edit</a>
-              </Table.Cell>
-            </Table.Row>
-            <Table.Row>
-              <Table.Cell>Jamie</Table.Cell>
-              <Table.Cell>Approved</Table.Cell>
-            </Table.Row>
-            <Table.Row>
-              <Table.Cell>Jill</Table.Cell>
-              <Table.Cell>Denied</Table.Cell>
-            </Table.Row>
-            <Table.Row warning>
-              <Table.Cell>John</Table.Cell>
-              <Table.Cell>No Action</Table.Cell>
+            <Table.Body>
+              {/**TODO: check if the mapping function is correct*/}
+              {this.state.studentListLecture && this.state.studentListLecture.map((student, index) => {
+                console.log(student)
+                return (
+                  <Table.Row key={index}>
+                    <Table.Cell style={{ width: 550 }}>{student}</Table.Cell>
+                    <Table.Cell selectable onClick={this.markAttendanceManuel} style={{ color: this.handleAttendanceColour() }}>
+                      {this.state.presence}
+                    </Table.Cell>
+                  </Table.Row>
+                )
+              })}
+            </Table.Body>
+          </Table>
 
-            </Table.Row>
-            <Table.Row>
-              <Table.Cell>Jamie</Table.Cell>
-              <Table.Cell style={{ color: this.handleAttendanceColour() }} onClick={this.testClick}>Approved</Table.Cell>
-
-            </Table.Row>
-            <Table.Row>
-              <Table.Cell>Jill</Table.Cell>
-              <Table.Cell negative>Denied</Table.Cell>
-            </Table.Row>
-          </Table.Body>
-        </Table>
-        <MDBCol align="right">
-          <MDBBtn color="danger" onClick={this.deleteLectureAttendance}>Delete</MDBBtn>
-        </MDBCol>
-      </div>
-    )
-    /* } */
+          <MDBCol align="right">
+            <MDBBtn color="danger" onClick={this.deleteLectureAttendance}>Delete</MDBBtn>
+          </MDBCol>
+        </div>
+      )
+    } else {
+      return null;
+    }
   }
 
   //TODO: manual attendance marking
-  testClick = event => {
+  markAttendanceManuel = event => {
     console.log("test")
   }
 
   //TODO: update colour based on click
   handleAttendanceColour = () => {
-    return "green"
+    if (this.state.presence === "Absent") {
+      return "red"
+    } else {
+      return "green"
+    }
   }
 
   //TODO: lecture attendance id
   deleteLectureAttendance = event => {
-    console.log("deleteLectureAttendance")
-    /*     axios.delete(`${API}Attendance/deleteAttendance?moduleId=${this.props.moduleId}&attendanceId=${}`)
-          .then(result => {
-            console.log("Deleted")
-            this.initPage()
-          })
-          .catch(error => {
-            console.error("error in axios " + error);
-          }); */
+    axios.delete(`${API}Attendance/deleteAttendance?moduleId=${this.props.moduleId}&attendanceId=${this.state.selectedLectureAttendance}`)
+      .then(result => {
+        alert("deleted")
+        window.location.reload()
+      })
+      .catch(error => {
+        console.error("error in axios " + error);
+      });
   }
 
   displayTutorialSlots = () => {
