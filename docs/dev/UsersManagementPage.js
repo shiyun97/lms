@@ -275,14 +275,17 @@ class UsersManagementPage extends Component {
                                         </label>
                                 <input type="text" className="form-control" defaultValue={this.state.email} onChange={this.handleChange} name="email" />
                             </MDBCol>
-                            {/* <MDBCol md="12" className="mt-4">
+                            <MDBCol md="12" className="mt-4">
                                 <label className="grey-text">
                                     Password
                                         </label>
                             </MDBCol>
-                            <MDBCol md="12">
-                                <input type="text" className="form-control" onChange={this.handleChange} defaultValue={this.state.password} name="password" />
-                            </MDBCol> */}
+                            <MDBCol md="6">
+                                <input type="text" className="form-control" onChange={this.handleChange} value={this.state.password} />
+                            </MDBCol>
+                            <MDBCol md="6" align="right">
+                                <MDBBtn onClick={() => this.generatePwd()} outline size="sm" color="primary">Reset Password</MDBBtn>
+                            </MDBCol>
                             <MDBCol md="12" className="mt-4">
                                 <MDBInputGroup
                                     style={{ paddingTop: 32 }}
@@ -297,22 +300,6 @@ class UsersManagementPage extends Component {
                                     }
                                 />
                             </MDBCol>
-                            {/* <MDBCol md="6" className="mt-4">
-                                <MDBInputGroup
-                                    style={{ paddingTop: 32 }}
-                                    containerClassName="mb-3"
-                                    prepend="User Role"
-                                    inputs={
-                                        <select name="accessRight" value={this.state.accessRight} onChange={this.handleChange} className="browser-default custom-select">
-                                            <option value="0">Choose...</option>
-                                            <option value="Teacher">Teacher</option>
-                                            <option value="Student">Student</option>
-                                            <option value="Admin">Admin</option>
-                                            <option value="Public">Public</option>
-                                        </select>
-                                    }
-                                />
-                            </MDBCol> */}
                         </MDBRow>
                     </form>
                 </MDBModalBody>
