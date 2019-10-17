@@ -77,9 +77,9 @@ class ModuleQuizPageCreateQuiz extends Component {
         console.log(event.target.name)
     }
 
-    renderMCQQuestion = () => {
+    renderMCQQuestion = (element) => {
         return (
-            <><MDBCol md="12" className="mt-4">
+            <><MDBCol md="12" className="mt-4" key={element.questionId}>
                 <label className="grey-text">
                     Question
 </label>
@@ -125,17 +125,26 @@ class ModuleQuizPageCreateQuiz extends Component {
                         required />
                 </MDBCol>
                 <MDBCol md="12" className="mt-4" align="center">
-                    <MDBBtn size="small" color="grey">Add Answer</MDBBtn>
+                    <MDBBtn onClick={() => this.addAnswerToQuestion(element.questionId)} size="small" color="grey">Add Answer</MDBBtn>
                 </MDBCol>
                 <MDBCol md="12" className="mt-4">
-                    <label className="grey-text">
-                        Answer
-</label>
-                    <input type="text" name="answer" onChange={this.handleChange} className="form-control" />
+                    {element.choices.map((answer) => { return this.renderAnswerInput(answer) })}
                 </MDBCol>
                 <MDBCol md="12" className="mt-4" align="center">
                     <hr />
                 </MDBCol>
+            </>
+        )
+    }
+
+    renderAnswerInput = (answer) => {
+        return (
+            <>
+                <label className="grey-text">
+                    Answer #
+</label>
+                <input type="text" name="answer" onChange={this.handleChange} className="form-control" />
+                <br />
             </>
         )
     }
@@ -165,6 +174,10 @@ class ModuleQuizPageCreateQuiz extends Component {
             console.log(this.props.dataStore.getQuestions)
         } else
             console.log("No question type was selected")
+    }
+
+    addAnswerToQuestion = (qId) => {
+        this.props.dataStore.addAnswerToQuestion(qId, { text: "" })
     }
 
     getStepContent = (stepIndex) => {
@@ -269,7 +282,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                         <hr />
                         <MDBRow>
                             {/* Add Questions List here */}
-                            {this.props.dataStore.getQuestions.map((element) => { return this.renderMCQQuestion() })}
+                            {this.props.dataStore.getQuestions.map((element) => { return this.renderMCQQuestion(element) })}
                         </MDBRow>
                         <center>
                             <MDBCol md="12" className="mt-4" align="center">

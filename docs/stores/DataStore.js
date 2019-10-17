@@ -174,8 +174,9 @@ class DataStore {
     return this.elements;
   }
 
-  @action addQuestion(question) {
-    this.elements.push(question)
+  @action addAnswerToQuestion(questionId, answer) {
+    this.elements[questionId-1].choices.push(answer)
+    // console.log(this.elements[questionId-1].level)
   }
 }
 
