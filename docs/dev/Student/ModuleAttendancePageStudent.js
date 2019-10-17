@@ -83,6 +83,42 @@ class ModuleAttendancePageStudent extends Component {
         )
     }
 
+    displayLectureSlots = () => {
+        //get all attendance dates for lecture
+
+        var lectureAttendanceDate = []
+        var allLectureAttendance = this.state.allLectureAttendance;
+        for (var i = -0; i < allLectureAttendance.length; i++) {
+            lectureAttendanceDate.push({
+                date: (allLectureAttendance[i].startTs).substring(0, 10),
+                id: allLectureAttendance[i].attendanceId
+            })
+        }
+
+        return (
+            <div>
+                <MDBRow>
+                    <MDBCol align="right">
+                        <select className="browser-default custom-select" style={{ maxWidth: 250 }}>
+                            <option>Group</option>
+                            <option value="1">Group 1</option>
+                        </select>
+
+                        <select className="browser-default custom-select" style={{ maxWidth: 250 }} onChange={this.handleLectureDate}>
+                            <option>Date</option>
+                            {lectureAttendanceDate && lectureAttendanceDate.map(
+                                (lecture) => <option key={lecture.id} value={lecture.id}>{lecture.date}</option>)
+                            }
+                        </select>
+                        <MDBBtn onClick={this.getLectureAttendance}>Get</MDBBtn>
+                    </MDBCol>
+                </MDBRow>
+                {this.displaySelectedLectureAttendance()}
+            </div>
+        )
+    }
+
+
     render() {
         return (
             <MDBContainer>

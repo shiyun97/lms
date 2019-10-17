@@ -35,7 +35,7 @@ class CoursepackDetailsPageStudent extends Component {
                     <MDBCol size="8">
                         <h1>{this.state.courseDetails.courseTitle}</h1>
                         <h3>{this.state.courseDetails.courseDescription}</h3>
-
+                        {/**FIXME: bring to payment page if it's public user */}
                         <NavLink to={`/coursepack/${this.state.coursepackId}/view/`} style={{ color: 'white' }}>
                             <MDBBtn color="primary"> Enroll </MDBBtn>
                         </NavLink>

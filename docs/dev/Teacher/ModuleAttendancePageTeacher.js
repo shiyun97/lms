@@ -27,7 +27,9 @@ class ModuleAttendancePageTeacher extends Component {
     studentListLecture: "",
     allLectureAttendance: "",
     lectureAttendees: "",
-    presence: "Absent"
+    presence: "Absent",
+    userList: ["2", '3', '4'],
+    attendanceList: ['2', '3']
   }
 
   componentDidMount() {
@@ -106,15 +108,18 @@ class ModuleAttendancePageTeacher extends Component {
         .catch(error => {
           console.error("error in axios " + error);
         });
-    } else { //create tutorial attendance
-      axios.post(`${API}Attendance/createAttendance?tutoriald=${this.state.classgroup}`, { startTs: date })
+    } else if (this.state.classType === 'tutorial') { //create tutorial attendance
+      this.setState({ open: true, modal: false })
+      axios.post(`${API}Attendance/createTutorialAttendance?tutorialId=${this.state.classgroup}`, { startTs: date })
         .then(result => {
-          alert("tutorial attendance lsit created")
+          alert("tutorial attendance list created")
           this.generateQRCode()
         })
         .catch(error => {
           console.error("error in axios " + error);
         });
+    } else {
+      return null
     }
   }
 
@@ -187,7 +192,7 @@ class ModuleAttendancePageTeacher extends Component {
     var allLectureAttendance = this.state.allLectureAttendance;
     for (var i = -0; i < allLectureAttendance.length; i++) {
       lectureAttendanceDate.push({
-        date: (allLectureAttendance[i].startTs).substring(0, 9),
+        date: (allLectureAttendance[i].startTs).substring(0, 10),
         id: allLectureAttendance[i].attendanceId
       })
     }
@@ -229,60 +234,80 @@ class ModuleAttendancePageTeacher extends Component {
   }
 
   displaySelectedLectureAttendance = () => {
-    console.log(this.state.studentListLecture)
-    //TODO: put onclick on all cells
-    if (this.state.lectureAttendees.length !== 0) {
-      return (
-        <div>
-          <br />
-          <MDBCol align="right">
-            <h6 style={{ color: "red" }}>Click on the cells to mark attendance</h6>
-          </MDBCol>
-          <Table celled striped>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell >Name</Table.HeaderCell>
-                <Table.HeaderCell>Attendance</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
 
-            <Table.Body>
-              {/**TODO: check if the mapping function is correct*/}
-              {this.state.studentListLecture && this.state.studentListLecture.map((student, index) => {
-                console.log(student)
-                return (
-                  <Table.Row key={index}>
-                    <Table.Cell style={{ width: 550 }}>{student}</Table.Cell>
-                    <Table.Cell selectable onClick={this.markAttendanceManuel} style={{ color: this.handleAttendanceColour() }}>
-                      {this.state.presence}
-                    </Table.Cell>
-                  </Table.Row>
-                )
-              })}
-            </Table.Body>
-          </Table>
-
-          <MDBCol align="right">
-            <MDBBtn color="danger" onClick={this.deleteLectureAttendance}>Delete</MDBBtn>
-          </MDBCol>
-        </div>
-      )
+    if (this.state.userList.filter(e => e.userId === 4).length > 0) {
+      console.log("true")
     } else {
-      return null;
+      console.log("false")
+    }
+
+    //TODO: put onclick on all cells
+    /* if (this.state.lectureAttendees.length !== 0) { */
+    return (
+      <div>
+        <br />
+        <MDBCol align="right">
+          <h6 style={{ color: "red" }}>Click on the cells to mark attendance</h6>
+        </MDBCol>
+        <Table celled striped>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell >Name</Table.HeaderCell>
+              <Table.HeaderCell>Attendance</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+
+          <Table.Body>
+            {/**TODO: check if the mapping function is correct*/}
+            {/* this.state.studentListLecture  */ this.state.userList && this.state.userList/* this.state.studentListLecture */.map((student) => {
+              return (
+                <Table.Row >
+                  <Table.Cell style={{ width: 550 }}>{student}</Table.Cell>
+                  <Table.Cell selectable onClick={() => this.markAttendanceManuel(student)} style={{ color: this.handleAttendanceColour(student) }}>
+                    {this.checkPresence(student)}
+                  </Table.Cell>
+                </Table.Row>
+              )
+            })}
+          </Table.Body>
+        </Table>
+
+        <MDBCol align="right">
+          <MDBBtn color="danger" onClick={this.deleteLectureAttendance}>Delete</MDBBtn>
+        </MDBCol>
+      </div>
+    )
+    /*  } else {
+       return null;
+     } */
+  }
+
+  checkPresence = (studentId) => {
+    if (this.state.attendanceList.filter(e => e/* .userId  */ === studentId).length > 0) {
+      return "Present"
+    } else {
+      return "Absent"
     }
   }
 
   //TODO: manual attendance marking
-  markAttendanceManuel = event => {
-    console.log("test")
+  markAttendanceManuel = studentId => {
+    console.log(studentId)
+    if (this.state.attendanceList.filter(e => e/* .userId  */ === studentId).length > 0) {
+      //in attendance ==> when clicked, student will be mark absent
+      return this.checkPresence(studentId) //put function to remove student from attendance
+    } else {
+            //in attendance ==> when clicked, student will be mark present
+      return this.checkPresence(studentId) //put function to add student to attendance
+    }
   }
 
   //TODO: update colour based on click
-  handleAttendanceColour = () => {
-    if (this.state.presence === "Absent") {
-      return "red"
-    } else {
+  handleAttendanceColour = (studentId) => {
+    if (this.state.attendanceList.filter(e => e/* .userId  */ === studentId).length > 0) {
       return "green"
+    } else {
+      return "red"
     }
   }
 
@@ -471,14 +496,13 @@ class ModuleAttendancePageTeacher extends Component {
         {this.showAttendance()}
 
       </MDBContainer>
-
     );
   }
 }
 
 export default styled(ModuleAttendancePageTeacher)`
 .module-content{
-          margin - left: 270px;
-        margin-top: 40px;
+  margin - left: 270px;
+  margin-top: 40px;
     }
 `;
