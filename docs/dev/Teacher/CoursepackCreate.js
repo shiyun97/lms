@@ -208,9 +208,10 @@ class CoursePackCreate extends Component {
                 <hr />
                 <br />
                 {this.form()}
-                <MDBBtn color="primary">
-                    <NavLink to="/coursepack/dashboard" style={{ color: 'white' }}> Cancel</NavLink>
-                </MDBBtn>
+
+                <NavLink to="/coursepack/dashboard" style={{ color: 'white' }}>
+                    <MDBBtn color="primary"> Cancel </MDBBtn>
+                </NavLink>
                 <MDBBtn onClick={this.handleCreate}>Create</MDBBtn>
             </MDBContainer>
         );

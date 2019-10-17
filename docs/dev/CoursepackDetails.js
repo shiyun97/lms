@@ -10,7 +10,7 @@ class CoursepackDetails extends Component {
         return (
             <div>
                 {accessRight === "Student" && <CoursepackDetailsPageStudent coursepackId={this.props.match.params.coursepackId} />}
-                {accessRight === "Teacher" && <CoursepackDetailsPageStudent coursepackId={this.props.match.params.coursepackId} />}
+                {accessRight === "Teacher" && <CoursepackDetailsTeacher coursepackId={this.props.match.params.coursepackId} />}
                 {/* accessRight === "Public" && <CoursepackDashboardPageStudent /> */}
             </div>
         )

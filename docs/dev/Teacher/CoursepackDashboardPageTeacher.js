@@ -43,7 +43,7 @@ class CoursepackDashboardPageTeacher extends Component {
                     {this.state.createdCoursepacks && this.state.createdCoursepacks.map((course) => {
                         return (
                             <MDBCol size="3" key={course.id}>
-                                <NavLink to={`/coursepack/${course.id}/`}activeClassName="activeClass">
+                                <NavLink to={`/coursepack/${course.id}/`} activeClassName="activeClass">
                                     <MDBCard>
                                         <MDBCardBody>
                                             <MDBMedia object src="https://mdbootstrap.com/img/Photos/Others/placeholder1.jpg" alt="" />
@@ -76,7 +76,9 @@ class CoursepackDashboardPageTeacher extends Component {
                         <MDBNavLink to="#" active={this.state.activeItem === "2"} onClick={this.toggle("2")} role="tab" >Drafts</MDBNavLink>
                     </MDBNavItem>
                     <MDBCol align="right">
-                        <MDBBtn><NavLink to="/coursepack/create/" style={{ color: 'white' }}> Create </NavLink></MDBBtn>
+                        <NavLink to="/coursepack/create/" style={{ color: 'white' }}>
+                            <MDBBtn color="primary">Create</MDBBtn>
+                        </NavLink>
                     </MDBCol>
                 </MDBNav>
                 <MDBTabContent activeItem={this.state.activeItem} >
