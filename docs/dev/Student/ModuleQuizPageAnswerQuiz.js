@@ -34,23 +34,19 @@ class ModuleQuizPageAnswerQuiz extends Component {
             "isRequired": true,
             // "level": 1, //only for adaptive
             //"explanation" : "Explanation/ Feedback of Question"
-            // "correctAnswer" : "a"
+            // "correctAnswer" : "Answer Choice 1"
             // "points": 1
             "choices": [
               {
-                "value": "a",
                 "text": "Answer Choice 1"
               },
               {
-                "value": "b",
                 "text": "Answer Choice 2"
               },
               {
-                "value": "c",
                 "text": "Answer Choice 3"
               },
               {
-                "value": "d",
                 "text": "Answer Choice 4"
               }
             ],
@@ -64,19 +60,15 @@ class ModuleQuizPageAnswerQuiz extends Component {
             // "level": 1, //only for adaptive
             "choices": [
               {
-                "value": "a",
                 "text": "Answer Choice 1"
               },
               {
-                "value": "b",
                 "text": "Answer Choice 2"
               },
               {
-                "value": "c",
                 "text": "Answer Choice 3"
               },
               {
-                "value": "d",
                 "text": "Answer Choice 4"
               }
             ]

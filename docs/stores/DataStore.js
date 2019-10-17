@@ -24,6 +24,26 @@ class DataStore {
 
   @observable test = 0
 
+  //questionsList
+  @observable elements = [
+    //   {
+    //   type: "radiogroup",
+    //   name: 1,
+    //   questionId: 1,
+    //   title: "",
+    //   isRequired: true,
+    //   level: 1, //only for adaptive,
+    //   explanation : "",
+    //   correctAnswer : "",
+    //   points: 0,
+    //   choices: [
+    //     {
+    //       text: ""
+    //     }
+    //   ],
+    // }
+  ]
+
   @action setTest(test) {
     this.test = 1
   }
@@ -31,7 +51,7 @@ class DataStore {
   @computed get getTest() {
     return this.test;
   }
-  
+
   @action setSignInStatus(status, email, password, accessRight) {
     this.signInStatus = status;
     this.email = email;
@@ -148,6 +168,14 @@ class DataStore {
 
   @computed get getSem() {
     return this.semester;
+  }
+
+  @computed get getQuestions() {
+    return this.elements;
+  }
+
+  @action addQuestion(question) {
+    this.elements.push(question)
   }
 }
 

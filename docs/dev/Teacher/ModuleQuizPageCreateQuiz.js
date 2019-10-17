@@ -16,20 +16,21 @@ class ModuleQuizPageCreateQuiz extends Component {
         email: "",
         moduleId: 0,
         message: "",
-        instructions: "",
-        quizTitle: "",
+        description: "", // title
+        title: "", // title
         activeStep: 0,
         steps: ['Quiz Configuration', 'Build Quiz'],
-        quizType: "",
-        shuffle: false,
+
+        //create quiz inputs
+        quizType: "normal", // adaptive
+        questionsOrder: false, // "random" or "normal"
         noOfAttempts: 1,
-        timeLimit: 60,
+        maxTimeToFinish: 60, // timeLimit
         openingDate: "",
         closingDate: "",
         points: 1,
         level: 1,
-        questionsList: [],
-        answersList: []
+        questionType: "",
     }
 
     initPage() {
@@ -42,11 +43,11 @@ class ModuleQuizPageCreateQuiz extends Component {
     }
 
     handleSwitchChange = () => {
-        const currState = this.state.shuffle
+        const currState = this.state.questionsOrder
         this.setState({
-            shuffle: !currState
+            questionsOrder: !currState
         });
-        console.log(this.state.shuffle)
+        console.log(this.state.questionsOrder)
     }
 
     componentDidMount() {
@@ -73,6 +74,97 @@ class ModuleQuizPageCreateQuiz extends Component {
     handleChange = event => {
         event.preventDefault();
         this.setState({ [event.target.name]: event.target.value });
+        console.log(event.target.name)
+    }
+
+    renderMCQQuestion = () => {
+        return (
+            <><MDBCol md="12" className="mt-4">
+                <label className="grey-text">
+                    Question
+</label>
+                <textarea rows="3" type="text" name="question" onChange={this.handleChange} className="form-control" />
+            </MDBCol>
+                <MDBCol md="12" className="mt-4">
+                    <label className="grey-text">
+                        Explanation
+</label>
+                    <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} className="form-control" />
+                </MDBCol>
+                <MDBCol md="8" className="mt-4" style={{ paddingTop: 28 }}>
+                    <MDBInputGroup
+                        containerClassName="mb-3"
+                        prepend="Correct Answer"
+                        required
+                        inputs={
+                            <select name="questionType" onChange={this.handleChange} className="browser-default custom-select">
+                                <option value="0">Choose...</option>
+                                {/* based on how many answers are created */}
+                            </select>
+                        }
+                    />
+                </MDBCol>
+                <MDBCol md="2" className="mt-4">
+                    <label className="grey-text">
+                        Level
+</label>
+                    <input type="number" className="form-control" name="level"
+                        value={this.state.level}
+                        onChange={this.handleChange}
+                        min={1}
+                        required />
+                </MDBCol>
+                <MDBCol md="2" className="mt-4">
+                    <label className="grey-text">
+                        Points
+</label>
+                    <input type="number" className="form-control" name="points"
+                        value={this.state.points}
+                        onChange={this.handleChange}
+                        min={1}
+                        required />
+                </MDBCol>
+                <MDBCol md="12" className="mt-4" align="center">
+                    <MDBBtn size="small" color="grey">Add Answer</MDBBtn>
+                </MDBCol>
+                <MDBCol md="12" className="mt-4">
+                    <label className="grey-text">
+                        Answer
+</label>
+                    <input type="text" name="answer" onChange={this.handleChange} className="form-control" />
+                </MDBCol>
+                <MDBCol md="12" className="mt-4" align="center">
+                    <hr />
+                </MDBCol>
+            </>
+        )
+    }
+
+    addQuestionToList = () => {
+        if (this.state.questionType === "short-answer") {
+            console.log("Add short answer question component")
+        } else if (this.state.questionType === "mcq") {
+            var qId = this.props.dataStore.getQuestions.length + 1
+            this.props.dataStore.getQuestions.push(
+                {
+                    type: "radiogroup",
+                    name: qId,
+                    questionId: qId,
+                    title: "",
+                    isRequired: true,
+                    level: 1, //only for adaptive,
+                    explanation: "",
+                    correctAnswer: "",
+                    points: 0,
+                    choices: [
+                        {
+                            text: ""
+                        }
+                    ],
+                })
+            console.log(this.props.dataStore.getQuestions)
+        } else
+            console.log("No question type was selected")
     }
 
     getStepContent = (stepIndex) => {
@@ -87,12 +179,12 @@ class ModuleQuizPageCreateQuiz extends Component {
                         <label className="grey-text">
                             Quiz Title
                     </label>
-                        <input type="text" name="quizTitle" onChange={this.handleChange} className="form-control" />
+                        <input type="text" name="title" onChange={this.handleChange} className="form-control" />
                         <br />
                         <label className="grey-text">
                             Instructions
                     </label>
-                        <textarea type="text" rows="3" name="instructions" onChange={this.handleChange} className="form-control" />
+                        <textarea type="text" rows="3" name="description" onChange={this.handleChange} className="form-control" />
                         <MDBRow>
                             <MDBCol md="9" className="mt-4">
                                 <MDBInputGroup
@@ -113,7 +205,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                                 <label className="grey-text">
                                     Shuffle Questions
                     </label>
-                                <Switch checked={this.state.shuffle} onChange={() => this.handleSwitchChange()} color="primary" name="shuffle" />
+                                <Switch checked={this.state.questionsOrder} onChange={() => this.handleSwitchChange()} color="primary" name="questionsOrder" />
                             </MDBCol>
                             <MDBCol md="6">
                                 <br />
@@ -149,8 +241,8 @@ class ModuleQuizPageCreateQuiz extends Component {
                                 <label className="grey-text">
                                     Time Limit (in minutes)
                     </label>
-                                <input type="number" className="form-control" name="timeLimit"
-                                    value={this.state.timeLimit}
+                                <input type="number" className="form-control" name="maxTimeToFinish"
+                                    value={this.state.maxTimeToFinish}
                                     onChange={this.handleChange}
                                     min={30}
                                     required />
@@ -177,63 +269,9 @@ class ModuleQuizPageCreateQuiz extends Component {
                         <hr />
                         <MDBRow>
                             {/* Add Questions List here */}
-                            <MDBCol md="12" className="mt-4">
-                                <label className="grey-text">
-                                    Question
-                    </label>
-                                <textarea rows="3" type="text" name="question" onChange={this.handleChange} className="form-control" />
-                            </MDBCol>
-                            <MDBCol md="12" className="mt-4">
-                                <label className="grey-text">
-                                    Explanation
-                    </label>
-                                <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} className="form-control" />
-                            </MDBCol>
-                            <MDBCol md="8" className="mt-4" style={{ paddingTop: 28 }}>
-                                <MDBInputGroup
-                                    containerClassName="mb-3"
-                                    prepend="Correct Answer"
-                                    required
-                                    inputs={
-                                        <select name="questionType" onChange={this.handleChange} className="browser-default custom-select">
-                                            <option value="0">Choose...</option>
-                                            {/* based on how many answers are created */}
-                                        </select>
-                                    }
-                                />
-                            </MDBCol>
-                            <MDBCol md="2" className="mt-4">
-                                <label className="grey-text">
-                                    Level
-                    </label>
-                                <input type="number" className="form-control" name="level"
-                                    value={this.state.level}
-                                    onChange={this.handleChange}
-                                    min={1}
-                                    required />
-                            </MDBCol>
-                            <MDBCol md="2" className="mt-4">
-                                <label className="grey-text">
-                                    Points
-                    </label>
-                                <input type="number" className="form-control" name="points"
-                                    value={this.state.points}
-                                    onChange={this.handleChange}
-                                    min={1}
-                                    required />
-                            </MDBCol>
-                            <MDBCol md="12" className="mt-4" align="center">
-                                <MDBBtn size="small" color="grey">Add Answer</MDBBtn>
-                            </MDBCol>
-                            <MDBCol md="12" className="mt-4">
-                                <label className="grey-text">
-                                    Answer
-                    </label>
-                                <input type="text" name="answer" onChange={this.handleChange} className="form-control" />
-                            </MDBCol>
-                            <MDBCol md="12" className="mt-4" align="center">
-                                <hr />
-                            </MDBCol>
+                            {this.props.dataStore.getQuestions.map((element) => { return this.renderMCQQuestion() })}
+                        </MDBRow>
+                        <center>
                             <MDBCol md="12" className="mt-4" align="center">
                                 <MDBInputGroup
                                     style={{ paddingTop: 22, width: 350 }}
@@ -243,16 +281,14 @@ class ModuleQuizPageCreateQuiz extends Component {
                                     inputs={
                                         <select name="questionType" onChange={this.handleChange} className="browser-default custom-select">
                                             <option value="0">Choose...</option>
-                                            <option value="Normal">MCQ</option>
-                                            <option value="Adaptive">Short Answer</option>
+                                            <option value="mcq">MCQ</option>
+                                            <option value="short-answer">Short Answer</option>
                                         </select>
                                     }
                                 />
                             </MDBCol>
-                            <MDBCol md="12" align="center">
-                                <MDBBtn size="small" color="blue">Add Question</MDBBtn>
-                            </MDBCol>
-                        </MDBRow>
+                            <MDBBtn onClick={() => this.addQuestionToList()} align="center" size="small" color="blue">Add Question</MDBBtn>
+                        </center>
                     </div>
                 );
             default:
