@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import { MDBJumbotron, MDBCardBody, MDBCard, MDBCardTitle, MDBInput, MDBCardText, MDBIcon, MDBRow, MDBBtn, MDBCol, MDBAnimation, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
+import { MDBJumbotron, MDBCardBody, MDBCard, MDBCardTitle, MDBInputGroup, MDBCardText, MDBIcon, MDBRow, MDBBtn, MDBCol, MDBAnimation, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
 import { NavLink } from 'react-router-dom';
 import { Fab } from '@material-ui/core';
 import axios from "axios";
 import { observer, inject } from 'mobx-react';
 import { TextField, Snackbar, Checkbox } from '@material-ui/core';
+import moment from 'moment';
 
 @inject('dataStore')
 @observer
@@ -110,7 +111,40 @@ class DashboardPageTeacher extends Component {
   }
 
   createAnnouncement = () => {
-    // create announcement api
+    // console.log(this.state)
+    var createdDate = new Date;
+    createdDate = moment(createdDate).format("YYYY-MM-DDTHH:mm:ss")
+    var lastUpdateDate = createdDate
+    // console.log({
+    //   content: this.state.content,
+    //   emailNotification: this.state.emailNotification,
+    //   publish: this.state.publish,
+    //   createdDate: createdDate,
+    //   lastUpdatedDate: lastUpdateDate,
+    //   startDate: this.state.startDate + ":00",
+    //   endDate: this.state.endDate + ":00",
+    //   title: this.state.title
+    // })
+    this.toggle(1)
+    axios
+      .post(`http://localhost:8080/LMS-war/webresources/Annoucement/createAnnoucement/${this.state.moduleId}`, {
+        content: this.state.content,
+        emailNotification: this.state.emailNotification,
+        publish: this.state.publish,
+        createdDate: createdDate,
+        lastUpdatedDate: lastUpdateDate,
+        startDate: this.state.startDate + ":00",
+        endDate: this.state.endDate + ":00",
+        title: this.state.title
+      })
+      .then(result => {
+        // console.log(result.data.annoucementList)
+        this.setState({ openSnackbar: true, message: "Announcement successfully created" })
+      })
+      .catch(error => {
+        this.setState({ message: error.response.data.errorMessage, openSnackbar: true })
+        console.error("error in axios " + error);
+      });
   }
 
   renderCreateAnnouncementModalBox = () => {
@@ -139,9 +173,19 @@ class DashboardPageTeacher extends Component {
                 <textarea rows="3" type="text" name="content" onChange={this.handleChange} className="form-control" />
                 <br />
               </MDBCol>
-              <MDBCol md="12">
-              {/* module input select modules value = mod.id , show module name this.props.dataStore.getModules */}
+              <MDBCol md="12" className="mt-4">
+                <MDBInputGroup
+                  containerClassName="mb-3"
+                  prepend="Module"
+                  inputs={
+                    <select name="moduleId" onChange={this.handleChange} className="browser-default custom-select">
+                      <option value="0">Choose...</option>
+                      {this.props.dataStore.getModules.map((mod) => <option value={mod.moduleId}>{mod.title}</option>)}
+                    </select>
+                  }
+                />
               </MDBCol>
+              {/* module input select modules value = mod.id , show module name this.props.dataStore.getModules */}
               <MDBCol md="6" className="mt-4">
                 <TextField
                   id="startDate"
@@ -220,7 +264,7 @@ class DashboardPageTeacher extends Component {
           <MDBJumbotron>
             <h2 className="font-weight-bold">
               Dashboard
-      </h2>
+            </h2>
             <p className="text-muted mb-1">
               AY {this.props.dataStore.getYear} SEMESTER {this.props.dataStore.getSem}
             </p>
