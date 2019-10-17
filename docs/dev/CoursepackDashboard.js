@@ -1,17 +1,8 @@
 import React, { Component } from "react";
-import {
-  MDBContainer, MDBCarouselInner, MDBView, MDBCarouselItem, MDBCarousel, MDBCol, MDBBtn, MDBRow,
-  MDBCard, MDBCardImage, MDBCardGroup, MDBCardBody, MDBCardText, MDBCardTitle
-} from "mdbreact";
-import axios from "axios";
-import { NavLink, Redirect, Route } from 'react-router-dom'
-import { CardActionArea, CardMedia, CardContent, Typography, CardActions, Button, Card } from "@material-ui/core";
-import ModuleSideNavigation from "./ModuleSideNavigation";
-import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
+import { MDBContainer, MDBCol, MDBRow } from "mdbreact";
 import CoursepackDashboardPageTeacher from "./Teacher/CoursepackDashboardPageTeacher";
 import CoursepackDashboardPageStudent from "./Student/CoursepackDashbaordPageStudent";
 
-const API = "http://localhost:3001"
 
 class CoursepackDashboard extends Component {
 
