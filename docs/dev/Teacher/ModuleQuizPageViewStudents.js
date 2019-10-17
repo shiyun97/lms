@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
 import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable } from "mdbreact";
-import ModuleSideNavigation from "./ModuleSideNavigation";
+import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Snackbar } from '@material-ui/core';
 
-class ModuleQuizPage extends Component {
+class ModuleQuizPageViewStudents extends Component {
 
     state = {
         modal1: false,
@@ -17,15 +17,6 @@ class ModuleQuizPage extends Component {
         quizStatus: "",
         columns: [
             {
-                "label": "Quiz Id",
-                "field": "quizId",
-                "width": 50,
-                "attributes": {
-                    "aria-controls": "DataTable",
-                    "aria-label": "Name"
-                }
-            },
-            {
                 "label": "Name",
                 "field": "name",
                 "width": 150,
@@ -35,27 +26,12 @@ class ModuleQuizPage extends Component {
                 }
             },
             {
-                "label": "Opening Date",
-                "field": "openingDate",
-                "width": 200
-            },
-            {
-                "label": "Closing Date",
-                "field": "closingDate",
-                "width": 100
-            },
-            {
                 "label": "Status",
-                "field": "quizStatus",
+                "field": "markingStatus",
                 "width": 100
             },
             {
-                "label": "",
-                "field": "",
-                "width": 100
-            },
-            {
-                "label": "Review Students Answers",
+                "label": "View Answers",
                 "field": "view",
                 "width": 100
             }
@@ -94,13 +70,11 @@ class ModuleQuizPage extends Component {
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
-                            <MDBCol md="8">
+                            <MDBCol md="12">
                                 <h2 className="font-weight-bold">
-                                    Quiz
-                </h2>
-                            </MDBCol>
-                            <MDBCol md="4" align="right">
-                                <MDBBtn href="/modules/:moduleId/quiz/create" color="primary">Create Quiz</MDBBtn>
+                                    <a href="/modules/:moduleId/quiz">Quiz</a>
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Quiz #
+                                </h2>
                             </MDBCol>
                             {/* <MDBCol md="1">
                         <Fab onClick={() => this.getAllQuizDetails()} style={{ height: 50, width: 50, backgroundColor: "#bbb", borderRadius: "50%" }}><MDBIcon icon="sync" /></Fab>
@@ -153,13 +127,11 @@ class ModuleQuizPage extends Component {
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
-                            <MDBCol md="8">
+                            <MDBCol md="12">
                                 <h2 className="font-weight-bold">
-                                    Quiz
-                </h2>
-                            </MDBCol>
-                            <MDBCol md="4" align="right">
-                                <MDBBtn href="/modules/:moduleId/quiz/create" color="primary">Create Quiz</MDBBtn>
+                                    <a href="/modules/:moduleId/quiz">Quiz</a>
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Quiz #
+                                </h2>
                             </MDBCol>
                             {/* {this.renderEditQuizModalBox()} */}
                         </MDBRow>
@@ -208,16 +180,14 @@ class ModuleQuizPage extends Component {
 
     render() {
         var newRows = [{
-            quizId: 1,
-            name: "Quiz 1",
-            openingDate: "",
-            closingDate: "",
-            status: "Open",
-            editButton: <MDBRow align="center">
-                     <MDBCol md={6}><MDBIcon onClick={() => this.toggle(2, row[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
-                     <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(row[i].userId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
-                 </MDBRow>,
-            viewButton: <a href="/modules/:moduleId/quiz/:quizId/review" style={{color: "blue"}}>Review</a>
+            name: "Rachel",
+            status: "Unmarked",
+            viewButton: <a href="/modules/:moduleId/quiz/:quizId/review/:studentId" style={{ color: "blue" }}>Review</a>
+        },
+        {
+            name: "Dave",
+            status: "Unmarked",
+            viewButton: <a href="/modules/:moduleId/quiz/:quizId/review/:studentId" style={{ color: "blue" }}>Review</a>
         }]
         // var newRows = []
         // const row = this.state.rows
@@ -253,16 +223,16 @@ class ModuleQuizPage extends Component {
         if (this.state.status === "retrieving")
             return this.renderAwaiting();
         else if (this.state.status === "error")
-            return this.renderTableWithMessage("Error in Retrieving Quizzes. Please try again later.");
+            return this.renderTableWithMessage("Error in retrieving students' attempts. Please try again later.");
         else if (this.state.status === "done")
             return this.renderQuizTable(widerData);
         else
             return this.renderQuizTable(widerData);
-            // return this.renderTableWithMessage("No quiz found.");
+        // return this.renderTableWithMessage("No students' attempts found.");
     }
 }
 
-export default styled(ModuleQuizPage)`
+export default styled(ModuleQuizPageViewStudents)`
 .module-content{
     margin-left: 270px;
     margin-top: 40px;

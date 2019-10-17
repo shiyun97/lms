@@ -82,13 +82,13 @@ class ModuleQuizPageCreateQuiz extends Component {
             <><MDBCol md="12" className="mt-4" key={element.questionId}>
                 <label className="grey-text">
                     Question
-</label>
+                </label>
                 <textarea rows="3" type="text" name="question" onChange={this.handleChange} className="form-control" />
             </MDBCol>
                 <MDBCol md="12" className="mt-4">
                     <label className="grey-text">
                         Explanation
-</label>
+                    </label>
                     <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} className="form-control" />
                 </MDBCol>
                 <MDBCol md="8" className="mt-4" style={{ paddingTop: 28 }}>
@@ -107,7 +107,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                 <MDBCol md="2" className="mt-4">
                     <label className="grey-text">
                         Level
-</label>
+                    </label>
                     <input type="number" className="form-control" name="level"
                         value={this.state.level}
                         onChange={this.handleChange}
@@ -117,7 +117,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                 <MDBCol md="2" className="mt-4">
                     <label className="grey-text">
                         Points
-</label>
+                    </label>
                     <input type="number" className="form-control" name="points"
                         value={this.state.points}
                         onChange={this.handleChange}
@@ -142,7 +142,7 @@ class ModuleQuizPageCreateQuiz extends Component {
             <>
                 <label className="grey-text">
                     Answer #
-</label>
+                </label>
                 <input type="text" name="answer" onChange={this.handleChange} className="form-control" />
                 <br />
             </>
