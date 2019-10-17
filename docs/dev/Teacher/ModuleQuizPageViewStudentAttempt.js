@@ -1,24 +1,25 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Snackbar } from '@material-ui/core';
 
-class ModuleQuizPageViewStudents extends Component {
+class ModuleQuizPageViewStudentAttempt extends Component {
 
     state = {
         modal1: false,
-        modal2: false,
+        isOpen: false,
         moduleId: 0,
         quizId: 0,
         name: "",
         openingDate: "",
         closingDate: "",
         quizStatus: "",
+        studentMarks: 0,
         columns: [
             {
-                "label": "Name",
-                "field": "name",
+                "label": "Question Number",
+                "field": "questionNumber",
                 "width": 150,
                 "attributes": {
                     "aria-controls": "DataTable",
@@ -26,13 +27,18 @@ class ModuleQuizPageViewStudents extends Component {
                 }
             },
             {
+                "label": "Question Id",
+                "field": "questionId",
+                "width": 100
+            },
+            {
                 "label": "Score",
                 "field": "score",
                 "width": 100
             },
             {
-                "label": "View Answers",
-                "field": "view",
+                "label": "",
+                "field": "button",
                 "width": 100
             }
         ],
@@ -52,16 +58,68 @@ class ModuleQuizPageViewStudents extends Component {
         this.setState({ [event.target.name]: event.target.value });
     }
 
-    toggle = (nr, row) => {
+    toggle = (nr) => {
         let modalNumber = "modal" + nr;
         this.setState({
             [modalNumber]: !this.state[modalNumber]
         });
-
-        if (row !== undefined) {
-            // this.updateQuizState(row);
-        }
     };
+
+    renderMarkAnswerModalBox = () => {
+        return (
+            <MDBModal isOpen={this.state.modal1} toggle={() => this.toggle(1)}>
+                <MDBModalHeader
+                    className="text-center"
+                    titleClass="w-100 font-weight-bold"
+                    toggle={() => this.toggle(1)}
+                >
+                    Mark Answer for Question #
+                        </MDBModalHeader>
+                <MDBModalBody>
+                    <form className="mx-3">
+                        <MDBRow>
+                            <MDBCol md="12" className="mt-4">
+                                <h5>Question</h5>
+                                <p>What is a Question?</p>
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-4">
+                                <h5>Correct Answer</h5>
+                                <p>It is a question.</p>
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-4">
+                                <p>Total Marks: #</p>
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-4">
+                                <label className="grey-text">
+                                    Student's Answer
+                                        </label>
+                                <textarea type="text" disabled className="form-control" value={"I do not know"} onChange={this.handleChange} name="firstName" />
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-4">
+                                <label className="grey-text">
+                                    Marks
+                                        </label>
+                                <input type="text" className="form-control" defaultValue={this.state.studentMarks} onChange={this.handleChange} name="firstName" />
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-4">
+
+                            </MDBCol>
+                        </MDBRow>
+                    </form>
+                </MDBModalBody>
+                <MDBModalFooter className="justify-content-center">
+                    <MDBRow>
+                        <MDBCol md="4">
+                            <MDBBtn onClick={() => this.toggle(1)} color="grey">Cancel</MDBBtn>
+                        </MDBCol>
+                        <MDBCol md="8">
+                            <MDBBtn color="primary">Submit Marks</MDBBtn>
+                        </MDBCol>
+                    </MDBRow>
+                </MDBModalFooter>
+            </MDBModal>
+        )
+    }
 
     renderQuizStudentsTable = (tableData) => {
         return (
@@ -73,14 +131,12 @@ class ModuleQuizPageViewStudents extends Component {
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
                                     <a href="/modules/:moduleId/quiz">Quiz</a>
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Quiz #
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> <a href="/modules/:moduleId/quiz/:quizId">Quiz #</a>
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> StudentID #
                                 </h2>
                             </MDBCol>
-                            {/* <MDBCol md="1">
-                        <Fab onClick={() => this.getAllQuizDetails()} style={{ height: 50, width: 50, backgroundColor: "#bbb", borderRadius: "50%" }}><MDBIcon icon="sync" /></Fab>
-                    </MDBCol> */}
                         </MDBRow>
-                        {/* {this.renderEditQuizModalBox()} */}
+                        {this.renderMarkAnswerModalBox()}
                         <MDBRow className="py-3">
                             <MDBCol md="12">
                                 <MDBCard>
@@ -130,10 +186,11 @@ class ModuleQuizPageViewStudents extends Component {
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
                                     <a href="/modules/:moduleId/quiz">Quiz</a>
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Quiz #
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> <a href="/modules/:moduleId/quiz/:quizId"> Quiz #</a>
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> StudentID #
                                 </h2>
                             </MDBCol>
-                            {/* {this.renderEditQuizModalBox()} */}
+                            {this.renderMarkAnswerModalBox()}
                         </MDBRow>
                         <MDBRow className="py-3">
                             <MDBCol md="12">
@@ -180,14 +237,16 @@ class ModuleQuizPageViewStudents extends Component {
 
     render() {
         var newRows = [{
-            name: "Rachel",
+            questionNumber: 1,
+            questionId: 315,
             score: "Unmarked",
-            viewButton: <a href="/modules/:moduleId/quiz/:quizId/review/:studentId" style={{ color: "blue" }}>Review</a>
+            editButton: <center><MDBIcon onClick={() => this.toggle(1)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></center>
         },
         {
-            name: "Dave",
+            questionNumber: 2,
+            questionId: 327,
             score: "Unmarked",
-            viewButton: <a href="/modules/:moduleId/quiz/:quizId/review/:studentId" style={{ color: "blue" }}>Review</a>
+            editButton: <center><MDBIcon onClick={() => this.toggle(1)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></center>
         }]
         // var newRows = []
         // const row = this.state.rows
@@ -202,7 +261,7 @@ class ModuleQuizPageViewStudents extends Component {
         //         accessRight: row[i].accessRight,
         //         username: row[i].username,
         //         editButton: <MDBRow align="center">
-        //             <MDBCol md={6}><MDBIcon onClick={() => this.toggle(2, row[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
+        //             <MDBCol md={6}><MDBIcon onClick={() => this.toggle(1)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
         //             <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(row[i].userId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
         //         </MDBRow>
         //     })
@@ -232,7 +291,7 @@ class ModuleQuizPageViewStudents extends Component {
     }
 }
 
-export default styled(ModuleQuizPageViewStudents)`
+export default styled(ModuleQuizPageViewStudentAttempt)`
 .module-content{
     margin-left: 270px;
     margin-top: 40px;

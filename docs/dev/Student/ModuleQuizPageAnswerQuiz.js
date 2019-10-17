@@ -29,13 +29,13 @@ class ModuleQuizPageAnswerQuiz extends Component {
           {
             "type": "radiogroup", //mcq
             "name": "question1",
-            "questionId": 1,
+            "number": 1,
             "title": "What is a MCQ question?",
             "isRequired": true,
-            // "level": 1, //only for adaptive
-            //"explanation" : "Explanation/ Feedback of Question"
-            // "correctAnswer" : "Answer Choice 1"
-            // "points": 1
+            // "level": 1, //only for adaptive,
+            //"explanation" : "Explanation/ Feedback of Question",
+            // "correctAnswer" : "Answer Choice 1",
+            // "points": 1,
             "choices": [
               {
                 "text": "Answer Choice 1"
@@ -54,10 +54,13 @@ class ModuleQuizPageAnswerQuiz extends Component {
           {
             "type": "radiogroup",
             "name": "question2",
-            "questionId": 2,
+            "number": 2,
             "title": "Do you ask questions?",
             "isRequired": true,
             // "level": 1, //only for adaptive
+            //"explanation" : "Explanation/ Feedback of Question",
+            // "correctAnswer" : "Answer Choice 1",
+            // "points": 1,
             "choices": [
               {
                 "text": "Answer Choice 1"
@@ -76,15 +79,77 @@ class ModuleQuizPageAnswerQuiz extends Component {
           {
             "type": "text", //text
             "name": "question3",
-            "questionId": 3,
+            "number": 3,
             "title": "What is a multiple choice question?",
             "isRequired": true,
-            // "level": 1, //only for adaptive
+            // "level": 1, //only for adaptive,
+            //"explanation" : "Explanation/ Feedback of Question",
+            // "correctAnswer" : "Answer Choice 1",
+            // "points" : 1
           }
         ]
       }
     ]
   };
+
+  // closingDate: "2019-10-17T00:00:00",
+  // completeText: "Submit",
+  // description: "This is to test your knowledge on [topic].",
+  // maxMarks: 7.0,
+  // maxTimeToFinish: 60,
+  // noOfAttempts: 1,
+  // openingDate: "2019-10-15T00:00:00",
+  // pages: [
+  //     {
+  //         "elements": [
+  //             {
+  //                 "choices": [
+  //                     "Answer Choice 1",
+  //                     "Answer Choice 2",
+  //                     "Answer Choice 3",
+  //                     "Answer Choice 4"
+  //                 ],
+  //                 "correctAnswer": "Answer Choice 3",
+  //                 "isRequired": true,
+  //                 "number": 1,
+  //                 "points": 1.0,
+  //                 "questionId": 355,
+  //                 "type": "radiogroup"
+  //             },
+  //             {
+  //                 "choices": [
+  //                     "Answer Choice 1",
+  //                     "Answer Choice 2",
+  //                     "Answer Choice 3",
+  //                     "Answer Choice 4"
+  //                 ],
+  //                 "correctAnswer": "Answer Choice 1",
+  //                 "isRequired": true,
+  //                 "number": 2,
+  //                 "points": 3.0,
+  //                 "questionId": 356,
+  //                 "type": "radiogroup"
+  //             },
+  //             {
+  //                 "choices": [],
+  //                 "isRequired": true,
+  //                 "number": 3,
+  //                 "points": 3.0,
+  //                 "questionId": 357,
+  //                 "type": "text"
+  //             }
+  //         ],
+  //         "name": "page1"
+  //     }
+  // ],
+  // publish: false,
+  // questionsOrder: "initial",
+  // quizId: 358,
+  // quizType: "adaptive",
+  // showProgressBar: "top",
+  // showTimerPanel: "top",
+  // startSurveyText: "Start",
+  // title: "Quiz 1"
 
   state = {
     studentName: "",

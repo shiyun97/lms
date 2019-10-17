@@ -29,7 +29,7 @@ class DataStore {
     //   {
     //   type: "radiogroup",
     //   name: 1,
-    //   questionId: 1,
+    //   number: 1,
     //   title: "",
     //   isRequired: true,
     //   level: 1, //only for adaptive,
@@ -174,9 +174,9 @@ class DataStore {
     return this.elements;
   }
 
-  @action addAnswerToQuestion(questionId, answer) {
-    this.elements[questionId-1].choices.push(answer)
-    // console.log(this.elements[questionId-1].level)
+  @action addAnswerToQuestion(number, answer) {
+    this.elements[number-1].choices.push(answer)
+    // console.log(this.elements[number-1].level)
   }
 }
 

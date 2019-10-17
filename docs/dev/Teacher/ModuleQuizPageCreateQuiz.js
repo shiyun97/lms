@@ -3,7 +3,7 @@ import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBIcon, MDBInputGroup }
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import ModuleSideNavigation from "./../ModuleSideNavigation";
-import { Stepper, Step, StepLabel, TextField, Typography, Switch } from '@material-ui/core';
+import { Stepper, Step, StepLabel, TextField, Typography, Switch, Snackbar } from '@material-ui/core';
 
 @inject('dataStore')
 @observer
@@ -31,6 +31,7 @@ class ModuleQuizPageCreateQuiz extends Component {
         points: 1,
         level: 1,
         questionType: "",
+        openSnackbar: false
     }
 
     initPage() {
@@ -77,64 +78,112 @@ class ModuleQuizPageCreateQuiz extends Component {
         console.log(event.target.name)
     }
 
-    renderMCQQuestion = (element) => {
-        return (
-            <><MDBCol md="12" className="mt-4" key={element.questionId}>
-                <label className="grey-text">
-                    Question
+    renderQuestion = (element) => {
+        console.log(element.type)
+        if (element.type === "radiogroup") {
+            return (
+                <><MDBCol md="12" className="mt-4" key={element.number}>
+                    <h3>Question #</h3>
+                    <label className="grey-text mt-4">
+                        Question
                 </label>
-                <textarea rows="3" type="text" name="question" onChange={this.handleChange} className="form-control" />
-            </MDBCol>
-                <MDBCol md="12" className="mt-4">
-                    <label className="grey-text">
-                        Explanation
+                    <textarea rows="3" type="text" name="question" onChange={this.handleChange} className="form-control" />
+                </MDBCol>
+                    <MDBCol md="12" className="mt-4">
+                        <label className="grey-text">
+                            Explanation
                     </label>
-                    <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} className="form-control" />
-                </MDBCol>
-                <MDBCol md="8" className="mt-4" style={{ paddingTop: 28 }}>
-                    <MDBInputGroup
-                        containerClassName="mb-3"
-                        prepend="Correct Answer"
-                        required
-                        inputs={
-                            <select name="questionType" onChange={this.handleChange} className="browser-default custom-select">
-                                <option value="0">Choose...</option>
-                                {/* based on how many answers are created */}
-                            </select>
-                        }
-                    />
-                </MDBCol>
-                <MDBCol md="2" className="mt-4">
-                    <label className="grey-text">
-                        Level
+                        <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} className="form-control" />
+                    </MDBCol>
+                    <MDBCol md="8" className="mt-4" style={{ paddingTop: 28 }}>
+                        <MDBInputGroup
+                            containerClassName="mb-3"
+                            prepend="Correct Answer"
+                            required
+                            inputs={
+                                <select name="questionType" onChange={this.handleChange} className="browser-default custom-select">
+                                    <option value="0">Choose...</option>
+                                    {/* based on how many answers are created */}
+                                </select>
+                            }
+                        />
+                    </MDBCol>
+                    <MDBCol md="2" className="mt-4">
+                        <label className="grey-text">
+                            Level
                     </label>
-                    <input type="number" className="form-control" name="level"
-                        value={this.state.level}
-                        onChange={this.handleChange}
-                        min={1}
-                        required />
-                </MDBCol>
-                <MDBCol md="2" className="mt-4">
-                    <label className="grey-text">
-                        Points
+                        <input type="number" className="form-control" name="level"
+                            value={this.state.level}
+                            onChange={this.handleChange}
+                            min={1}
+                            required />
+                    </MDBCol>
+                    <MDBCol md="2" className="mt-4">
+                        <label className="grey-text">
+                            Points
                     </label>
-                    <input type="number" className="form-control" name="points"
-                        value={this.state.points}
-                        onChange={this.handleChange}
-                        min={1}
-                        required />
-                </MDBCol>
-                <MDBCol md="12" className="mt-4" align="center">
-                    <MDBBtn onClick={() => this.addAnswerToQuestion(element.questionId)} size="small" color="grey">Add Answer</MDBBtn>
-                </MDBCol>
-                <MDBCol md="12" className="mt-4">
-                    {element.choices.map((answer) => { return this.renderAnswerInput(answer) })}
-                </MDBCol>
-                <MDBCol md="12" className="mt-4" align="center">
-                    <hr />
-                </MDBCol>
-            </>
-        )
+                        <input type="number" className="form-control" name="points"
+                            value={this.state.points}
+                            onChange={this.handleChange}
+                            min={1}
+                            required />
+                    </MDBCol>
+                    <MDBCol md="12" className="mt-4" align="center">
+                        <MDBBtn onClick={() => this.addAnswerToQuestion(element.number)} size="small" color="grey">Add Answer</MDBBtn>
+                    </MDBCol>
+                    <MDBCol md="12" className="mt-4">
+                        {element.choices.map((answer) => { return this.renderAnswerInput(answer) })}
+                    </MDBCol>
+                    <MDBCol md="12" className="mt-4" align="center">
+                        <hr />
+                    </MDBCol>
+                </>
+            )
+        } else {
+            return (
+                <>
+                    <MDBCol md="12" className="mt-4" key={element.number}>
+                        <h3>Question #</h3>
+                        <label className="grey-text mt-4">
+                            Question
+                                </label>
+                        <textarea rows="3" type="text" name="question" onChange={this.handleChange} className="form-control" />
+                    </MDBCol>
+                    <MDBCol md="10" className="mt-4">
+                        <label className="grey-text">
+                            Answer #
+                </label>
+                        <textarea rows="5" type="text" name="answer" onChange={this.handleChange} className="form-control" />
+                    </MDBCol>
+                    <MDBCol md="2" className="mt-4">
+                        <label className="grey-text">
+                            Level
+                                    </label>
+                        <input type="number" className="form-control" name="level"
+                            value={this.state.level}
+                            onChange={this.handleChange}
+                            min={1}
+                            required />
+                        <br />
+                        <label className="grey-text">
+                            Points
+                                    </label>
+                        <input type="number" className="form-control" name="points"
+                            value={this.state.points}
+                            onChange={this.handleChange}
+                            min={1}
+                            required />
+                    </MDBCol>
+                    <MDBCol md="12" className="mt-4">
+                        <label className="grey-text">
+                            Explanation
+                                    </label>
+                        <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} className="form-control" />
+                        <br />
+                        <hr />
+                    </MDBCol>
+                </>)
+        }
     }
 
     renderAnswerInput = (answer) => {
@@ -151,14 +200,26 @@ class ModuleQuizPageCreateQuiz extends Component {
 
     addQuestionToList = () => {
         if (this.state.questionType === "short-answer") {
-            console.log("Add short answer question component")
+            var number = this.props.dataStore.getQuestions.length + 1
+            this.props.dataStore.getQuestions.push(
+                {
+                    type: "text", //text
+                    name: number,
+                    number: number,
+                    title: "",
+                    isRequired: true,
+                    level: 1, //only for adaptive
+                    explanation: "",
+                    correctAnswer: "",
+                    points: 0,
+                })
         } else if (this.state.questionType === "mcq") {
-            var qId = this.props.dataStore.getQuestions.length + 1
+            var number = this.props.dataStore.getQuestions.length + 1
             this.props.dataStore.getQuestions.push(
                 {
                     type: "radiogroup",
-                    name: qId,
-                    questionId: qId,
+                    name: number,
+                    number: number,
                     title: "",
                     isRequired: true,
                     level: 1, //only for adaptive,
@@ -171,14 +232,27 @@ class ModuleQuizPageCreateQuiz extends Component {
                         }
                     ],
                 })
-            console.log(this.props.dataStore.getQuestions)
-        } else
-            console.log("No question type was selected")
+            // console.log(this.props.dataStore.getQuestions)
+        } else {
+            this.setState({ openSnackbar: true, message: "No question type was selected" })
+        }
     }
 
-    addAnswerToQuestion = (qId) => {
-        this.props.dataStore.addAnswerToQuestion(qId, { text: "" })
+    addAnswerToQuestion = (number) => {
+        this.props.dataStore.addAnswerToQuestion(number, { text: "" })
     }
+
+    handleOpenSnackbar = () => {
+        this.setState({ openSnackbar: true });
+    };
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackbar: false });
+    };
 
     getStepContent = (stepIndex) => {
         switch (stepIndex) {
@@ -282,7 +356,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                         <hr />
                         <MDBRow>
                             {/* Add Questions List here */}
-                            {this.props.dataStore.getQuestions.map((element) => { return this.renderMCQQuestion(element) })}
+                            {this.props.dataStore.getQuestions.map((element) => { return this.renderQuestion(element) })}
                         </MDBRow>
                         <center>
                             <MDBCol md="12" className="mt-4" align="center">
@@ -373,6 +447,22 @@ class ModuleQuizPageCreateQuiz extends Component {
                                 </MDBCard>
                             </MDBCol>
                         </MDBRow>
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            open={this.state.openSnackbar}
+                            autoHideDuration={6000}
+                            onClose={this.handleClose}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">{this.state.message}</span>}
+                            action={[
+                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                            ]}
+                        />
                     </MDBContainer>
                 </div>
             </div>
