@@ -1,16 +1,16 @@
 import React, { Component } from "react";
-import { MDBJumbotron, MDBCardBody, MDBCard, MDBCardTitle, MDBCardText, MDBIcon, MDBRow, MDBCol, MDBAnimation } from "mdbreact";
+import { MDBJumbotron, MDBCardBody, MDBCard, MDBCardTitle, MDBCardText, MDBRow, MDBCol, MDBAnimation } from "mdbreact";
 import { NavLink } from 'react-router-dom';
 import axios from "axios";
 import { observer, inject } from 'mobx-react';
-import { Fab } from '@material-ui/core';
 
 @inject('dataStore')
 @observer
 class DashboardPageStudent extends Component {
 
   state = {
-    status: "retrieving"
+    status: "retrieving",
+    annoucementList: []
   };
 
   componentDidMount() {
@@ -30,6 +30,37 @@ class DashboardPageStudent extends Component {
         });
         console.error("error in axios " + error);
       });
+
+    this.getActiveAnnouncementDetails();
+  }
+
+  getActiveAnnouncementDetails = () => {
+    axios
+      .get(`http://localhost:8080/LMS-war/webresources/Annoucement/getAllActiveAnnoucements?moduleId=5`)
+      .then(result => {
+        // console.log(result.data.annoucementList)
+        this.setState({ annoucementList: result.data.annoucementList })
+      })
+      .catch(error => {
+        console.error("error in axios " + error);
+      });
+  }
+
+  renderAnnouncementSet = (announcement) => {
+    return (
+      <>
+        <MDBRow>
+          <MDBCol md="6">
+            <h6 style={{ fontWeight: "bold" }}>{announcement.title}</h6>
+          </MDBCol>
+          <MDBCol md="6" align="right">
+            <h6 style={{ fontStyle: "italic", fontSize: "10px" }}> {announcement.startDate} </h6>
+          </MDBCol>
+          <MDBCol md="12"> {announcement.content} </MDBCol>
+        </MDBRow>
+        <hr />
+      </>
+    )
   }
 
   setCurrModuleId = (moduleId) => { this.props.dataStore.setCurrModId(moduleId) }
@@ -84,47 +115,7 @@ class DashboardPageStudent extends Component {
                         </MDBCol>
                       </MDBRow>
                       <MDBCardText style={{ paddingTop: 40 }}>
-                        <MDBRow>
-                          <MDBCol md="6">
-                            <h6 style={{ fontWeight: "bold" }}>Title of Announcement</h6>
-                          </MDBCol>
-                          <MDBCol md="6" align="right">
-                            <h6 style={{ fontStyle: "italic", fontSize: "10px" }}>
-                              xx/xx/xxxx
-                                 </h6>
-                          </MDBCol>
-                          <MDBCol md="12">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                    </MDBCol>
-                        </MDBRow>
-                        <hr />
-                        <MDBRow>
-                          <MDBCol md="6">
-                            <h6 style={{ fontWeight: "bold" }}>Title of Announcement</h6>
-                          </MDBCol>
-                          <MDBCol md="6" align="right">
-                            <h6 style={{ fontStyle: "italic", fontSize: "10px" }}>
-                              xx/xx/xxxx
-                        </h6>
-                          </MDBCol>
-                          <MDBCol md="12">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                    </MDBCol>
-                        </MDBRow>
-                        <hr />
-                        <MDBRow>
-                          <MDBCol md="6">
-                            <h6 style={{ fontWeight: "bold" }}>Title of Announcement</h6>
-                          </MDBCol>
-                          <MDBCol md="6" align="right">
-                            <h6 style={{ fontStyle: "italic", fontSize: "10px" }}>
-                              xx/xx/xxxx
-                        </h6>
-                          </MDBCol>
-                          <MDBCol md="12">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                    </MDBCol>
-                        </MDBRow>
+                        {this.state.annoucementList.map((announcement) => this.renderAnnouncementSet(announcement))}
                       </MDBCardText>
                     </MDBCardBody>
                   </MDBCard>
