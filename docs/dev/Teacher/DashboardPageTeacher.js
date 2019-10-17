@@ -18,7 +18,7 @@ class DashboardPageTeacher extends Component {
     openSnackbar: false,
     message: "",
 
-    //announcement fields
+    //announcement field
     content: "",
     emailNotification: false,
     publish: false,
