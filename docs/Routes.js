@@ -94,15 +94,15 @@ import ModuleQuizPageAnswerQuiz from "./dev/Student/ModuleQuizPageAnswerQuiz";
 //COURSEPACK IMPORTS
 import CoursepackEnrolledCourses from './dev/CoursepackEnrolledCourses';
 import CoursePackCreate from "./dev/Teacher/CoursepackCreate";
-import CoursepackDashboard from './dev/CoursepackDashboard'
-import CoursepackDetailsTeacher from "./dev/Teacher/CoursepackDetailsTeacher";
+import CoursepackDashboard from './dev/CoursepackDashboard';
+import CoursepackDetails from './dev/CoursepackDetails'
 import CoursepackMultimediaPage from './dev/CoursepackMultimediaPage';
 import CoursepackArrangements from "./dev/Teacher/CoursepackArrangement";
 import CoursePackEdit from "./dev/Teacher/CoursepackEdit";
 import CoursepackView from "./dev/CoursepackView";
 import AccessDeniedPage from "./dev/AccessDeniedPage";
 import DashboardPageAdmin from "./dev/Admin/DashboardPageAdmin";
- 
+
 @inject('dataStore')
 @observer
 class Routes extends React.Component {
@@ -201,8 +201,8 @@ class Routes extends React.Component {
         <Route exact path="/coursepack/enrolledCourses" component={CoursepackEnrolledCourses} />
         <Route exact path="/coursepack/create/" component={CoursePackCreate} />
         <Route exact path="/coursepack/dashboard" component={CoursepackDashboard} />
-        <Route exact path="/coursepack/:coursepackId/" component={CoursepackDetailsTeacher}/>
-        <Route exact path="/coursepack/:coursepackId/multimedia" component={CoursepackMultimediaPage}/>
+        <Route exact path="/coursepack/:coursepackId/" component={CoursepackDetails} />
+        <Route exact path="/coursepack/:coursepackId/multimedia" component={CoursepackMultimediaPage} />
 
         {/* FREE Templates */}
         <Route exact path="/home" component={HomePage} />

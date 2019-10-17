@@ -15,7 +15,7 @@ class CoursepackDetailsTeacher extends Component {
     }
 
     componentDidMount() {
-        let coursepackId = this.props.match.params.coursepackId;
+        let coursepackId = this.props.coursepackId;
         axios.get(`${API}/coursepack/${coursepackId}`)
             .then(result => {
                 this.setState({ courseDetails: result.data })
@@ -94,10 +94,11 @@ class CoursepackDetailsTeacher extends Component {
     }
 
     render() {
+        console.log("teacher")
         return (
 
             <div className="module-content">
-                <CoursepackSideNavigation courseId={this.props.match.params.coursepackId}/>
+                <CoursepackSideNavigation courseId={this.props.coursepackId}/>
 
                 <MDBContainer>
                     <MDBCol align="right">
