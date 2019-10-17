@@ -17,8 +17,9 @@ class DashboardPageTeacher extends Component {
     modal1: false,
     openSnackbar: false,
     message: "",
+    recall: "",
 
-    //announcement field
+    //announcement fields
     content: "",
     emailNotification: false,
     publish: false,
@@ -49,6 +50,11 @@ class DashboardPageTeacher extends Component {
       });
 
     this.getActiveAnnouncementDetails();
+  }
+
+  componentDidUpdate() {
+    if (this.state.recall === "recallAnn")
+        this.getActiveAnnouncementDetails();
   }
 
   handleOpenSnackbar = () => {
@@ -139,7 +145,7 @@ class DashboardPageTeacher extends Component {
       })
       .then(result => {
         // console.log(result.data.annoucementList)
-        this.setState({ openSnackbar: true, message: "Announcement successfully created" })
+        this.setState({ openSnackbar: true, message: "Announcement successfully created", recall: "recallAnn" })
       })
       .catch(error => {
         this.setState({ message: error.response.data.errorMessage, openSnackbar: true })
