@@ -117,21 +117,21 @@ class ModuleAnnouncementsPage extends Component {
     }
 
     handleOpenSnackbar = () => {
-        this.setState({ openSnackbar: true });
+      this.setState({ openSnackbar: true });
     };
-
+  
     handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        this.setState({ openSnackbar: false });
+      if (reason === 'clickaway') {
+        return;
+      }
+  
+      this.setState({ openSnackbar: false });
     };
 
     handleChange = event => {
-        event.preventDefault();
-        this.setState({ [event.target.name]: event.target.value });
-        // console.log(event.target.value)
+      event.preventDefault();
+      this.setState({ [event.target.name]: event.target.value });
+      // console.log(event.target.value)
     }
 
     toggleTab = tab => e => {
@@ -142,7 +142,7 @@ class ModuleAnnouncementsPage extends Component {
         }
     };
 
-    toggleAnnouncementModal = (nr) => {
+    toggleAnnouncementModal = nr => () => {
         let modalNumber = "modal" + nr;
         this.setState({
             [modalNumber]: !this.state[modalNumber]
@@ -272,7 +272,7 @@ class ModuleAnnouncementsPage extends Component {
                             </MDBCol>
                             <MDBCol md="12" className="mt-4">
                                 Publish
-                                <Checkbox
+                  <Checkbox
                                     checked={this.state.publish}
                                     onChange={this.handleCheckBoxChange('publish')}
                                     value="publish"
@@ -283,7 +283,7 @@ class ModuleAnnouncementsPage extends Component {
                                     }}
                                 />
                                 Email Notification
-                                <Checkbox
+                  <Checkbox
                                     checked={this.state.emailNotification}
                                     onChange={this.handleCheckBoxChange('emailNotification')}
                                     value="emailNotification"
@@ -347,6 +347,7 @@ class ModuleAnnouncementsPage extends Component {
         let activeAnnouncements = this.state.activeAnnouncements;
         let upcomingAnnouncements = this.state.upcomingAnnouncements;
         let expiredAnnouncements = this.state.expiredAnnouncements;
+        let announcementToEdit = this.state.announcementToEdit;
         return (
             <div className={this.props.className}>
                 <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
@@ -424,7 +425,7 @@ class ModuleAnnouncementsPage extends Component {
                             <MDBTabPane tabId="active" role="tabpanel">
                                 <div className="mb-2"></div>
                                 <div className="align-right">
-                                    <MDBBtn color="indigo" outline className="mr-0 mb-3" size="md" onClick={() => this.toggleAnnouncementModal("Add")}>
+                                    <MDBBtn color="indigo" outline className="mr-0 mb-3" size="md" onClick={this.toggleAnnouncementModal("Add")}>
                                         <MDBIcon icon="plus" className="mr-1" /> Add
                                     </MDBBtn>
                                 </div>
@@ -445,7 +446,7 @@ class ModuleAnnouncementsPage extends Component {
                             <MDBTabPane tabId="upcoming" role="tabpanel">
                                 <div className="mb-2"></div>
                                 <div className="align-right">
-                                    <MDBBtn color="indigo" outline className="mr-0 mb-3" size="md" onClick={() => this.toggleAnnouncementModal("Add")}>
+                                    <MDBBtn color="indigo" outline className="mr-0 mb-3" size="md" onClick={this.toggleAnnouncementModal("Add")}>
                                         <MDBIcon icon="plus" className="mr-1" /> Add
                                     </MDBBtn>
                                 </div>
