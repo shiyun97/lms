@@ -36,7 +36,7 @@ class ModuleFeedbackEvaluationPage extends Component {
         let questions = this.state.evaluation.pages[0].elements;
         let request = {
             surveyId: this.state.surveyId,
-            answers: [
+            questionAttempts: [
                 {
                     questionId: questions[1].questionId,
                     answer: answers['question2']

@@ -32,7 +32,7 @@ class ModuleForumPage extends Component {
 
     state = {
         moduleId: "",
-        forumThreads: [],
+        topics: [],
         titleInput: "",
         contentInput: "",
         message: "",
@@ -59,25 +59,25 @@ class ModuleForumPage extends Component {
 
     async initPage() {
         let moduleId = this.props.match.params.moduleId;
-        let topicId = this.props.match.params.topicId;
-        if (moduleId && topicId) {
-            // retrieve forum threads by moduleID
+        if (moduleId) {
+            // retrieve forum topics by moduleID
             await axios
-                .get(API_URL + "/Forum/viewAllThreadsByTopic?forumTopicId=" + topicId)
-                //.get("http://localhost:3001/forums")
+                .get(API_URL + "/Forum/viewAllForumTopics?moduleId=" + moduleId)
                 .then((result) => {
                     if (result) {
+                        console.log(result)
+                        let data = result.data.forumTopics;
                         this.setState({
                             ...this.state,
                             moduleId: moduleId,
-                            topicId: topicId,
-                            forumThreads: result.data.posts
+                            topics: data
                         });
                     }
+
                 })
                 .catch(error => {
                     this.setState({
-                        message: error.response.data.errorMessage,
+                        message: error.response.data.errorMessage ? error.response.data.errorMessage : "An error occurred!",
                         openSnackbar: true
                     })
                     console.error("error in axios " + error);
@@ -92,7 +92,7 @@ class ModuleForumPage extends Component {
         });
     };
 
-    newThread = () => {
+    newTopic = () => {
         this.setState({
             modalAdd: true
         })
@@ -128,7 +128,10 @@ class ModuleForumPage extends Component {
                                 <label className="mb-1">Content</label>
                             </div>
                             <div className="col-12">
-                                <RichTextEditorStyled textEditorInputChange={this.textEditorInputChange} initial={""}></RichTextEditorStyled>
+                                <textarea type="text" className="form-control" name="contentInput"
+                                    value={this.state.contentInput}
+                                    onChange={this.inputChangeHandler}
+                                    required />
                             </div>
                         </div>
                     </MDBModalBody>
@@ -166,13 +169,14 @@ class ModuleForumPage extends Component {
             message: this.state.contentInput
         }
 
-        // api to create new thread
+        // api to create new topic
         axios
-            .put(`${API_URL}/Forum/createThread?forumTopicId=${this.state.topicId}&userId=${localStorage.getItem('userId')}`,
+            .post(`${API_URL}/Forum/createTopic?moduleId=${this.state.moduleId}&userId=${localStorage.getItem('userId')}`,
             request)
             .then((result) => {
                 console.log(result);
                 if (result) {
+                    return this.initPage();
                 }
             })
             .catch(error => {
@@ -192,21 +196,17 @@ class ModuleForumPage extends Component {
         return this.initPage()
     }
 
-    enterForumThread = (id) => {
-        this.props.history.push(`/modules/${this.state.moduleId}/forum/topics/${this.state.topicId}/${id}`);
+    enterTopic = (id) => {
+        this.props.history.push(`/modules/${this.state.moduleId}/forum/topics/${id}`);
     }
 
-    editForumThread = (id) => {
-        console.log(id)
-    }
-
-    deleteForumThread = (id) => {
+    deleteTopic = (id) => {
         console.log(id)
         // call api to delete
     }
 
     render() {
-        let forumThreads = this.state.forumThreads;
+        let topics = this.state.topics;
         return (
             <div className={this.props.className}>
                 <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
@@ -223,19 +223,19 @@ class ModuleForumPage extends Component {
                         </MDBRow>
                         <MDBRow>
                             <MDBCol>
-                                <MDBBtn className="ml-0 mb-4" color="primary" block onClick={e => {this.newThread()}}>Start New Thread</MDBBtn>
+                                <MDBBtn className="ml-0 mb-4" color="primary" block onClick={e => {this.newTopic()}}>Add New Discussion Category</MDBBtn>
                                 {
-                                    forumThreads.length > 0 && forumThreads.map((forumThread) => (
-                                        <ForumThreadListItem key={forumThread.forumPostId} 
-                                        forumThread={forumThread}
+                                    topics.length > 0 && topics.map((topic) => (
+                                        <TopicListItem key={topic.forumTopicId} 
+                                        topic={topic}
                                         moduleId={this.props.moduleId}
-                                        delete={e => {this.deleteForumThread(forumThread.forumPostId)}}
-                                        enterForumThread={e => {this.enterForumThread(forumThread.forumPostId)}}>
-                                        </ForumThreadListItem>
+                                        delete={e => {this.deleteTopic(topic.forumTopicId)}}
+                                        enterTopic={e => {this.enterTopic(topic.forumTopicId)}}>
+                                        </TopicListItem>
                                     ))
                                 }
                                 {
-                                    forumThreads.length == 0 &&
+                                    topics.length == 0 &&
                                     <div>No forum threads available</div>
                                 }
                             </MDBCol>
@@ -287,54 +287,30 @@ export default styled(ModuleForumPage)`
         display: block;
     }
 }
-.ql-size-huge {
-    content: 'Huge';
-    font-size: 2.5em !important;
-}
-
-.ql-size-large {
-    content: 'Huge';
-    font-size: 1.5em !important;
-}
-
-.ql-size-small {
-    content: 'Huge';
-    font-size: 0.75em !important;
-}
-.ql-align-center {
-    text-align: center;
-    float: center;
-}
 `;
 
-class ForumThreadListItem extends Component {
+class TopicListItem extends Component {
     render() {
-        let forumThread = this.props.forumThread;
+        let topic = this.props.topic;
         return <div className="container-fluid section border p-3 justify-content d-flex mb-2">
-            <MDBCol sm="2" md="2" lg="1">
-                <div style={{verticalAlign: "middle"}}>
-                <MDBIcon icon="user-circle" size="3x" className="ml-0 mt-3" style={{ color: "#808080" }} />
-                </div>
-            </MDBCol>
-            <MDBCol sm="10" md="10" lg="11">
+            <MDBCol sm="12">
                 <MDBRow>
-                    <div className="mb-2 mt-0 ml-0" 
+                        <div className="mb-2 mt-0 ml-0" 
                             style={{ color: "#2F79B9", fontWeight: "600", fontSize: "16px", lineHeight: "1.2", cursor: "pointer", 
                             textDecoration: "underline", overflow: "hidden" }}>
-                            <span onClick={this.props.enterForumThread}>{forumThread.title}</span>
+                            <span onClick={this.props.enterTopic}>{topic.title}</span>
                             <MDBIcon icon="trash-alt" className="indigo-text mt-2 ml-3" size="md" onClick={this.props.delete} />
                         </div>
                 </MDBRow>
                 <MDBRow>
                     <MDBCol>
                         <MDBRow>
-                            <MDBIcon icon="user" className="mr-2 fa-fw mt-1" />
-                            <div style={{ fontSize: "0.9rem", color: "#909090"}}>
-                            by {forumThread.owner.firstName + " " + forumThread.owner.lastName + " on " + new Date(forumThread.createTs).toLocaleString()}
+                            <div style={{ fontSize: "0.9rem", color: "#909090" }} className="mb-2">
+                                {topic.description}
                             </div>
                         </MDBRow>
                         <MDBRow>
-                            <MDBIcon far icon="comments" className="mr-2 mt-1" /><div style={{ fontSize: "0.9rem"}}>{forumThread.replies.length + " Replies"}</div>
+                            <MDBIcon far icon="comment-alt" className="mr-2 mt-1" /><div style={{ fontSize: "0.9rem"}}>{topic.threads.length + " Discussion Thread"}</div>
                         </MDBRow>
                     </MDBCol>
                 </MDBRow>
@@ -342,77 +318,3 @@ class ForumThreadListItem extends Component {
         </div>
     }
 }
-
-
-class RichTextEditor extends Component {
-	constructor(props) {
-		super(props);
-
-		this.modules = {
-			toolbar: [
-		      [{ 'font': [] }],
-		      [{ 'size': ['small', false, 'large', 'huge'] }],
-		      ['bold', 'italic', 'underline'],
-		      [{'list': 'ordered'}, {'list': 'bullet'}],
-		      [{ 'align': [] }],
-		      [{ 'color': [] }, { 'background': [] }],
-		      ['clean']
-		    ]
-		};
-
-		this.formats = [
-		    'font',
-		    'size',
-		    'bold', 'italic', 'underline',
-		    'list', 'bullet',
-		    'align',
-		    'color', 'background'
-	  	];
-
-	  	this.state = {
-            comments: this.props.initial
-		}
-
-		this.rteChange = this.rteChange.bind(this);
-	}
-
-	rteChange = (content, delta, source, editor) => {
-		//console.log(editor.getHTML()); // rich text
-        //console.log(editor.getText()); // plain text
-        //var text = editor.getHTML();
-        this.setState({
-            ...this.state,
-            comments: content
-        })
-        this.props.textEditorInputChange(content);
-    }
-
-    render() {
-        const comments = this.state.comments
-        return (
-            <div className={this.props.className}>
-                <form onSubmit={e => this.props.submitTextEditor(e, comments)}>
-                    <MDBRow>
-                        <MDBCol>
-                            <ReactQuill modules={this.modules}
-                                formats={this.formats} onChange={this.rteChange}
-                                value={this.state.comments || ''} />
-                        </MDBCol>
-                    </MDBRow>
-                </form>
-            </div>
-        );
-    }
-}
-
-export const RichTextEditorStyled = styled(RichTextEditor)`
-.ql-container {
-    height: auto !important;
-  }
-
-  .ql-editor {
-    min-height: 100px !important;
-    height: auto !important;
-    max-width: 1000px;
-  }
-`

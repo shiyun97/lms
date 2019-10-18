@@ -90,6 +90,7 @@ import AdminLoginPage from "./dev/Admin/AdminLoginPage";
 import StudentLoginPage from "./dev/Student/StudentLoginPage";
 import ModuleQuizPageCreateQuiz from './dev/Teacher/ModuleQuizPageCreateQuiz';
 import ModuleQuizPageAnswerQuiz from "./dev/Student/ModuleQuizPageAnswerQuiz";
+import ModuleForumTopicsPage from "./dev/ModuleForumTopicsPage";
 
 //COURSEPACK IMPORTS
 import CoursepackEnrolledCourses from './dev/CoursepackEnrolledCourses';
@@ -194,8 +195,9 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/students/lecture-groups/:lectureGroupId" component={LectureGroupDetailsStyled} />
         <Route exact path="/modules/:moduleId/students/tutorial-groups" component={ModuleClassGroupsPage} />
         <Route exact path="/modules/:moduleId/students/tutorial-groups/:tutorialGroupId" component={TutorialGroupDetailsStyled} />
-        <Route exact path="/modules/:moduleId/forum" component={ModuleForumPage} />
-        <Route exact path="/modules/:moduleId/forum/:forumId" component={ModuleForumDetailsPage} />
+        <Route exact path="/modules/:moduleId/forum/topics" component={ModuleForumTopicsPage} />
+        <Route exact path="/modules/:moduleId/forum/topics/:topicId" component={ModuleForumPage} />
+        <Route exact path="/modules/:moduleId/forum/topics/:topicId/:threadId" component={ModuleForumDetailsPage} />
         <Route exact path="/modules/:moduleId/gradebook" component={ModuleGradebookPage} />
         <Route exact path="/modules/:moduleId/quiz" component={ModuleQuizPage} />
         <Route exact path="/modules/:moduleId/multimedia" component={ModuleMultimediaPage} />
