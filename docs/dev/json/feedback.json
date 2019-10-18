@@ -24,16 +24,20 @@
                             {
                                 "value": 1,
                                 "text": "Strongly Disagree"
-                            }, {
+                            },
+                            {
                                 "value": 2,
                                 "text": "Disagree"
-                            }, {
+                            },
+                            {
                                 "value": 3,
                                 "text": "Neutral"
-                            }, {
+                            },
+                            {
                                 "value": 4,
                                 "text": "Agree"
-                            }, {
+                            },
+                            {
                                 "value": 5,
                                 "text": "Strongly Agree"
                             }
@@ -50,7 +54,7 @@
                             {
                                 "value": "applicable",
                                 "text": "The content covered are applicable in my field of study."
-                            }, 
+                            },
                             {
                                 "value": "useful",
                                 "text": "The content covered are useful."
@@ -94,16 +98,20 @@
                             {
                                 "value": 1,
                                 "text": "Strongly Disagree"
-                            }, {
+                            },
+                            {
                                 "value": 2,
                                 "text": "Disagree"
-                            }, {
+                            },
+                            {
                                 "value": 3,
                                 "text": "Neutral"
-                            }, {
+                            },
+                            {
                                 "value": 4,
                                 "text": "Agree"
-                            }, {
+                            },
+                            {
                                 "value": 5,
                                 "text": "Strongly Agree"
                             }
@@ -112,23 +120,23 @@
                             {
                                 "value": "enhancedThinkingAbility",
                                 "text": "The teacher has enhanced my thinking ability."
-                            }, 
+                            },
                             {
                                 "value": "usefulFeedback",
                                 "text": "The teacher provides timely and useful feedback."
-                            }, 
+                            },
                             {
                                 "value": "approachableForConsultation",
                                 "text": "The teacher is approachable for consultation."
-                            }, 
+                            },
                             {
                                 "value": "increasedInterest",
                                 "text": "The teacher has increased my interest in the subject."
-                            }, 
+                            },
                             {
                                 "value": "independentLearning",
                                 "text": "The teacher has enhanced my ability to learn independently."
-                            }, 
+                            },
                             {
                                 "value": "applyConcepts",
                                 "text": "The teacher encourages me to apply concepts learnt."
@@ -154,5 +162,224 @@
                 ]
             }
         ]
+    },
+    "feedbackEvaluation2": 
+    {
+        "closingDate": "2019-10-20T00:00:00",
+        "completeText": "Submit",
+        "description": "Welcome to the feedback exercise. <br />Please take time to review your learning experience in the past semester and be honest in your replies. <br /><br />Please click on <b>'Next'</b> to proceed with the exercise.",
+        "openingDate": "2019-10-15T00:00:00",
+        "pages": [
+            {
+                "elements": [
+                    {
+                        "type": "html",
+                        "html": "<h5>Quantitative on Content</h5>"
+                    },
+                    {
+                        "type": "radiogroup",
+                        "number": 1,
+                        "title": "The content taught is easy to understand",
+                        "isRequired": true,
+                        "choices": [
+                            "Strongly Disagree",
+                            "Disagree",
+                            "Neutral",
+                            "Agree",
+                            "Strongly Agree"
+                        ],
+                        "questionId": 1
+                    },
+                    {
+                        "type": "radiogroup",
+                        "number": 2,
+                        "title": "The content covered are clearly structured and well-organised",
+                        "isRequired": true,
+                        "choices": [
+                            "Strongly Disagree",
+                            "Disagree",
+                            "Neutral",
+                            "Agree",
+                            "Strongly Agree"
+                        ],
+                        "questionId": 2
+                    },
+                    {
+                        "type": "radiogroup",
+                        "number": 3,
+                        "title": "The content covered are applicable in my field of study",
+                        "isRequired": true,
+                        "choices": [
+                            "Strongly Disagree",
+                            "Disagree",
+                            "Neutral",
+                            "Agree",
+                            "Strongly Agree"
+                        ],
+                        "questionId": 3
+                    },
+                    {
+                        "type": "radiogroup",
+                        "number": 4,
+                        "title": "The content covered are useful",
+                        "isRequired": true,
+                        "choices": [
+                            "Strongly Disagree",
+                            "Disagree",
+                            "Neutral",
+                            "Agree",
+                            "Strongly Agree"
+                        ],
+                        "questionId": 4
+                    },
+                    {
+                        "type": "radiogroup",
+                        "number": 5,
+                        "title": "Grade likely to get for this module",
+                        "isRequired": true,
+                        "choices": [
+                            "A+",
+                            "A",
+                            "A-",
+                            "B+",
+                            "B",
+                            "B-",
+                            "C+",
+                            "C",
+                            "D+",
+                            "D",
+                            "F"
+                        ],
+                        "questionId": 5
+                    },
+                    {
+                        "type": "text",
+                        "number": 6,
+                        "title": "Other comments?",
+                        "isRequired": false,
+                        "questionId": 6
+                    },
+                    {
+                        "type": "html",
+                        "html": "<br /><h5>Quantitative on Teacher</h5>"
+                    },
+                    {
+                        "type": "radiogroup",
+                        "number": 7,
+                        "title": "The teacher has enhanced my thinking ability.",
+                        "isRequired": true,
+                        "choices": [
+                            "Strongly Disagree",
+                            "Disagree",
+                            "Neutral",
+                            "Agree",
+                            "Strongly Agree"
+                        ],
+                        "questionId": 7
+                    },
+                    {
+                        "type": "radiogroup",
+                        "number": 8,
+                        "title": "The teacher provides timely and useful feedback.",
+                        "isRequired": true,
+                        "choices": [
+                            "Strongly Disagree",
+                            "Disagree",
+                            "Neutral",
+                            "Agree",
+                            "Strongly Agree"
+                        ],
+                        "questionId": 8
+                    },
+                    {
+                        "type": "radiogroup",
+                        "number": 9,
+                        "title": "The teacher is approachable for consultation.",
+                        "isRequired": true,
+                        "choices": [
+                            "Strongly Disagree",
+                            "Disagree",
+                            "Neutral",
+                            "Agree",
+                            "Strongly Agree"
+                        ],
+                        "questionId": 9
+                    },
+                    {
+                        "type": "radiogroup",
+                        "number": 10,
+                        "title": "The teacher has increased my interest in the subject.",
+                        "isRequired": true,
+                        "choices": [
+                            "Strongly Disagree",
+                            "Disagree",
+                            "Neutral",
+                            "Agree",
+                            "Strongly Agree"
+                        ],
+                        "questionId": 10
+                    },
+                    {
+                        "type": "radiogroup",
+                        "number": 11,
+                        "title": "The teacher has enhanced my ability to learn independently.",
+                        "isRequired": true,
+                        "choices": [
+                            "Strongly Disagree",
+                            "Disagree",
+                            "Neutral",
+                            "Agree",
+                            "Strongly Agree"
+                        ],
+                        "questionId": 11
+                    },
+                    {
+                        "type": "radiogroup",
+                        "number": 12,
+                        "title": "The teacher encourages me to apply concepts learnt.",
+                        "isRequired": true,
+                        "choices": [
+                            "Strongly Disagree",
+                            "Disagree",
+                            "Neutral",
+                            "Agree",
+                            "Strongly Agree"
+                        ],
+                        "questionId": 12
+                    },
+                    {
+                        "type": "radiogroup",
+                        "number": 13,
+                        "title": "Overall the teacher is effective.",
+                        "isRequired": true,
+                        "choices": [
+                            "Strongly Disagree",
+                            "Disagree",
+                            "Neutral",
+                            "Agree",
+                            "Strongly Agree"
+                        ],
+                        "questionId": 13
+                    },
+                    {
+                        "type": "text",
+                        "number": 14,
+                        "title": "What are the teacher's strengths?",
+                        "isRequired": true,
+                        "questionId": 14
+                    },
+                    {
+                        "type": "text",
+                        "number": 15,
+                        "title": "What improvements would you suggest to the teacher?",
+                        "isRequired": true,
+                        "questionId": 15
+                    }
+                ],
+                "name": "page1"
+            }
+        ],
+        "surveyId": 1,
+        "title": "End-of-Semester Evaluation"
     }
 }

@@ -22,21 +22,90 @@ class ModuleFeedbackEvaluationPage extends Component {
             moduleId: "",
             message: "",
             openSnackbar: false,
-            evaluation: {
-            },
+            evaluation: [],
+            surveyId: "",
             isCompleted: false 
         };
         this.onCompleteComponent = this.onCompleteComponent.bind(this);
         this.onValueChanged = this.onValueChanged.bind(this);
     }
-    onCompleteComponent(s, options) {
+    onCompleteComponent(s) {
         // values to send back
         console.log(s.valuesHash)
+        let answers = s.valuesHash;
+        let questions = this.state.evaluation.pages[0].elements;
+        let request = {
+            surveyId: this.state.surveyId,
+            answers: [
+                {
+                    questionId: questions[1].questionId,
+                    answer: answers['question2']
+                },
+                {
+                    questionId: questions[2].questionId,
+                    answer: answers['question3']
+                },
+                {
+                    questionId: questions[3].questionId,
+                    answer: answers['question4']
+                },
+                {
+                    questionId: questions[4].questionId,
+                    answer: answers['question5']
+                },
+                {
+                    questionId: questions[5].questionId,
+                    answer: answers['question6']
+                },
+                {
+                    questionId: questions[6].questionId,
+                    answer: answers['question7']
+                },
+                {
+                    questionId: questions[8].questionId,
+                    answer: answers['question9']
+                },
+                {
+                    questionId: questions[9].questionId,
+                    answer: answers['question10']
+                },
+                {
+                    questionId: questions[10].questionId,
+                    answer: answers['question11']
+                },
+                {
+                    questionId: questions[11].questionId,
+                    answer: answers['question12']
+                },
+                {
+                    questionId: questions[12].questionId,
+                    answer: answers['question13']
+                },
+                {
+                    questionId: questions[13].questionId,
+                    answer: answers['question14']
+                },
+                {
+                    questionId: questions[14].questionId,
+                    answer: answers['question15']
+                },
+                {
+                    questionId: questions[15].questionId,
+                    answer: answers['question16']
+                },
+                {
+                    questionId: questions[16].questionId,
+                    answer: answers['question17']
+                }
+            ]
+        }
+        console.log(request)
         this.setState({ isCompleted: true });
     }
 
     onValueChanged(e) {
         console.log(e.valuesHash)
+        console.log(e.valuesHash['question2'])
     }
 
     handleOpenSnackbar = () => {
@@ -60,7 +129,7 @@ class ModuleFeedbackEvaluationPage extends Component {
         if (moduleId) {
             // retrieve questions
             await axios
-                .get("http://localhost:3002/feedbackEvaluation")
+                .get("http://localhost:3002/feedbackEvaluation2")
                 .then((result) => {
                     console.log(result);
                     if (result) {
@@ -70,7 +139,8 @@ class ModuleFeedbackEvaluationPage extends Component {
                                 moduleId: moduleId,
                                 evaluation: {
                                     pages: result.data.pages
-                                }
+                                },
+                                surveyId: result.data.surveyId
                             });
                         }
                     }
@@ -92,10 +162,11 @@ class ModuleFeedbackEvaluationPage extends Component {
 
     render() {
         let evaluation = this.state.evaluation;
+        var model = new Survey.Model(evaluation);
         if (this.state.evaluation.pages) {
             var surveyRender = !this.state.isCompleted ? (
                 <Survey.Survey
-                    json={evaluation}
+                    model={model}
                     showCompletedPage={false}
                     onComplete={this.onCompleteComponent}
                     onValueChanged={this.onValueChanged}

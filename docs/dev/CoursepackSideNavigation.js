@@ -12,7 +12,7 @@ class CoursepackSideNavigation extends Component {
         } */
 
     render() {
-        /* let moduleId = this.props.moduleId; */
+        let courseId = this.props.courseId;
         return (
             <div className="sidebar-module-fixed position-fixed" style={{ paddingTop: 150 }}>
 
@@ -29,8 +29,8 @@ class CoursepackSideNavigation extends Component {
                             Course Information
                         </MDBListGroupItem>
                     </NavLink>
-                    <NavLink /* to={`/modules/${moduleId}/students`} */ activeClassName="activeClass">
-                        <MDBListGroupItem onClick={e => this.clickLink()} >
+                    <NavLink to={`/coursepack/${courseId}/multimedia`} activeClassName="activeClass">
+                        <MDBListGroupItem>
                             <MDBIcon icon="video" className="mr-3 fa-fw" />
                             Multimedia
                         </MDBListGroupItem>

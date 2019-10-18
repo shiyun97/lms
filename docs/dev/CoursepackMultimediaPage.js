@@ -563,5 +563,5 @@ class CoursepackMultimediaPage extends Component {
 export default styled(CoursepackMultimediaPage)`
 module-content{
     margin-left: 270px;
-},
+}
 `;
