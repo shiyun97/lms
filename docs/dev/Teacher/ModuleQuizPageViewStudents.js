@@ -76,11 +76,7 @@ class ModuleQuizPageViewStudents extends Component {
                                     <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Quiz #
                                 </h2>
                             </MDBCol>
-                            {/* <MDBCol md="1">
-                        <Fab onClick={() => this.getAllQuizDetails()} style={{ height: 50, width: 50, backgroundColor: "#bbb", borderRadius: "50%" }}><MDBIcon icon="sync" /></Fab>
-                    </MDBCol> */}
                         </MDBRow>
-                        {/* {this.renderEditQuizModalBox()} */}
                         <MDBRow className="py-3">
                             <MDBCol md="12">
                                 <MDBCard>
@@ -182,12 +178,12 @@ class ModuleQuizPageViewStudents extends Component {
         var newRows = [{
             name: "Rachel",
             score: "Unmarked",
-            viewButton: <a href="/modules/:moduleId/quiz/:quizId/review/:studentId" style={{ color: "blue" }}>Review</a>
+            viewButton: <center><MDBBtn color="primary" outline size="sm" href="/modules/:moduleId/quiz/:quizId/review/:studentId">Review</MDBBtn></center>
         },
         {
             name: "Dave",
             score: "Unmarked",
-            viewButton: <a href="/modules/:moduleId/quiz/:quizId/review/:studentId" style={{ color: "blue" }}>Review</a>
+            viewButton: <center><MDBBtn color="primary" outline size="sm" href="/modules/:moduleId/quiz/:quizId/review/:studentId">Review</MDBBtn></center>
         }]
         // var newRows = []
         // const row = this.state.rows

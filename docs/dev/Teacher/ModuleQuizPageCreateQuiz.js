@@ -75,7 +75,7 @@ class ModuleQuizPageCreateQuiz extends Component {
     handleChange = event => {
         event.preventDefault();
         this.setState({ [event.target.name]: event.target.value });
-        console.log(event.target.name)
+        // console.log(event.target.name)
     }
 
     renderQuestion = (element) => {
@@ -86,7 +86,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                     <h3>Question #</h3>
                     <label className="grey-text mt-4">
                         Question
-                </label>
+                    </label>
                     <textarea rows="3" type="text" name="question" onChange={this.handleChange} className="form-control" />
                 </MDBCol>
                     <MDBCol md="12" className="mt-4">

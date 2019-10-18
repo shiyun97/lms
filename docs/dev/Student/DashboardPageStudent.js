@@ -36,7 +36,7 @@ class DashboardPageStudent extends Component {
 
   getActiveAnnouncementDetails = () => {
     axios
-      .get(`http://localhost:8080/LMS-war/webresources/Annoucement/getAllActiveAnnoucements?moduleId=5`)
+      .get(`http://localhost:8080/LMS-war/webresources/Annoucement/getAllActiveSystemAnnoucement`)
       .then(result => {
         // console.log(result.data.annoucementList)
         this.setState({ annoucementList: result.data.annoucementList })

@@ -27,11 +27,6 @@ class ModuleQuizPageViewStudentAttempt extends Component {
                 }
             },
             {
-                "label": "Question Id",
-                "field": "questionId",
-                "width": 100
-            },
-            {
                 "label": "Score",
                 "field": "score",
                 "width": 100
@@ -238,13 +233,11 @@ class ModuleQuizPageViewStudentAttempt extends Component {
     render() {
         var newRows = [{
             questionNumber: 1,
-            questionId: 315,
             score: "Unmarked",
             editButton: <center><MDBIcon onClick={() => this.toggle(1)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></center>
         },
         {
             questionNumber: 2,
-            questionId: 327,
             score: "Unmarked",
             editButton: <center><MDBIcon onClick={() => this.toggle(1)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></center>
         }]

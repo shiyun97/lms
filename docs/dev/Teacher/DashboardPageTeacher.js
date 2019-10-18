@@ -54,7 +54,7 @@ class DashboardPageTeacher extends Component {
 
   componentDidUpdate() {
     if (this.state.recall === "recallAnn")
-        this.getActiveAnnouncementDetails();
+      this.getActiveAnnouncementDetails();
   }
 
   handleOpenSnackbar = () => {
@@ -89,7 +89,7 @@ class DashboardPageTeacher extends Component {
 
   getActiveAnnouncementDetails = () => {
     axios
-      .get(`http://localhost:8080/LMS-war/webresources/Annoucement/getAllActiveAnnoucements?moduleId=5`)
+      .get(`http://localhost:8080/LMS-war/webresources/Annoucement/getAllActiveSystemAnnoucement`)
       .then(result => {
         // console.log(result.data.annoucementList)
         this.setState({ annoucementList: result.data.annoucementList })
@@ -119,7 +119,7 @@ class DashboardPageTeacher extends Component {
   createAnnouncement = () => {
     // console.log(this.state)
     var createdDate = new Date;
-    createdDate = moment(createdDate).format("YYYY-MM-DDTHH:mm:ss")
+    createdDate = moment(createdDate).format("DD-MM-YYYYTHH:mm:ss")
     var lastUpdateDate = createdDate
     // console.log({
     //   content: this.state.content,
