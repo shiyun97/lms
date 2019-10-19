@@ -29,7 +29,8 @@ class ModuleAttendancePageTeacher extends Component {
     lectureAttendees: "",
     presence: "Absent",
     userList: ["2", '3', '4'],
-    attendanceList: ['2', '3']
+    attendanceList: ['2', '3'],
+    attendanceId: ""
   }
 
   componentDidMount() {
@@ -79,14 +80,19 @@ class ModuleAttendancePageTeacher extends Component {
 
   generateQRCode = event => {
     let url = window.location.href.split('/');
-/*     console.log(url)
- */    let qrcode_url = url[0] + "/" + url[1] + "/" + url[2] + "/login";
-    /*     console.log(qrcode_url)
-     */
+    var qrcode_url = "";
+    /* console.log(url) */
+    if (this.state.classType === 'lecture') { //lecture
+      qrcode_url = url[0] + "/" + url[1] + "/" + url[2] + "/student/mobileLogin/" + this.state.classType + "/" + this.state.moduleId + "/" + this.state.attendanceId;
+
+    } else { //tutorial
+      qrcode_url = url[0] + "/" + url[1] + "/" + url[2] + "/student/mobileLogin/" + this.state.classType + "/" + this.state.classgroup + "/" + this.state.attendanceId;
+      /* console.log("qrcode url: " + qrcode_url) */
+    }
     return (
       <MDBCol align="center">
-        {/* <QRCode value="http://172.25.99.9:8081/" size={450} /> */}
-        <QRCode value={qrcode_url} size={450} />
+        {/* <QRCode value="http://172.17.43.255:3100" size={450} /> */}
+        {<QRCode value={qrcode_url} size={450} />}
       </MDBCol>
     )
   }
@@ -102,7 +108,8 @@ class ModuleAttendancePageTeacher extends Component {
       this.setState({ open: true, modal: false })
       axios.post(`${API}Attendance/createAttendance?moduleId=${this.state.moduleId}`, { startTs: date })
         .then(result => {
-          alert("lecture attendance list created")
+          alert(`lecture attendance ${result.data.attendanceId}  created`)
+          this.setState({ attendanceId: result.data.attendanceId })
           this.generateQRCode()
         })
         .catch(error => {
@@ -112,7 +119,8 @@ class ModuleAttendancePageTeacher extends Component {
       this.setState({ open: true, modal: false })
       axios.post(`${API}Attendance/createTutorialAttendance?tutorialId=${this.state.classgroup}`, { startTs: date })
         .then(result => {
-          alert("tutorial attendance list created")
+          alert(`tutorial attendance ${result.data.attendanceId} list created`)
+          this.setState({ attendanceId: result.data.attendanceId })
           this.generateQRCode()
         })
         .catch(error => {
@@ -297,7 +305,7 @@ class ModuleAttendancePageTeacher extends Component {
       //in attendance ==> when clicked, student will be mark absent
       return this.checkPresence(studentId) //put function to remove student from attendance
     } else {
-            //in attendance ==> when clicked, student will be mark present
+      //in attendance ==> when clicked, student will be mark present
       return this.checkPresence(studentId) //put function to add student to attendance
     }
   }
@@ -426,7 +434,6 @@ class ModuleAttendancePageTeacher extends Component {
           <option>{this.state.lectureList}</option>
         </select>
       )
-      //map the lectures
     } else if (this.state.classType === "tutorial") {
       return (
         <select value={this.state.classgroup} onChange={this.handleSelectClassgroup} className="browser-default custom-select">

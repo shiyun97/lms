@@ -88,6 +88,7 @@ import UserProfilePage from "./dev/UserProfilePage";
 import UnderMaintenancePage from "./dev/UnderMaintenancePage";
 import AdminLoginPage from "./dev/Admin/AdminLoginPage";
 import StudentLoginPage from "./dev/Student/StudentLoginPage";
+import MobileLogin from "./dev/Student/MobileLogin";
 import ModuleQuizPageCreateQuiz from './dev/Teacher/ModuleQuizPageCreateQuiz';
 import ModuleQuizPageAnswerQuiz from "./dev/Student/ModuleQuizPageAnswerQuiz";
 import ModuleForumTopicsPage from "./dev/ModuleForumTopicsPage";
@@ -173,6 +174,8 @@ class Routes extends React.Component {
         {/* LMS PAGES - Student */}
         <Route exact path="/modules/:moduleId/quiz/:quizId" component={ModuleQuizPageAnswerQuiz} />
         <Route exact path="/modules/:moduleId/markAttendanceStudent" component={MarkAttendanceStudent} />
+        <Route exact path="/student/markAttendance" component={MarkAttendanceStudent} />
+        <Route exact path="/student/mobileLogin/:classType/:classId/:attendanceId" component={MobileLogin} />
 
         {/* LMS PAGES - Student/ Teacher */}
         <Route exact path="/" component={StudentLoginPage} />

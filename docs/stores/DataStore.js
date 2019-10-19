@@ -3,6 +3,8 @@ import { action, computed, observable } from "mobx"
 class DataStore {
   @observable signInStatus = false
   @observable path = "/dashboard"
+  @observable mobilePath = "/student/markAttendance"
+
 
   // student details
   @observable email = ""
@@ -22,7 +24,10 @@ class DataStore {
   @observable modules = []
   @observable currentModuleId = 0;
 
-  @observable test = 0
+  //attendance
+  @observable attendanceClassId = ""
+  @observable attendanceId = ""
+  @observable attendanceClassType = ""
 
   //questionsList
   @observable elements = [
@@ -44,14 +49,6 @@ class DataStore {
     // }
   ]
 
-  @action setTest(test) {
-    this.test = 1
-  }
-
-  @computed get getTest() {
-    return this.test;
-  }
-
   @action setSignInStatus(status, email, password, accessRight) {
     this.signInStatus = status;
     this.email = email;
@@ -64,6 +61,17 @@ class DataStore {
       this.path = "/coursepack/dashboard"
     else
       this.path = "/dashboard"
+  }
+
+  @action setMobileSignInStatus(status, email, password, accessRight) {
+    this.signInStatus = status;
+    this.email = email;
+    this.password = password;
+    this.accessRight = accessRight;
+    localStorage.setItem("email", this.email)
+    localStorage.setItem("password", this.password)
+    localStorage.setItem("accessRight", this.accessRight)
+      this.mobilePath = "/student/markAttendance"
   }
 
   @action setSignOutStatus() {
@@ -88,8 +96,24 @@ class DataStore {
     this.path = path;
   }
 
+  @action setAttendanceClassId(classId) {
+    this.attendanceClassId = classId
+  }
+
+  @action setAttendanceId(attendanceId) {
+    this.attendanceId = attendanceId
+  }
+
+  @action setAttendanceClassType(classType) {
+    this.attendanceClassType = classType
+  }
+
   @computed get getPath() {
     return this.path;
+  }
+
+  @computed get getMobilePath() {
+    return this.mobilePath;
   }
 
   @computed get getPassword() {
@@ -102,6 +126,18 @@ class DataStore {
 
   @computed get getCurrModId() {
     return this.currentModuleId;
+  }
+
+  @computed get getAttendanceClassId() {
+    return this.attendanceClassId;
+  }
+
+  @computed get getAttendanceId() {
+    return this.attendanceId;
+  }
+
+  @computed get getAttendanceClassType() {
+    return this.attendanceClassType;
   }
 
   @action setUserDetails(id, gender, firstName, lastName, username) {
