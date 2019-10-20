@@ -24,6 +24,7 @@ class DataStore {
   @observable modules = []
   @observable currentModuleId = 0
   @observable currentQuizId = 0
+  @observable currentQuizAttemptId = 0
 
   //attendance
   @observable attendanceClassId = ""
@@ -118,6 +119,14 @@ class DataStore {
 
   @computed get getCurrQuizId() {
     return this.currentQuizId;
+  }
+
+  @action setCurrQuizAttemptId(id) {
+    this.currentQuizAttemptId = id;
+  }
+
+  @computed get getCurrQuizAttemptId() {
+    return this.currentQuizAttemptId;
   }
 
   @computed get getAttendanceClassId() {

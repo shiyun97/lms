@@ -32,12 +32,17 @@ class ModuleQuizPageViewStudentAttempt extends Component {
                 }
             },
             {
+                "label": "Type",
+                "field": "type",
+                "width": 100
+            },
+            {
                 "label": "Score",
                 "field": "score",
                 "width": 100
             },
             {
-                "label": "",
+                "label": "Grade",
                 "field": "button",
                 "width": 100
             }
@@ -51,6 +56,27 @@ class ModuleQuizPageViewStudentAttempt extends Component {
 
     componentDidMount() {
         this.initPage();
+        this.getAttemptDetails();
+    }
+
+    getAttemptDetails = () => {
+        let userId = localStorage.getItem('userId');
+        var quizAttemptId = this.props.dataStore.getCurrQuizAttemptId;
+        axios
+            .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveQuestionAttempts?userId=${userId}&quizAttemptId=${quizAttemptId}`)
+            .then(result => {
+                console.log(result.data)
+                this.setState({
+                    status: "done",
+                    rows: result.data.questionAttempts
+                });
+            })
+            .catch(error => {
+                this.setState({
+                    status: "error",
+                });
+                console.error("error in axios " + error);
+            });
     }
 
     handleChange = event => {
@@ -134,7 +160,7 @@ class ModuleQuizPageViewStudentAttempt extends Component {
                                 <h2 className="font-weight-bold">
                                     <a href="/modules/:moduleId/quiz">Quiz</a>
                                     <MDBIcon icon="angle-right" className="ml-4 mr-4" /> <a href="/modules/:moduleId/quiz/:quizId">Quiz {quizId}</a>
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> StudentID #
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Attempt #
                                 </h2>
                             </MDBCol>
                         </MDBRow>
@@ -190,7 +216,7 @@ class ModuleQuizPageViewStudentAttempt extends Component {
                                 <h2 className="font-weight-bold">
                                     <a href="/modules/:moduleId/quiz">Quiz</a>
                                     <MDBIcon icon="angle-right" className="ml-4 mr-4" /> <a href="/modules/:moduleId/quiz/:quizId">  {quizId}</a>
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> StudentID #
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Attempt #
                                 </h2>
                             </MDBCol>
                             {this.renderMarkAnswerModalBox()}
@@ -232,42 +258,37 @@ class ModuleQuizPageViewStudentAttempt extends Component {
 
     initPage() {
         var moduleId = this.props.dataStore.getCurrModId;
-        if (moduleId) {
-            // console.log(moduleId);
-            // retrieve module & set state
-            this.setState({ moduleId: moduleId })
-        }
+        var pathname = location.pathname;
+        pathname = pathname.split("/");
+        this.setState({ quizId: pathname[4] })
+        this.props.dataStore.setCurrModId(pathname[2]);
+        this.props.dataStore.setCurrQuizId(pathname[4])
+        this.props.dataStore.setCurrQuizAttemptId(pathname[6])
     }
 
     render() {
-        var newRows = [{
-            questionNumber: 1,
-            score: "Unmarked",
-            editButton: <center><MDBIcon onClick={() => this.toggle(1)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></center>
-        },
-        {
-            questionNumber: 2,
-            score: "Unmarked",
-            editButton: <center><MDBIcon onClick={() => this.toggle(1)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></center>
-        }]
-        // var newRows = []
-        // const row = this.state.rows
-        // for (let i = 0; i < row.length; i++) {
-        //     newRows.push({
-        //         userId: row[i].userId,
-        //         firstName: row[i].firstName,
-        //         lastName: row[i].lastName,
-        //         gender: row[i].gender,
-        //         email: row[i].email,
-        //         password: row[i].password,
-        //         accessRight: row[i].accessRight,
-        //         username: row[i].username,
-        //         editButton: <MDBRow align="center">
-        //             <MDBCol md={6}><MDBIcon onClick={() => this.toggle(1)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
-        //             <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(row[i].userId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
-        //         </MDBRow>
-        //     })
-        // }
+        // var newRows = [{
+        //     questionNumber: 1,
+        //     score: "Unmarked",
+        //     editButton: <center><MDBIcon onClick={() => this.toggle(1)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></center>
+        // },
+        // {
+        //     questionNumber: 2,
+        //     score: "Unmarked",
+        //     editButton: <center><MDBIcon onClick={() => this.toggle(1)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></center>
+        // }]
+        var newRows = []
+        const row = this.state.rows
+        for (let i = 0; i < row.length; i++) {
+            // console.log(row[i].question)
+            newRows.push({
+                questionAttemptId: row[i].questionAttemptId,
+                // type: row[i].question.type,
+                type: "MCQ/Short Answer",
+                score: row[i].marks,
+                editButton: <center><MDBIcon onClick={() => this.toggle(1, row[i].questionAttempt)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></center>
+            })
+        }
         const data = () => ({ columns: this.state.columns, rows: newRows })
         // clickEvent: () => goToProfilePage(1)
 
