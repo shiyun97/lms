@@ -12,8 +12,6 @@ import moment from 'moment';
 class ModuleQuizPageTeacher extends Component {
 
     state = {
-        modal1: false,
-        modal2: false,
         moduleId: 0,
         quizId: 0,
         name: "",
@@ -74,7 +72,8 @@ class ModuleQuizPageTeacher extends Component {
         rows: [{ label: "Retrieving data..." }],
         openSnackbar: false,
         message: "",
-        status: "retrieving"
+        status: "retrieving",
+        recallQuiz: false,
     }
 
     componentDidMount() {
@@ -82,30 +81,22 @@ class ModuleQuizPageTeacher extends Component {
         this.getAllModuleQuizzes();
     }
 
+    componentDidUpdate() {
+        if (this.state.recallQuiz) {
+            this.getAllModuleQuizzes();
+        }
+    }
+
     handleChange = event => {
         event.preventDefault();
         this.setState({ [event.target.name]: event.target.value });
     }
 
-    toggle = (nr, row) => {
-        let modalNumber = "modal" + nr;
-        this.setState({
-            [modalNumber]: !this.state[modalNumber]
-        });
-
-        if (row !== undefined) {
-            // this.updateQuizState(row);
-        }
-    };
-
     initPage() {
-        let moduleId = this.props.moduleId;
-        if (moduleId) {
-            // console.log(moduleId);
-            // retrieve module & set state
-            this.setState({ moduleId: moduleId })
-            this.props.dataStore.setCurrModId(moduleId);
-        }
+        var pathname = location.pathname;
+        pathname = pathname.split("/");
+        // console.log(pathname[2])
+        this.props.dataStore.setCurrModId(pathname[2]);
     }
 
     getAllModuleQuizzes = () => {
@@ -115,13 +106,36 @@ class ModuleQuizPageTeacher extends Component {
             .get(` http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllModuleQuiz/${moduleId}?userId=${userId}`)
             .then(result => {
                 // console.log(result.data.quizzes)
-                this.setState({ status: "done", message: "Successfully retrieved quizzes!", quizzes: result.data.quizzes })
+                this.setState({ status: "done", quizzes: result.data.quizzes })
             })
             .catch(error => {
                 this.setState({ status: "error" })
                 console.error("error in axios " + error);
             });
+    }
 
+    editQuiz = () => {
+        //edit
+    }
+
+    deleteQuiz = (quizId) => {
+        event.preventDefault();
+        axios
+            .delete(`http://localhost:8080/LMS-war/webresources/Assessment/deleteModuleQuiz?userId=5&quizId=${quizId}`)
+            .then(result => {
+                this.setState({
+                    recallQuiz: true,
+                    message: "Quiz deleted successfully!",
+                    openSnackbar: true
+                });
+            })
+            .catch(error => {
+                this.setState({
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                });
+                console.error("error in axios " + error);
+            });
     }
 
     renderQuizTable = () => {
@@ -145,7 +159,7 @@ class ModuleQuizPageTeacher extends Component {
                     // quizType: quiz[i].quizType,
                     maxMarks: quiz[i].maxMarks,
                     editButton: <MDBRow align="center">
-                        <MDBCol md={6}><MDBIcon onClick={() => this.toggle(2, quiz[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
+                        <MDBCol md={6}><MDBIcon onClick={() => this.editQuiz(2, quiz[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
                         <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(quiz[i].quizId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
                     </MDBRow>,
                     viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quiz[i].quizId}/review`}>Review</MDBBtn></center>
@@ -180,7 +194,7 @@ class ModuleQuizPageTeacher extends Component {
                 </h2>
                             </MDBCol>
                             <MDBCol md="4" align="right">
-                                <MDBBtn href="/modules/:moduleId/quiz/create" color="primary">Create Quiz</MDBBtn>
+                                <MDBBtn href={`/modules/${moduleId}/quiz/create`} color="primary">Create Quiz</MDBBtn>
                             </MDBCol>
                         </MDBRow>
                         {/* {this.renderEditQuizModalBox()} */}
@@ -233,8 +247,7 @@ class ModuleQuizPageTeacher extends Component {
                         <MDBRow style={{ paddingTop: 60 }}>
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
-                                    <a href={`/modules/${this.state.moduleId}/quiz`}>Quiz</a>
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Quiz #
+                                    Quiz
                                 </h2>
                             </MDBCol>
                             {/* {this.renderEditQuizModalBox()} */}
