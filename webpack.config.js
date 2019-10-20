@@ -46,7 +46,11 @@ const config = {
       {
         test: /\.gif(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader?limit=10000&mimetype=image/gif'
-      }
+      },
+      {
+        test: /\.mp4$/,
+        use: 'file-loader?name=videos/[name].[ext]',
+      },
     ]
   },
   devServer: {

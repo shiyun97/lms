@@ -82,6 +82,7 @@ class CoursepackDetailsPageStudent extends Component {
         return (
 
             <div style={{ paddingTop: 70 }}>
+                <h1>student</h1>
 
                 <div style={{ backgroundColor: '#B8CECD', minHeight: 250 }}>
                     <MDBContainer>

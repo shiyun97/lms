@@ -127,10 +127,10 @@ class ModuleAttendancePageTeacher extends Component {
 
   handleClose = (event, reason) => {
     if (reason === 'clickaway') {
-        return;
+      return;
     }
     this.setState({ openSnackbar: false });
-};
+  };
 
   handleSelectTableTutorialGroup = event => {
     this.setState({ tableTutorialGroup: event.target.value })
@@ -233,11 +233,11 @@ class ModuleAttendancePageTeacher extends Component {
       this.setState({ open: true, modal: false })
       axios.post(`${API}Attendance/createTutorialAttendance?tutorialId=${this.state.classgroup}`, { startTs: date })
         .then(result => {
-          this.setState({ 
+          this.setState({
             attendanceId: result.data.attendanceId,
             openSnackbar: true,
             message: `Tutorial attendance Id${result.data.attendanceId} created`
-           })
+          })
           this.generateQRCode()
         })
         .catch(error => {
@@ -329,7 +329,7 @@ class ModuleAttendancePageTeacher extends Component {
   getLectureAttendance = event => {
     axios.get(`${API}Attendance/getAttendees?attendanceId=${this.state.tableLectureDate}`)
       .then(result => {
-        this.setState({ lectureAttendees: result.data.attendees, display: true})
+        this.setState({ lectureAttendees: result.data.attendees, display: true })
       })
       .catch(error => {
         this.setState({ message: error.response.data, openSnackbar: true })
@@ -424,8 +424,8 @@ class ModuleAttendancePageTeacher extends Component {
     for (var i = 0; i < updateAsPresent.length; i++) {
       axios.put(`${API}Attendance/addAttendee?attendanceId=${this.state.tableLectureDate}&userId=${updateAsPresent[i]}`)
         .then(result => {
-          this.setState({ 
-            openSnackbar: true, 
+          this.setState({
+            openSnackbar: true,
             message: "Student(s) marked as present"
           })
           window.location.reload()
@@ -444,10 +444,10 @@ class ModuleAttendancePageTeacher extends Component {
     for (var i = 0; i < updateAsAbsent.length; i++) {
       axios.put(`${API}Attendance/removeAttendee?attendanceId=${this.state.tableLectureDate}&userId=${updateAsAbsent[i]}`)
         .then(result => {
-           this.setState({ 
-            openSnackbar: true, 
+          this.setState({
+            openSnackbar: true,
             message: "Student(s) marked as absent"
-          }) 
+          })
           window.location.reload()
         })
         .catch(error => {
@@ -460,10 +460,10 @@ class ModuleAttendancePageTeacher extends Component {
   deleteLectureAttendance = event => {
     axios.delete(`${API}Attendance/deleteAttendance?moduleId=${this.props.moduleId}&attendanceId=${this.state.tableLectureDate}`)
       .then(result => {
-        this.setState({ 
-          openSnackbar: true, 
+        this.setState({
+          openSnackbar: true,
           message: "Lecture attendance successfully deleted"
-        })        
+        })
         window.location.reload()
       })
       .catch(error => {
@@ -648,9 +648,9 @@ class ModuleAttendancePageTeacher extends Component {
   deleteTutorialAttendance = event => {
     axios.delete(`${API}Attendance/deleteTutorialAttendance?tutorialId=${this.state.tableTutorialGroup}&attendanceId=${this.state.tableTutorialDate}`)
       .then(result => {
-        this.setState({ 
+        this.setState({
           message: "Tutorial Attendance successfully deleted",
-         openSnackbar: true 
+          openSnackbar: true
         })
         window.location.reload()
       })
@@ -665,8 +665,8 @@ class ModuleAttendancePageTeacher extends Component {
     for (var i = 0; i < updateAsPresent.length; i++) {
       axios.put(`${API}Attendance/addAttendee?attendanceId=${this.state.tableTutorialDate}&userId=${updateAsPresent[i]}`)
         .then(result => {
-          this.setState({ 
-            openSnackbar: true, 
+          this.setState({
+            openSnackbar: true,
             message: "Student(s) marked as present"
           })
           window.location.reload()
@@ -684,8 +684,8 @@ class ModuleAttendancePageTeacher extends Component {
     for (var i = 0; i < updateAsAbsent.length; i++) {
       axios.put(`${API}Attendance/removeAttendee?attendanceId=${this.state.tableTutorialDate}&userId=${updateAsAbsent[i]}`)
         .then(result => {
-          this.setState({ 
-            openSnackbar: true, 
+          this.setState({
+            openSnackbar: true,
             message: "Student(s) marked as absent"
           })
           window.location.reload()

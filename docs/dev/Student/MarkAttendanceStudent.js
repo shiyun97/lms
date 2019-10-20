@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBCol, MDBBtn, MDBIcon } from "mdbreact";
+import { MDBCol, MDBBtn, MDBIcon } from "mdbreact";
 import axios from "axios";
 import { observer, inject } from 'mobx-react'
+import { Snackbar } from '@material-ui/core';
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 
@@ -15,7 +16,9 @@ class MarkAttendanceStudent extends Component {
         present: false,
         attendanceId: "",
         userId: "",
-        classType: ""
+        classType: "",
+        message: "",
+        openSnackbar: false,
     }
 
     componentDidMount() {
@@ -27,6 +30,13 @@ class MarkAttendanceStudent extends Component {
         })
     }
 
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        this.setState({ openSnackbar: false });
+    };
+
     markAttendance = event => {
         console.log("mark attendance")
         if (this.state.classType === 'lecture') {
@@ -35,6 +45,10 @@ class MarkAttendanceStudent extends Component {
                     this.setState({ present: true })
                 })
                 .catch(error => {
+                    this.setState({
+                        message: error.response.data,
+                        openSnackbar: true,
+                    })
                     console.error("error in axios " + error);
                 });
         } else {
@@ -43,6 +57,10 @@ class MarkAttendanceStudent extends Component {
                     this.setState({ present: true })
                 })
                 .catch(error => {
+                    this.setState({
+                        message: error.response.data,
+                        openSnackbar: true,
+                    })
                     console.error("error in axios " + error);
                 });
         }
@@ -65,10 +83,26 @@ class MarkAttendanceStudent extends Component {
         } else { // attendance not mark
             return (
                 <div className="mark-attendance">
-                                        <MDBCol align="center">
+                    <MDBCol align="center">
 
-                    <MDBBtn color="success" onClick={this.markAttendance}>Present</MDBBtn>
+                        <MDBBtn color="success" onClick={this.markAttendance}>Present</MDBBtn>
                     </MDBCol>
+                    <Snackbar
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                        }}
+                        open={this.state.openSnackbar}
+                        autoHideDuration={6000}
+                        onClose={this.handleClose}
+                        ContentProps={{
+                            'aria-describedby': 'message-id',
+                        }}
+                        message={<span id="message-id">{this.state.message}</span>}
+                        action={[
+                            <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                        ]}
+                    />
                 </div >
             )
         }

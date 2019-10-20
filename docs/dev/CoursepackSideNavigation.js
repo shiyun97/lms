@@ -4,29 +4,22 @@ import { NavLink } from 'react-router-dom';
 
 class CoursepackSideNavigation extends Component {
 
-    /*     clickLink = () => {
-            var a = document.createElement('a');
-            a.href = `/modules/${this.props.moduleId}/files`;
-            a.click();
-            return;
-        } */
-
     render() {
         let courseId = this.props.courseId;
         return (
             <div className="sidebar-module-fixed position-fixed" style={{ paddingTop: 150 }}>
 
                 <MDBListGroup className="list-group-flush">
-                    <NavLink /* exact={true} to={`/modules/${moduleId}/`} */ activeClassName="activeClass">
+                    <NavLink exact={true} to={`/coursepack/${courseId}`} activeClassName="activeClass">
                         <MDBListGroupItem>
                             <MDBIcon far icon="eye" className="mr-3 fa-fw" />
                             Preview
                         </MDBListGroupItem>
                     </NavLink>
-                    <NavLink /* to={`/modules/${moduleId}/moduleDetails`} */ activeClassName="activeClass">
+                    <NavLink to={`/coursepack/${courseId}/edit`} activeClassName="activeClass">
                         <MDBListGroupItem>
-                            <MDBIcon icon="book-open" className="mr-3 fa-fw" />
-                            Course Information
+                            <MDBIcon icon="edit" className="mr-3 fa-fw" />
+                            Manage Course
                         </MDBListGroupItem>
                     </NavLink>
                     <NavLink to={`/coursepack/${courseId}/multimedia`} activeClassName="activeClass">
@@ -41,13 +34,13 @@ class CoursepackSideNavigation extends Component {
                             Quizzes
                         </MDBListGroupItem>
                     </NavLink>
-                    <NavLink /* to={`/modules/${moduleId}/forum`}  */ activeClassName="activeClass">
+                    <NavLink to={`/coursepack/${courseId}/arrangements`}  activeClassName="activeClass">
                         <MDBListGroupItem>
                             <MDBIcon icon="layer-group" className="mr-3 fa-fw" />
                             Arrangements
                         </MDBListGroupItem>
                     </NavLink>
-                    <NavLink /* to={`/modules/${moduleId}/gradebook`} */ activeClassName="activeClass">
+                    <NavLink /* to={`/coursepack/${courseId}/feedback`}  */activeClassName="activeClass">
                         <MDBListGroupItem>
                             <MDBIcon icon="comment-alt" className="mr-3 fa-fw" />
                             Feedbacks

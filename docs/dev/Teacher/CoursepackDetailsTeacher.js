@@ -26,7 +26,7 @@ class CoursepackDetailsTeacher extends Component {
             });
     }
 
-    viewAssessments = event => {
+    viewCourse = event => {
         console.log("view assessments")
     }
 
@@ -37,7 +37,7 @@ class CoursepackDetailsTeacher extends Component {
                     <MDBCol size="8">
                         <h1>{this.state.courseDetails.courseTitle}</h1>
                         <h3>{this.state.courseDetails.courseDescription}</h3>
-                        <MDBBtn color="primary" onClick={this.viewAssessments} >View Assessments</MDBBtn>
+                        <MDBBtn color="primary" onClick={this.viewCourse} >View Course</MDBBtn>
                     </MDBCol>
                     <MDBCol size="4">
                         <MDBCard style={{ width: "23rem", minHeight: "12rem" }}>
@@ -75,24 +75,6 @@ class CoursepackDetailsTeacher extends Component {
         )
     }
 
-
-    handleClickOpen = event => {
-        this.setState({ open: true })
-    }
-
-    handleClose = event => {
-        this.setState({ open: false })
-    }
-
-    deleteCourse = event => {
-        console.log("delete course")
-        this.setState({ open: false })
-    }
-
-    editCourseInformation = event => {
-        console.log("edit course information")
-    }
-
     render() {
         console.log("teacher")
         return (
@@ -100,11 +82,7 @@ class CoursepackDetailsTeacher extends Component {
             <div className="module-content">
                 <CoursepackSideNavigation courseId={this.props.coursepackId}/>
 
-                <MDBContainer>
-                    <MDBCol align="right">
-                        <MDBBtn onClick={this.editCourseInformation}>Edit</MDBBtn>
-                    </MDBCol>
-                </MDBContainer>
+
                 <div style={{ backgroundColor: '#B8CECD', minHeight: 250 }}>
                     < div /* className="module-content" */>
                         <MDBContainer>
@@ -114,20 +92,6 @@ class CoursepackDetailsTeacher extends Component {
                 </div>
                 <MDBContainer style={{ paddingTop: 50 }}>
                     {this.showCoursepackOutline()}
-                    <MDBCol align="right">
-                        <MDBBtn color="danger" onClick={this.handleClickOpen}>Delete Course</MDBBtn>
-                        <Dialog open={this.state.open} onClose={this.handleClickOpen}>
-                            <DialogTitle>Delete Course</DialogTitle>
-                            <DialogContent>
-                                Are you sure to delete <b>{this.state.courseDetails.courseTitle}</b> ? <br />
-                                <p style={{ color: "red" }}>This action CANNOT be reverted.</p>
-                            </DialogContent>
-                            <DialogActions>
-                                <MDBBtn onClick={this.handleClose} color="primary">Cancel</MDBBtn>
-                                <MDBBtn color="danger" onClick={this.deleteCourse}>Delete</MDBBtn>
-                            </DialogActions>
-                        </Dialog>
-                    </MDBCol>
                 </MDBContainer>
             </div >
         )

@@ -1,16 +1,23 @@
 import React, { Component } from "react";
 import {
   MDBContainer, MDBCarouselInner, MDBView, MDBCarouselItem, MDBCarousel, MDBCol, MDBBtn, MDBRow,
-  MDBCard, MDBCardImage, MDBCardGroup, MDBCardBody, MDBCardText, MDBCardTitle, MDBMedia
+  MDBCard, MDBCardImage, MDBCardGroup, MDBCardBody, MDBCardText, MDBCardTitle, MDBMedia, MDBNavbar,
+  MDBNavbarBrand, MDBNavbarToggler, MDBNavbarNav, MDBNavLink, MDBCollapse, MDBNavItem, MDBIcon
 } from "mdbreact";
 import axios from "axios";
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom';
+import VideoThumbnail from 'react-video-thumbnail';
+import Night from '../night.mp4'
+import Pexels from '../pexels.mp4'
+import CoursepackTopNav from "../CoursepackTopNav";
+
 
 const API = "http://localhost:3001"
 
 class CoursepackDashboardPageStudent extends Component {
   state = {
     coursepackList: "",
+    category: ""
   }
 
   componentDidMount() {
@@ -22,6 +29,20 @@ class CoursepackDashboardPageStudent extends Component {
       .catch(error => {
         console.error("error in axios " + error);
       });
+
+    axios.get(`${API}/category`)
+      .then(result => {
+        this.setState({ category: result.data })
+        console.log(result.data)
+      })
+      .catch(error => {
+        console.error("error in axios " + error);
+      });
+  }
+
+  //TODO:
+  handleClick = event => {
+    console.log("go into course view")
   }
 
   mediaCarousel = () => {
@@ -36,30 +57,33 @@ class CoursepackDashboardPageStudent extends Component {
           style={{ height: 400, width: 700 }}
         >
           <MDBCarouselInner>
-            <MDBCarouselItem itemId="1">
-              <MDBView>
-                <img
-                  className="recommend_1"
-                  src="https://mdbootstrap.com/img/Photos/Slides/img%20(131).jpg"
-                  alt="First slide"
+            <MDBCarouselItem itemId="1" onClick={this.handleClick}>
+              <MDBView >
+                <VideoThumbnail
+                  videoUrl={Night}
+                  thumbnailHandler={(thumbnail) => (thumbnail)}
+                  width={680}
+                  height={500}
                 />
               </MDBView>
             </MDBCarouselItem>
-            <MDBCarouselItem itemId="2">
+            <MDBCarouselItem itemId="2" onClick={this.handleClick}>
               <MDBView>
-                <img
-                  className="recommend_2"
-                  src="https://mdbootstrap.com/img/Photos/Slides/img%20(132).jpg"
-                  alt="Second slide"
+                <VideoThumbnail
+                  videoUrl={Pexels}
+                  thumbnailHandler={(thumbnail) => (thumbnail)}
+                  width={680}
+                  height={500}
                 />
               </MDBView>
             </MDBCarouselItem>
-            <MDBCarouselItem itemId="3">
+            <MDBCarouselItem itemId="3" onClick={this.handleClick}>
               <MDBView>
-                <img
-                  className="recommend_3"
-                  src="https://mdbootstrap.com/img/Photos/Slides/img%20(133).jpg"
-                  alt="Third slide"
+                <VideoThumbnail
+                  videoUrl={Night}
+                  thumbnailHandler={(thumbnail) => (thumbnail)}
+                  width={680}
+                  height={500}
                 />
               </MDBView>
             </MDBCarouselItem>
@@ -72,7 +96,7 @@ class CoursepackDashboardPageStudent extends Component {
   courseRecommendation = () => {
     return (
       <MDBContainer>
-        <h4>You might be interested</h4>
+        <h4><b>You might be interested</b></h4>
         <hr />
         <MDBRow>
           {this.state.coursepackList && this.state.coursepackList.map((course) => {
@@ -144,17 +168,18 @@ class CoursepackDashboardPageStudent extends Component {
   render() {
     console.log("student")
     return (
+      <div>
+       <CoursepackTopNav/>
 
-      <MDBContainer className="mt-5">
-        <hr />
-        {this.mediaCarousel()}
-        <br />
-        <br />
-        {/* this.lastAccessed() */}
-        <br />
-        <br />
-        {this.courseRecommendation()}
-      </MDBContainer>
+        <MDBContainer style={{ paddingTop: 100 }} >
+          {this.mediaCarousel()}
+          <br />
+          {/* this.lastAccessed() */}
+          <br />
+          <br />
+          {this.courseRecommendation()}
+        </MDBContainer>
+      </div>
     );
   }
 }

@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBIcon } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBBtn } from "mdbreact";
 import SectionContainer from "../../components/sectionContainer";
 import axios from "axios";
-import { NavLink } from 'react-router-dom'
-import Dropzone from 'react-dropzone';
 import CoursepackSideNavigation from '../CoursepackSideNavigation';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
 
 const API = "http://localhost:3001"
 
@@ -22,6 +21,7 @@ class CoursePackEdit extends Component {
         outline: [],
         disabled: true,
         editSave: "Edit",
+        open: false,
     }
 
     componentDidMount() {
@@ -57,6 +57,19 @@ class CoursePackEdit extends Component {
             .catch(error => {
                 console.error("error in axios " + error);
             });
+    }
+
+    handleClickOpen = event => {
+        this.setState({ open: true })
+    }
+
+    handleClose = event => {
+        this.setState({ open: false })
+    }
+
+    deleteCourse = event => {
+        console.log("delete course")
+        this.setState({ open: false })
     }
 
     handleOnChange = event => {
@@ -294,7 +307,18 @@ class CoursePackEdit extends Component {
 
                     <MDBCol align="right">
                         <MDBBtn onClick={this.editSave} color="primary" variant="contained" >{this.state.editSave}</MDBBtn>
-                        <MDBBtn onClick={this.delete} color="danger" variant="contained">Delete</MDBBtn>
+                        <MDBBtn color="danger" onClick={this.handleClickOpen}>Delete Course</MDBBtn>
+                        <Dialog open={this.state.open} onClose={this.handleClickOpen}>
+                            <DialogTitle>Delete Course</DialogTitle>
+                            <DialogContent>
+                                Are you sure to delete <b>{/* this.state.courseDetails.courseTitle */}</b> ? <br />
+                                <p style={{ color: "red" }}>This action CANNOT be reverted.</p>
+                            </DialogContent>
+                            <DialogActions>
+                                <MDBBtn onClick={this.handleClose} color="primary">Cancel</MDBBtn>
+                                <MDBBtn color="danger" onClick={this.deleteCourse}>Delete</MDBBtn>
+                            </DialogActions>
+                        </Dialog>
                     </MDBCol>
                 </MDBContainer>
             </div >

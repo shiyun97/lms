@@ -10,17 +10,11 @@ class CoursepackDashboard extends Component {
     let accessRight = localStorage.getItem("accessRight")
     return (
       <MDBContainer style={{ paddingBottom: 240 }}>
-        <MDBRow>
-          <MDBCol md="8" className="mt-4">
-            <h2 className="font-weight-bold" style={{ paddingTop: 50 }}>
-              Coursepack
-          </h2>
-          </MDBCol>
+       
           {accessRight === "Student" && <CoursepackDashboardPageStudent />}
           {/*  {accessRight === "Public" && <CoursepackDashboardPageStudent />} TODO: */}
           {accessRight === "Teacher" && <CoursepackDashboardPageTeacher />}
 
-        </MDBRow>
       </MDBContainer>
     )
   }

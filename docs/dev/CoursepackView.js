@@ -4,6 +4,8 @@ import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
 import { List, ListItem, ListItemText, ListSubheader } from '@material-ui/core/';
 import { relative } from 'path';
+import VideoThumbnail from 'react-video-thumbnail'; // use npm published version
+import Night from './night.mp4'
 
 const API = "http://localhost:3001";
 
@@ -33,7 +35,7 @@ class CoursepackView extends Component {
         return (
             <SectionContainer>
                 <List style={{ width: "100%", maxWidth: 360, position: "relative", overflow: "auto", maxHeight: 400 }} subheader={<li />}>
-                     {this.state.outline && this.state.outline.map((outline, index) => (
+                    {this.state.outline && this.state.outline.map((outline, index) => (
                         <li key={index} style={{ backgroundColor: 'inherit' }}>
                             <ul style={{ backgroundColor: 'inherit' }}>
                                 <ListSubheader>{outline}</ListSubheader>
@@ -44,7 +46,7 @@ class CoursepackView extends Component {
                                 ))}
                             </ul>
                         </li>
-                    ))} 
+                    ))}
                 </List>
             </SectionContainer>
         )
@@ -53,12 +55,14 @@ class CoursepackView extends Component {
     render() {
         return (
             <div >
+
                 <MDBContainer className="mt-5" align="center">
                     coursepack title
                     <SectionContainer>
                         <MDBRow>
-                            <MDBCol size="8">
-                            <MDBMedia object src="https://mdbootstrap.com/img/Photos/Others/placeholder1.jpg" alt="" style={{width: "70%"}}/>
+                            <MDBCol size="8" align="center">
+                                 {/*    <video controls autostart autoPlay src={Night} type="video/mp4" style={{ maxHeight: 700, maxWidth: 700 }} /> */}
+
                             </MDBCol>
                             <MDBCol size="4">
                                 {this.showOutline()}
