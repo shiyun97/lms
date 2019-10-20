@@ -20,10 +20,6 @@ class ModuleConsultationPage extends Component {
 
     initPage() {
         let moduleId = this.props.match.params.moduleId;
-        if (moduleId) {
-            // console.log(moduleId);
-            // retrieve module & set state
-        }
     }
 
     render() {

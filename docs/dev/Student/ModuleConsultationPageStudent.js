@@ -4,6 +4,7 @@ import { MDBRow, MDBCol, MDBDataTable, MDBBtn, MDBCard, MDBCardBody, MDBIcon } f
 import axios from 'axios';
 import { observer, inject } from 'mobx-react'
 import { Snackbar } from '@material-ui/core';
+import moment from 'moment';
 
 @inject('dataStore')
 @observer
@@ -48,7 +49,10 @@ class ModuleConsultationPageStudent extends Component {
         rows: [],
         bookedRows: [],
         openSnackbar: false,
-        message: ""
+        message: "",
+        status: "retrieving",
+        statusBooked: "retrieving",
+        recallConsultations: false,
     }
 
     getAllAvailableConsultations = () => {
@@ -58,7 +62,7 @@ class ModuleConsultationPageStudent extends Component {
             // .get("http://localhost:3001/allConsultations")
             .get(`http://localhost:8080/LMS-war/webresources/Consultation/viewAllAvailableConsultation/${moduleId}`)
             .then(result => {
-                // console.log(result.data.consultationTimeslots)
+                // console.log(result.data.consultationTimeslot)
                 this.setState({ status: "done", rows: result.data.consultationTimeslot })
             })
             .catch(error => {
@@ -73,11 +77,11 @@ class ModuleConsultationPageStudent extends Component {
             // .get("http://localhost:3001/allConsultations")
             .get(`http://localhost:8080/LMS-war/webresources/Consultation/viewConsultationByStudent?userId=${userId}`)
             .then(result => {
-                // console.log(result.data.consultationTimeslots)
-                this.setState({ status: "done", bookedRows: result.data.consultationTimeslot })
+                // console.log(result.data)
+                this.setState({ statusBooked: "done", bookedRows: result.data })
             })
             .catch(error => {
-                this.setState({ status: "error" })
+                this.setState({ statusBooked: "error" })
                 console.error("error in axios " + error);
             });
     }
@@ -95,15 +99,22 @@ class ModuleConsultationPageStudent extends Component {
     };
 
     componentDidMount() {
+        this.initPage();
         this.getAllAvailableConsultations();
         this.getBookedConsultations();
     }
 
     componentDidUpdate() {
-        if (this.state.status === "recallConsultations") {
+        if (this.state.recallConsultations) {
             this.getAllAvailableConsultations();
             this.getBookedConsultations();
         }
+    }
+
+    initPage() {
+        var pathname = location.pathname;
+        pathname = pathname.split("/");
+        this.props.dataStore.setCurrModId(pathname[2]);
     }
 
     bookConsultationSlot = (consultationId) => {
@@ -113,7 +124,7 @@ class ModuleConsultationPageStudent extends Component {
             // .put(`http://localhost:3001/allConsultations/${row.id}`, {
             .then(result => {
                 // console.log(result.data)
-                this.setState({ status: "recallConsultations", message: "Consultation slot booked!", openSnackbar: true })
+                this.setState({ recallConsultations: true, message: "Consultation slot booked!", openSnackbar: true })
                 // console.log("update successful")
             })
             .catch(error => {
@@ -128,7 +139,7 @@ class ModuleConsultationPageStudent extends Component {
             .post(`http://localhost:8080/LMS-war/webresources/Consultation/dropConsultation?consultationTimeslotId=${consultationId}`)
             .then(result => {
                 // console.log(result.data)
-                this.setState({ status: "recallConsultations", message: "Consultation slot dropped!", openSnackbar: true })
+                this.setState({ recallConsultations: true, message: "Consultation slot dropped!", openSnackbar: true })
                 // console.log("remove successful")
             })
             .catch(error => {
@@ -148,7 +159,7 @@ class ModuleConsultationPageStudent extends Component {
         for (let i = 0; i < row.length; i++) {
             availableConsultations.push({
                 consultationId: row[i].consultationTsId,
-                date: row[i].startD,
+                startDate: moment(row[i].startD).format('DD-MM-YYYY'),
                 startTime: row[i].startTs,
                 endTime: row[i].endTs,
                 // date: "",
@@ -169,7 +180,7 @@ class ModuleConsultationPageStudent extends Component {
         for (let i = 0; i < bookedRow.length; i++) {
             bookedConsultations.push({
                 consultationId: bookedRow[i].consultationTsId,
-                date: bookedRow[i].startD,
+                startDate: moment(bookedRow[i].startD).format('DD-MM-YYYY'),
                 startTime: bookedRow[i].startTs,
                 endTime: bookedRow[i].endTs,
                 // date: "",

@@ -20,7 +20,8 @@ class ModuleQuizPageViewStudentAttempt extends Component {
         openingDate: "",
         closingDate: "",
         quizStatus: "",
-        studentMarks: 0,
+        marks: 0,
+        questionAttemptId: 0,
         columns: [
             {
                 "label": "Question Number",
@@ -48,15 +49,21 @@ class ModuleQuizPageViewStudentAttempt extends Component {
             }
         ],
         rows: [{ label: "Retrieving data..." }],
-        // status: "retrieving",
-        status: "donez",
+        status: "retrieving",
         openSnackbar: false,
-        message: ""
+        message: "",
+        recallResults: false
     }
 
     componentDidMount() {
         this.initPage();
         this.getAttemptDetails();
+    }
+
+    componentDidUpdate() {
+        if (this.state.recallResults) {
+            this.getAttemptDetails();
+        }
     }
 
     getAttemptDetails = () => {
@@ -65,7 +72,7 @@ class ModuleQuizPageViewStudentAttempt extends Component {
         axios
             .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveQuestionAttempts?userId=${userId}&quizAttemptId=${quizAttemptId}`)
             .then(result => {
-                console.log(result.data)
+                // console.log(result.data)
                 this.setState({
                     status: "done",
                     rows: result.data.questionAttempts
@@ -79,15 +86,32 @@ class ModuleQuizPageViewStudentAttempt extends Component {
             });
     }
 
+    markStudentAttempt = () => {
+        let userId = localStorage.getItem('userId');
+        axios
+            .post(`http://localhost:8080/LMS-war/webresources/Assessment/enterQuestionMarks?userId=${userId}&questionAttemptId=${this.state.questionAttemptId}&marks=${this.state.marks}`, {})
+            .then(result => {
+                console.log(result.data)
+                this.setState({
+                    recallResults: true
+                });
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
+    }
+
     handleChange = event => {
         event.preventDefault();
         this.setState({ [event.target.name]: event.target.value });
+        console.log(event.target.value)
     }
 
-    toggle = (nr) => {
+    toggle = (nr, questionAttemptId) => {
         let modalNumber = "modal" + nr;
         this.setState({
-            [modalNumber]: !this.state[modalNumber]
+            [modalNumber]: !this.state[modalNumber],
+            questionAttemptId: questionAttemptId
         });
     };
 
@@ -119,13 +143,13 @@ class ModuleQuizPageViewStudentAttempt extends Component {
                                 <label className="grey-text">
                                     Student's Answer
                                         </label>
-                                <textarea type="text" disabled className="form-control" value={"I do not know"} onChange={this.handleChange} name="firstName" />
+                                <textarea type="text" disabled className="form-control" value={"I do not know"} name="firstName" />
                             </MDBCol>
                             <MDBCol md="12" className="mt-4">
                                 <label className="grey-text">
                                     Marks
                                         </label>
-                                <input type="text" className="form-control" defaultValue={this.state.studentMarks} onChange={this.handleChange} name="firstName" />
+                                <input type="text" className="form-control" defaultValue={this.state.marks} onChange={this.handleChange} name="marks" />
                             </MDBCol>
                             <MDBCol md="12" className="mt-4">
 
@@ -139,7 +163,7 @@ class ModuleQuizPageViewStudentAttempt extends Component {
                             <MDBBtn onClick={() => this.toggle(1)} color="grey">Cancel</MDBBtn>
                         </MDBCol>
                         <MDBCol md="8">
-                            <MDBBtn color="primary">Submit Marks</MDBBtn>
+                            <MDBBtn color="primary" onClick={() => this.markStudentAttempt()}>Submit Marks</MDBBtn>
                         </MDBCol>
                     </MDBRow>
                 </MDBModalFooter>
@@ -198,6 +222,7 @@ class ModuleQuizPageViewStudentAttempt extends Component {
 
     renderTableWithMessage = (message) => {
         var moduleId = this.props.dataStore.getCurrModId;
+        var quizId = this.props.dataStore.getCurrQuizId;
         const data = () => ({ columns: this.state.columns, rows: [{ label: message }] })
 
         const tableData = {
@@ -267,16 +292,6 @@ class ModuleQuizPageViewStudentAttempt extends Component {
     }
 
     render() {
-        // var newRows = [{
-        //     questionNumber: 1,
-        //     score: "Unmarked",
-        //     editButton: <center><MDBIcon onClick={() => this.toggle(1)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></center>
-        // },
-        // {
-        //     questionNumber: 2,
-        //     score: "Unmarked",
-        //     editButton: <center><MDBIcon onClick={() => this.toggle(1)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></center>
-        // }]
         var newRows = []
         const row = this.state.rows
         for (let i = 0; i < row.length; i++) {
@@ -286,7 +301,7 @@ class ModuleQuizPageViewStudentAttempt extends Component {
                 // type: row[i].question.type,
                 type: "MCQ/Short Answer",
                 score: row[i].marks,
-                editButton: <center><MDBIcon onClick={() => this.toggle(1, row[i].questionAttempt)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></center>
+                editButton: <center><MDBIcon onClick={() => this.toggle(1, row[i].questionAttemptId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></center>
             })
         }
         const data = () => ({ columns: this.state.columns, rows: newRows })
@@ -305,12 +320,11 @@ class ModuleQuizPageViewStudentAttempt extends Component {
         if (this.state.status === "retrieving")
             return this.renderAwaiting();
         else if (this.state.status === "error")
-            return this.renderTableWithMessage("Error in retrieving students' attempts. Please try again later.");
+            return this.renderTableWithMessage("Error in retrieving student's questions' attempts. Please try again later.");
         else if (this.state.status === "done")
             return this.renderQuizStudentsTable(widerData);
         else
-            return this.renderQuizStudentsTable(widerData);
-        // return this.renderTableWithMessage("No students' attempts found.");
+        return this.renderTableWithMessage("No question attempts found.");
     }
 }
 
