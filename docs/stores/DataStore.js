@@ -30,24 +30,7 @@ class DataStore {
   @observable attendanceClassType = ""
 
   //questionsList
-  @observable elements = [
-    //   {
-    //   type: "radiogroup",
-    //   name: 1,
-    //   number: 1,
-    //   title: "",
-    //   isRequired: true,
-    //   level: 1, //only for adaptive,
-    //   explanation : "",
-    //   correctAnswer : "",
-    //   points: 0,
-    //   choices: [
-    //     {
-    //       text: ""
-    //     }
-    //   ],
-    // }
-  ]
+  @observable elements = []
 
   @action setSignInStatus(status, email, password, accessRight) {
     this.signInStatus = status;

@@ -202,33 +202,26 @@ class ModuleQuizPageStudent extends Component {
     }
 
     render() {
-        var newRows = [{
-            quizId: 1,
-            name: "Quiz 1",
-            openingDate: "",
-            closingDate: "",
-            status: "Open",
-            viewButton: <center><MDBBtn color="primary" outline size="sm" href="/modules/:moduleId/quiz/:quizId">Attempt</MDBBtn></center>
-        }]
+        var quizzes = [{ label: "No quizzes found." }];
+        if (this.props.quizzes.length !== 0)
+            quizzes = this.props.quizzes;
         // var newRows = []
         // const row = this.state.rows
         // for (let i = 0; i < row.length; i++) {
         //     newRows.push({
-        //         userId: row[i].userId,
-        //         firstName: row[i].firstName,
-        //         lastName: row[i].lastName,
-        //         gender: row[i].gender,
-        //         email: row[i].email,
-        //         password: row[i].password,
-        //         accessRight: row[i].accessRight,
-        //         username: row[i].username,
+        //         // quizId: 1,
+        // name: "Quiz 1",
+        // openingDate: "",
+        // closingDate: "",
+        // status: "Open",
+        // viewButton: <center><MDBBtn color="primary" outline size="sm" href="/modules/:moduleId/quiz/:quizId">Attempt</MDBBtn></center>
         //         editButton: <MDBRow align="center">
         //             <MDBCol md={6}><MDBIcon onClick={() => this.toggle(2, row[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
         //             <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(row[i].userId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
         //         </MDBRow>
         //     })
         // }
-        const data = () => ({ columns: this.state.columns, rows: newRows })
+        const data = () => ({ columns: this.state.columns, rows: quizzes })
         // clickEvent: () => goToProfilePage(1)
 
         const widerData = {
@@ -249,7 +242,7 @@ class ModuleQuizPageStudent extends Component {
             return this.renderQuizTable(widerData);
         else
             return this.renderQuizTable(widerData);
-            // return this.renderTableWithMessage("No quiz found.");
+        // return this.renderTableWithMessage("No quiz found.");
     }
 }
 

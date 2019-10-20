@@ -50,6 +50,11 @@ class ModuleQuizPageTeacher extends Component {
                 "width": 100
             },
             {
+                "label": "Max Marks",
+                "field": "maxMarks",
+                "width": 100
+            },
+            {
                 "label": "",
                 "field": "",
                 "width": 100
@@ -61,8 +66,6 @@ class ModuleQuizPageTeacher extends Component {
             }
         ],
         rows: [{ label: "Retrieving data..." }],
-        // status: "retrieving",
-        status: "donez",
         openSnackbar: false,
         message: ""
     }
@@ -87,7 +90,58 @@ class ModuleQuizPageTeacher extends Component {
         }
     };
 
-    renderQuizTable = (tableData) => {
+    initPage() {
+        let moduleId = this.props.moduleId;
+        if (moduleId) {
+            // console.log(moduleId);
+            // retrieve module & set state
+            this.setState({ moduleId: moduleId })
+        }
+    }
+
+    render() {
+        var quiz = this.props.quizzes;
+        console.log(quiz)
+        if (this.props.quizzes.length !== 0) {
+            var tempQuizzes = []
+            for (let i = 0; i < this.props.quizzes.length; i++) {
+                tempQuizzes.push({
+                    quizId: quiz[i].quizId,
+                    name: quiz[i].title,
+                    openingDate: quiz[i].openingDate,
+                    closingDate: quiz[i].closingDate,
+                    status: quiz[i].publish ? "Open" : "Closed",
+                    // description: quiz[i].description,
+                    // order: quiz[i].questionsOrder,
+                    // publishAnswer: quiz[i].publishAnswer,
+                    // numOfAttempts: quiz[i].noOfAttempts,
+                    // maxTimeToFinish: quiz[i].maxTimeToFinish,
+                    // quizType: quiz[i].quizType,
+                    maxMarks: quiz[i].maxMarks,
+                    editButton: <MDBRow align="center">
+                        <MDBCol md={6}><MDBIcon onClick={() => this.toggle(2, quiz[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
+                        <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(quiz[i].quizId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
+                    </MDBRow>,
+                    viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${this.state.moduleId}/quiz/${quiz[i].quizId}/review`}>Review</MDBBtn></center>
+                })
+            }
+        } else {
+            var tempQuizzes = [{ label: "No quizzes found." }];
+        }
+
+        const data = () => ({ columns: this.state.columns, rows: tempQuizzes })
+        // clickEvent: () => goToProfilePage(1)
+
+        const widerData = {
+            columns: [...data().columns.map(col => {
+                col.width = 150;
+                return col;
+            })], rows: [...data().rows.map(row => {
+                // row.clickEvent = () => goToProfilePage(1)
+                return row;
+            })]
+        }
+
         return (
             <div className={this.props.className}>
                 <ModuleSideNavigation moduleId={this.props.moduleId}></ModuleSideNavigation>
@@ -102,16 +156,13 @@ class ModuleQuizPageTeacher extends Component {
                             <MDBCol md="4" align="right">
                                 <MDBBtn href="/modules/:moduleId/quiz/create" color="primary">Create Quiz</MDBBtn>
                             </MDBCol>
-                            {/* <MDBCol md="1">
-                        <Fab onClick={() => this.getAllQuizDetails()} style={{ height: 50, width: 50, backgroundColor: "#bbb", borderRadius: "50%" }}><MDBIcon icon="sync" /></Fab>
-                    </MDBCol> */}
                         </MDBRow>
                         {/* {this.renderEditQuizModalBox()} */}
                         <MDBRow className="py-3">
                             <MDBCol md="12">
                                 <MDBCard>
                                     <MDBCardBody>
-                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
+                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={widerData} pagesAmount={4} />
                                     </MDBCardBody>
                                 </MDBCard>
                             </MDBCol>
@@ -136,129 +187,6 @@ class ModuleQuizPageTeacher extends Component {
                 </div>
             </div>
         )
-    }
-
-    renderTableWithMessage = (message) => {
-        const data = () => ({ columns: this.state.columns, rows: [{ label: message }] })
-
-        const tableData = {
-            columns: [...data().columns.map(col => {
-                col.width = 200;
-                return col;
-            })], rows: [...data().rows]
-        }
-        return (
-            <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.moduleId}></ModuleSideNavigation>
-                <div className="module-content">
-                    <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }}>
-                            <MDBCol md="8">
-                                <h2 className="font-weight-bold">
-                                    Quiz
-                </h2>
-                            </MDBCol>
-                            <MDBCol md="4" align="right">
-                                <MDBBtn href="/modules/:moduleId/quiz/create" color="primary">Create Quiz</MDBBtn>
-                            </MDBCol>
-                            {/* {this.renderEditQuizModalBox()} */}
-                        </MDBRow>
-                        <MDBRow className="py-3">
-                            <MDBCol md="12">
-                                <MDBCard>
-                                    <MDBCardBody>
-                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
-                                    </MDBCardBody>
-                                </MDBCard>
-                            </MDBCol>
-                        </MDBRow>
-                    </MDBContainer>
-                </div>
-            </div>
-        )
-    }
-
-    renderAwaiting = () => {
-        return (
-            <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.moduleId}></ModuleSideNavigation>
-                <div className="module-content">
-                    <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }} align="center">
-                            <MDBCol md="12">
-                                <div className="spinner-border text-primary" role="status">
-                                    <span className="sr-only">Loading...</span>
-                                </div>
-                            </MDBCol>
-                        </MDBRow>
-                    </MDBContainer>
-                </div>
-            </div>
-        )
-    }
-
-    initPage() {
-        let moduleId = this.props.moduleId;
-        if (moduleId) {
-            // console.log(moduleId);
-            // retrieve module & set state
-            this.setState({ moduleId: moduleId })
-        }
-    }
-
-    render() {
-        var newRows = [{
-            quizId: 1,
-            name: "Quiz 1",
-            openingDate: "",
-            closingDate: "",
-            status: "Open",
-            editButton: <MDBRow align="center">
-                <MDBCol md={6}><MDBIcon onClick={() => this.toggle(2, row[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
-                <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(row[i].userId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
-            </MDBRow>,
-            viewButton: <center><MDBBtn color="primary" outline size="sm" href="/modules/:moduleId/quiz/:quizId/review">Review</MDBBtn></center>
-        }]
-        // var newRows = []
-        // const row = this.state.rows
-        // for (let i = 0; i < row.length; i++) {
-        //     newRows.push({
-        //         userId: row[i].userId,
-        //         firstName: row[i].firstName,
-        //         lastName: row[i].lastName,
-        //         gender: row[i].gender,
-        //         email: row[i].email,
-        //         password: row[i].password,
-        //         accessRight: row[i].accessRight,
-        //         username: row[i].username,
-        //         editButton: <MDBRow align="center">
-        //             <MDBCol md={6}><MDBIcon onClick={() => this.toggle(2, row[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
-        //             <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(row[i].userId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
-        //         </MDBRow>
-        //     })
-        // }
-        const data = () => ({ columns: this.state.columns, rows: newRows })
-        // clickEvent: () => goToProfilePage(1)
-
-        const widerData = {
-            columns: [...data().columns.map(col => {
-                col.width = 150;
-                return col;
-            })], rows: [...data().rows.map(row => {
-                // row.clickEvent = () => goToProfilePage(1)
-                return row;
-            })]
-        }
-
-        if (this.state.status === "retrieving")
-            return this.renderAwaiting();
-        else if (this.state.status === "error")
-            return this.renderTableWithMessage("Error in Retrieving Quizzes. Please try again later.");
-        else if (this.state.status === "done")
-            return this.renderQuizTable(widerData);
-        else
-            return this.renderQuizTable(widerData);
-        // return this.renderTableWithMessage("No quiz found.");
     }
 }
 
