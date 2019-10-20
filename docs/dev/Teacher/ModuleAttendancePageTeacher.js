@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBModal, MDBModalHeader, MDBRow, MDBModalBody, MDBModalFooter, MDBCol, MDBBtn } from "mdbreact";
-import { Dialog, DialogTitle, DialogContent, DialogActions, AppBar, Tabs, Tab, Typography, Paper, InputLabel, Select } from '@material-ui/core';
+import { MDBInput, MDBDataTable, MDBContainer, MDBModal, MDBModalHeader, MDBRow, MDBModalBody, MDBModalFooter, MDBCol, MDBBtn, MDBIcon } from "mdbreact";
+import { Dialog, DialogTitle, DialogContent, DialogActions, AppBar, Tabs, Tab, Typography, Paper } from '@material-ui/core';
 import axios from "axios";
 import SwipeableViews from 'react-swipeable-views';
-import { Table } from 'semantic-ui-react'
+import { Snackbar } from '@material-ui/core';
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 var QRCode = require('qrcode.react');
@@ -14,23 +14,25 @@ class ModuleAttendancePageTeacher extends Component {
   state = {
     modal: false,
     open: false,
-    classType: "",
     lectureList: "",
     tutorialList: "",
-    moduleId: "",
+    classType: "",
     classgroup: "",
-    index: 0,
+    attendanceId: "",
     value: 0,
-    moduleTitle: "",
-    selectedLectureAttendance: "",
-    selectedTutorialAttendance: "",
-    studentListLecture: "",
+    tableTutorialGroup: "",
+    tableLectureDate: "",
+    tableTutorialDate: "",
+    allTutorialAttendance: "",
     allLectureAttendance: "",
+    display: false,
+    tutorialAttendees: "",
     lectureAttendees: "",
-    presence: "Absent",
-    userList: ["2", '3', '4'],
-    attendanceList: ['2', '3'],
-    attendanceId: ""
+    chosen: [],
+    studentListTutorial: "",
+    studentListLecture: "",
+    message: "",
+    openSnackbar: false,
   }
 
   componentDidMount() {
@@ -44,7 +46,7 @@ class ModuleAttendancePageTeacher extends Component {
     //get all lectures
     axios.get(`${API}ModuleMounting/getModule/${moduleId}`)
       .then(result => {
-        this.setState({ lectureList: result.data.lectureDetails, moduleTitle: result.data.title })
+        this.setState({ lectureList: result.data.lectureDetails })
       })
       .catch(error => {
         console.error("error in axios " + error);
@@ -59,7 +61,7 @@ class ModuleAttendancePageTeacher extends Component {
         console.error("error in axios " + error);
       });
 
-    //get all students in the module (for lecture)
+    //get all students in the module (lecture)
     axios.get(`${API}ModuleMounting/getAllStudentByModule?moduleId=${moduleId}`)
       .then(result => {
         this.setState({ studentListLecture: result.data.userList })
@@ -68,12 +70,13 @@ class ModuleAttendancePageTeacher extends Component {
         console.error("error in axios " + error);
       });
 
-    //get all attendance for lecture
+    //get all attendance in lecture
     axios.get(`${API}Attendance/getAllAttendance?moduleId=${moduleId}`)
       .then(result => {
         this.setState({ allLectureAttendance: result.data.attendanceList })
       })
       .catch(error => {
+        console.log(error.response.data)
         console.error("error in axios " + error);
       });
   }
@@ -97,45 +100,6 @@ class ModuleAttendancePageTeacher extends Component {
     )
   }
 
-  handleClickOpen = event => {
-    let date = new Date()
-    if ((this.state.classType === "") || (this.state.classType === "lecture" && this.state.classgroup === "") || (this.state.classType === 'tutorial' && this.state.classgroup === "")) {
-      return (
-        //TODO: add alert/ snackbar
-        <h6>Please select all fields!</h6>
-      )
-    } else if (this.state.classType === 'lecture') { //create lecture attendance
-      this.setState({ open: true, modal: false })
-      axios.post(`${API}Attendance/createAttendance?moduleId=${this.state.moduleId}`, { startTs: date })
-        .then(result => {
-          alert(`lecture attendance ${result.data.attendanceId}  created`)
-          this.setState({ attendanceId: result.data.attendanceId })
-          this.generateQRCode()
-        })
-        .catch(error => {
-          console.error("error in axios " + error);
-        });
-    } else if (this.state.classType === 'tutorial') { //create tutorial attendance
-      this.setState({ open: true, modal: false })
-      axios.post(`${API}Attendance/createTutorialAttendance?tutorialId=${this.state.classgroup}`, { startTs: date })
-        .then(result => {
-          alert(`tutorial attendance ${result.data.attendanceId} list created`)
-          this.setState({ attendanceId: result.data.attendanceId })
-          this.generateQRCode()
-        })
-        .catch(error => {
-          console.error("error in axios " + error);
-        });
-    } else {
-      return null
-    }
-  }
-
-  handleClickClose = event => {
-    this.setState({ open: false })
-    this.initPage() //TODO: refresh the page
-  }
-
   toggle = event => {
     this.setState({ modal: !this.state.modal })
   }
@@ -149,11 +113,6 @@ class ModuleAttendancePageTeacher extends Component {
     console.log(event.target.value)
   }
 
-  handleLectureDate = event => {
-    this.setState({ selectedLectureAttendance: event.target.value })
-    console.log("selected lecture id" + event.target.value)
-  }
-
   handleChangeIndex = index => {
     this.setState({ value: index });
   };
@@ -162,242 +121,41 @@ class ModuleAttendancePageTeacher extends Component {
     this.setState({ value });
   };
 
-  showAttendance = () => {
+  handleOpenSnackbar = () => {
+    this.setState({ openSnackbar: true });
+  };
 
-    return (
-      <div>
-        <AppBar position="static" color="default">
-          <Tabs
-            value={this.state.value}
-            onChange={this.handleChange}
-            indicatorColor="primary"
-            textColor="primary"
-            variant="fullWidth"
-            aria-label="full width tabs example"
-          >
-            <Tab label="Lecture" />
-            <Tab label="Tutorial" />
-          </Tabs>
-        </AppBar>
-        <Paper>
-          <SwipeableViews
-            axis={"x-reverse"}
-            index={this.state.value}
-            onChangeIndex={this.handleChangeIndex}
-          >
-            <Typography component="div">{this.displayLectureSlots()}</Typography>
-            <Typography component="div">{this.displayTutorialSlots()}</Typography>
-          </SwipeableViews>
-        </Paper>
-      </div>
-    )
-  }
-
-  displayLectureSlots = () => {
-    //get all attendance dates for lecture
-
-    var lectureAttendanceDate = []
-    var allLectureAttendance = this.state.allLectureAttendance;
-    for (var i = -0; i < allLectureAttendance.length; i++) {
-      lectureAttendanceDate.push({
-        date: (allLectureAttendance[i].startTs).substring(0, 10),
-        id: allLectureAttendance[i].attendanceId
-      })
+  handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+        return;
     }
+    this.setState({ openSnackbar: false });
+};
 
-    return (
-      <div>
-        <MDBRow>
-          <MDBCol align="right">
-            <select className="browser-default custom-select" style={{ maxWidth: 250 }}>
-              <option>Group</option>
-              <option value="1">Group 1</option>
-            </select>
+  handleSelectTableTutorialGroup = event => {
+    this.setState({ tableTutorialGroup: event.target.value })
 
-            <select className="browser-default custom-select" style={{ maxWidth: 250 }} onChange={this.handleLectureDate}>
-              <option>Date</option>
-              {lectureAttendanceDate && lectureAttendanceDate.map(
-                (lecture) => <option key={lecture.id} value={lecture.id}>{lecture.date}</option>)
-              }
-            </select>
-            <MDBBtn onClick={this.getLectureAttendance}>Get</MDBBtn>
-          </MDBCol>
-        </MDBRow>
-        {this.displaySelectedLectureAttendance()}
-      </div>
-    )
-  }
-
-  getLectureAttendance = event => {
-    //TODO:
-    console.log("get lecture attendance by id")
-    axios.get(`${API}Attendance/getAttendees?attendanceId=${this.state.selectedLectureAttendance}`)
+    //tutorial id is selected ==> retrieve the attendance in the tutorial
+    axios.get(`${API}Attendance/getAllTutorialAttendance?tutorialId=${event.target.value}`)
       .then(result => {
-        this.setState({ lectureAttendees: result.data.attendees })
-        console.log(this.state.lectureAttendees)
+        this.setState({ allTutorialAttendance: result.data.attendanceList })
+        console.log(this.state.allTutorialAttendance)
       })
       .catch(error => {
+        this.setState({ message: error.response.data, openSnackbar: true })
         console.error("error in axios " + error);
       });
   }
 
-  displaySelectedLectureAttendance = () => {
-
-    if (this.state.userList.filter(e => e.userId === 4).length > 0) {
-      console.log("true")
-    } else {
-      console.log("false")
-    }
-
-    //TODO: put onclick on all cells
-    /* if (this.state.lectureAttendees.length !== 0) { */
-    return (
-      <div>
-        <br />
-        <MDBCol align="right">
-          <h6 style={{ color: "red" }}>Click on the cells to mark attendance</h6>
-        </MDBCol>
-        <Table celled striped>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell >Name</Table.HeaderCell>
-              <Table.HeaderCell>Attendance</Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
-
-          <Table.Body>
-            {/**TODO: check if the mapping function is correct*/}
-            {/* this.state.studentListLecture  */ this.state.userList && this.state.userList/* this.state.studentListLecture */.map((student) => {
-              return (
-                <Table.Row >
-                  <Table.Cell style={{ width: 550 }}>{student}</Table.Cell>
-                  <Table.Cell selectable onClick={() => this.markAttendanceManuel(student)} style={{ color: this.handleAttendanceColour(student) }}>
-                    {this.checkPresence(student)}
-                  </Table.Cell>
-                </Table.Row>
-              )
-            })}
-          </Table.Body>
-        </Table>
-
-        <MDBCol align="right">
-          <MDBBtn color="danger" onClick={this.deleteLectureAttendance}>Delete</MDBBtn>
-        </MDBCol>
-      </div>
-    )
-    /*  } else {
-       return null;
-     } */
+  handleTableTutorialDate = event => {
+    this.setState({ tableTutorialDate: event.target.value })
+    console.log("selected tutorial attendance id" + event.target.value)
   }
 
-  checkPresence = (studentId) => {
-    if (this.state.attendanceList.filter(e => e/* .userId  */ === studentId).length > 0) {
-      return "Present"
-    } else {
-      return "Absent"
-    }
-  }
+  handleTableLectureDate = event => {
+    this.setState({ tableLectureDate: event.target.value })
+    console.log("selected lecture attendance id" + event.target.value)
 
-  //TODO: manual attendance marking
-  markAttendanceManuel = studentId => {
-    console.log(studentId)
-    if (this.state.attendanceList.filter(e => e/* .userId  */ === studentId).length > 0) {
-      //in attendance ==> when clicked, student will be mark absent
-      return this.checkPresence(studentId) //put function to remove student from attendance
-    } else {
-      //in attendance ==> when clicked, student will be mark present
-      return this.checkPresence(studentId) //put function to add student to attendance
-    }
-  }
-
-  //TODO: update colour based on click
-  handleAttendanceColour = (studentId) => {
-    if (this.state.attendanceList.filter(e => e/* .userId  */ === studentId).length > 0) {
-      return "green"
-    } else {
-      return "red"
-    }
-  }
-
-  //TODO: lecture attendance id
-  deleteLectureAttendance = event => {
-    axios.delete(`${API}Attendance/deleteAttendance?moduleId=${this.props.moduleId}&attendanceId=${this.state.selectedLectureAttendance}`)
-      .then(result => {
-        alert("deleted")
-        window.location.reload()
-      })
-      .catch(error => {
-        console.error("error in axios " + error);
-      });
-  }
-
-  displayTutorialSlots = () => {
-    return (
-      <div>
-        <MDBRow>
-          <MDBCol align="right">
-            <select className="browser-default custom-select" style={{ maxWidth: 250 }}>
-              <option>Group</option>
-              {this.state.tutorialList && this.state.tutorialList.map(
-                (group) => <option key={group.tutorialId} value={group.timing}>{group.tutorialId}</option>)
-              }
-            </select>
-            <select className="browser-default custom-select" style={{ maxWidth: 250 }}>
-              <option>Date</option>
-              {/**TODO: map the attendance dates */}
-              {this.state.tutorialList && this.state.tutorialList.map(
-                (group) => <option key={group.tutorialId} value={group.timing}>{group.tutorialId}</option>)
-              }
-            </select>
-            <MDBBtn onClick={this.getTutorialAttendance}>Get</MDBBtn>
-          </MDBCol>
-        </MDBRow>
-        {this.displaySelectedTutorialAttendance()}
-      </div>
-    )
-  }
-
-  getTutorialAttendance = event => {
-    //TODO:
-    console.log("get tutorial attendance by id")
-    /*     axios.get(`${API}Attendance/getAllAttendance?moduleId=${moduleId}`)
-      .then(result => {
-        this.setState({ selectedLectureAttendance: result.data.lectureDetails, moduleTitle: result.data.title })
-      })
-      .catch(error => {
-        console.error("error in axios " + error);
-      }); */
-  }
-
-  displaySelectedTutorialAttendance = () => {
-    //TODO:
-    if (this.state.selectedTutorialAttendance.length !== 0) {
-      return (
-        <h2>display tutorial attendance</h2>
-      )
-    }
-  }
-
-  //TODO: tutorial attendance id and tutorial id
-  deleteTutorialAttendance = event => {
-    console.log("deleteTutorialAttendance")
-    /*     axios.delete(`${API}Attendance/deleteAttendance?tutorialId=${}&attendanceId=${}`)
-          .then(result => {
-            console.log("Deleted")
-            this.initPage()
-          })
-          .catch(error => {
-            console.error("error in axios " + error);
-          }); */
-  }
-
-  getCurrenDate = () => {
-    var currentDate = new Date()
-    return (
-      <MDBCol align="right">
-        <h3>{currentDate.getDate()}/{currentDate.getMonth()}/{currentDate.getFullYear()}</h3>
-      </MDBCol>
-    )
   }
 
   displaySelect = () => {
@@ -443,66 +201,573 @@ class ModuleAttendancePageTeacher extends Component {
           }
         </select>
       )
-      //map tutorials
+    } else {
+      return null
+    }
+  }
+  handleClickOpen = event => {
+    let date = new Date()
+    if ((this.state.classType === "") || (this.state.classType === "lecture" && this.state.classgroup === "") || (this.state.classType === 'tutorial' && this.state.classgroup === "")) {
+      return (
+        //TODO: add alert/ snackbar
+        <h6>Please select all fields!</h6>
+      )
+    } else if (this.state.classType === 'lecture') { //create lecture attendance
+      this.setState({ open: true, modal: false })
+      axios.post(`${API}Attendance/createAttendance?moduleId=${this.state.moduleId}`, { startTs: date })
+        .then(result => {
+          /* alert(`lecture attendance ${result.data.attendanceId}  created`) */
+          this.setState({
+            attendanceId: result.data.attendanceId,
+            openSnackbar: true,
+            message: `Lecture attendance Id${result.data.attendanceId} created`
+          })
+          this.generateQRCode()
+        })
+        .catch(error => {
+          this.setState({ message: error.response.data.errorMessage, openSnackbar: true })
+          console.error("error in axios " + error);
+        });
+
+    } else if (this.state.classType === 'tutorial') { //create tutorial attendance
+      this.setState({ open: true, modal: false })
+      axios.post(`${API}Attendance/createTutorialAttendance?tutorialId=${this.state.classgroup}`, { startTs: date })
+        .then(result => {
+          this.setState({ 
+            attendanceId: result.data.attendanceId,
+            openSnackbar: true,
+            message: `Tutorial attendance Id${result.data.attendanceId} created`
+           })
+          this.generateQRCode()
+        })
+        .catch(error => {
+          this.setState({ message: error.response.data, openSnackbar: true })
+          console.error("error in axios " + error);
+        });
     } else {
       return null
     }
   }
 
-  render() {
-    return (
+  handleClickClose = event => {
+    this.setState({ open: false })
+    window.location.reload()
+  }
 
-      <MDBContainer>
+  getCurrenDate = () => {
+    var currentDate = new Date()
+    return (
+      <MDBCol align="right">
+        <h3>{currentDate.getDate()}/{currentDate.getMonth()}/{currentDate.getFullYear()}</h3>
+      </MDBCol>
+    )
+  }
+
+  showAttendance = () => {
+    return (
+      <div>
+        <AppBar position="static" color="default">
+          <Tabs
+            value={this.state.value}
+            onChange={this.handleChange}
+            indicatorColor="primary"
+            textColor="primary"
+            variant="fullWidth"
+            aria-label="full width tabs example"
+          >
+            <Tab label="Lecture" />
+            <Tab label="Tutorial" />
+          </Tabs>
+        </AppBar>
+        <Paper>
+          <SwipeableViews
+            axis={"x-reverse"}
+            index={this.state.value}
+            onChangeIndex={this.handleChangeIndex}
+          >
+            <Typography component="div">{this.displayLectureTable()}</Typography>
+            <Typography component="div">{this.displayTutorialTable()}</Typography>
+          </SwipeableViews>
+        </Paper>
+      </div>
+    )
+  }
+
+  displayLectureTable = () => {
+    var lectureAttendanceDate = []
+    var allLectureAttendance = this.state.allLectureAttendance;
+    for (var i = 0; i < allLectureAttendance.length; i++) {
+      lectureAttendanceDate.push({
+        date: (allLectureAttendance[i].startTs).substring(0, 10),
+        id: allLectureAttendance[i].attendanceId
+      })
+    }
+
+    return (
+      <div>
         <MDBRow>
-          <MDBCol size="8">
-            <h2 className="font-weight-bold"> Attendance </h2></MDBCol>
-          <MDBCol align="right" size="4">
-            <MDBBtn onClick={this.toggle} color="primary" >Create Attendance</MDBBtn>
+          <MDBCol align="right">
+            <select className="browser-default custom-select" style={{ maxWidth: 250 }}>
+              <option>Group</option>
+              <option value="1">Group 1</option>
+            </select>
+
+            <select className="browser-default custom-select" style={{ maxWidth: 250 }} onChange={this.handleTableLectureDate} value={this.state.tableLectureDate}>
+              <option>Date</option>
+              {lectureAttendanceDate && lectureAttendanceDate.map(
+                (lecture) => <option key={lecture.id} value={lecture.id}>{lecture.date}</option>)
+              }
+            </select>
+            <MDBBtn onClick={this.getLectureAttendance}>Get</MDBBtn>
           </MDBCol>
         </MDBRow>
+        {this.displaySelectedLectureAttendance()}
+      </div>
+    )
+  }
 
-        <MDBModal isOpen={this.state.modal} toggle={this.toggle}>
-          <MDBModalHeader toggle={this.toggle}>Create Attendance</MDBModalHeader>
-          <MDBModalBody>
-            <MDBRow >
-              <MDBCol>
-                {this.displaySelect()}
-              </MDBCol>
-            </MDBRow>
-            <MDBRow style={{ paddingTop: "20px" }}>
-              <MDBCol>
-                {this.displayVariousClasses()}
-              </MDBCol>
-            </MDBRow>
-          </MDBModalBody>
+  getLectureAttendance = event => {
+    axios.get(`${API}Attendance/getAttendees?attendanceId=${this.state.tableLectureDate}`)
+      .then(result => {
+        this.setState({ lectureAttendees: result.data.attendees, display: true})
+      })
+      .catch(error => {
+        this.setState({ message: error.response.data, openSnackbar: true })
+        console.error("error in axios " + error);
+      });
+  }
+  displaySelectedLectureAttendance = () => {
+    const data = {
+      columns: [
+        {
+          label: 'Student',
+          field: 'student',
+          sort: 'asc',
+          width: 150
+        },
+        {
+          label: 'Attendance',
+          field: 'attendance',
+          sort: 'asc',
+          width: 150
+        },
+        {
+          label: 'Check',
+          field: 'check',
+          width: 150
+        },
+      ],
+      rows:
+        this.lectureRowsData()
+    }
 
-          <MDBModalFooter>
-            <MDBBtn color="secondary" onClick={this.toggle}>Close</MDBBtn>
-            <MDBBtn color="primary" onClick={this.handleClickOpen}>Generate QRCode</MDBBtn> {/**generate qr code */}
-          </MDBModalFooter>
-        </MDBModal>
+    if (this.state.display === false) {
+      return (
+        "Please select a date"
+      )
+    } else {
+      return (
+        <div>
+          <MDBDataTable
+            style={{ textAlign: "center", verticalAlign: "center" }}
+            striped
+            bordered
+            hover
+            data={data}
+            responsive
+          />
+          <MDBRow>
+            <MDBCol align="left">
+              <MDBBtn color="danger" onClick={this.deleteLectureAttendance}>Delete</MDBBtn>
+            </MDBCol>
 
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClickClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-          fullScreen={true}
-          fullWidth={true}
-        >
-          <DialogTitle id="alert-dialog-title">{this.getCurrenDate()}</DialogTitle>
-          <DialogContent>
-            {this.generateQRCode()}
-          </DialogContent>
-          <DialogActions>
-            <MDBBtn variant="contained" color="primary" onClick={this.handleClickClose}>Close</MDBBtn>
-          </DialogActions>
-        </Dialog>
+            <MDBCol align="right">
+              <MDBBtn color="primary" onClick={this.markPresentLecture}>Mark Present</MDBBtn>
+              <MDBBtn color="primary" onClick={this.markAbsentLecture}>Mark Absent</MDBBtn>
+            </MDBCol>
+          </MDBRow>
+        </div>
+      )
+    }
+  }
 
-        <hr className="my-3" />
-        {this.showAttendance()}
+  lectureRowsData = () => {
+    let attendance = [];
+    this.state.studentListLecture && this.state.studentListLecture.map((attendees, index) =>
+      attendance.push({
+        student: attendees.firstName + " " + attendees.lastName,
+        attendance: this.checkLecture(attendees.id),
+        check: this.showCheckbox(),
+        clickEvent: () => this.handleRowClick(attendees.id)
+      })
+    )
+    return attendance
+  }
 
-      </MDBContainer>
+  checkLecture = (studentId) => {
+    var attendeesId = []
+    if (this.state.lectureAttendees !== "") {
+      for (var i = 0; i < this.state.lectureAttendees.length; i++) {
+        attendeesId.push(this.state.lectureAttendees[i].id)
+      }
+    }
+
+    if (attendeesId.filter(e => e === studentId).length > 0) {
+      return <div style={{ color: "green" }}>Present</div>
+    } else {
+      return <div style={{ color: "red" }}>Absent</div>
+    }
+  }
+
+  markPresentLecture = event => {
+    var updateAsPresent = this.state.chosen
+    for (var i = 0; i < updateAsPresent.length; i++) {
+      axios.put(`${API}Attendance/addAttendee?attendanceId=${this.state.tableLectureDate}&userId=${updateAsPresent[i]}`)
+        .then(result => {
+          this.setState({ 
+            openSnackbar: true, 
+            message: "Student(s) marked as present"
+          })
+          window.location.reload()
+        })
+        .catch(error => {
+          this.setState({ message: error.response.data, openSnackbar: true })
+          console.error("error in axios " + error);
+        });
+    }
+  }
+
+  markAbsentLecture = event => {
+    var updateAsAbsent = this.state.chosen
+    console.log(updateAsAbsent)
+    console.log(this.state.tableLectureDate)
+    for (var i = 0; i < updateAsAbsent.length; i++) {
+      axios.put(`${API}Attendance/removeAttendee?attendanceId=${this.state.tableLectureDate}&userId=${updateAsAbsent[i]}`)
+        .then(result => {
+           this.setState({ 
+            openSnackbar: true, 
+            message: "Student(s) marked as absent"
+          }) 
+          window.location.reload()
+        })
+        .catch(error => {
+          this.setState({ message: error.response.data, openSnackbar: true })
+          console.error("error in axios " + error);
+        });
+    }
+  }
+
+  deleteLectureAttendance = event => {
+    axios.delete(`${API}Attendance/deleteAttendance?moduleId=${this.props.moduleId}&attendanceId=${this.state.tableLectureDate}`)
+      .then(result => {
+        this.setState({ 
+          openSnackbar: true, 
+          message: "Lecture attendance successfully deleted"
+        })        
+        window.location.reload()
+      })
+      .catch(error => {
+        this.setState({ message: error.response.data, openSnackbar: true })
+        console.error("error in axios " + error);
+      });
+  }
+
+  displayTutorialTable = () => {
+    return (
+      <div>
+        <MDBRow>
+          <MDBCol align="right">
+            <select className="browser-default custom-select" style={{ maxWidth: 250 }} onChange={this.handleSelectTableTutorialGroup} value={this.state.tableTutorialGroup}>
+              <option>Group</option>
+              {this.state.tutorialList && this.state.tutorialList.map(
+                (group) => <option key={group.tutorialId} value={group.tutorialId}>Group {group.tutorialId}</option>)
+              }
+            </select>
+            {this.displayTutorialAttendanceDate()}
+            {/*  <select className="browser-default custom-select" style={{ maxWidth: 250 }} onChange={this.handleTutorialDate}>
+              <option>Date</option>
+              {tutorialAttendanceDate && tutorialAttendanceDate.map(
+                (tutorial) => <option key={tutorial.id} value={tutorial.id}>{tutorial.date}</option>)
+              }
+            </select> */}
+            <MDBBtn onClick={this.getTutorialAttendance}>Get</MDBBtn>
+          </MDBCol>
+        </MDBRow>
+        {this.displaySelectedTutorialAttendance()}
+      </div>
+    )
+  }
+
+  displayTutorialAttendanceDate = () => {
+    var errorMsg = this.state.errorMsg;
+    var tutorialAttendanceDate = []
+    var allTutorialAttendance = this.state.allTutorialAttendance;
+    if (this.state.allTutorialAttendance !== "") {
+      for (var i = 0; i < allTutorialAttendance.length; i++) {
+        tutorialAttendanceDate.push({
+          date: (allTutorialAttendance[i].startTs).substring(0, 10),
+          id: allTutorialAttendance[i].attendanceId
+        })
+      }
+    }
+
+    if (this.state.tableTutorialGroup !== "" && tutorialAttendanceDate !== "") {
+      return (
+        <select className="browser-default custom-select" style={{ maxWidth: 250 }} onChange={this.handleTableTutorialDate} value={this.state.tableTutorialDate}>
+          <option>Date</option>
+          {tutorialAttendanceDate && tutorialAttendanceDate.map(
+            (tutorial) => <option key={tutorial.id} value={tutorial.id}>{tutorial.date}</option>)
+          }
+        </select>
+      )
+    } else {
+      return null
+    }
+  }
+
+  getTutorialAttendance = event => {
+    axios.get(`${API}Attendance/getAttendees?attendanceId=${this.state.tableTutorialDate}`)
+      .then(result => {
+        this.setState({
+          tutorialAttendees: result.data.attendees,
+          display: true,
+        })
+      })
+      .catch(error => {
+        this.setState({ message: error.response.data, openSnackbar: true })
+        console.error("error in axios " + error);
+      });
+
+    //retrieve the class list in the tutorial
+    axios.get(`${API}ManageGroup/getAllStudentByTutorial?tutorialId=${this.state.tableTutorialGroup}`)
+      .then(result => {
+        this.setState({ studentListTutorial: result.data.userList })
+      })
+      .catch(error => {
+        this.setState({ message: error.response.data, openSnackbar: true })
+        console.error("error in axios " + error);
+      });
+  }
+
+  displaySelectedTutorialAttendance = () => {
+    const data = {
+      columns: [
+        {
+          label: 'Student',
+          field: 'student',
+          sort: 'asc',
+          width: 150
+        },
+        {
+          label: 'Attendance',
+          field: 'attendance',
+          sort: 'asc',
+          width: 150
+        },
+        {
+          label: 'Check',
+          field: 'check',
+          width: 150
+        },
+      ],
+      rows:
+        this.rowsData()
+    }
+
+    if (this.state.display === false) {
+      return (
+        "Please select a date"
+      )
+    } else {
+      return (
+        <div>
+          <MDBDataTable
+            style={{ textAlign: "center", verticalAlign: "center" }}
+            striped
+            bordered
+            hover
+            data={data}
+            responsive
+          />
+          <MDBRow>
+            <MDBCol align="left">
+              <MDBBtn color="danger" onClick={this.deleteTutorialAttendance}>Delete</MDBBtn>
+            </MDBCol>
+
+            <MDBCol align="right">
+              <MDBBtn color="primary" onClick={this.markPresent}>Mark Present</MDBBtn>
+              <MDBBtn color="primary" onClick={this.markAbsent}>Mark Absent</MDBBtn>
+            </MDBCol>
+          </MDBRow>
+        </div>
+      )
+    }
+  }
+
+  rowsData = () => {
+    let attendance = [];
+    this.state.studentListTutorial && this.state.studentListTutorial.map((attendees, index) =>
+      attendance.push({
+        student: attendees.firstName + " " + attendees.lastName,
+        attendance: this.check(attendees.id),
+        check: this.showCheckbox(),
+        clickEvent: () => this.handleRowClick(attendees.id)
+      })
+    )
+    return attendance
+  }
+
+  //FIXME: id is not in database
+  check = (studentId) => {
+    var attendeesId = []
+    if (this.state.tutorialAttendees !== "") {
+      for (var i = 0; i < this.state.tutorialAttendees.length; i++) {
+        attendeesId.push(this.state.tutorialAttendees[i].id)
+      }
+    }
+
+    if (attendeesId.filter(e => e === studentId).length > 0) {
+      return "Present"
+    } else {
+      return "Absent"
+    }
+  }
+
+  handleRowClick = index => {
+    this.state.chosen.indexOf(index) === -1 ? this.state.chosen.push(index) :
+      this.state.chosen = this.state.chosen.filter(item => item !== index);
+    console.log(this.state.chosen)
+  }
+  //TODO: align center
+  showCheckbox = event => {
+    return (
+      <MDBInput type="checkbox" id="checkbox1" />
+    )
+  }
+
+  deleteTutorialAttendance = event => {
+    axios.delete(`${API}Attendance/deleteTutorialAttendance?tutorialId=${this.state.tableTutorialGroup}&attendanceId=${this.state.tableTutorialDate}`)
+      .then(result => {
+        this.setState({ 
+          message: "Tutorial Attendance successfully deleted",
+         openSnackbar: true 
+        })
+        window.location.reload()
+      })
+      .catch(error => {
+        this.setState({ message: error.response.data, openSnackbar: true })
+        console.error("error in axios " + error);
+      });
+  }
+  //TODO: check
+  markPresent = event => {
+    var updateAsPresent = this.state.chosen
+    for (var i = 0; i < updateAsPresent.length; i++) {
+      axios.put(`${API}Attendance/addAttendee?attendanceId=${this.state.tableTutorialDate}&userId=${updateAsPresent[i]}`)
+        .then(result => {
+          this.setState({ 
+            openSnackbar: true, 
+            message: "Student(s) marked as present"
+          })
+          window.location.reload()
+        })
+        .catch(error => {
+          this.setState({ message: error.response.data, openSnackbar: true })
+          console.error("error in axios " + error);
+        });
+    }
+  }
+  //TODO:check
+  markAbsent = event => {
+    var updateAsAbsent = this.state.chosen
+    console.log(updateAsAbsent)
+    for (var i = 0; i < updateAsAbsent.length; i++) {
+      axios.put(`${API}Attendance/removeAttendee?attendanceId=${this.state.tableTutorialDate}&userId=${updateAsAbsent[i]}`)
+        .then(result => {
+          this.setState({ 
+            openSnackbar: true, 
+            message: "Student(s) marked as absent"
+          })
+          window.location.reload()
+        })
+        .catch(error => {
+          this.setState({ message: error.response.data, openSnackbar: true })
+          console.error("error in axios " + error);
+        });
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <MDBContainer>
+          <MDBRow>
+            <MDBCol size="8">
+              <h2 className="font-weight-bold"> Attendance </h2>
+              <hr />
+            </MDBCol>
+            <MDBCol align="right" size="4">
+              <MDBBtn onClick={this.toggle} color="primary" >Create Attendance</MDBBtn>
+            </MDBCol>
+          </MDBRow>
+          <MDBModal isOpen={this.state.modal} toggle={this.toggle}>
+            <MDBModalHeader toggle={this.toggle}>Create Attendance</MDBModalHeader>
+            <MDBModalBody>
+              <MDBRow >
+                <MDBCol>
+                  {this.displaySelect()}
+                </MDBCol>
+              </MDBRow>
+              <MDBRow style={{ paddingTop: "20px" }}>
+                <MDBCol>
+                  {this.displayVariousClasses()}
+                </MDBCol>
+              </MDBRow>
+            </MDBModalBody>
+
+            <MDBModalFooter>
+              <MDBBtn color="secondary" onClick={this.toggle}>Close</MDBBtn>
+              <MDBBtn color="primary" onClick={this.handleClickOpen}>Generate QRCode</MDBBtn> {/**generate qr code */}
+            </MDBModalFooter>
+          </MDBModal>
+
+          <Dialog
+            open={this.state.open}
+            onClose={this.handleClickClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+            fullScreen={true}
+            fullWidth={true}
+          >
+            <DialogTitle id="alert-dialog-title">{this.getCurrenDate()}</DialogTitle>
+            <DialogContent>
+              {this.generateQRCode()}
+            </DialogContent>
+            <DialogActions>
+              <MDBBtn variant="contained" color="primary" onClick={this.handleClickClose}>Close</MDBBtn>
+            </DialogActions>
+          </Dialog>
+
+          {this.showAttendance()}
+
+        </MDBContainer>
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          open={this.state.openSnackbar}
+          autoHideDuration={6000}
+          onClose={this.handleClose}
+          ContentProps={{
+            'aria-describedby': 'message-id',
+          }}
+          message={<span id="message-id">{this.state.message}</span>}
+          action={[
+            <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+          ]}
+        />
+      </div>
     );
   }
 }
