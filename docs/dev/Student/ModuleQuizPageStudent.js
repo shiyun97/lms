@@ -3,7 +3,12 @@ import styled from 'styled-components';
 import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Snackbar } from '@material-ui/core';
+import axios from 'axios';
+import { observer, inject } from 'mobx-react';
+import moment from 'moment';
 
+@inject('dataStore')
+@observer
 class ModuleQuizPageStudent extends Component {
 
     state = {

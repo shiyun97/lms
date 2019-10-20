@@ -3,7 +3,12 @@ import styled from 'styled-components';
 import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Snackbar } from '@material-ui/core';
+import axios from 'axios';
+import { observer, inject } from 'mobx-react';
+import moment from 'moment';
 
+@inject('dataStore')
+@observer
 class ModuleQuizPageViewStudents extends Component {
 
     state = {
@@ -38,7 +43,7 @@ class ModuleQuizPageViewStudents extends Component {
         ],
         rows: [{ label: "Retrieving data..." }],
         // status: "retrieving",
-        status: "donez",
+        status: "done",
         openSnackbar: false,
         message: ""
     }
@@ -72,7 +77,7 @@ class ModuleQuizPageViewStudents extends Component {
                         <MDBRow style={{ paddingTop: 60 }}>
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
-                                    <a href="/modules/:moduleId/quiz">Quiz</a>
+                                    <a href={`/modules/${this.props.match.params.moduleId}/quiz`}>Quiz</a>
                                     <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Quiz #
                                 </h2>
                             </MDBCol>
@@ -125,7 +130,7 @@ class ModuleQuizPageViewStudents extends Component {
                         <MDBRow style={{ paddingTop: 60 }}>
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
-                                    <a href="/modules/:moduleId/quiz">Quiz</a>
+                                    <a href={`/modules/${this.props.match.params.moduleId}/quiz`}>Quiz</a>
                                     <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Quiz #
                                 </h2>
                             </MDBCol>
@@ -172,18 +177,24 @@ class ModuleQuizPageViewStudents extends Component {
             // retrieve module & set state
             this.setState({ moduleId: moduleId })
         }
+        var pathname = location.pathname;
+        pathname = pathname.split("/");
+        this.setState({ quizId: pathname[4] })
+        this.props.dataStore.setCurrQuizId(pathname[4])
     }
 
     render() {
+        var moduleId = this.props.dataStore.getCurrModId;
+        var quizId = this.props.dataStore.getCurrQuizId;
         var newRows = [{
             name: "Rachel",
             score: "Unmarked",
-            viewButton: <center><MDBBtn color="primary" outline size="sm" href="/modules/:moduleId/quiz/:quizId/review/:studentId">Review</MDBBtn></center>
+            viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quizId}/review/:studentId`}>Review</MDBBtn></center>
         },
         {
             name: "Dave",
             score: "Unmarked",
-            viewButton: <center><MDBBtn color="primary" outline size="sm" href="/modules/:moduleId/quiz/:quizId/review/:studentId">Review</MDBBtn></center>
+            viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quizId}/review/:studentId`}>Review</MDBBtn></center>
         }]
         // var newRows = []
         // const row = this.state.rows
@@ -223,8 +234,7 @@ class ModuleQuizPageViewStudents extends Component {
         else if (this.state.status === "done")
             return this.renderQuizStudentsTable(widerData);
         else
-            return this.renderQuizStudentsTable(widerData);
-        // return this.renderTableWithMessage("No students' attempts found.");
+        return this.renderTableWithMessage("No students' attempts found.");
     }
 }
 

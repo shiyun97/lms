@@ -3,7 +3,12 @@ import styled from 'styled-components';
 import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Snackbar } from '@material-ui/core';
+import axios from 'axios';
+import { observer, inject } from 'mobx-react';
+import moment from 'moment';
 
+@inject('dataStore')
+@observer
 class ModuleQuizPageTeacher extends Component {
 
     state = {
@@ -15,6 +20,7 @@ class ModuleQuizPageTeacher extends Component {
         openingDate: "",
         closingDate: "",
         quizStatus: "",
+        quizzes: [],
         columns: [
             {
                 "label": "Quiz Id",
@@ -67,11 +73,13 @@ class ModuleQuizPageTeacher extends Component {
         ],
         rows: [{ label: "Retrieving data..." }],
         openSnackbar: false,
-        message: ""
+        message: "",
+        status: "retrieving"
     }
 
     componentDidMount() {
         this.initPage();
+        this.getAllModuleQuizzes();
     }
 
     handleChange = event => {
@@ -96,21 +104,39 @@ class ModuleQuizPageTeacher extends Component {
             // console.log(moduleId);
             // retrieve module & set state
             this.setState({ moduleId: moduleId })
+            this.props.dataStore.setCurrModId(moduleId);
         }
     }
 
-    render() {
-        var quiz = this.props.quizzes;
-        console.log(quiz)
-        if (this.props.quizzes.length !== 0) {
+    getAllModuleQuizzes = () => {
+        let userId = localStorage.getItem('userId');
+        let moduleId = this.props.dataStore.getCurrModId;
+        axios
+            .get(` http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllModuleQuiz/${moduleId}?userId=${userId}`)
+            .then(result => {
+                // console.log(result.data.quizzes)
+                this.setState({ status: "done", message: "Successfully retrieved quizzes!", quizzes: result.data.quizzes })
+            })
+            .catch(error => {
+                this.setState({ status: "error" })
+                console.error("error in axios " + error);
+            });
+
+    }
+
+    renderQuizTable = () => {
+        var quiz = this.state.quizzes;
+        var moduleId = this.props.dataStore.getCurrModId;
+        // console.log(quiz)
+        if (this.state.quizzes.length !== 0) {
             var tempQuizzes = []
-            for (let i = 0; i < this.props.quizzes.length; i++) {
+            for (let i = 0; i < this.state.quizzes.length; i++) {
                 tempQuizzes.push({
                     quizId: quiz[i].quizId,
                     name: quiz[i].title,
                     openingDate: quiz[i].openingDate,
                     closingDate: quiz[i].closingDate,
-                    status: quiz[i].publish ? "Open" : "Closed",
+                    status: quiz[i].publish ? "Published" : "Unpublished",
                     // description: quiz[i].description,
                     // order: quiz[i].questionsOrder,
                     // publishAnswer: quiz[i].publishAnswer,
@@ -122,7 +148,7 @@ class ModuleQuizPageTeacher extends Component {
                         <MDBCol md={6}><MDBIcon onClick={() => this.toggle(2, quiz[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
                         <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(quiz[i].quizId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
                     </MDBRow>,
-                    viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${this.state.moduleId}/quiz/${quiz[i].quizId}/review`}>Review</MDBBtn></center>
+                    viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quiz[i].quizId}/review`}>Review</MDBBtn></center>
                 })
             }
         } else {
@@ -144,7 +170,7 @@ class ModuleQuizPageTeacher extends Component {
 
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.moduleId}></ModuleSideNavigation>
+                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
@@ -187,6 +213,77 @@ class ModuleQuizPageTeacher extends Component {
                 </div>
             </div>
         )
+    }
+
+    renderTableWithMessage = (message) => {
+        var moduleId = this.props.dataStore.getCurrModId;
+        const data = () => ({ columns: this.state.columns, rows: [{ label: message }] })
+
+        const tableData = {
+            columns: [...data().columns.map(col => {
+                col.width = 200;
+                return col;
+            })], rows: [...data().rows]
+        }
+        return (
+            <div className={this.props.className}>
+                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <div className="module-content">
+                    <MDBContainer className="mt-3">
+                        <MDBRow style={{ paddingTop: 60 }}>
+                            <MDBCol md="12">
+                                <h2 className="font-weight-bold">
+                                    <a href={`/modules/${this.state.moduleId}/quiz`}>Quiz</a>
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Quiz #
+                                </h2>
+                            </MDBCol>
+                            {/* {this.renderEditQuizModalBox()} */}
+                        </MDBRow>
+                        <MDBRow className="py-3">
+                            <MDBCol md="12">
+                                <MDBCard>
+                                    <MDBCardBody>
+                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
+                                    </MDBCardBody>
+                                </MDBCard>
+                            </MDBCol>
+                        </MDBRow>
+                    </MDBContainer>
+                </div>
+            </div>
+        )
+    }
+
+    renderAwaiting = () => {
+        var moduleId = this.props.dataStore.getCurrModId;
+        return (
+            <div className={this.props.className}>
+                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <div className="module-content">
+                    <MDBContainer className="mt-3">
+                        <MDBRow style={{ paddingTop: 60 }} align="center">
+                            <MDBCol md="12">
+                                <div className="spinner-border text-primary" role="status">
+                                    <span className="sr-only">Loading...</span>
+                                </div>
+                            </MDBCol>
+                        </MDBRow>
+                    </MDBContainer>
+                </div>
+            </div>
+        )
+    }
+
+    render() {
+
+        if (this.state.status === "retrieving")
+            return this.renderAwaiting();
+        else if (this.state.status === "error")
+            return this.renderTableWithMessage("Error in retrieving quizzes. Please try again later.");
+        else if (this.state.status === "done")
+            return this.renderQuizTable();
+        else
+            return this.renderTableWithMessage("No quizzes found.");
     }
 }
 
