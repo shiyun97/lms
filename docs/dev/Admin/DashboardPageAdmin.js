@@ -16,6 +16,7 @@ class DashboardPageAdmin extends Component {
         upcomingAnnouncements: [],
         expiredAnnouncements: [],
         announcementToEdit: {},
+        announcementIdToDelete: 0,
         modal1: false, // add modal
         modal2: false, // edit modal
         modal3: false, // delete modal
@@ -123,7 +124,7 @@ class DashboardPageAdmin extends Component {
 
     createAnnouncement = () => {
         this.toggle(1);
-        console.log(this.state)
+        // console.log(this.state)
         var createdDate = new Date;
         createdDate = moment(createdDate).format("DD-MM-YYYY HH:mm:ss")
         var lastUpdateDate = createdDate
@@ -132,7 +133,7 @@ class DashboardPageAdmin extends Component {
         var endDate = this.state.endDate;
         endDate = moment(endDate).format("DD-MM-YYYY HH:mm:ss")
         axios
-            .post(`http://localhost:8080/LMS-war/webresources/Annoucement/createAnnoucement/${this.state.moduleId}`, {
+            .post(`http://localhost:8080/LMS-war/webresources/Annoucement/createSystemAnnoucement`, {
                 content: this.state.content,
                 emailNotification: this.state.emailNotification,
                 publish: this.state.publish,
@@ -170,6 +171,7 @@ class DashboardPageAdmin extends Component {
     }
 
     openDeleteAnnouncementModalBox = (id) => {
+        console.log(id)
         this.toggle(3);
         this.setState({
             announcementIdToDelete: id
@@ -178,6 +180,18 @@ class DashboardPageAdmin extends Component {
 
     deleteAnnouncement = () => {
         // call api to delete announcement
+        this.toggle(3);
+        axios
+            .delete(`http://localhost:8080/LMS-war/webresources/Annoucement/deleteAnnoucement?annoucementId=${this.state.announcementIdToDelete}`)
+            .then(result => {
+                // console.log(result.data.annoucementList)
+                this.setState({ openSnackbar: true, message: "Announcement deleted successfully", recall: "recallAnn" })
+            })
+            .catch(error => {
+                this.setState({ message: error.response.data.errorMessage, openSnackbar: true })
+                console.error("error in axios " + error);
+            });
+
     }
 
     handleCheckBoxChange = name => event => {
@@ -397,7 +411,7 @@ class DashboardPageAdmin extends Component {
                     <MDBIcon icon="trash" size="4x" />
                 </MDBModalBody>
                 <MDBModalFooter className="justify-content-center">
-                    <MDBBtn color="danger" >  {/* onClick={this.deleteAnnouncement()} */}
+                    <MDBBtn color="danger" onClick={() => this.deleteAnnouncement()} >
                         Yes
                 </MDBBtn>
                     <MDBBtn color="danger" outline onClick={() => this.toggle(3)}>
@@ -490,11 +504,11 @@ class DashboardPageAdmin extends Component {
                         }
                         {
                             activeAnnouncements.length > 0 && activeAnnouncements.map((announcement) => (
-                                <AnnouncementListItem key={announcement.announcementId}
+                                <AnnouncementListItem key={announcement.annoucementId}
                                     announcement={announcement}
                                     expired={false}
-                                    edit={() => this.openEditAnnouncementModalBox(announcement.announcementId)}
-                                    delete={() => this.openDeleteAnnouncementModalBox(announcement.announcementId)}>
+                                    edit={() => this.openEditAnnouncementModalBox(announcement.annoucementId)}
+                                    delete={() => this.openDeleteAnnouncementModalBox(announcement.annoucementId)}>
                                 </AnnouncementListItem>
                             ))
                         }
@@ -511,11 +525,11 @@ class DashboardPageAdmin extends Component {
                         }
                         {
                             upcomingAnnouncements.length > 0 && upcomingAnnouncements.map((announcement) => (
-                                <AnnouncementListItem key={announcement.announcementId}
+                                <AnnouncementListItem key={announcement.annoucementId}
                                     announcement={announcement}
                                     expired={false}
-                                    edit={() => this.openEditAnnouncementModalBox(announcement.announcementId)}
-                                    delete={() => this.openDeleteAnnouncementModalBox(announcement.announcementId)}>
+                                    edit={() => this.openEditAnnouncementModalBox(announcement.annoucementId)}
+                                    delete={() => this.openDeleteAnnouncementModalBox(announcement.annoucementId)}>
                                 </AnnouncementListItem>
                             ))
                         }
@@ -527,10 +541,10 @@ class DashboardPageAdmin extends Component {
                         }
                         {
                             expiredAnnouncements.length > 0 && expiredAnnouncements.map((announcement) => (
-                                <AnnouncementListItem key={announcement.announcementId}
+                                <AnnouncementListItem key={announcement.annoucementId}
                                     announcement={announcement}
                                     expired={false}
-                                    delete={() => this.openDeleteAnnouncementModalBox(announcement.announcementId)}>
+                                    delete={() => this.openDeleteAnnouncementModalBox(announcement.annoucementId)}>
                                 </AnnouncementListItem>
                             ))
                         }

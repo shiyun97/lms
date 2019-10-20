@@ -288,7 +288,6 @@ class ModuleQuizPageTeacher extends Component {
     }
 
     render() {
-
         if (this.state.status === "retrieving")
             return this.renderAwaiting();
         else if (this.state.status === "error")

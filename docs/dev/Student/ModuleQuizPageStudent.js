@@ -20,6 +20,7 @@ class ModuleQuizPageStudent extends Component {
         openingDate: "",
         closingDate: "",
         quizStatus: "",
+        quizzes: [],
         columns: [
             {
                 "label": "Quiz Id",
@@ -56,19 +57,26 @@ class ModuleQuizPageStudent extends Component {
             },
             {
                 "label": "",
-                "field": "",
+                "field": "attempt",
                 "width": 100
             }
         ],
         rows: [{ label: "Retrieving data..." }],
-        // status: "retrieving",
-        status: "donez",
+        status: "retrieving",
         openSnackbar: false,
-        message: ""
+        message: "",
+        recallQuiz: false
     }
 
     componentDidMount() {
         this.initPage();
+        this.getAllModuleQuizzes();
+    }
+
+    componentDidUpdate() {
+        if (this.state.recallQuiz) {
+            this.getAllModuleQuizzes();
+        }
     }
 
     handleChange = event => {
@@ -87,7 +95,60 @@ class ModuleQuizPageStudent extends Component {
         }
     };
 
-    renderQuizTable = (tableData) => {
+    getAllModuleQuizzes = () => {
+        let userId = localStorage.getItem('userId');
+        let moduleId = this.props.dataStore.getCurrModId;
+        axios
+            .get(` http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllModuleQuiz/${moduleId}?userId=${userId}`)
+            .then(result => {
+                // console.log(result.data.quizzes)
+                this.setState({ status: "done", quizzes: result.data.quizzes })
+            })
+            .catch(error => {
+                this.setState({ status: "error" })
+                console.error("error in axios " + error);
+            });
+    }
+
+    renderQuizTable = () => {
+        var quiz = this.state.quizzes;
+        var moduleId = this.props.dataStore.getCurrModId;
+        // console.log(quiz)
+        if (this.state.quizzes.length !== 0) {
+            var tempQuizzes = []
+            for (let i = 0; i < this.state.quizzes.length; i++) {
+                tempQuizzes.push({
+                    quizId: quiz[i].quizId,
+                    name: quiz[i].title,
+                    openingDate: quiz[i].openingDate,
+                    closingDate: quiz[i].closingDate,
+                    status: quiz[i].publish ? "Open" : "Closed",
+                    // description: quiz[i].description,
+                    // order: quiz[i].questionsOrder,
+                    // publishAnswer: quiz[i].publishAnswer,
+                    // numOfAttempts: quiz[i].noOfAttempts,
+                    // maxTimeToFinish: quiz[i].maxTimeToFinish,
+                    // quizType: quiz[i].quizType,
+                    viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quiz[i].quizId}`}>Attempt</MDBBtn></center>
+                })
+            }
+        } else {
+            var tempQuizzes = [{ label: "No quizzes found." }];
+        }
+
+        const data = () => ({ columns: this.state.columns, rows: tempQuizzes })
+        // clickEvent: () => goToProfilePage(1)
+
+        const widerData = {
+            columns: [...data().columns.map(col => {
+                col.width = 150;
+                return col;
+            })], rows: [...data().rows.map(row => {
+                // row.clickEvent = () => goToProfilePage(1)
+                return row;
+            })]
+        }
+
         return (
             <div className={this.props.className}>
                 <ModuleSideNavigation moduleId={this.props.moduleId}></ModuleSideNavigation>
@@ -111,7 +172,7 @@ class ModuleQuizPageStudent extends Component {
                             <MDBCol md="12">
                                 <MDBCard>
                                     <MDBCardBody>
-                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
+                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={widerData} pagesAmount={4} />
                                     </MDBCardBody>
                                 </MDBCard>
                             </MDBCol>
@@ -198,56 +259,21 @@ class ModuleQuizPageStudent extends Component {
     }
 
     initPage() {
-        let moduleId = this.props.moduleId;
-        if (moduleId) {
-            // console.log(moduleId);
-            // retrieve module & set state
-            this.setState({ moduleId: moduleId })
-        }
+        var pathname = location.pathname;
+        pathname = pathname.split("/");
+        // console.log(pathname[2])
+        this.props.dataStore.setCurrModId(pathname[2]);
     }
 
     render() {
-        var quizzes = [{ label: "No quizzes found." }];
-        if (this.props.quizzes.length !== 0)
-            quizzes = this.props.quizzes;
-        // var newRows = []
-        // const row = this.state.rows
-        // for (let i = 0; i < row.length; i++) {
-        //     newRows.push({
-        //         // quizId: 1,
-        // name: "Quiz 1",
-        // openingDate: "",
-        // closingDate: "",
-        // status: "Open",
-        // viewButton: <center><MDBBtn color="primary" outline size="sm" href="/modules/:moduleId/quiz/:quizId">Attempt</MDBBtn></center>
-        //         editButton: <MDBRow align="center">
-        //             <MDBCol md={6}><MDBIcon onClick={() => this.toggle(2, row[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
-        //             <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(row[i].userId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
-        //         </MDBRow>
-        //     })
-        // }
-        const data = () => ({ columns: this.state.columns, rows: quizzes })
-        // clickEvent: () => goToProfilePage(1)
-
-        const widerData = {
-            columns: [...data().columns.map(col => {
-                col.width = 150;
-                return col;
-            })], rows: [...data().rows.map(row => {
-                // row.clickEvent = () => goToProfilePage(1)
-                return row;
-            })]
-        }
-
         if (this.state.status === "retrieving")
             return this.renderAwaiting();
         else if (this.state.status === "error")
             return this.renderTableWithMessage("Error in Retrieving Quizzes. Please try again later.");
         else if (this.state.status === "done")
-            return this.renderQuizTable(widerData);
+            return this.renderQuizTable();
         else
-            return this.renderQuizTable(widerData);
-        // return this.renderTableWithMessage("No quiz found.");
+            return this.renderTableWithMessage("No quizzes found.");
     }
 }
 
