@@ -311,7 +311,7 @@ class DashboardPageAdmin extends Component {
                 <MDBTabContent activeItem={this.state.activeItem}>
                     <MDBTabPane tabId="active" role="tabpanel">
                         <div className="mb-2"></div>
-                        <div className="align-right">
+                        <div className="align-right" style={{ float: "right" }}>
                             <MDBBtn color="indigo" outline className="mr-0 mb-3" size="md" onClick={this.toggleAnnouncementModal("Add")}>
                                 <MDBIcon icon="plus" className="mr-1" /> Add
                                     </MDBBtn>
@@ -332,7 +332,7 @@ class DashboardPageAdmin extends Component {
                     </MDBTabPane>
                     <MDBTabPane tabId="upcoming" role="tabpanel">
                         <div className="mb-2"></div>
-                        <div className="align-right">
+                        <div className="align-right" style={{ float: "right" }}>
                             <MDBBtn color="indigo" outline className="mr-0 mb-3" size="md" onClick={this.toggleAnnouncementModal("Add")}>
                                 <MDBIcon icon="plus" className="mr-1" /> Add
                                     </MDBBtn>

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from 'styled-components';
 import {
     MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBModal, MDBModalHeader, MDBModalBody,
-    MDBModalFooter, MDBInput, MDBNav, MDBNavItem, MDBNavLink, MDBTabContent, MDBTabPane
+    MDBModalFooter, MDBNav, MDBNavItem, MDBNavLink, MDBTabContent, MDBTabPane
 } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
 import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
@@ -22,9 +22,9 @@ class ModuleAnnouncementsPage extends Component {
         upcomingAnnouncements: [],
         expiredAnnouncements: [],
         announcementToEdit: {},
-        modalAdd: false,
-        modalEdit: false,
-        modalDelete: false,
+        modal1: false, // add modal
+        modal2: false, // edit modal
+        modal3: false, // delete modal
         openSnackbar: false,
         message: "",
         recall: "",
@@ -39,11 +39,6 @@ class ModuleAnnouncementsPage extends Component {
         endDate: "",
         title: "",
         moduleId: ""
-    }
-
-    constructor(props) {
-        super(props);
-        this.edit = this.edit.bind(this);
     }
 
     componentDidMount() {
@@ -117,21 +112,21 @@ class ModuleAnnouncementsPage extends Component {
     }
 
     handleOpenSnackbar = () => {
-      this.setState({ openSnackbar: true });
+        this.setState({ openSnackbar: true });
     };
-  
+
     handleClose = (event, reason) => {
-      if (reason === 'clickaway') {
-        return;
-      }
-  
-      this.setState({ openSnackbar: false });
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackbar: false });
     };
 
     handleChange = event => {
-      event.preventDefault();
-      this.setState({ [event.target.name]: event.target.value });
-      // console.log(event.target.value)
+        event.preventDefault();
+        this.setState({ [event.target.name]: event.target.value });
+        // console.log(event.target.value)
     }
 
     toggleTab = tab => e => {
@@ -142,7 +137,7 @@ class ModuleAnnouncementsPage extends Component {
         }
     };
 
-    toggleAnnouncementModal = nr => () => {
+    toggle = (nr) => {
         let modalNumber = "modal" + nr;
         this.setState({
             [modalNumber]: !this.state[modalNumber]
@@ -150,7 +145,7 @@ class ModuleAnnouncementsPage extends Component {
     };
 
     createAnnouncement = () => {
-        this.toggleAnnouncementModal("Add");
+        this.toggle(1);
         console.log(this.state)
         var createdDate = new Date;
         createdDate = moment(createdDate).format("DD-MM-YYYY HH:mm:ss")
@@ -180,10 +175,9 @@ class ModuleAnnouncementsPage extends Component {
             });
     }
 
-    edit = (id) => {
-        // retrieve announcement, set state
+    openEditAnnouncementModalBox = (id) => {
+        this.toggle(2);
         this.setState({
-            modalEdit: true,
             announcementToEdit: {
                 id: id,
                 title: 'Editing Announcement Title',
@@ -194,21 +188,19 @@ class ModuleAnnouncementsPage extends Component {
         });
     }
 
-    submitEdit = () => {
-        console.log("confirmEdit")
-        this.toggleAnnouncementModal("Edit");
+    updateAnnouncement = () => {
+        // call edit announcement api
     }
 
-    delete = (id) => {
+    openDeleteAnnouncementModalBox = (id) => {
+        this.toggle(3);
         this.setState({
-            modalDelete: true,
             announcementIdToDelete: id
         })
     }
 
-    confirmDelete = () => {
-        // delete announcementIdToDelete
-        this.toggleAnnouncementModal("Delete");
+    deleteAnnouncement = () => {
+        // call api to delete announcement
     }
 
     handleCheckBoxChange = name => event => {
@@ -218,11 +210,11 @@ class ModuleAnnouncementsPage extends Component {
 
     renderCreateAnnouncementModalBox = () => {
         return (
-            <MDBModal isOpen={this.state.modalAdd} toggle={this.toggleAnnouncementModal("Add")}>
+            <MDBModal isOpen={this.state.modal1} toggle={() => this.toggle(1)}>
                 <MDBModalHeader
                     className="text-center"
                     titleClass="w-100 font-weight-bold"
-                    toggle={this.toggleAnnouncementModal("Add")}
+                    toggle={() => this.toggle(1)}
                 >
                     Create Announcement
       </MDBModalHeader>
@@ -311,35 +303,131 @@ class ModuleAnnouncementsPage extends Component {
         )
     }
 
+    renderEditAnnouncementModalBox = () => {
+        return (
+            <MDBModal isOpen={this.state.modal2} toggle={() => this.toggle(2)} >
+                <MDBModalHeader
+                    className="text-center"
+                    titleClass="w-100 font-weight-bold"
+                    toggle={() => this.toggle(2)}
+                >
+                    Update Announcement
+      </MDBModalHeader>
+                <MDBModalBody>
+                    <form className="mx-3 grey-text">
+                        <MDBRow>
+                            <MDBCol md="12">
+                                <label className="grey-text mt-4">
+                                    Announcement Title
+                  </label>
+                                <input type="text" name="title" onChange={this.handleChange} className="form-control" />
+                            </MDBCol>
+                            <MDBCol md="12">
+                                <label className="grey-text mt-4">
+                                    Announcement Content
+                  </label>
+                                <textarea rows="3" type="text" name="content" onChange={this.handleChange} className="form-control" />
+                                <br />
+                            </MDBCol>
+                            <MDBCol md="6" className="mt-4">
+                                <TextField
+                                    id="startDate"
+                                    label="Start Date"
+                                    type="datetime-local"
+                                    name="startDate"
+                                    value={this.state.startDate}
+                                    onChange={this.handleChange}
+                                    fullWidth
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                />
+                            </MDBCol>
+                            <MDBCol md="6" className="mt-4">
+                                <TextField
+                                    id="endDate"
+                                    label="End Date"
+                                    type="datetime-local"
+                                    name="endDate"
+                                    value={this.state.endDate}
+                                    onChange={this.handleChange}
+                                    fullWidth
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                />
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-4">
+                                Publish
+                  <Checkbox
+                                    checked={this.state.publish}
+                                    onChange={this.handleCheckBoxChange('publish')}
+                                    value="publish"
+                                    name="publish"
+                                    color="primary"
+                                    inputProps={{
+                                        'aria-label': 'secondary checkbox',
+                                    }}
+                                />
+                                Email Notification
+                  <Checkbox
+                                    checked={this.state.emailNotification}
+                                    onChange={this.handleCheckBoxChange('emailNotification')}
+                                    value="emailNotification"
+                                    name="emailNotification"
+                                    color="primary"
+                                    inputProps={{
+                                        'aria-label': 'secondary checkbox',
+                                    }}
+                                />
+                            </MDBCol>
+                        </MDBRow>
+                    </form>
+                </MDBModalBody>
+                <MDBModalFooter className="justify-content-center">
+                    <MDBRow>
+                        <MDBCol md="6">
+                            <MDBBtn onClick={() => this.toggle(2)} color="grey">Cancel</MDBBtn>
+                        </MDBCol>
+                        <MDBCol md="6">
+                            <MDBBtn onClick={() => this.updateAnnouncement()} color="primary">Create</MDBBtn>
+                        </MDBCol>
+                    </MDBRow>
+                </MDBModalFooter>
+            </MDBModal>
+        )
+    }
+
     renderDeleteAnnouncementModalBox = () => {
-        return (<MDBModal
-            modalStyle="danger"
-            className="text-white"
-            size="sm"
-            backdrop={true}
-            isOpen={this.state.modalDelete}
-            toggle={this.toggleAnnouncementModal("Delete")}
-        >
-            <MDBModalHeader
-                className="text-center"
-                titleClass="w-100"
-                tag="p"
-                toggle={this.toggleAnnouncementModal("Delete")}
+        return (
+            <MDBModal
+                modalStyle="danger"
+                className="text-white"
+                size="sm"
+                backdrop={true}
+                isOpen={this.state.modal3}
+                toggle={() => this.toggle(3)}
             >
-                Are you sure?
+                <MDBModalHeader
+                    className="text-center"
+                    titleClass="w-100"
+                    tag="p"
+                    toggle={() => this.toggle(3)}
+                >
+                    Are you sure?
             </MDBModalHeader>
-            <MDBModalBody className="text-center">
-                <MDBIcon icon="trash" size="4x" />
-            </MDBModalBody>
-            <MDBModalFooter className="justify-content-center">
-                <MDBBtn color="danger" onClick={this.confirmDelete()}>
-                    Yes
+                <MDBModalBody className="text-center">
+                    <MDBIcon icon="trash" size="4x" />
+                </MDBModalBody>
+                <MDBModalFooter className="justify-content-center">
+                    <MDBBtn color="danger" >  {/* onClick={this.deleteAnnouncement()} */}
+                        Yes
                 </MDBBtn>
-                <MDBBtn color="danger" outline onClick={this.toggleAnnouncementModal("Delete")}>
-                    No
+                    <MDBBtn color="danger" outline onClick={() => this.toggle(3)}>
+                        No
                 </MDBBtn>
-            </MDBModalFooter>
-        </MDBModal>
+                </MDBModalFooter>
+            </MDBModal>
         )
     }
 
@@ -379,16 +467,6 @@ class ModuleAnnouncementsPage extends Component {
                                 <hr className="my-3" />
                             </MDBCol>
                         </MDBRow>
-                        <MDBRow>
-                            <MDBCol>
-                                {this.renderCreateAnnouncementModalBox()}
-                            </MDBCol>
-                        </MDBRow>
-                        <MDBRow>
-                            <MDBCol>
-                                {this.renderDeleteAnnouncementModalBox()}
-                            </MDBCol>
-                        </MDBRow>
                         <MDBNav className="nav-tabs">
                             <MDBNavItem>
                                 <MDBNavLink
@@ -425,9 +503,12 @@ class ModuleAnnouncementsPage extends Component {
                             <MDBTabPane tabId="active" role="tabpanel">
                                 <div className="mb-2"></div>
                                 <div className="align-right">
-                                    <MDBBtn color="indigo" outline className="mr-0 mb-3" size="md" onClick={this.toggleAnnouncementModal("Add")}>
-                                        <MDBIcon icon="plus" className="mr-1" /> Add
+
+                                    {localStorage.getItem("accessRight") === "Teacher" &&
+                                        <MDBBtn color="indigo" outline className="mr-0 mb-3" size="md" onClick={() => this.toggle(1)}>
+                                            <MDBIcon icon="plus" className="mr-1" /> Add
                                     </MDBBtn>
+                                    }
                                 </div>
                                 {
                                     activeAnnouncements.length == 0 && <h6 style={{ paddingTop: 20 }}>No announcements found.</h6>
@@ -437,8 +518,8 @@ class ModuleAnnouncementsPage extends Component {
                                         <AnnouncementListItem key={announcement.announcementId}
                                             announcement={announcement}
                                             expired={false}
-                                            edit={e => { this.edit(announcement.announcementId) }}
-                                            delete={e => { this.delete(announcement.announcementId) }}>
+                                            edit={() => this.openEditAnnouncementModalBox(announcement.announcementId)}
+                                            delete={() => this.openDeleteAnnouncementModalBox(announcement.announcementId)}>
                                         </AnnouncementListItem>
                                     ))
                                 }
@@ -446,20 +527,22 @@ class ModuleAnnouncementsPage extends Component {
                             <MDBTabPane tabId="upcoming" role="tabpanel">
                                 <div className="mb-2"></div>
                                 <div className="align-right">
-                                    <MDBBtn color="indigo" outline className="mr-0 mb-3" size="md" onClick={this.toggleAnnouncementModal("Add")}>
-                                        <MDBIcon icon="plus" className="mr-1" /> Add
+                                    {localStorage.getItem("accessRight") === "Teacher" &&
+                                        <MDBBtn color="indigo" outline className="mr-0 mb-3" size="md" onClick={() => this.toggle(1)}>
+                                            <MDBIcon icon="plus" className="mr-1" /> Add
                                     </MDBBtn>
+                                    }
                                 </div>
                                 {
                                     upcomingAnnouncements.length == 0 && <h6 style={{ paddingTop: 20 }}>No announcements found.</h6>
                                 }
                                 {
                                     upcomingAnnouncements.length > 0 && upcomingAnnouncements.map((announcement) => (
-                                        <AnnouncementListItem key={announcement.id}
+                                        <AnnouncementListItem key={announcement.announcementId}
                                             announcement={announcement}
                                             expired={false}
-                                            edit={e => { this.edit(announcement.id) }}
-                                            delete={e => { this.delete(announcement.id) }}>
+                                            edit={() => this.openEditAnnouncementModalBox(announcement.announcementId)}
+                                            delete={() => this.openDeleteAnnouncementModalBox(announcement.announcementId)}>
                                         </AnnouncementListItem>
                                     ))
                                 }
@@ -471,10 +554,10 @@ class ModuleAnnouncementsPage extends Component {
                                 }
                                 {
                                     expiredAnnouncements.length > 0 && expiredAnnouncements.map((announcement) => (
-                                        <AnnouncementListItem key={announcement.id}
+                                        <AnnouncementListItem key={announcement.announcementId}
                                             announcement={announcement}
-                                            expired={true}
-                                            delete={e => { this.delete(announcement.id) }}>
+                                            expired={false}
+                                            delete={() => this.openDeleteAnnouncementModalBox(announcement.announcementId)}>
                                         </AnnouncementListItem>
                                     ))
                                 }
@@ -496,6 +579,9 @@ class ModuleAnnouncementsPage extends Component {
                                 <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
                             ]}
                         />
+                        {this.renderCreateAnnouncementModalBox()}
+                        {this.renderEditAnnouncementModalBox()}
+                        {this.renderDeleteAnnouncementModalBox()}
                     </MDBContainer>
                 </div>
             </div>
@@ -512,15 +598,25 @@ class AnnouncementListItem extends Component {
                 {
                     !this.props.expired &&
                     <div className="h6">{announcement.title}
-                        <MDBIcon icon="edit" className="indigo-text ml-2" onClick={this.props.edit} />
-                        <MDBIcon icon="trash-alt" className="indigo-text ml-2" onClick={this.props.delete} />
+                        {localStorage.getItem("accessRight") === "Teacher" &&
+                            <>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <MDBIcon icon="edit" className="mr-1" onClick={this.props.edit} style={{ cursor: "pointer", textShadow: "1px 0px 1px #777777" }} />
+                                &nbsp;&nbsp;
+                                            <MDBIcon icon="trash-alt" className="mr-1" onClick={this.props.delete} style={{ cursor: "pointer", textShadow: "1px 0px 1px #777777" }} />
+                            </>
+                        }
                     </div>
                 }
                 {
                     this.props.expired &&
                     <div className="h6">{announcement.title}
-                        {/* <MDBIcon icon="edit" className="blue-grey-text ml-2" /> */}
-                        <MDBIcon icon="trash-alt" className="indigo-text ml-2" onClick={this.props.delete} />
+                        {localStorage.getItem("accessRight") === "Teacher" &&
+                            <>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <MDBIcon icon="trash-alt" className="mr-1" onClick={this.props.delete} style={{ cursor: "pointer", textShadow: "1px 0px 1px #777777" }} />
+                            </>
+                        }
                     </div>
                 }
 
@@ -570,4 +666,3 @@ export default styled(ModuleAnnouncementsPage)`
     margin-bottom: 1rem;
 }
 `;
-
