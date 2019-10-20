@@ -3,7 +3,12 @@ import styled from 'styled-components';
 import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Snackbar } from '@material-ui/core';
+import axios from 'axios';
+import { observer, inject } from 'mobx-react';
+import moment from 'moment';
 
+@inject('dataStore')
+@observer
 class ModuleQuizPageViewStudentAttempt extends Component {
 
     state = {
@@ -117,16 +122,18 @@ class ModuleQuizPageViewStudentAttempt extends Component {
     }
 
     renderQuizStudentsTable = (tableData) => {
+        var moduleId = this.props.dataStore.getCurrModId;
+        var quizId = this.props.dataStore.getCurrQuizId;
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
+                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
                                     <a href="/modules/:moduleId/quiz">Quiz</a>
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> <a href="/modules/:moduleId/quiz/:quizId">Quiz #</a>
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> <a href="/modules/:moduleId/quiz/:quizId">Quiz {quizId}</a>
                                     <MDBIcon icon="angle-right" className="ml-4 mr-4" /> StudentID #
                                 </h2>
                             </MDBCol>
@@ -164,6 +171,7 @@ class ModuleQuizPageViewStudentAttempt extends Component {
     }
 
     renderTableWithMessage = (message) => {
+        var moduleId = this.props.dataStore.getCurrModId;
         const data = () => ({ columns: this.state.columns, rows: [{ label: message }] })
 
         const tableData = {
@@ -174,14 +182,14 @@ class ModuleQuizPageViewStudentAttempt extends Component {
         }
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
+                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
                                     <a href="/modules/:moduleId/quiz">Quiz</a>
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> <a href="/modules/:moduleId/quiz/:quizId"> Quiz #</a>
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> <a href="/modules/:moduleId/quiz/:quizId">  {quizId}</a>
                                     <MDBIcon icon="angle-right" className="ml-4 mr-4" /> StudentID #
                                 </h2>
                             </MDBCol>
@@ -203,9 +211,10 @@ class ModuleQuizPageViewStudentAttempt extends Component {
     }
 
     renderAwaiting = () => {
+        var moduleId = this.props.dataStore.getCurrModId;
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
+                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }} align="center">
@@ -222,7 +231,7 @@ class ModuleQuizPageViewStudentAttempt extends Component {
     }
 
     initPage() {
-        let moduleId = this.props.match.params.moduleId;
+        var moduleId = this.props.dataStore.getCurrModId;
         if (moduleId) {
             // console.log(moduleId);
             // retrieve module & set state

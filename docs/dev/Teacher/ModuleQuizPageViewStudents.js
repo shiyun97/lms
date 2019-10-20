@@ -22,7 +22,7 @@ class ModuleQuizPageViewStudents extends Component {
         quizStatus: "",
         columns: [
             {
-                "label": "Name",
+                "label": "Attempt Id",
                 "field": "name",
                 "width": 150,
                 "attributes": {
@@ -42,19 +42,38 @@ class ModuleQuizPageViewStudents extends Component {
             }
         ],
         rows: [{ label: "Retrieving data..." }],
-        // status: "retrieving",
-        status: "done",
+        status: "retrieving",
         openSnackbar: false,
         message: ""
     }
 
     componentDidMount() {
         this.initPage();
+        this.getAllStudentsAttempts();
     }
 
     handleChange = event => {
         event.preventDefault();
         this.setState({ [event.target.name]: event.target.value });
+    }
+
+    getAllStudentsAttempts = () => {
+        var quizId = this.props.dataStore.getCurrQuizId
+        axios
+            .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllQuizAttempts?userId=5&quizId=${quizId}`)
+            .then(result => {
+                // console.log(result.data)
+                this.setState({
+                    status: "done",
+                    rows: result.data.quizAttempts
+                });
+            })
+            .catch(error => {
+                this.setState({
+                    status: "error",
+                });
+                console.error("error in axios " + error);
+            });
     }
 
     toggle = (nr, row) => {
@@ -69,15 +88,16 @@ class ModuleQuizPageViewStudents extends Component {
     };
 
     renderQuizStudentsTable = (tableData) => {
+        var moduleId = this.props.dataStore.getCurrModId;
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
+                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
-                                    <a href={`/modules/${this.props.match.params.moduleId}/quiz`}>Quiz</a>
+                                    <a href={`/modules/${moduleId}/quiz`}>Quiz</a>
                                     <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Quiz #
                                 </h2>
                             </MDBCol>
@@ -114,6 +134,7 @@ class ModuleQuizPageViewStudents extends Component {
     }
 
     renderTableWithMessage = (message) => {
+        var moduleId = this.props.dataStore.getCurrModId;
         const data = () => ({ columns: this.state.columns, rows: [{ label: message }] })
 
         const tableData = {
@@ -124,13 +145,13 @@ class ModuleQuizPageViewStudents extends Component {
         }
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
+                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
-                                    <a href={`/modules/${this.props.match.params.moduleId}/quiz`}>Quiz</a>
+                                    <a href={`/modules/${moduleId}/quiz`}>Quiz</a>
                                     <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Quiz #
                                 </h2>
                             </MDBCol>
@@ -152,9 +173,10 @@ class ModuleQuizPageViewStudents extends Component {
     }
 
     renderAwaiting = () => {
+        var moduleId = this.props.dataStore.getCurrModId;
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
+                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }} align="center">
@@ -171,7 +193,7 @@ class ModuleQuizPageViewStudents extends Component {
     }
 
     initPage() {
-        let moduleId = this.props.match.params.moduleId;
+        var moduleId = this.props.dataStore.getCurrModId;
         if (moduleId) {
             // console.log(moduleId);
             // retrieve module & set state
@@ -180,40 +202,23 @@ class ModuleQuizPageViewStudents extends Component {
         var pathname = location.pathname;
         pathname = pathname.split("/");
         this.setState({ quizId: pathname[4] })
+        this.props.dataStore.setCurrModId(pathname[2]);
         this.props.dataStore.setCurrQuizId(pathname[4])
     }
 
     render() {
         var moduleId = this.props.dataStore.getCurrModId;
         var quizId = this.props.dataStore.getCurrQuizId;
-        var newRows = [{
-            name: "Rachel",
-            score: "Unmarked",
-            viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quizId}/review/:studentId`}>Review</MDBBtn></center>
-        },
-        {
-            name: "Dave",
-            score: "Unmarked",
-            viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quizId}/review/:studentId`}>Review</MDBBtn></center>
-        }]
-        // var newRows = []
-        // const row = this.state.rows
-        // for (let i = 0; i < row.length; i++) {
-        //     newRows.push({
-        //         userId: row[i].userId,
-        //         firstName: row[i].firstName,
-        //         lastName: row[i].lastName,
-        //         gender: row[i].gender,
-        //         email: row[i].email,
-        //         password: row[i].password,
-        //         accessRight: row[i].accessRight,
-        //         username: row[i].username,
-        //         editButton: <MDBRow align="center">
-        //             <MDBCol md={6}><MDBIcon onClick={() => this.toggle(2, row[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
-        //             <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(row[i].userId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
-        //         </MDBRow>
-        //     })
-        // }
+        var newRows = []
+        const row = this.state.rows
+        for (let i = 0; i < row.length; i++) {
+            newRows.push({
+                name: row[i].quizAttemptId,
+                score: row[i].totalMarks,
+                //quizAttemptList
+                viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quizId}/review/${row[i].quizAttemptId}`}>Review</MDBBtn></center>
+            })
+        }
         const data = () => ({ columns: this.state.columns, rows: newRows })
         // clickEvent: () => goToProfilePage(1)
 
@@ -234,7 +239,7 @@ class ModuleQuizPageViewStudents extends Component {
         else if (this.state.status === "done")
             return this.renderQuizStudentsTable(widerData);
         else
-        return this.renderTableWithMessage("No students' attempts found.");
+            return this.renderTableWithMessage("No students' attempts found.");
     }
 }
 
