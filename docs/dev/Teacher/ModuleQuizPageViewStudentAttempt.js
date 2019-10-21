@@ -91,12 +91,17 @@ class ModuleQuizPageViewStudentAttempt extends Component {
         axios
             .post(`http://localhost:8080/LMS-war/webresources/Assessment/enterQuestionMarks?userId=${userId}&questionAttemptId=${this.state.questionAttemptId}&marks=${this.state.marks}`, {})
             .then(result => {
-                console.log(result.data)
                 this.setState({
-                    recallResults: true
+                    recallResults: true,
+                    openSnackbar: true,
+                    message: "Marks updated successfully!"
                 });
             })
             .catch(error => {
+                this.setState({
+                    openSnackbar: true,
+                    message: eerror.response.data.errorMessage
+                });
                 console.error("error in axios " + error);
             });
     }
@@ -324,7 +329,7 @@ class ModuleQuizPageViewStudentAttempt extends Component {
         else if (this.state.status === "done")
             return this.renderQuizStudentsTable(widerData);
         else
-        return this.renderTableWithMessage("No question attempts found.");
+            return this.renderTableWithMessage("No question attempts found.");
     }
 }
 

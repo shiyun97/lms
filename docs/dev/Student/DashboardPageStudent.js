@@ -18,7 +18,7 @@ class DashboardPageStudent extends Component {
     axios
       .get(`http://localhost:8080/LMS-war/webresources/studentEnrollment/retrieveStudentModules/${userId}`)
       .then(result => {
-        // console.log(result.data.modules)
+        console.log(result.data.modules)
         this.props.dataStore.updateModules(result.data.modules);
         this.setState({
           status: "done"
@@ -66,6 +66,7 @@ class DashboardPageStudent extends Component {
   setCurrModuleId = (moduleId) => { this.props.dataStore.setCurrModId(moduleId) }
 
   render() {
+    console.log("test")
     return (
       <MDBRow>
         <MDBCol md="12" className="mt-3 mx-auto">

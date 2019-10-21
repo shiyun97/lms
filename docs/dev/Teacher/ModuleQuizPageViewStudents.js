@@ -43,6 +43,7 @@ class ModuleQuizPageViewStudents extends Component {
         ],
         rows: [{ label: "Retrieving data..." }],
         status: "retrieving",
+        label: "",
         openSnackbar: false,
         message: ""
     }
@@ -71,6 +72,7 @@ class ModuleQuizPageViewStudents extends Component {
             .catch(error => {
                 this.setState({
                     status: "error",
+                    label: error.response.data.errorMessage
                 });
                 console.error("error in axios " + error);
             });
@@ -133,9 +135,9 @@ class ModuleQuizPageViewStudents extends Component {
         )
     }
 
-    renderTableWithMessage = (message) => {
+    renderTableWithMessage = () => {
         var moduleId = this.props.dataStore.getCurrModId;
-        const data = () => ({ columns: this.state.columns, rows: [{ label: message }] })
+        const data = () => ({ columns: this.state.columns, rows: [{ label: this.state.label }] })
 
         const tableData = {
             columns: [...data().columns.map(col => {
