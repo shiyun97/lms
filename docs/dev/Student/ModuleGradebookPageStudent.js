@@ -9,7 +9,7 @@ import moment from 'moment';
 
 @inject('dataStore')
 @observer
-class ModuleQuizPageStudent extends Component {
+class ModuleGradebookPageStudent extends Component {
 
     state = {
         modal1: false,
@@ -52,7 +52,7 @@ class ModuleQuizPageStudent extends Component {
             },
             {
                 "label": "Status",
-                "field": "quizStatus",
+                "field": "Status",
                 "width": 100
             },
             {
@@ -65,7 +65,7 @@ class ModuleQuizPageStudent extends Component {
         status: "retrieving",
         openSnackbar: false,
         message: "",
-        recallQuiz: false
+        recallGradebook: false
     }
 
     componentDidMount() {
@@ -74,8 +74,8 @@ class ModuleQuizPageStudent extends Component {
     }
 
     componentDidUpdate() {
-        if (this.state.recallQuiz) {
-            this.getAllModuleQuizzes();
+        if (this.state.recallGradebook) {
+            // this.getAllModuleQuizzes();
         }
     }
 
@@ -110,7 +110,7 @@ class ModuleQuizPageStudent extends Component {
             });
     }
 
-    renderQuizTable = () => {
+    renderGradebookTable = () => {
         var quiz = this.state.quizzes;
         var moduleId = this.props.dataStore.getCurrModId;
         // console.log(quiz)
@@ -157,15 +157,12 @@ class ModuleQuizPageStudent extends Component {
                         <MDBRow style={{ paddingTop: 60 }}>
                             <MDBCol md="8">
                                 <h2 className="font-weight-bold">
-                                    Quiz
+                                    Gradebook
                 </h2>
                             </MDBCol>
                             <MDBCol md="4" align="right">
-                                <MDBBtn href="/modules/:moduleId/quiz/create" color="primary">Create Quiz</MDBBtn>
+                                <MDBBtn href="/modules/:moduleId/quiz/create" color="primary">Create Grade Item</MDBBtn>
                             </MDBCol>
-                            {/* <MDBCol md="1">
-                        <Fab onClick={() => this.getAllQuizDetails()} style={{ height: 50, width: 50, backgroundColor: "#bbb", borderRadius: "50%" }}><MDBIcon icon="sync" /></Fab>
-                    </MDBCol> */}
                         </MDBRow>
                         {/* {this.renderEditQuizModalBox()} */}
                         <MDBRow className="py-3">
@@ -217,11 +214,11 @@ class ModuleQuizPageStudent extends Component {
                         <MDBRow style={{ paddingTop: 60 }}>
                             <MDBCol md="8">
                                 <h2 className="font-weight-bold">
-                                    Quiz
+                                    Gradebook
                 </h2>
                             </MDBCol>
                             <MDBCol md="4" align="right">
-                                <MDBBtn href="/modules/:moduleId/quiz/create" color="primary">Create Quiz</MDBBtn>
+                                <MDBBtn href="/modules/:moduleId/quiz/create" color="primary">Create Grade Item</MDBBtn>
                             </MDBCol>
                             {/* {this.renderEditQuizModalBox()} */}
                         </MDBRow>
@@ -271,17 +268,19 @@ class ModuleQuizPageStudent extends Component {
         if (this.state.status === "retrieving")
             return this.renderAwaiting();
         else if (this.state.status === "error")
-            return this.renderTableWithMessage("Error in Retrieving Quizzes. Please try again later.");
+            return this.renderTableWithMessage("Error in Retrieving Grade Item. Please try again later.");
         else if (this.state.status === "done")
-            return this.renderQuizTable();
+            return this.renderGradebookTable();
         else
             return this.renderTableWithMessage("No quizzes found.");
     }
 }
-
-export default styled(ModuleQuizPageStudent)`
+export default styled(ModuleGradebookPageStudent)`
 .module-content{
     margin-left: 270px;
     margin-top: 40px;
+}
+.align-right{
+    float: right;
 }
 `;
