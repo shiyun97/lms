@@ -49,6 +49,7 @@ class ModuleAttendancePageTeacher extends Component {
         this.setState({ lectureList: result.data.lectureDetails })
       })
       .catch(error => {
+        this.setState({ message: error.response.data, openSnackbar: true })
         console.error("error in axios " + error);
       });
 
@@ -58,6 +59,7 @@ class ModuleAttendancePageTeacher extends Component {
         this.setState({ tutorialList: result.data.tutorials })
       })
       .catch(error => {
+        this.setState({ message: error.response.data, openSnackbar: true })
         console.error("error in axios " + error);
       });
 
@@ -67,6 +69,7 @@ class ModuleAttendancePageTeacher extends Component {
         this.setState({ studentListLecture: result.data.userList })
       })
       .catch(error => {
+        this.setState({ message: error.response.data, openSnackbar: true })
         console.error("error in axios " + error);
       });
 
@@ -76,7 +79,7 @@ class ModuleAttendancePageTeacher extends Component {
         this.setState({ allLectureAttendance: result.data.attendanceList })
       })
       .catch(error => {
-        console.log(error.response.data)
+        this.setState({ message: error.response.data, openSnackbar: true })
         console.error("error in axios " + error);
       });
   }
@@ -197,7 +200,7 @@ class ModuleAttendancePageTeacher extends Component {
         <select value={this.state.classgroup} onChange={this.handleSelectClassgroup} className="browser-default custom-select">
           <option>Choose an option</option>
           {this.state.tutorialList && this.state.tutorialList.map(
-            (group) => <option key={group.tutorialId} value={group.tutorialId}>{group.timing}</option>)
+            (group, index) => <option key={index} value={group.tutorialId}>{group.timing}</option>)
           }
         </select>
       )
@@ -225,7 +228,7 @@ class ModuleAttendancePageTeacher extends Component {
           this.generateQRCode()
         })
         .catch(error => {
-          this.setState({ message: error.response.data.errorMessage, openSnackbar: true })
+          this.setState({ message: error.response, openSnackbar: true })
           console.error("error in axios " + error);
         });
 
@@ -315,7 +318,7 @@ class ModuleAttendancePageTeacher extends Component {
             <select className="browser-default custom-select" style={{ maxWidth: 250 }} onChange={this.handleTableLectureDate} value={this.state.tableLectureDate}>
               <option>Date</option>
               {lectureAttendanceDate && lectureAttendanceDate.map(
-                (lecture) => <option key={lecture.id} value={lecture.id}>{lecture.date}</option>)
+                (lecture, index) => <option key={index} value={lecture.id}>{lecture.date}</option>)
               }
             </select>
             <MDBBtn onClick={this.getLectureAttendance}>Get</MDBBtn>
@@ -480,7 +483,7 @@ class ModuleAttendancePageTeacher extends Component {
             <select className="browser-default custom-select" style={{ maxWidth: 250 }} onChange={this.handleSelectTableTutorialGroup} value={this.state.tableTutorialGroup}>
               <option>Group</option>
               {this.state.tutorialList && this.state.tutorialList.map(
-                (group) => <option key={group.tutorialId} value={group.tutorialId}>Group {group.tutorialId}</option>)
+                (group, index) => <option key={index} value={group.tutorialId}>Group {group.tutorialId}</option>)
               }
             </select>
             {this.displayTutorialAttendanceDate()}
@@ -499,7 +502,6 @@ class ModuleAttendancePageTeacher extends Component {
   }
 
   displayTutorialAttendanceDate = () => {
-    var errorMsg = this.state.errorMsg;
     var tutorialAttendanceDate = []
     var allTutorialAttendance = this.state.allTutorialAttendance;
     if (this.state.allTutorialAttendance !== "") {
@@ -516,7 +518,7 @@ class ModuleAttendancePageTeacher extends Component {
         <select className="browser-default custom-select" style={{ maxWidth: 250 }} onChange={this.handleTableTutorialDate} value={this.state.tableTutorialDate}>
           <option>Date</option>
           {tutorialAttendanceDate && tutorialAttendanceDate.map(
-            (tutorial) => <option key={tutorial.id} value={tutorial.id}>{tutorial.date}</option>)
+            (tutorial, index) => <option key={index} value={tutorial.id}>{tutorial.date}</option>)
           }
         </select>
       )
