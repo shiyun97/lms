@@ -13,8 +13,7 @@ import {
 } from "mdbreact";
 import axios from "axios";
 import 'babel-polyfill';
-import ModuleSideNavigation from "./ModuleSideNavigation";
-import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
+import CoursepackSideNavigation from "./CoursepackSideNavigation";
 import {RichTextEditorStyled} from "./ModuleForumPage";
 import SectionContainer from "../components/sectionContainer";
 import Snackbar from '@material-ui/core/Snackbar';
@@ -28,15 +27,15 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-class ModuleForumDetailsPage extends Component {
+class CoursepackForumDetailsPage extends Component {
 
     state = {
-        moduleId: "",
+        coursepackId: "",
         replies: [],
         forumThread: {
             forumId: "",
             title: "",
-            description: "",
+            message: "",
             createTs: "",
             updateTs: "",
             numberOfReply: "",
@@ -71,13 +70,13 @@ class ModuleForumDetailsPage extends Component {
     }
 
     async initPage() {
-        let moduleId = this.props.match.params.moduleId;
+        let coursepackId = this.props.match.params.coursepackId;
         let forumId = this.props.match.params.forumId;
         console.log(forumId);
-        if (moduleId && forumId) {
+        if (coursepackId && forumId) {
             // retrieve forum thread posts by forumId
             this.setState({
-                moduleId: moduleId,
+                coursepackId: coursepackId,
                 forumId: forumId
             })
             await axios
@@ -161,7 +160,6 @@ class ModuleForumDetailsPage extends Component {
             });
     }
 
-    
     toggleModal = (nr)=> {
         let modalNumber = "modal" + nr;
         this.setState({
@@ -395,11 +393,8 @@ class ModuleForumDetailsPage extends Component {
         let forumThread = this.state.forumThread;
         return (
             <div className={this.props.className}>
-                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
-                <div className="module-navbar-small">
-                    <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Forum'}></ModuleSideNavigationDropdown>
-                </div>
                 <div className="module-content">
+                    <CoursepackSideNavigation courseId={this.props.match.params.coursepackId} />
                     <MDBContainer>
                         <MDBRow>
                             <MDBCol>
@@ -411,7 +406,7 @@ class ModuleForumDetailsPage extends Component {
                             <MDBCol>
                                 <ForumThreadListItemStyled key={forumThread.forumId}
                                     forumThread={forumThread}
-                                    moduleId={this.state.moduleId}
+                                    coursepackId={this.state.coursepackId}
                                     deleteForumPost={this.deleteForumPost}
                                     submitEditForumPost={this.submitEditForumPost}
                                     submitAddReply={this.submitAddReply}
@@ -424,7 +419,7 @@ class ModuleForumDetailsPage extends Component {
                                     replies.length > 0 && replies.map((forumThread) => (
                                         <ForumThreadListItemStyled key={forumThread.forumId} 
                                         forumThread={forumThread}
-                                        moduleId={this.state.moduleId}
+                                        coursepackId={this.state.coursepackId}
                                         deleteForumPost={this.deleteForumPost}
                                         submitEditForumPost={this.submitEditForumPost}
                                         submitAddReply={this.submitAddReply}
@@ -465,7 +460,7 @@ class ModuleForumDetailsPage extends Component {
     }
 }
 
-export default styled(ModuleForumDetailsPage)`
+export default styled(CoursepackForumDetailsPage)`
 .module-content{
     margin-top: 40px;
 }
@@ -616,7 +611,7 @@ class ForumThreadListItem extends Component {
         this.setState({
             editForumPostMode: false
         })
-        return this.props.submitEditForumPost(e, title, content)
+        return this.props.submitEditForumPost(e, title, content, this.props.forumThread.forumPostId);
     }
 
     setEditCommentMode = () => {
@@ -673,7 +668,7 @@ class ForumThreadListItem extends Component {
                                                 <input type="text" className="form-control" name="editForumTitleInput"
                                                     value={this.state.editForumTitleInput}
                                                     onChange={this.inputChangeHandler}
-                                                    disabled />
+                                                    required />
                                             </div>
                                         </div>
                                         <div className="form-row align-items-center mb-2">
@@ -681,7 +676,7 @@ class ForumThreadListItem extends Component {
                                                 <label className="mb-1" style={{ color: "#2F79B9", fontWeight: "600", fontSize: "16px", lineHeight: "1.2" }}>Content</label>
                                             </div>
                                             <div className="col-12">
-                                                <RichTextEditorStyled textEditorInputChange={this.textEditorInputChange} initial={forumThread.description}></RichTextEditorStyled>
+                                                <RichTextEditorStyled textEditorInputChange={this.textEditorInputChange} initial={forumThread.message}></RichTextEditorStyled>
                                             </div>
                                         </div>
                                         <div className="form-row align-items-right mb-2" style={{ float: "right" }}>
@@ -747,7 +742,7 @@ class ForumThreadListItem extends Component {
                             </MDBRow>
                             <MDBRow>
                                 <MDBCol>
-                                <div className="mt-3 ml-0" style={{ fontSize: "0.88rem", cursor: "pointer", float:"right" }}>
+                                    <div className="mt-3 ml-0" style={{ fontSize: "0.88rem", cursor: "pointer", float:"right" }}>
                                         <span onClick={e => this.setEditCommentMode(e, comment)}><MDBIcon icon="edit" className=" ml-3 mr-2"/>Edit</span>
                                         <span onClick={e => this.props.deleteComment(e, comment.forumPostId)}><MDBIcon icon="trash-alt" className=" ml-3 mr-2"/>Delete</span>
                                     </div>
@@ -771,7 +766,7 @@ class ForumThreadListItem extends Component {
                                 <input type="text" className="form-control" name="addReplyTitleInput"
                                     value={this.state.addReplyTitleInput}
                                     onChange={this.inputChangeHandler}
-                                    disabled />
+                                    required />
                             </div>
                         </div>
                         <div className="form-row align-items-center mb-2">

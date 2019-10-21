@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { observer, inject } from 'mobx-react'
+import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import { 
     MDBContainer, 
@@ -18,8 +18,7 @@ import {
 } from "mdbreact";
 import axios from "axios";
 import 'babel-polyfill';
-import ModuleSideNavigation from "./ModuleSideNavigation";
-import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
+import CoursepackSideNavigation from "./CoursepackSideNavigation";
 import SectionContainer from "../components/sectionContainer";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -37,10 +36,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 @inject('dataStore')
 @observer
-class ModuleForumTopicsPage extends Component {
+class CoursepackForumTopicsPage extends Component {
 
     state = {
-        moduleId: "",
+        coursepackId: "",
         topics: [],
         titleInput: "",
         contentInput: "",
@@ -72,21 +71,20 @@ class ModuleForumTopicsPage extends Component {
     }
 
     async initPage() {
-        let moduleId = this.props.match.params.moduleId;
-        if (moduleId) {
+        let coursepackId = this.props.match.params.coursepackId;
+        if (coursepackId) {
             this.setState({
-                moduleId: moduleId
+                coursepackId: coursepackId
             })
-            // retrieve forum topics by moduleID
+            // retrieve forum topics by coursepackId
             await axios
-                .get(API_URL + "/Forum/viewAllForumTopics?moduleId=" + moduleId)
+                .get(API_URL + "/Forum/viewAllForumTopicsForCoursepack?coursepackId=" + coursepackId)
                 .then((result) => {
                     if (result) {
                         console.log(result)
                         let data = result.data.forumTopics;
                         this.setState({
                             ...this.state,
-                            moduleId: moduleId,
                             topics: data
                         });
                     }
@@ -188,11 +186,15 @@ class ModuleForumTopicsPage extends Component {
 
         // api to create new topic
         axios
-            .post(`${API_URL}/Forum/createTopic?moduleId=${this.state.moduleId}&userId=${localStorage.getItem('userId')}`,
+            .post(`${API_URL}/Forum/createTopicForCoursepack?coursepackId=${this.state.coursepackId}&userId=${localStorage.getItem('userId')}`,
             request)
             .then((result) => {
                 console.log(result);
                 if (result) {
+                    this.setState({
+                        message: "Topic added successfully",
+                        openSnackbar: true
+                    })
                     return this.initPage();
                 }
             })
@@ -214,13 +216,11 @@ class ModuleForumTopicsPage extends Component {
     }
 
     enterTopic = (id) => {
-        this.props.dataStore.setPath(`/modules/${this.state.moduleId}/forum/topics/${id}`);
-        this.props.history.push(`/modules/${this.state.moduleId}/forum/topics/${id}`);
+        this.props.dataStore.setPath(`/coursepack/${this.state.coursepackId}/forum/topics/${id}`);
+        this.props.history.push(`/coursepack/${this.state.coursepackId}/forum/topics/${id}`);
     }
 
     deleteTopic = (id) => {
-        console.log(id)
-        // call api to delete
         this.setState({
             modalDelete: true,
             forumTopicToDelete: id
@@ -231,7 +231,7 @@ class ModuleForumTopicsPage extends Component {
         console.log(this.state.forumTopicToDelete)
         // call api to delete
         axios
-            .delete(`${API_URL}/Forum/deleteTopic?forumTopicId=${this.state.forumTopicToDelete}&userId=${localStorage.getItem('userId')}`)
+            .delete(`${API_URL}/Forum/deleteTopicForCoursepack?forumTopicId=${this.state.forumTopicToDelete}&userId=${localStorage.getItem('userId')}`)
             .then((result) => {
                 console.log(result);
                 if (result) {
@@ -395,11 +395,8 @@ class ModuleForumTopicsPage extends Component {
         let topics = this.state.topics;
         return (
             <div className={this.props.className}>
-                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
-                <div className="module-navbar-small">
-                    <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Forum'}></ModuleSideNavigationDropdown>
-                </div>
                 <div className="module-content">
+                    <CoursepackSideNavigation courseId={this.props.match.params.coursepackId} />
                     <MDBContainer>
                         <MDBRow>
                             <MDBCol>
@@ -414,7 +411,7 @@ class ModuleForumTopicsPage extends Component {
                                     topics.length > 0 && topics.map((topic) => (
                                         <TopicListItem key={topic.forumTopicId} 
                                         topic={topic}
-                                        moduleId={this.props.moduleId}
+                                        coursepackId={this.props.coursepackId}
                                         delete={e => {this.deleteTopic(topic.forumTopicId)}}
                                         edit={e => {this.editTopic(topic)}}
                                         enterTopic={e => {this.enterTopic(topic.forumTopicId)}}>
@@ -453,7 +450,7 @@ class ModuleForumTopicsPage extends Component {
     }
 }
 
-export default styled(ModuleForumTopicsPage)`
+export default styled(CoursepackForumTopicsPage)`
 .module-content{
     margin-top: 40px;
 }
@@ -500,7 +497,7 @@ class TopicListItem extends Component {
                             </div>
                         </MDBRow>
                         <MDBRow>
-                            <MDBIcon far icon="comment-alt" className="mr-2 mt-1" /><div style={{ fontSize: "0.9rem"}}>{topic.threads && topic.threads.length + " Discussion Thread"}</div>
+                            <MDBIcon far icon="comment-alt" className="mr-2 mt-1" /><div style={{ fontSize: "0.9rem"}}>{topic.threads && topic.threads.length ? topic.threads.length + " Discussion Thread" : "0 Discussion Threads"}</div>
                         </MDBRow>
                     </MDBCol>
                 </MDBRow>

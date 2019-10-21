@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { observer, inject } from 'mobx-react';
 import { withRouter } from "react-router-dom";
 import styled from 'styled-components';
 import {
@@ -31,6 +32,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 
 const API_URL = "http://localhost:8080/LMS-war/webresources";
 
+@inject('dataStore')
+@observer
 class ModuleClassGroupsPage extends Component {
 
     state = {
@@ -448,16 +451,19 @@ class ModuleClassGroupsPage extends Component {
 
     goToClassGroup = (classGroupId) => {
         console.log(classGroupId);
+        this.props.dataStore.setPath(`/modules/${this.state.moduleId}/students/class-groups/${classGroupId}`);
         this.props.history.push(`/modules/${this.state.moduleId}/students/class-groups/${classGroupId}`);
     }
 
     goToLectureGroup = (lectureGroupId) => {
         console.log(this.state.moduleId);
+        this.props.dataStore.setPath(`/modules/${this.state.moduleId}/students/lecture-groups/${1}`);
         this.props.history.push(`/modules/${this.state.moduleId}/students/lecture-groups/${1}`);
     }
 
     goToTutorialGroup = (tutorialGroupId) => {
         console.log(tutorialGroupId);
+        this.props.dataStore.setPath(`/modules/${this.state.moduleId}/students/tutorial-groups/${tutorialGroupId}`);
         this.props.history.push(`/modules/${this.state.moduleId}/students/tutorial-groups/${tutorialGroupId}`);
     }
 

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { observer, inject } from 'mobx-react'
 import { NavLink, withRouter } from "react-router-dom";
 import styled from 'styled-components';
 import { 
@@ -28,6 +29,8 @@ const API_URL = "http://localhost:8080/LMS-war/webresources";
 
 const FILE_SERVER = "http://127.0.0.1:8887/";
 
+@inject('dataStore')
+@observer
 class ModuleMultimediaPage extends Component {
 
     state = {
@@ -170,6 +173,7 @@ class ModuleMultimediaPage extends Component {
     }
 
     clickMultimedia = (id) => {
+        this.props.dataStore.setPath(`/modules/${this.state.moduleId}/multimedia/${id}`);
         this.props.history.push(`/modules/${this.state.moduleId}/multimedia/${id}`);
         /*var a = document.createElement('a');
         a.href = FILE_SERVER + name;
@@ -548,6 +552,11 @@ class ModuleMultimediaDetailsPage extends Component {
         }
     }
 
+    goToMultimediaMain = () => {
+        this.props.dataStore.setPath(`/modules/${this.props.match.params.moduleId}/multimedia`);
+        this.props.history.push(`/modules/${this.props.match.params.moduleId}/multimedia`);
+    }
+
     render() {
         return (
             <div className={this.props.className}>
@@ -561,7 +570,7 @@ class ModuleMultimediaDetailsPage extends Component {
                             <MDBCol>
                                 <MDBRow className="ml-1">
                                     <div style={{ color:"#007bff", fontWeight:"300", fontSize:"1.5rem", lineHeight:"1.2", marginBlockStart:"1.33em", cursor:"pointer", textDecoration:"underline" }} 
-                                        onClick={e => this.props.history.push(`/modules/${this.props.match.params.moduleId}/multimedia`)}>
+                                        onClick={e => this.goToMultimediaMain()}>
                                             Multimedia
                                     </div>
                                     

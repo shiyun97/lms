@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import { 
     MDBContainer, 
@@ -25,9 +26,17 @@ import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.bubble.css';
 import ReactHtmlParser from 'react-html-parser';
 import Snackbar from '@material-ui/core/Snackbar';
+import Slide from '@material-ui/core/Slide';
+import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
 
 const API_URL = "http://localhost:8080/LMS-war/webresources";
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
+@inject('dataStore')
+@observer
 class ModuleForumPage extends Component {
 
     state = {
@@ -38,7 +47,9 @@ class ModuleForumPage extends Component {
         message: "",
         openSnackbar: false,
         modalAdd: false,
-        modalEdit: false
+        modalEdit: false,
+        modalDelete: false,
+        threadToDelete: ""
     }
 
     handleOpenSnackbar = () => {
@@ -61,25 +72,24 @@ class ModuleForumPage extends Component {
         let moduleId = this.props.match.params.moduleId;
         let topicId = this.props.match.params.topicId;
         if (moduleId && topicId) {
+            this.setState({
+                moduleId: moduleId,
+                topicId: topicId
+            })
             // retrieve forum threads by moduleID
             await axios
                 .get(API_URL + "/Forum/viewAllThreadsByTopic?forumTopicId=" + topicId)
                 //.get("http://localhost:3001/forums")
                 .then((result) => {
                     if (result) {
+                        console.log(result)
                         this.setState({
                             ...this.state,
-                            moduleId: moduleId,
-                            topicId: topicId,
                             forumThreads: result.data.posts
                         });
                     }
                 })
                 .catch(error => {
-                    this.setState({
-                        message: error.response.data.errorMessage,
-                        openSnackbar: true
-                    })
                     console.error("error in axios " + error);
                 });
         }
@@ -172,27 +182,28 @@ class ModuleForumPage extends Component {
             request)
             .then((result) => {
                 console.log(result);
-                if (result) {
-                }
+                this.setState({
+                    ...this.state,
+                    titleInput: "",
+                    contentInput: "",
+                    modalAdd: false
+                })
+                return this.initPage()
             })
             .catch(error => {
                 this.setState({
                     message: error.response.data.errorMessage ? error.response.data.errorMessage : "An error occurred!",
-                    openSnackbar: true
+                    openSnackbar: true,
+                    titleInput: "",
+                    contentInput: "",
+                    modalAdd: false
                 })
                 console.error("error in axios " + error);
             });
-
-        this.setState({
-            ...this.state,
-            titleInput: "",
-            contentInput: "",
-            modalAdd: false
-        })
-        return this.initPage()
     }
 
     enterForumThread = (id) => {
+        this.props.dataStore.setPath(`/modules/${this.state.moduleId}/forum/topics/${this.state.topicId}/${id}`);
         this.props.history.push(`/modules/${this.state.moduleId}/forum/topics/${this.state.topicId}/${id}`);
     }
 
@@ -203,6 +214,70 @@ class ModuleForumPage extends Component {
     deleteForumThread = (id) => {
         console.log(id)
         // call api to delete
+        this.setState({
+            modalDelete: true,
+            threadToDelete: id
+        })
+    }
+
+    confirmDelete = () => {
+        if (this.state.threadToDelete) {
+            axios
+                .delete(`${API_URL}/Forum/deletePost?postId=${this.state.threadToDelete}&userId=${localStorage.getItem('userId')}`)
+                .then((result) => {
+                    console.log(result);
+                    if (result) {
+                        this.setState({
+                            message: "Topic deleted successfully",
+                            openSnackbar: true
+                        })
+                        return this.initPage();
+                    }
+                })
+                .catch(error => {
+                    this.setState({
+                        message: error.response.data.errorMessage ? error.response.data.errorMessage : "An error occurred!",
+                        openSnackbar: true
+                    })
+                    console.error("error in axios " + error);
+                });
+        }
+        this.setState({
+            ...this.state,
+            modalDelete: false,
+            threadToDelete: ""
+        })
+        return this.initPage()
+    }
+
+    renderDeleteDialog = () => {
+        return (
+            <div>
+                <Dialog
+                    open={this.state.modalDelete}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    onClose={e => this.toggleModal("Delete")}
+                    aria-labelledby="alert-dialog-slide-title"
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <DialogTitle id="alert-dialog-slide-title">{"Confirm Delete?"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-slide-description">
+                            This action is reversible.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={e => this.toggleModal("Delete")} color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={e => this.confirmDelete()} color="warning">
+                            Delete
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+        );
     }
 
     render() {
@@ -241,6 +316,7 @@ class ModuleForumPage extends Component {
                             </MDBCol>
                         </MDBRow>
                         {this.renderAddModal()}
+                        {this.renderDeleteDialog()}
                         <Snackbar
                             anchorOrigin={{
                                 vertical: 'bottom',
@@ -330,7 +406,7 @@ class ForumThreadListItem extends Component {
                         <MDBRow>
                             <MDBIcon icon="user" className="mr-2 fa-fw mt-1" />
                             <div style={{ fontSize: "0.9rem", color: "#909090"}}>
-                            by {forumThread.owner.firstName + " " + forumThread.owner.lastName + " on " + new Date(forumThread.createTs).toLocaleString()}
+                            by {forumThread.owner.firstName + " " + forumThread.owner.lastName + " on " + new Date(forumThread.createTs).toLocaleString()  + " (Updated on " + new Date(forumThread.updateTs).toLocaleString() + ")"}
                             </div>
                         </MDBRow>
                         <MDBRow>

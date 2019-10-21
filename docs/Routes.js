@@ -108,6 +108,9 @@ import ModuleQuizPageViewStudents from "./dev/Teacher/ModuleQuizPageViewStudents
 import ModuleQuizPageViewStudentAttempt from "./dev/Teacher/ModuleQuizPageViewStudentAttempt";
 import CoursepackFeedbackTeacher from "./dev/Teacher/CoursepackFeedbackTeacher";
 import CoursepackCategoryView from "./dev/CoursepackCategoryView";
+import CoursepackForumTopicsPage from "./dev/CoursepackForumTopicsPage";
+import CoursepackForumPage from "./dev/CoursepackForumPage";
+import CoursepackForumDetailsPage from "./dev/CoursepackForumDetailsPage";
 
 @inject('dataStore')
 @observer
@@ -202,7 +205,7 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/students/tutorial-groups/:tutorialGroupId" component={TutorialGroupDetailsStyled} />
         <Route exact path="/modules/:moduleId/forum/topics" component={ModuleForumTopicsPage} />
         <Route exact path="/modules/:moduleId/forum/topics/:topicId" component={ModuleForumPage} />
-        <Route exact path="/modules/:moduleId/forum/topics/:topicId/:threadId" component={ModuleForumDetailsPage} />
+        <Route exact path="/modules/:moduleId/forum/topics/:topicId/:forumId" component={ModuleForumDetailsPage} />
         <Route exact path="/modules/:moduleId/gradebook" component={ModuleGradebookPage} />
         <Route exact path="/modules/:moduleId/quiz" component={ModuleQuizPage} />
         <Route exact path="/modules/:moduleId/multimedia" component={ModuleMultimediaPage} />
@@ -216,6 +219,9 @@ class Routes extends React.Component {
         <Route exact path="/coursepack/:coursepackId/" component={CoursepackDetails} />
         <Route exact path="/coursepack/:category/list" component={CoursepackCategoryView} />
         <Route exact path="/coursepack/:coursepackId/multimedia" component={CoursepackMultimediaPage} />
+        <Route exact path="/coursepack/:coursepackId/forum/topics" component={CoursepackForumTopicsPage} />
+        <Route exact path="/coursepack/:coursepackId/forum/topics/:topicId" component={CoursepackForumPage} />
+        <Route exact path="/coursepack/:coursepackId/forum/topics/:topicId/:forumId" component={CoursepackForumDetailsPage} />
 
         {/* FREE Templates */}
         <Route exact path="/home" component={HomePage} />

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import {
     MDBContainer,
@@ -14,6 +15,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 import * as Survey from "survey-react";
 import "survey-react/survey.css";
 
+@inject('dataStore')
+@observer
 class ModuleFeedbackEvaluationPage extends Component {
 
     constructor(props) {
@@ -157,6 +160,7 @@ class ModuleFeedbackEvaluationPage extends Component {
     }
 
     goToFeedBackMainPage = () => {
+        this.props.dataStore.setPath(`/modules/${this.state.moduleId}/feedback`);
         this.props.history.push(`/modules/${this.state.moduleId}/feedback`);
     }
 

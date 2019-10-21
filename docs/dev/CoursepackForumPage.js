@@ -18,8 +18,7 @@ import {
 } from "mdbreact";
 import axios from "axios";
 import 'babel-polyfill';
-import ModuleSideNavigation from "./ModuleSideNavigation";
-import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
+import CoursepackSideNavigation from "./CoursepackSideNavigation";
 import SectionContainer from "../components/sectionContainer";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -37,22 +36,19 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 @inject('dataStore')
 @observer
-class ModuleForumTopicsPage extends Component {
+class CoursepackForumPage extends Component {
 
     state = {
-        moduleId: "",
-        topics: [],
+        coursepackId: "",
+        forumThreads: [],
         titleInput: "",
         contentInput: "",
         message: "",
         openSnackbar: false,
         modalAdd: false,
         modalEdit: false,
-        editTitleInput: "",
-        editContentInput: "",
-        forumTopicIdToEdit: "",
-        modalDelete: "",
-        forumTopicToDelete: ""
+        modalDelete: false,
+        threadToDelete: ""
     }
 
     handleOpenSnackbar = () => {
@@ -72,31 +68,27 @@ class ModuleForumTopicsPage extends Component {
     }
 
     async initPage() {
-        let moduleId = this.props.match.params.moduleId;
-        if (moduleId) {
+        let coursepackId = this.props.match.params.coursepackId;
+        let topicId = this.props.match.params.topicId;
+        if (coursepackId && topicId) {
             this.setState({
-                moduleId: moduleId
+                coursepackId: coursepackId,
+                topicId: topicId
             })
-            // retrieve forum topics by moduleID
+            // retrieve forum threads by topicId
             await axios
-                .get(API_URL + "/Forum/viewAllForumTopics?moduleId=" + moduleId)
+                .get(API_URL + "/Forum/viewAllThreadsByTopic?forumTopicId=" + topicId)
+                //.get("http://localhost:3001/forums")
                 .then((result) => {
                     if (result) {
                         console.log(result)
-                        let data = result.data.forumTopics;
                         this.setState({
                             ...this.state,
-                            moduleId: moduleId,
-                            topics: data
+                            forumThreads: result.data.posts
                         });
                     }
-
                 })
                 .catch(error => {
-                    this.setState({
-                        //message: error.response.data.errorMessage ? error.response.data.errorMessage : "An error occurred!",
-                        //openSnackbar: true
-                    })
                     console.error("error in axios " + error);
                 });
         }
@@ -109,7 +101,7 @@ class ModuleForumTopicsPage extends Component {
         });
     };
 
-    newTopic = () => {
+    newThread = () => {
         this.setState({
             modalAdd: true
         })
@@ -125,7 +117,7 @@ class ModuleForumTopicsPage extends Component {
                 <MDBModalHeader className="text-center"
                     titleClass="w-100"
                     toggle={this.toggleModal("Add")}>
-                    Add Discussion Topic
+                    Start a Discussion Thread
                 </MDBModalHeader>
                 <form className="needs-validation" noValidate onSubmit={this.submitAddHandler}>
                     <MDBModalBody>
@@ -145,10 +137,7 @@ class ModuleForumTopicsPage extends Component {
                                 <label className="mb-1">Content</label>
                             </div>
                             <div className="col-12">
-                                <textarea type="text" className="form-control" name="contentInput"
-                                    value={this.state.contentInput}
-                                    onChange={this.inputChangeHandler}
-                                    required />
+                                <RichTextEditorStyled textEditorInputChange={this.textEditorInputChange} initial={""}></RichTextEditorStyled>
                             </div>
                         </div>
                     </MDBModalBody>
@@ -186,179 +175,74 @@ class ModuleForumTopicsPage extends Component {
             message: this.state.contentInput
         }
 
-        // api to create new topic
+        // api to create new thread
         axios
-            .post(`${API_URL}/Forum/createTopic?moduleId=${this.state.moduleId}&userId=${localStorage.getItem('userId')}`,
+            .put(`${API_URL}/Forum/createThread?forumTopicId=${this.state.topicId}&userId=${localStorage.getItem('userId')}`,
             request)
             .then((result) => {
                 console.log(result);
-                if (result) {
-                    return this.initPage();
-                }
+                this.setState({
+                    ...this.state,
+                    titleInput: "",
+                    contentInput: "",
+                    modalAdd: false
+                })
+                return this.initPage()
             })
             .catch(error => {
                 this.setState({
                     message: error.response.data.errorMessage ? error.response.data.errorMessage : "An error occurred!",
-                    openSnackbar: true
+                    openSnackbar: true,
+                    titleInput: "",
+                    contentInput: "",
+                    modalAdd: false
                 })
                 console.error("error in axios " + error);
             });
-
-        this.setState({
-            ...this.state,
-            titleInput: "",
-            contentInput: "",
-            modalAdd: false
-        })
-        return this.initPage()
     }
 
-    enterTopic = (id) => {
-        this.props.dataStore.setPath(`/modules/${this.state.moduleId}/forum/topics/${id}`);
-        this.props.history.push(`/modules/${this.state.moduleId}/forum/topics/${id}`);
+    enterForumThread = (id) => {
+        this.props.dataStore.setPath(`/coursepack/${this.state.coursepackId}/forum/topics/${this.state.topicId}/${id}`);
+        this.props.history.push(`/coursepack/${this.state.coursepackId}/forum/topics/${this.state.topicId}/${id}`);
     }
 
-    deleteTopic = (id) => {
+    deleteForumThread = (id) => {
         console.log(id)
         // call api to delete
         this.setState({
             modalDelete: true,
-            forumTopicToDelete: id
+            threadToDelete: id
         })
     }
 
     confirmDelete = () => {
-        console.log(this.state.forumTopicToDelete)
-        // call api to delete
-        axios
-            .delete(`${API_URL}/Forum/deleteTopic?forumTopicId=${this.state.forumTopicToDelete}&userId=${localStorage.getItem('userId')}`)
-            .then((result) => {
-                console.log(result);
-                if (result) {
+        if (this.state.threadToDelete) {
+            axios
+                .delete(`${API_URL}/Forum/deletePost?postId=${this.state.threadToDelete}&userId=${localStorage.getItem('userId')}`)
+                .then((result) => {
+                    console.log(result);
+                    if (result) {
+                        this.setState({
+                            message: "Topic deleted successfully",
+                            openSnackbar: true
+                        })
+                        return this.initPage();
+                    }
+                })
+                .catch(error => {
                     this.setState({
-                        message: "Topic deleted successfully",
+                        message: error.response.data.errorMessage ? error.response.data.errorMessage : "An error occurred!",
                         openSnackbar: true
                     })
-                    return this.initPage();
-                }
-            })
-            .catch(error => {
-                this.setState({
-                    message: error.response.data.errorMessage ? error.response.data.errorMessage : "An error occurred!",
-                    openSnackbar: true
-                })
-                console.error("error in axios " + error);
-            });
-
+                    console.error("error in axios " + error);
+                });
+        }
         this.setState({
             ...this.state,
             modalDelete: false,
-            forumTopicToDelete: ""
+            threadToDelete: ""
         })
         return this.initPage()
-    }
-
-    editTopic = (topic) => {
-        console.log(topic)
-        this.setState({
-            editTitleInput: topic.title,
-            editContentInput: topic.description,
-            modalEdit: true,
-            forumTopicIdToEdit: topic.forumTopicId
-        })
-    }
-
-    submitEditHandler = event => {
-        event.preventDefault();
-        event.target.className += " was-validated";
-        console.log(this.state.editTitleInput)
-        console.log(this.state.editContentInput)
-        if (!this.state.editTitleInput || !this.state.editContentInput || !this.state.forumTopicIdToEdit) {
-            return;
-        }
-        let request = {
-            title: this.state.editTitleInput,
-            message: this.state.editContentInput
-        }
-
-        // api to edit topic
-        axios
-            .put(`${API_URL}/Forum/editTopic?forumTopicId=${this.state.forumTopicIdToEdit}&userId=${localStorage.getItem('userId')}`,
-            request)
-            .then((result) => {
-                console.log(result);
-                if (result) {
-                    this.setState({
-                        message: "Topic edited successfully",
-                        openSnackbar: true
-                    })
-                    return this.initPage();
-                }
-            })
-            .catch(error => {
-                this.setState({
-                    message: error.response.data.errorMessage ? error.response.data.errorMessage : "An error occurred!",
-                    openSnackbar: true
-                })
-                console.error("error in axios " + error);
-            });
-
-        this.setState({
-            ...this.state,
-            editTitleInput: "",
-            editContentInput: "",
-            modalEdit: false,
-            forumTopicIdToEdit: ""
-        })
-        return this.initPage()
-    }
-
-    renderEditModal = () => {
-        return (
-            <MDBModal
-                isOpen={this.state.modalEdit}
-                toggle={this.toggleModal("Edit")}
-                size="lg"
-            >
-                <MDBModalHeader className="text-center"
-                    titleClass="w-100"
-                    toggle={this.toggleModal("Edit")}>
-                    Edit Discussion Topic
-                </MDBModalHeader>
-                <form className="needs-validation" noValidate onSubmit={this.submitEditHandler}>
-                    <MDBModalBody>
-                        <div className="form-row align-items-center mb-2">
-                            <div className="col-12">
-                                <label className="mb-1">Title</label>
-                            </div>
-                            <div className="col-12">
-                                <input type="text" className="form-control" name="editTitleInput"
-                                    value={this.state.editTitleInput}
-                                    onChange={this.inputChangeHandler}
-                                    required />
-                            </div>
-                        </div>
-                        <div className="form-row align-items-center mb-2">
-                            <div className="col-12">
-                                <label className="mb-1">Content</label>
-                            </div>
-                            <div className="col-12">
-                                <textarea type="text" className="form-control" name="editContentInput"
-                                    value={this.state.editContentInput}
-                                    onChange={this.inputChangeHandler}
-                                    required />
-                            </div>
-                        </div>
-                    </MDBModalBody>
-                    <MDBModalFooter>
-                        <MDBBtn color="grey" onClick={this.toggleModal("Edit")}>
-                            Cancel
-                        </MDBBtn>
-                        <MDBBtn color="primary" type="submit" disabled={!this.state.editTitleInput || !this.state.editContentInput} >Create</MDBBtn>
-                    </MDBModalFooter>
-                </form>
-            </MDBModal>
-        )
     }
 
     renderDeleteDialog = () => {
@@ -392,14 +276,11 @@ class ModuleForumTopicsPage extends Component {
     }
 
     render() {
-        let topics = this.state.topics;
+        let forumThreads = this.state.forumThreads;
         return (
             <div className={this.props.className}>
-                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
-                <div className="module-navbar-small">
-                    <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Forum'}></ModuleSideNavigationDropdown>
-                </div>
                 <div className="module-content">
+                    <CoursepackSideNavigation courseId={this.props.match.params.coursepackId} />
                     <MDBContainer>
                         <MDBRow>
                             <MDBCol>
@@ -409,26 +290,24 @@ class ModuleForumTopicsPage extends Component {
                         </MDBRow>
                         <MDBRow>
                             <MDBCol>
-                                <MDBBtn className="ml-0 mb-4" color="primary" block onClick={e => {this.newTopic()}}>Add New Discussion Category</MDBBtn>
+                                <MDBBtn className="ml-0 mb-4" color="primary" block onClick={e => {this.newThread()}}>Start New Thread</MDBBtn>
                                 {
-                                    topics.length > 0 && topics.map((topic) => (
-                                        <TopicListItem key={topic.forumTopicId} 
-                                        topic={topic}
-                                        moduleId={this.props.moduleId}
-                                        delete={e => {this.deleteTopic(topic.forumTopicId)}}
-                                        edit={e => {this.editTopic(topic)}}
-                                        enterTopic={e => {this.enterTopic(topic.forumTopicId)}}>
-                                        </TopicListItem>
+                                    forumThreads.length > 0 && forumThreads.map((forumThread) => (
+                                        <ForumThreadListItem key={forumThread.forumPostId} 
+                                        forumThread={forumThread}
+                                        coursepackId={this.props.coursepackId}
+                                        delete={e => {this.deleteForumThread(forumThread.forumPostId)}}
+                                        enterForumThread={e => {this.enterForumThread(forumThread.forumPostId)}}>
+                                        </ForumThreadListItem>
                                     ))
                                 }
                                 {
-                                    topics.length == 0 &&
+                                    forumThreads.length == 0 &&
                                     <div>No forum threads available</div>
                                 }
                             </MDBCol>
                         </MDBRow>
                         {this.renderAddModal()}
-                        {this.renderEditModal()}
                         {this.renderDeleteDialog()}
                         <Snackbar
                             anchorOrigin={{
@@ -453,7 +332,7 @@ class ModuleForumTopicsPage extends Component {
     }
 }
 
-export default styled(ModuleForumTopicsPage)`
+export default styled(CoursepackForumPage)`
 .module-content{
     margin-top: 40px;
 }
@@ -476,31 +355,55 @@ export default styled(ModuleForumTopicsPage)`
         display: block;
     }
 }
+.ql-size-huge {
+    content: 'Huge';
+    font-size: 2.5em !important;
+}
+
+.ql-size-large {
+    content: 'Huge';
+    font-size: 1.5em !important;
+}
+
+.ql-size-small {
+    content: 'Huge';
+    font-size: 0.75em !important;
+}
+.ql-align-center {
+    text-align: center;
+    float: center;
+}
 `;
 
-class TopicListItem extends Component {
+class ForumThreadListItem extends Component {
+
     render() {
-        let topic = this.props.topic;
+        let forumThread = this.props.forumThread;
         return <div className="container-fluid section border p-3 justify-content d-flex mb-2">
-            <MDBCol sm="12">
+            <MDBCol sm="2" md="2" lg="1">
+                <div style={{verticalAlign: "middle"}}>
+                <MDBIcon icon="user-circle" size="3x" className="ml-0 mt-3" style={{ color: "#808080" }} />
+                </div>
+            </MDBCol>
+            <MDBCol sm="10" md="10" lg="11">
                 <MDBRow>
-                        <div className="mb-2 mt-0 ml-0" 
+                    <div className="mb-2 mt-0 ml-0" 
                             style={{ color: "#2F79B9", fontWeight: "600", fontSize: "16px", lineHeight: "1.2", cursor: "pointer", 
                             textDecoration: "underline", overflow: "hidden" }}>
-                            <span onClick={this.props.enterTopic}>{topic.title}</span>
-                            <MDBIcon icon="edit" className="indigo-text mt-2 ml-3" size="md" onClick={this.props.edit} />
-                            <MDBIcon icon="trash-alt" className="indigo-text mt-2 ml-2" size="md" onClick={this.props.delete} />
+                            <span onClick={this.props.enterForumThread}>{forumThread.title}</span>
+                            <MDBIcon icon="trash-alt" className="indigo-text mt-2 ml-3" size="md" onClick={this.props.delete} />
                         </div>
                 </MDBRow>
                 <MDBRow>
                     <MDBCol>
                         <MDBRow>
-                            <div style={{ fontSize: "0.9rem", color: "#909090" }} className="mb-2">
-                                {topic.description}
+                            <MDBIcon icon="user" className="mr-2 fa-fw mt-1" />
+                            <div style={{ fontSize: "0.9rem", color: "#909090"}}>
+                            by {forumThread.owner.firstName + " " + forumThread.owner.lastName + " on " + new Date(forumThread.createTs).toLocaleString() + " (Updated on " + new Date(forumThread.updateTs).toLocaleString() + ")"}
                             </div>
                         </MDBRow>
                         <MDBRow>
-                            <MDBIcon far icon="comment-alt" className="mr-2 mt-1" /><div style={{ fontSize: "0.9rem"}}>{topic.threads && topic.threads.length + " Discussion Thread"}</div>
+                            <MDBIcon far icon="comments" className="mr-2 mt-1" /><div style={{ fontSize: "0.9rem"}}>{forumThread.replies.length + " Replies"}</div>
                         </MDBRow>
                     </MDBCol>
                 </MDBRow>
@@ -508,3 +411,77 @@ class TopicListItem extends Component {
         </div>
     }
 }
+
+
+class RichTextEditor extends Component {
+	constructor(props) {
+		super(props);
+
+		this.modules = {
+			toolbar: [
+		      [{ 'font': [] }],
+		      [{ 'size': ['small', false, 'large', 'huge'] }],
+		      ['bold', 'italic', 'underline'],
+		      [{'list': 'ordered'}, {'list': 'bullet'}],
+		      [{ 'align': [] }],
+		      [{ 'color': [] }, { 'background': [] }],
+		      ['clean']
+		    ]
+		};
+
+		this.formats = [
+		    'font',
+		    'size',
+		    'bold', 'italic', 'underline',
+		    'list', 'bullet',
+		    'align',
+		    'color', 'background'
+	  	];
+
+	  	this.state = {
+            comments: this.props.initial
+		}
+
+		this.rteChange = this.rteChange.bind(this);
+	}
+
+	rteChange = (content, delta, source, editor) => {
+		//console.log(editor.getHTML()); // rich text
+        //console.log(editor.getText()); // plain text
+        //var text = editor.getHTML();
+        this.setState({
+            ...this.state,
+            comments: content
+        })
+        this.props.textEditorInputChange(content);
+    }
+
+    render() {
+        const comments = this.state.comments
+        return (
+            <div className={this.props.className}>
+                <form onSubmit={e => this.props.submitTextEditor(e, comments)}>
+                    <MDBRow>
+                        <MDBCol>
+                            <ReactQuill modules={this.modules}
+                                formats={this.formats} onChange={this.rteChange}
+                                value={this.state.comments || ''} />
+                        </MDBCol>
+                    </MDBRow>
+                </form>
+            </div>
+        );
+    }
+}
+
+export const RichTextEditorStyled = styled(RichTextEditor)`
+.ql-container {
+    height: auto !important;
+  }
+
+  .ql-editor {
+    min-height: 100px !important;
+    height: auto !important;
+    max-width: 1000px;
+  }
+`

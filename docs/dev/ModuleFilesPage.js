@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { observer, inject } from 'mobx-react';
 import { NavLink, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { 
@@ -29,6 +30,8 @@ const API_URL = "http://localhost:8080/LMS-war/webresources";
 
 const FILE_SERVER = "http://127.0.0.1:8887/";
 
+@inject('dataStore')
+@observer
 class ModuleFilesPage extends Component {
 
     state = {
@@ -319,6 +322,7 @@ class ModuleFilesPage extends Component {
 
     goToFolder = (folderId) => {
         let moduleId = this.state.moduleId;
+        this.props.dataStore.setPath(`/modules/${moduleId}/files/${folderId}`);
         this.props.history.push(`/modules/${moduleId}/files/${folderId}`);
         return this.initPage()
     }

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import {
     MDBContainer,
@@ -17,6 +18,8 @@ import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
 import axios from "axios";
 import Snackbar from '@material-ui/core/Snackbar';
 
+@inject('dataStore')
+@observer
 class ModuleFeedbackPage extends Component {
 
     state = {
@@ -262,6 +265,7 @@ class ModuleFeedbackPage extends Component {
     }
 
     goToSemesterEvaluation = () => {
+        this.props.dataStore.setPath(`/modules/${this.state.moduleId}/feedback/evaluation`);
         this.props.history.push(`/modules/${this.state.moduleId}/feedback/evaluation`);
     }
 
