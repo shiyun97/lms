@@ -641,8 +641,12 @@ class ForumThreadListItem extends Component {
                                 textDecoration: "underline", overflow: "hidden"
                             }}>
                             <span onClick={this.props.enterForumThread}>{forumThread.title}</span>
-                            <MDBIcon icon="edit" className="indigo-text mt-2 mr-2 ml-4" size="md" onClick={e => this.setEditForumPostMode()} />
-                            <MDBIcon icon="trash-alt" className="indigo-text mt-2 mr-0" size="md" onClick={e => this.props.deleteForumPost(e, forumThread.forumPostId)} />
+                            {
+                                userId == forumThread.owner.userId && <span>
+                                    <MDBIcon icon="edit" className="indigo-text mt-2 mr-2 ml-4" size="md" onClick={e => this.setEditForumPostMode()} />
+                                    <MDBIcon icon="trash-alt" className="indigo-text mt-2 mr-0" size="md" onClick={e => this.props.deleteForumPost(e, forumThread.forumPostId)} />
+                                </span>
+                            }
                         </div>
                     </MDBRow>
                     <MDBRow>
@@ -740,14 +744,17 @@ class ForumThreadListItem extends Component {
                                     <MDBRow><hr className="mr-0 ml-0 mb-0" /></MDBRow>
                                 </MDBCol>
                             </MDBRow>
-                            <MDBRow>
-                                <MDBCol>
-                                    <div className="mt-3 ml-0" style={{ fontSize: "0.88rem", cursor: "pointer", float:"right" }}>
-                                        <span onClick={e => this.setEditCommentMode(e, comment)}><MDBIcon icon="edit" className=" ml-3 mr-2"/>Edit</span>
-                                        <span onClick={e => this.props.deleteComment(e, comment.forumPostId)}><MDBIcon icon="trash-alt" className=" ml-3 mr-2"/>Delete</span>
-                                    </div>
-                                </MDBCol>
-                            </MDBRow>
+                            {
+                                comment.owner.userId == userId &&
+                                <MDBRow>
+                                    <MDBCol>
+                                        <div className="mt-3 ml-0" style={{ fontSize: "0.88rem", cursor: "pointer", float: "right" }}>
+                                            <span onClick={e => this.setEditCommentMode(e, comment)}><MDBIcon icon="edit" className=" ml-3 mr-2" />Edit</span>
+                                            <span onClick={e => this.props.deleteComment(e, comment.forumPostId)}><MDBIcon icon="trash-alt" className=" ml-3 mr-2" />Delete</span>
+                                        </div>
+                                    </MDBCol>
+                                </MDBRow>
+                            }
                         </MDBCol>
                     </div>
                 ))

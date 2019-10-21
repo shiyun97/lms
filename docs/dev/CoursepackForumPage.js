@@ -391,7 +391,10 @@ class ForumThreadListItem extends Component {
                             style={{ color: "#2F79B9", fontWeight: "600", fontSize: "16px", lineHeight: "1.2", cursor: "pointer", 
                             textDecoration: "underline", overflow: "hidden" }}>
                             <span onClick={this.props.enterForumThread}>{forumThread.title}</span>
-                            <MDBIcon icon="trash-alt" className="indigo-text mt-2 ml-3" size="md" onClick={this.props.delete} />
+                            {
+                                forumThread.owner.userId == localStorage.getItem('userId') &&
+                                <MDBIcon icon="trash-alt" className="indigo-text mt-2 ml-3" size="md" onClick={this.props.delete} />
+                            }
                         </div>
                 </MDBRow>
                 <MDBRow>

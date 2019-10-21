@@ -87,7 +87,8 @@ class ModuleForumTopicsPage extends Component {
                         this.setState({
                             ...this.state,
                             moduleId: moduleId,
-                            topics: data
+                            topics: data,
+                            ownerId: result.data.owner.userId
                         });
                     }
 
@@ -413,6 +414,7 @@ class ModuleForumTopicsPage extends Component {
                                 {
                                     topics.length > 0 && topics.map((topic) => (
                                         <TopicListItem key={topic.forumTopicId} 
+                                        ownerId={this.state.ownerId}
                                         topic={topic}
                                         moduleId={this.props.moduleId}
                                         delete={e => {this.deleteTopic(topic.forumTopicId)}}
@@ -488,8 +490,13 @@ class TopicListItem extends Component {
                             style={{ color: "#2F79B9", fontWeight: "600", fontSize: "16px", lineHeight: "1.2", cursor: "pointer", 
                             textDecoration: "underline", overflow: "hidden" }}>
                             <span onClick={this.props.enterTopic}>{topic.title}</span>
-                            <MDBIcon icon="edit" className="indigo-text mt-2 ml-3" size="md" onClick={this.props.edit} />
-                            <MDBIcon icon="trash-alt" className="indigo-text mt-2 ml-2" size="md" onClick={this.props.delete} />
+                            {
+                                this.props.ownerId == localStorage.getItem('userId') &&
+                                <span>
+                                    <MDBIcon icon="edit" className="indigo-text mt-2 ml-3" size="md" onClick={this.props.edit} />
+                                    <MDBIcon icon="trash-alt" className="indigo-text mt-2 ml-2" size="md" onClick={this.props.delete} />
+                                </span>
+                            }
                         </div>
                 </MDBRow>
                 <MDBRow>
