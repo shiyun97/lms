@@ -90,8 +90,13 @@ import AdminLoginPage from "./dev/Admin/AdminLoginPage";
 import StudentLoginPage from "./dev/Student/StudentLoginPage";
 import MobileLogin from "./dev/Student/MobileLogin";
 import ModuleQuizPageCreateQuiz from './dev/Teacher/ModuleQuizPageCreateQuiz';
-import ModuleQuizPageAnswerNormalQuiz from "./dev/Student/ModuleQuizPageAnswerNormalQuiz";
+import ModuleQuizPageAnswerQuiz from "./dev/Student/ModuleQuizPageAnswerQuiz";
 import ModuleForumTopicsPage from "./dev/ModuleForumTopicsPage";
+import ModuleQuizPageViewStudents from "./dev/Teacher/ModuleQuizPageViewStudents";
+import ModuleQuizPageViewStudentAttempt from "./dev/Teacher/ModuleQuizPageViewStudentAttempt";
+import ModuleGradebookPageTeacherViewGrades from "./dev/Teacher/ModuleGradebookPageTeacherViewGrades";
+import AccessDeniedPage from "./dev/AccessDeniedPage";
+import DashboardPageAdmin from "./dev/Admin/DashboardPageAdmin";
 
 //COURSEPACK IMPORTS
 import CoursepackEnrolledCourses from './dev/CoursepackEnrolledCourses';
@@ -102,16 +107,11 @@ import CoursepackMultimediaPage from './dev/CoursepackMultimediaPage';
 import CoursepackArrangements from "./dev/Teacher/CoursepackArrangement";
 import CoursepackEdit from "./dev/Teacher/CoursepackEdit";
 import CoursepackView from "./dev/CoursepackView";
-import AccessDeniedPage from "./dev/AccessDeniedPage";
-import DashboardPageAdmin from "./dev/Admin/DashboardPageAdmin";
-import ModuleQuizPageViewStudents from "./dev/Teacher/ModuleQuizPageViewStudents";
-import ModuleQuizPageViewStudentAttempt from "./dev/Teacher/ModuleQuizPageViewStudentAttempt";
 import CoursepackFeedbackPage from "./dev/CoursepackFeedbackPage";
 import CoursepackCategoryView from "./dev/CoursepackCategoryView";
 import CoursepackForumTopicsPage from "./dev/CoursepackForumTopicsPage";
 import CoursepackForumPage from "./dev/CoursepackForumPage";
 import CoursepackForumDetailsPage from "./dev/CoursepackForumDetailsPage";
-import ModuleGradebookPageTeacherViewGrades from "./dev/Teacher/ModuleGradebookPageTeacherViewGrades";
 
 @inject('dataStore')
 @observer
@@ -178,7 +178,7 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/gradebook/:gradeItemId/viewGrades" component={ModuleGradebookPageTeacherViewGrades} />
 
         {/* LMS PAGES - Student */}
-        <Route exact path="/modules/:moduleId/quiz/:quizId" component={ModuleQuizPageAnswerNormalQuiz} />
+        <Route exact path="/modules/:moduleId/quiz/:quizId" component={ModuleQuizPageAnswerQuiz} />
         <Route exact path="/modules/:moduleId/markAttendanceStudent" component={MarkAttendanceStudent} />
         <Route exact path="/student/markAttendance" component={MarkAttendanceStudent} />
         <Route exact path="/student/mobileLogin/:classType/:classId/:attendanceId" component={MobileLogin} />
