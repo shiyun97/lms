@@ -5,7 +5,6 @@ import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Snackbar } from '@material-ui/core';
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
-import moment from 'moment';
 
 @inject('dataStore')
 @observer
@@ -20,20 +19,11 @@ class ModuleGradebookPageTeacher extends Component {
         openingDate: "",
         closingDate: "",
         quizStatus: "",
-        quizzes: [],
+        gradeItems: [],
         columns: [
             {
-                "label": "Quiz Id",
-                "field": "quizId",
-                "width": 50,
-                "attributes": {
-                    "aria-controls": "DataTable",
-                    "aria-label": "Name"
-                }
-            },
-            {
-                "label": "Name",
-                "field": "name",
+                "label": "Grade Item",
+                "field": "gradeItem",
                 "width": 150,
                 "attributes": {
                     "aria-controls": "DataTable",
@@ -41,24 +31,34 @@ class ModuleGradebookPageTeacher extends Component {
                 }
             },
             {
-                "label": "Opening Date",
-                "field": "openingDate",
-                "width": 200
+                "label": "Grade Item ID",
+                "field": "gradeItemId",
+                "width": 150,
             },
             {
-                "label": "Closing Date",
-                "field": "closingDate",
-                "width": 100
+                "label": "Description",
+                "field": "description",
+                "width": 150,
             },
             {
-                "label": "Status",
-                "field": "Status",
-                "width": 100
+                "label": "Max Marks",
+                "field": "maxMarks",
+                "width": 150,
             },
             {
                 "label": "",
-                "field": "attempt",
-                "width": 100
+                "field": "buttons",
+                "width": 150,
+            },
+            {
+                "label": "View Grades",
+                "field": "viewGrades",
+                "width": 150,
+            },
+            {
+                "label": "Publish Grades",
+                "field": "publishGrades",
+                "width": 150,
             }
         ],
         rows: [{ label: "Retrieving data..." }],
@@ -70,12 +70,12 @@ class ModuleGradebookPageTeacher extends Component {
 
     componentDidMount() {
         this.initPage();
-        this.getAllModuleQuizzes();
+        this.getAllGradeItem();
     }
 
     componentDidUpdate() {
         if (this.state.recallGradebook) {
-            // this.getAllModuleQuizzes();
+            this.getAllGradeItem();
         }
     }
 
@@ -95,48 +95,46 @@ class ModuleGradebookPageTeacher extends Component {
         }
     };
 
-    getAllModuleQuizzes = () => {
+    getAllGradeItem = () => {
         let userId = localStorage.getItem('userId');
         let moduleId = this.props.dataStore.getCurrModId;
         axios
-            .get(` http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllModuleQuiz/${moduleId}?userId=${userId}`)
+            .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveGradeItems/${moduleId}?userId=${userId}`)
             .then(result => {
-                // console.log(result.data.quizzes)
-                this.setState({ status: "done", quizzes: result.data.quizzes })
+                // console.log(result.data.gradeItems)
+                this.setState({ status: "done", gradeItems: result.data.gradeItems })
             })
             .catch(error => {
-                this.setState({ status: "error" })
+                this.setState({ status: "error", label: error.response.data.errorMessage })
                 console.error("error in axios " + error);
             });
     }
 
     renderGradebookTable = () => {
-        var quiz = this.state.quizzes;
+        var item = this.state.gradeItems;
         var moduleId = this.props.dataStore.getCurrModId;
         // console.log(quiz)
-        if (this.state.quizzes.length !== 0) {
-            var tempQuizzes = []
-            for (let i = 0; i < this.state.quizzes.length; i++) {
-                tempQuizzes.push({
-                    quizId: quiz[i].quizId,
-                    name: quiz[i].title,
-                    openingDate: quiz[i].openingDate,
-                    closingDate: quiz[i].closingDate,
-                    status: quiz[i].publish ? "Open" : "Closed",
-                    // description: quiz[i].description,
-                    // order: quiz[i].questionsOrder,
-                    // publishAnswer: quiz[i].publishAnswer,
-                    // numOfAttempts: quiz[i].noOfAttempts,
-                    // maxTimeToFinish: quiz[i].maxTimeToFinish,
-                    // quizType: quiz[i].quizType,
-                    viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quiz[i].quizId}`}>Attempt</MDBBtn></center>
+        if (this.state.gradeItems.length !== 0) {
+            var tempGradeItems = []
+            for (let i = 0; i < this.state.gradeItems.length; i++) {
+                tempGradeItems.push({
+                    gradeItem: item[i].title,
+                    gradeItemId: item[i].gradeItemId,
+                    description: item[i].description,
+                    maxMarks: item[i].maxMarks,
+                    editButton: <MDBRow align="center">
+                        <MDBCol md={6}><MDBIcon onClick={() => this.editQuiz(2, item[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
+                        <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(item[i].gradeItemId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
+                    </MDBRow>,
+                    viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/gradebook/${item[i].gradeItemId}/viewGrades`}>View Grades</MDBBtn></center>,
+                    publishGrades: item[i].publish ? "Published" : <center><MDBBtn color="primary" outline size="sm">Publish</MDBBtn></center>
                 })
             }
         } else {
-            var tempQuizzes = [{ label: "No quizzes found." }];
+            var tempGradeItems = [{ label: "No grade items found." }];
         }
 
-        const data = () => ({ columns: this.state.columns, rows: tempQuizzes })
+        const data = () => ({ columns: this.state.columns, rows: tempGradeItems })
         // clickEvent: () => goToProfilePage(1)
 
         const widerData = {
@@ -161,7 +159,7 @@ class ModuleGradebookPageTeacher extends Component {
                 </h2>
                             </MDBCol>
                             <MDBCol md="4" align="right">
-                                <MDBBtn href="/modules/:moduleId/quiz/create" color="primary">Create Grade Item</MDBBtn>
+                                <MDBBtn color="primary">Create Grade Item</MDBBtn>
                             </MDBCol>
                         </MDBRow>
                         {/* {this.renderEditQuizModalBox()} */}
@@ -196,9 +194,9 @@ class ModuleGradebookPageTeacher extends Component {
         )
     }
 
-    renderTableWithMessage = (message) => {
+    renderTableWithMessage = () => {
         var moduleId = this.props.dataStore.getCurrModId;
-        const data = () => ({ columns: this.state.columns, rows: [{ label: message }] })
+        const data = () => ({ columns: this.state.columns, rows: [{ label: this.state.label }] })
 
         const tableData = {
             columns: [...data().columns.map(col => {
@@ -218,7 +216,7 @@ class ModuleGradebookPageTeacher extends Component {
                 </h2>
                             </MDBCol>
                             <MDBCol md="4" align="right">
-                                <MDBBtn href="/modules/:moduleId/quiz/create" color="primary">Create Grade Item</MDBBtn>
+                                <MDBBtn color="primary">Create Grade Item</MDBBtn>
                             </MDBCol>
                             {/* {this.renderEditQuizModalBox()} */}
                         </MDBRow>
@@ -268,11 +266,11 @@ class ModuleGradebookPageTeacher extends Component {
         if (this.state.status === "retrieving")
             return this.renderAwaiting();
         else if (this.state.status === "error")
-            return this.renderTableWithMessage("Error in Retrieving Grade Item. Please try again later.");
+            return this.renderTableWithMessage();
         else if (this.state.status === "done")
             return this.renderGradebookTable();
         else
-            return this.renderTableWithMessage("No quizzes found.");
+            return this.renderTableWithMessage();
     }
 }
 export default styled(ModuleGradebookPageTeacher)`

@@ -5,11 +5,10 @@ import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Snackbar } from '@material-ui/core';
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
-import moment from 'moment';
 
 @inject('dataStore')
 @observer
-class ModuleGradebookPageStudent extends Component {
+class ModuleGradebookPageTeacherViewGrades extends Component {
 
     state = {
         modal1: false,
@@ -20,11 +19,11 @@ class ModuleGradebookPageStudent extends Component {
         openingDate: "",
         closingDate: "",
         quizStatus: "",
-        quizzes: [],
+        gradeEntries: [],
         columns: [
             {
-                "label": "Grade Item",
-                "field": "gradeItem",
+                "label": "Student Name",
+                "field": "name",
                 "width": 50,
                 "attributes": {
                     "aria-controls": "DataTable",
@@ -32,32 +31,23 @@ class ModuleGradebookPageStudent extends Component {
                 }
             },
             {
-                "label": "Grade Item ID",
-                "field": "gradeItemId",
+                "label": "Grade Entry ID",
+                "field": "gradeEntryId",
                 "width": 150,
-                "attributes": {
-                    "aria-controls": "DataTable",
-                    "aria-label": "Name"
-                }
             },
             {
                 "label": "Score",
                 "field": "score",
-                "width": 100
+                "width": 150,
             },
             {
-                "label": "Max Marks",
-                "field": "maxMarks",
+                "label": "Remarks",
+                "field": "remarks",
                 "width": 200
             },
             {
-                "label": "Comment",
-                "field": "comment",
-                "width": 100
-            },
-            {
-                "label": "Review Marks",
-                "field": "reviewMarks",
+                "label": "",
+                "field": "editGradeButton",
                 "width": 100
             }
         ],
@@ -70,12 +60,12 @@ class ModuleGradebookPageStudent extends Component {
 
     componentDidMount() {
         this.initPage();
-        this.getAllModuleQuizzes();
+        this.getGradeItemEntries();
     }
 
     componentDidUpdate() {
         if (this.state.recallGradebook) {
-            // this.getAllModuleQuizzes();
+            this.getGradeItemEntries();
         }
     }
 
@@ -95,14 +85,14 @@ class ModuleGradebookPageStudent extends Component {
         }
     };
 
-    getAllModuleQuizzes = () => {
+    getGradeItemEntries = () => {
         let userId = localStorage.getItem('userId');
-        let moduleId = this.props.dataStore.getCurrModId;
+        let gradeItemId = this.props.dataStore.getCurrGradeItemId;
         axios
-            .get(` http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllModuleQuiz/${moduleId}?userId=${userId}`)
+            .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveGradeEntries?userId=${userId}&gradeItemId=${gradeItemId}`)
             .then(result => {
-                // console.log(result.data.quizzes)
-                this.setState({ status: "done", quizzes: result.data.quizzes })
+                // console.log(result.data.gradeEntries)
+                this.setState({ status: "done", gradeEntries: result.data.gradeEntries })
             })
             .catch(error => {
                 this.setState({ status: "error" })
@@ -111,26 +101,25 @@ class ModuleGradebookPageStudent extends Component {
     }
 
     renderGradebookTable = () => {
-        var quiz = this.state.quizzes;
+        var item = this.state.gradeEntries;
         var moduleId = this.props.dataStore.getCurrModId;
         // console.log(quiz)
-        if (this.state.quizzes.length !== 0) {
-            var tempQuizzes = []
-            for (let i = 0; i < this.state.quizzes.length; i++) {
-                tempQuizzes.push({
-                    gradeItem: quiz[i].quizId,
-                    gradeItemId: quiz[i].title,
-                    score: quiz[i].openingDate,
-                    maxMarks: quiz[i].closingDate,
-                    comment: quiz[i].publish ? "Open" : "Closed",
-                    reviewMarks: <center><MDBBtn color="primary" outline size="sm" disabled>Reviewed</MDBBtn></center>
+        if (this.state.gradeEntries.length !== 0) {
+            var tempgradeEntries = []
+            for (let i = 0; i < this.state.gradeEntries.length; i++) {
+                tempgradeEntries.push({
+                    studentName: item[i].student.firstName + " " + item[i].student.lastName,
+                    gradeEntryId: item[i].gradeEntryId,
+                    score: item[i].marks === null ? "-" : item[i].marks,
+                    remarks: item[i].remarks === null ? "-" : item[i].remarks,
+                    viewButton: <center><MDBIcon onClick={() => this.editQuiz(2, item[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></center>
                 })
             }
         } else {
-            var tempQuizzes = [{ label: "No quizzes found." }];
+            var tempgradeEntries = [{ label: "No grade items found." }];
         }
 
-        const data = () => ({ columns: this.state.columns, rows: tempQuizzes })
+        const data = () => ({ columns: this.state.columns, rows: tempgradeEntries })
         // clickEvent: () => goToProfilePage(1)
 
         const widerData = {
@@ -152,10 +141,11 @@ class ModuleGradebookPageStudent extends Component {
                             <MDBCol md="8">
                                 <h2 className="font-weight-bold">
                                     Gradebook
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Grade Item
                 </h2>
                             </MDBCol>
                             <MDBCol md="4" align="right">
-                                {/* <MDBBtn href="/modules/:moduleId/quiz/create" color="primary">Create Grade Item</MDBBtn> */}
+                                {/* <MDBBtn color="primary">Create Grade Item</MDBBtn> */}
                             </MDBCol>
                         </MDBRow>
                         {/* {this.renderEditQuizModalBox()} */}
@@ -209,10 +199,11 @@ class ModuleGradebookPageStudent extends Component {
                             <MDBCol md="8">
                                 <h2 className="font-weight-bold">
                                     Gradebook
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Grade Item
                 </h2>
                             </MDBCol>
                             <MDBCol md="4" align="right">
-                                {/* <MDBBtn href="/modules/:moduleId/quiz/create" color="primary">Create Grade Item</MDBBtn> */}
+                                {/* <MDBBtn color="primary">Create Grade Item</MDBBtn> */}
                             </MDBCol>
                             {/* {this.renderEditQuizModalBox()} */}
                         </MDBRow>
@@ -256,6 +247,7 @@ class ModuleGradebookPageStudent extends Component {
         pathname = pathname.split("/");
         // console.log(pathname[2])
         this.props.dataStore.setCurrModId(pathname[2]);
+        this.props.dataStore.setCurrGradeItemId(pathname[4]);
     }
 
     render() {
@@ -266,10 +258,10 @@ class ModuleGradebookPageStudent extends Component {
         else if (this.state.status === "done")
             return this.renderGradebookTable();
         else
-            return this.renderTableWithMessage("No grade items found.");
+            return this.renderTableWithMessage("No grade item found.");
     }
 }
-export default styled(ModuleGradebookPageStudent)`
+export default styled(ModuleGradebookPageTeacherViewGrades)`
 .module-content{
     margin-left: 270px;
     margin-top: 40px;
