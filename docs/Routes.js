@@ -106,7 +106,7 @@ import AccessDeniedPage from "./dev/AccessDeniedPage";
 import DashboardPageAdmin from "./dev/Admin/DashboardPageAdmin";
 import ModuleQuizPageViewStudents from "./dev/Teacher/ModuleQuizPageViewStudents";
 import ModuleQuizPageViewStudentAttempt from "./dev/Teacher/ModuleQuizPageViewStudentAttempt";
-import CoursepackFeedbackTeacher from "./dev/Teacher/CoursepackFeedbackTeacher";
+import CoursepackFeedbackPage from "./dev/CoursepackFeedbackPage";
 import CoursepackCategoryView from "./dev/CoursepackCategoryView";
 import CoursepackForumTopicsPage from "./dev/CoursepackForumTopicsPage";
 import CoursepackForumPage from "./dev/CoursepackForumPage";
@@ -174,7 +174,6 @@ class Routes extends React.Component {
         <Route exact path="/coursepack/create/" component={CoursepackCreate} />
         <Route exact path="/modules/:moduleId/quiz/:quizId/review" component={ModuleQuizPageViewStudents} />
         <Route exact path="/modules/:moduleId/quiz/:quizId/review/:studentId" component={ModuleQuizPageViewStudentAttempt} />
-        <Route exact path="/coursepack/:coursepackId/feedback" component={CoursepackFeedbackTeacher} />
 
         {/* LMS PAGES - Student */}
         <Route exact path="/modules/:moduleId/quiz/:quizId" component={ModuleQuizPageAnswerQuiz} />
@@ -222,6 +221,7 @@ class Routes extends React.Component {
         <Route exact path="/coursepack/:coursepackId/forum/topics" component={CoursepackForumTopicsPage} />
         <Route exact path="/coursepack/:coursepackId/forum/topics/:topicId" component={CoursepackForumPage} />
         <Route exact path="/coursepack/:coursepackId/forum/topics/:topicId/:forumId" component={CoursepackForumDetailsPage} />
+        <Route exact path="/coursepack/:coursepackId/feedback" component={CoursepackFeedbackPage} />
 
         {/* FREE Templates */}
         <Route exact path="/home" component={HomePage} />

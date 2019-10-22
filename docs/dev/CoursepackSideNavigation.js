@@ -40,10 +40,16 @@ class CoursepackSideNavigation extends Component {
                             Arrangements
                         </MDBListGroupItem>
                     </NavLink>
-                    <NavLink /* to={`/coursepack/${courseId}/feedback`}  */activeClassName="activeClass">
+                    <NavLink to={`/coursepack/${courseId}/feedback`} activeClassName="activeClass">
                         <MDBListGroupItem>
                             <MDBIcon icon="comment-alt" className="mr-3 fa-fw" />
                             Feedbacks
+                        </MDBListGroupItem>
+                    </NavLink>
+                    <NavLink to={`/coursepack/${courseId}/forum/topics`} activeClassName="activeClass">
+                        <MDBListGroupItem>
+                            <MDBIcon icon="comment-alt" className="mr-3 fa-fw" />
+                            Forum
                         </MDBListGroupItem>
                     </NavLink>
                 </MDBListGroup>

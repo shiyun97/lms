@@ -16,7 +16,7 @@ import {
     MDBListGroupItem,
     MDBProgress
 } from "mdbreact";
-import CoursepackSideNavigation from "../CoursepackSideNavigation";
+import CoursepackSideNavigation from "./CoursepackSideNavigation";
 import axios from "axios";
 import 'babel-polyfill';
 import { Rating } from '@material-ui/lab';
@@ -28,7 +28,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-class CoursepackFeedbackTeacher extends Component {
+class CoursepackFeedbackPage extends Component {
 
     state = {
         coursepackId: "",
@@ -234,7 +234,7 @@ class CoursepackFeedbackTeacher extends Component {
     }
 }
 
-export default styled(CoursepackFeedbackTeacher)`
+export default styled(CoursepackFeedbackPage)`
 module-content{
     margin-left: 270px;
 }

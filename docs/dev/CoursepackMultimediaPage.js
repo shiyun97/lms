@@ -8,13 +8,6 @@ import {
     MDBMedia,
     MDBCard,
     MDBIcon,
-    MDBModal,
-    MDBModalHeader,
-    MDBModalBody,
-    MDBModalFooter,
-    MDBListGroup,
-    MDBListGroupItem,
-    MDBDataTable,
     MDBTable, 
     MDBTableBody, 
     MDBTableHead
@@ -31,7 +24,9 @@ import IconButton from '@material-ui/core/IconButton';
 import Slide from '@material-ui/core/Slide';
 import SectionContainer from "../components/sectionContainer";
 
-const API = "http://localhost:3001"
+const API = "http://localhost:8080/LMS-war/webresources"
+
+const FILE_SERVER = "http://127.0.0.1:8887/";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -70,11 +65,16 @@ class CoursepackMultimediaPage extends Component {
         },
         modalUploadMultimedia: false,
         showMultimediaDialog: false,
-        multimediaToShow: {},
+        multimediaToShow: {
+            location: "",
+            name: ""
+        },
         showDeleteDialog: false,
         multimediaIdToDelete: "",
         message: "",
-        openSnackbar: ""
+        openSnackbar: "",
+        multimediaToViewLocation: "",
+        modalViewMultimedia: false
     }
 
     handleOpenSnackbar = () => {
@@ -108,12 +108,12 @@ class CoursepackMultimediaPage extends Component {
                     console.error("error in axios " + error);
                 });
 
-            await axios.get(`${API}/coursepackMultimedia`)
+            await axios
+                .get(`${API}/file/retrieveAllMultimediaForCoursepack?coursepackId=${coursepackId}`)
                 .then(result => {
                     console.log(result)
-                    let data = result.data;
+                    let data = result.data.files;
                     let arr = [];
-                    let arrStudentView = [];
                     const method = this.clickMultimedia;
                     const deleteMethod = this.deleteMultimedia;
                     Object.keys(data).forEach(function (key) {
@@ -123,20 +123,11 @@ class CoursepackMultimediaPage extends Component {
                             name: data[key].name,
                             type: "video",
                             createdDt: dateCreatedDt + " " + timeCreatedDt,
-                            action: (<div><span onClick={e => method(data[key].fileId)} className="teal-text" style={{fontWeight:"bold", cursor:"pointer"}}>View</span>
+                            action: (<div><span onClick={e => method(data[key])} className="teal-text" style={{fontWeight:"bold", cursor:"pointer"}}>View</span>
                                 <MDBIcon icon="trash-alt" className="teal-text ml-2" onClick={e => deleteMethod(data[key].fileId)}></MDBIcon></div>)
                         }
                         arr.push(temp);
-
-                        let temp2 = {
-                            name: data[key].name,
-                            type: "video",
-                            createdDt: dateCreatedDt + " " + timeCreatedDt,
-                            action: (<MDBBtn size="sm" onClick={e => method(data[key].fileId)}>View</MDBBtn>)
-                        }
-                        arrStudentView.push(temp2);
                     });
-                    console.log(arr)
                     this.setState({
                         ...this.state,
                         coursepackId: coursepackId,
@@ -147,10 +138,10 @@ class CoursepackMultimediaPage extends Component {
                     });
                 })
                 .catch(error => {
-                    this.setState({
+                    /*this.setState({
                         message: "error.response.data.errorMessage",
                         openSnackbar: true
-                    })
+                    })*/
                     console.error("error in axios " + error);
                 });
         }
@@ -206,17 +197,16 @@ class CoursepackMultimediaPage extends Component {
 
     submitNewMultimediaHandler = event => {
         event.preventDefault();
-        console.log(this.state.uploadedMultimedia);
 
         // call api to send
         var files = this.state.uploadedMultimedia;
-        if (files.length > 0 && this.state.moduleId && localStorage.getItem("userId")) {
+        if (files.length > 0 && this.state.coursepackId && localStorage.getItem("userId")) {
             const formData = new FormData();
             for (let i = 0; i < files.length; i++) {
                 formData.append('file', files[i]);
             }
 
-            fetch(`${API_URL}/file/uploadMultiple?moduleId=${this.state.moduleId}&type=multimedia&userId=${localStorage.getItem("userId")}`, {
+            fetch(`${API}/file/uploadMultipleMultimediaForCoursepack?coursepackId=${this.state.coursepackId}&userId=${localStorage.getItem("userId")}`, {
                 method: 'post',
                 body: formData
             })
@@ -224,9 +214,9 @@ class CoursepackMultimediaPage extends Component {
                     if (result.status == "200") {
                         this.setState({
                             ...this.state,
-                            modalUploadFiles: false,
-                            uploadedFiles: [],
-                            message: "New file uploaded successfully!",
+                            modalUploadMultimedia: false,
+                            uploadedMultimedia: [],
+                            message: "New files uploaded successfully!",
                             openSnackbar: true
                         })
                         return this.initPage();
@@ -235,8 +225,8 @@ class CoursepackMultimediaPage extends Component {
                 .catch(error => {
                     this.setState({
                         ...this.state,
-                        modalUploadFiles: false,
-                        uploadedFiles: [],
+                        modalUploadMultimedia: false,
+                        uploadedMultimedia: [],
                         message: error.response.data.errorMessage,
                         openSnackbar: true
                     });
@@ -256,62 +246,14 @@ class CoursepackMultimediaPage extends Component {
         var array = this.state.uploadedMultimedia.filter(function (item) {
             return item !== file
         });
-        console.log(array)
         this.setState({
             ...this.state,
             uploadedMultimedia: array
         })
     }
 
-    /*showUploadModal = () => {
-        let uploadedMultimedia = this.state.uploadedMultimedia;
-
-        return <MDBModal
-            isOpen={this.state.modalUploadMultimedia}
-            toggle={this.toggleModal("UploadMultimedia")}
-        >
-            <MDBModalHeader className="text-center"
-                titleClass="w-100"
-                toggle={this.toggleModal("UploadMultimedia")}>
-                Upload Files
-            </MDBModalHeader>
-            <form className="needs-validation" noValidate onSubmit={this.submitNewMultimediaHandler}>
-                <MDBModalBody>
-                    <div className="text-center mt-2">
-                        <Dropzone onDrop={this.onDrop} multiple accept=".mp4">
-                            {({ getRootProps, getInputProps, isDragActive, isDragReject, rejectedFiles }) => (
-                                <div {...getRootProps()}>
-                                    <input {...getInputProps()} />
-                                    <SectionContainer className="mb-0 p-5 mt-1">
-                                        <MDBIcon icon="upload" size="3x" className="mb-3 indigo-text"></MDBIcon><br></br>
-                                        Click to Upload or Drag & Drop
-                                    </SectionContainer>
-                                </div>
-                            )}
-                        </Dropzone>
-                    </div>
-
-                    <MDBListGroup className="my-4 mx-4" style={{ width: "26rem", height: "auto", maxHeight: "120px", overflowY: "auto" }}>
-                        {uploadedMultimedia.length > 0 && uploadedMultimedia.map((uploadedFile, index) => (
-                            <MDBListGroupItem key={index}>
-                                <MDBIcon icon="times" className="mr-3" onClick={e => this.removeMultimediaUpload(uploadedFile)}></MDBIcon>{uploadedFile.name}
-                            </MDBListGroupItem>
-                        ))}
-                    </MDBListGroup>
-                </MDBModalBody>
-                <MDBModalFooter>
-                    <MDBBtn color="secondary" onClick={this.toggleModal("UploadMultimedia")}>
-                        Cancel
-                    </MDBBtn>
-                    <MDBBtn color="primary" type="submit" disabled={this.state.uploadedMultimedia.length == 0}>Save</MDBBtn>
-                </MDBModalFooter>
-            </form>
-        </MDBModal>
-    }*/
-
     showUploadModal = () => {
         let uploadedMultimedia = this.state.uploadedMultimedia;
-        console.log("hi")
         return <Dialog
             open={this.state.modalUploadMultimedia}
             onClose={this.toggleModal("UploadMultimedia")}
@@ -372,7 +314,8 @@ class CoursepackMultimediaPage extends Component {
 
     fullScreenMultimediaDialog = () => {
         let multimediaToShow = this.state.multimediaToShow;
-        console.log(multimediaToShow.location && "http://127.0.0.1:8887/" + multimediaToShow.location.split('\\')[1])
+        let savedFileName = multimediaToShow && multimediaToShow.location.split('\\')[1];
+        let fullPath = FILE_SERVER + savedFileName;
         return (
             <div>
                 <Dialog fullScreen open={this.state.showMultimediaDialog} onClose={e => this.handleCloseMultimediaDialog()} TransitionComponent={Transition}>
@@ -387,7 +330,7 @@ class CoursepackMultimediaPage extends Component {
                         </Toolbar>
                     </AppBar>
                     <video controls controlsList="nodownload" id="multimediaToShow" style={{maxHeight:"90%"}}
-                        src={multimediaToShow.location && "http://127.0.0.1:8887/" + multimediaToShow.location.split('\\')[1]}>
+                        src={fullPath}>
                     </video>
                     <div className="mb-4" />
                 </Dialog>
@@ -395,26 +338,15 @@ class CoursepackMultimediaPage extends Component {
         )
     }
 
-    clickMultimedia = (id) => {
-        // retrieve the multimedia location
-        let location = "C:/glassfish-4.1.1-uploadedfiles/uploadedFiles\\1570621881447_test_video.mp4";
-        let savedFileName = location.split('\\')[1];
-        let fullPath = "http://127.0.0.1:8887/" + savedFileName;
-        if (document.getElementById('multimediaToShow')) {
-            document.getElementById('multimediaToShow').src = fullPath;
-        }
-        
+    clickMultimedia = (multimedia) => {
         this.setState({
-            showMultimediaDialog: true,
-            multimediaToShow: {
-                name: this.state.availableMultimedia.rows[0].name,
-                location: "C:/glassfish-4.1.1-uploadedfiles/uploadedFiles\\1570621881447_test_video.mp4"
-            }
+            ...this.state,
+            multimediaToShow: multimedia,
+            showMultimediaDialog: true
         })
     }
 
     deleteMultimedia = (id) => {
-        console.log(id)
         this.setState({
             showDeleteDialog: true,
             multimediaIdToDelete: id
@@ -459,7 +391,25 @@ class CoursepackMultimediaPage extends Component {
     }
 
     confirmDelete = () => {
-        console.log(this.state.multimediaIdToDelete)
+        let multimediaIdToDelete = this.state.multimediaIdToDelete;
+        axios
+            .delete(`${API}/file/deleteFile?fileId=` + this.state.multimediaIdToDelete)
+            .then((result) => {
+                this.setState({
+                    message: "File (" + multimediaIdToDelete + ") deleted successfully!",
+                    openSnackbar: true,
+                    showDeleteDialog: false,
+                    multimediaIdToDelete: ""
+                })
+                return this.initPage();
+            })
+            .catch(error => {
+                this.setState({
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                })
+                console.error("error in axios " + error);
+            });
     }
 
     render() {
@@ -508,48 +458,22 @@ class CoursepackMultimediaPage extends Component {
                         </MDBCol>
                     </MDBRow>
                 </MDBContainer>
-                {/*
-                <MDBModal
-                    isOpen={this.state.modalUploadMultimedia}
-                    toggle={this.toggleModal("UploadMultimedia")}
-                >
-                    <MDBModalHeader className="text-center"
-                        titleClass="w-100"
-                        toggle={this.toggleModal("UploadMultimedia")}>
-                        Upload Files
-                    </MDBModalHeader>
-                    <form className="needs-validation" noValidate onSubmit={this.submitNewMultimediaHandler}>
-                        <MDBModalBody>
-                            <div className="text-center mt-2">
-                                <Dropzone onDrop={this.onDrop} multiple accept=".mp4">
-                                    {({ getRootProps, getInputProps, isDragActive, isDragReject, rejectedFiles }) => (
-                                        <div {...getRootProps()}>
-                                            <input {...getInputProps()} />
-                                            <SectionContainer className="mb-0 p-5 mt-1">
-                                                <MDBIcon icon="upload" size="3x" className="mb-3 indigo-text"></MDBIcon><br></br>
-                                                Click to Upload or Drag & Drop
-                                            </SectionContainer>
-                                        </div>
-                                    )}
-                                </Dropzone>
-                            </div>
-
-                            <MDBListGroup className="my-4 mx-4" style={{ width: "26rem", height: "auto", maxHeight: "120px", overflowY: "auto" }}>
-                                {uploadedMultimedia.length > 0 && uploadedMultimedia.map((uploadedFile, index) => (
-                                    <MDBListGroupItem key={index}>
-                                        <MDBIcon icon="times" className="mr-3" onClick={e => this.removeMultimediaUpload(uploadedFile)}></MDBIcon>{uploadedFile.name}
-                                    </MDBListGroupItem>
-                                ))}
-                            </MDBListGroup>
-                        </MDBModalBody>
-                        <MDBModalFooter>
-                            <MDBBtn color="secondary" onClick={this.toggleModal("UploadMultimedia")}>
-                                Cancel
-                            </MDBBtn>
-                            <MDBBtn color="primary" type="submit" disabled={this.state.uploadedMultimedia.length == 0}>Save</MDBBtn>
-                        </MDBModalFooter>
-                    </form>
-                </MDBModal>*/}
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.openSnackbar}
+                    autoHideDuration={6000}
+                    onClose={this.handleCloseSnackbar}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">{this.state.message}</span>}
+                    action={[
+                        <MDBIcon icon="times" color="white" onClick={this.handleCloseSnackbar} style={{ cursor: "pointer" }} />,
+                    ]}
+                />
                 {this.showUploadModal()}
                 {this.fullScreenMultimediaDialog()}
                 {this.confirmDeleteDialog()}

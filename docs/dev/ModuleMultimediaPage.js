@@ -277,9 +277,9 @@ class ModuleMultimediaPage extends Component {
                     if (result.status == "200") {
                         this.setState({
                             ...this.state,
-                            modalUploadFiles: false,
-                            uploadedFiles: [],
-                            message: "New file uploaded successfully!",
+                            modalUploadMultimedia: false,
+                            uploadedMultimedia: [],
+                            message: "New files uploaded successfully!",
                             openSnackbar: true
                         })
                         return this.initPage();
@@ -288,8 +288,8 @@ class ModuleMultimediaPage extends Component {
                 .catch(error => {
                     this.setState({
                     ...this.state,
-                    modalUploadFiles: false,
-                    uploadedFiles: [],
+                    modalUploadMultimedia: false,
+                    uploadedMultimedia: [],
                     message: error.response.data.errorMessage,
                     openSnackbar: true
                 });
@@ -553,7 +553,7 @@ class ModuleMultimediaDetailsPage extends Component {
     }
 
     goToMultimediaMain = () => {
-        this.props.dataStore.setPath(`/modules/${this.props.match.params.moduleId}/multimedia`);
+        //this.props.dataStore.setPath(`/modules/${this.props.match.params.moduleId}/multimedia`);
         this.props.history.push(`/modules/${this.props.match.params.moduleId}/multimedia`);
     }
 
