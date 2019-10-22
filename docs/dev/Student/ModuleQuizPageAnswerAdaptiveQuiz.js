@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBRow, MDBCol, MDBCard } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBBtn } from "mdbreact";
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
 import moment from 'moment';
@@ -12,88 +12,112 @@ pathname = pathname.split("/");
 var quizId = pathname[4]
 var answers = []
 var json = {
-  title: "Quiz 1",
+  title: "Quiz 9",
   showProgressBar: "top",
   description: "This is to test your knowledge on [topic].", //instructions
-  quizType: "normal",
-  questionsOrder: "random", // normal => "initial"
+  quizType: "adaptive",
+  questionsOrder: "initial", // normal => "initial"
   openingDate: "", //datetime
   closingDate: "", //datetime
   noOfAttempts: 1,
+  goNextPageAutomatic: true,
+  showNavigationButtons: false,
   completedHtml: "<p><h4>You have completed the quiz!</h4></p>",
-  startSurveyText: "Start",
   completeText: "Submit",
   showTimerPanel: "top",
   maxTimeToFinish: 60, // in seconds
   pages: [
     {
-      "name": "page1",
       "elements": [
         {
-          "type": "radiogroup", //mcq
-          "name": "question1",
-          "number": 1,
-          "title": "What is a MCQ question?",
-          "isRequired": true,
-          // "level": 1, //only for adaptive,
-          //"explanation" : "Explanation/ Feedback of Question",
-          // "correctAnswer" : "Answer Choice 1",
-          // "points": 1,
-          "choices": [
-            {
-              "text": "Answer Choice 1"
-            },
-            {
-              "text": "Answer Choice 2"
-            },
-            {
-              "text": "Answer Choice 3"
-            },
-            {
-              "text": "Answer Choice 4"
-            }
-          ],
-        },
-        {
+          "questionId": 483,
           "type": "radiogroup",
-          "name": "question2",
-          "number": 2,
-          "title": "Do you ask questions?",
+          "title": "What is a MCQ question?",
+          "number": 1,
+          "explanation": "this is an explanation",
+          "correctAnswer": "Answer Choice 3",
+          "points": 1,
+          "level": 1,
           "isRequired": true,
-          // "level": 1, //only for adaptive
-          //"explanation" : "Explanation/ Feedback of Question",
-          // "correctAnswer" : "Answer Choice 1",
-          // "points": 1,
           "choices": [
-            {
-              "text": "Answer Choice 1"
-            },
-            {
-              "text": "Answer Choice 2"
-            },
-            {
-              "text": "Answer Choice 3"
-            },
-            {
-              "text": "Answer Choice 4"
-            }
-          ]
+            "Answer Choice 1",
+            "Answer Choice 2",
+            "Answer Choice 3",
+            "Answer Choice 4"
+          ],
+          "html": null
         },
+      ],
+    },
+    {
+      "elements": [
         {
-          "type": "text", //text
-          "name": "question3",
-          "number": 3,
-          "title": "What is a multiple choice question?",
+          "questionId": 487,
+          "type": "radiogroup",
+          "title": "Do you ask questions  a?",
+          "number": 5,
+          "explanation": null,
+          "correctAnswer": "Answer Choice 1",
+          "points": 3,
+          "level": 1,
           "isRequired": true,
-          // "level": 1, //only for adaptive,
-          //"explanation" : "Explanation/ Feedback of Question",
-          // "correctAnswer" : "Answer Choice 1",
-          // "points" : 1
+          "choices": [
+            "Answer Choice 1",
+            "Answer Choice 2",
+            "Answer Choice 3",
+            "Answer Choice 4"
+          ],
+          "html": null
         }
+      ],
+    },
+    {
+      "elements": [
+        {
+          "questionId": 486,
+          "type": "radiogroup",
+          "title": "Do you ask questionss?",
+          "number": 4,
+          "explanation": null,
+          "correctAnswer": "Answer Choice 1",
+          "points": 3,
+          "level": 2,
+          "isRequired": true,
+          "choices": [
+            "Answer Choice 1",
+            "Answer Choice 2",
+            "Answer Choice 3",
+            "Answer Choice 4"
+          ],
+          "html": null
+        },
       ]
-    }
+    },
+    {
+      "elements": [
+        {
+          "questionId": 484,
+          "type": "radiogroup",
+          "title": "Do you ask questions?",
+          "number": 2,
+          "explanation": null,
+          "correctAnswer": "Answer Choice 1",
+          "points": 3,
+          "level": 2,
+          "isRequired": true,
+          "choices": [
+            "Answer Choice 1",
+            "Answer Choice 2",
+            "Answer Choice 3",
+            "Answer Choice 4"
+          ],
+          "html": null
+        },
+      ]
+    },
   ]
 }
+var page = 2
 
 @inject('dataStore')
 @observer
@@ -106,7 +130,8 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
     email: "",
     moduleId: 0,
     message: "",
-    status: "retrieving"
+    status: "retrieving",
+    start: false,
   }
 
   initPage() {
@@ -120,6 +145,19 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
   componentDidMount() {
     this.initPage();
     this.getModuleQuiz();
+    this.arrangeQuizPages();
+  }
+
+  // arrange pages according to quiz level
+  arrangeQuizPages = () => {
+    // console.log(json.pages[0].elements)
+    // var pages = []
+    // for (var i = 0; i < json.pages[0].elements.length; i++) {
+    //   if (json.pages[0].elements[i].level === i + 1) {
+    //     console.log(pages[json.pages[0].elements[i].level - 1] = { elements: json.pages[0].elements[i] })
+    //   }
+    // }
+    // console.log(pages)
   }
 
   getModuleQuiz = () => {
@@ -131,13 +169,45 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
         // console.log(result.data)
         var newJson = result.data;
         newJson['completedHtml'] = "<p><h4>You have completed the quiz!</h4></p>";
+        newJson['goNextPageAutomatic'] = true
+        newJson['showNavigationButtons'] = false
         this.setState({ status: "done" })
-        json = newJson
+        // json = newJson
       })
       .catch(error => {
         this.setState({ status: "error" })
         console.error("error in axios " + error);
       });
+  }
+
+  doOnCurrentPageChanged(result) {
+    page = 4
+    // console.log("test", result.data)
+    // var newJson = {
+    //   "elements": [
+    //     {
+    //       "questionId": 485,
+    //       "type": "radiogroup",
+    //       "title": "Do you ask questions s?",
+    //       "number": 3,
+    //       "explanation": null,
+    //       "correctAnswer": "Answer Choice 1",
+    //       "points": 3,
+    //       "level": 3,
+    //       "isRequired": true,
+    //       "choices": [
+    //         "Answer Choice 1",
+    //         "Answer Choice 2",
+    //         "Answer Choice 3",
+    //         "Answer Choice 4"
+    //       ],
+    //       "html": null
+    //     },
+    //   ]
+    // }
+    // var pages = json.pages
+    // var newPages = pages.concat(newJson)
+    // json.pages = newPages
   }
 
   onValueChanged(result) {
@@ -191,29 +261,52 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
     // console.log(json)
     var model = new Survey.Model(json);
     var moduleId = this.props.dataStore.getCurrModId;
-    return (
-      <div className={this.props.className}>
-        <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
-        <div className="module-content">
-          <MDBContainer className="mt-3">
-            <MDBRow className="py-3">
-              <MDBCol md="12">
-                <MDBCard cascade className="my-3 grey lighten-4">
-                  {this.state.status === "done" &&
-                    <Survey.Survey
-                      model={model}
-                      onComplete={() => this.onComplete()}
-                      onValueChanged={this.onValueChanged}
-                    />
-                  }
-                  {this.state.status !== "done" && <h5 align="center" style={{ padding: 20 }}>Error in retrieving quiz. Please try again later.</h5>}
-                </MDBCard>
-              </MDBCol>
-            </MDBRow>
-          </MDBContainer>
+    if (this.state.start) {
+      return (
+        <div className={this.props.className}>
+          <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+          <div className="module-content">
+            <MDBContainer className="mt-3">
+              <MDBRow className="py-3">
+                <MDBCol md="12">
+                  <h1>Adaptive</h1>
+                  <MDBCard cascade className="my-3 grey lighten-4">
+                    {this.state.status === "done" &&
+                      <Survey.Survey
+                        model={model}
+                        onComplete={() => this.onComplete()}
+                        currentPageNo={page}
+                        onValueChanged={this.onValueChanged}
+                        onCurrentPageChanged={this.doOnCurrentPageChanged}
+                      />
+                    }
+                    {this.state.status !== "done" && <h5 align="center" style={{ padding: 20 }}>Error in retrieving quiz. Please try again later.</h5>}
+                  </MDBCard>
+                </MDBCol>
+              </MDBRow>
+            </MDBContainer>
+          </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div className={this.props.className}>
+          <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+          <div className="module-content">
+            <MDBContainer className="mt-3">
+              <MDBRow className="py-3">
+                <MDBCol md="12">
+                  <h1>Adaptive</h1>
+                  <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
+                    <MDBBtn color="blue" onClick={() => { this.setState({ start: true }) }}><h2>Start Quiz</h2></MDBBtn>
+                  </MDBCard>
+                </MDBCol>
+              </MDBRow>
+            </MDBContainer>
+          </div>
+        </div>
+      )
+    }
   }
 }
 
