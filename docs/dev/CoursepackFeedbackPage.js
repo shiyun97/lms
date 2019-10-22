@@ -28,6 +28,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const API = "http://localhost:8080/LMS-war/webresources";
+
 class CoursepackFeedbackPage extends Component {
 
     state = {
@@ -35,7 +37,7 @@ class CoursepackFeedbackPage extends Component {
         ratings: [
             {
                 ratingId: 2,
-                description: "This is a good course. yay",
+                comment: "This is a good course. yay",
                 rating: 5,
                 user: {
                     firstName: "John",
@@ -44,7 +46,7 @@ class CoursepackFeedbackPage extends Component {
             },
             {
                 ratingId: 3,
-                description: "This is a good course. yay",
+                comment: "This is a good course. yay",
                 rating: 4.5,
                 user: {
                     firstName: "Tom",
@@ -56,7 +58,9 @@ class CoursepackFeedbackPage extends Component {
         ratingSpread: [64,29,6,1,0],
         modalAddRating: false,
         ratingCommentInput: "",
-        ratingStarsInput: 5
+        ratingStarsInput: 5,
+        message: "",
+        openSnackbar: false,
     }
 
     componentDidMount() {
@@ -67,7 +71,27 @@ class CoursepackFeedbackPage extends Component {
         let coursepackId = this.props.match.params.coursepackId;
         let accessRight = localStorage.getItem("accessRight");
 
-        // get ratings list
+        if (coursepackId) {
+            this.setState({
+                coursepackId: coursepackId
+            })
+            // get ratings list
+            axios
+            .get(`${API}/feedback/retrieveAllRatings?coursepackId=${coursepackId}`)
+            .then((result) => {
+                console.log(result);
+                let data = result.data;
+                this.setState({
+                    ratings: data.ratings,
+                    averageRating: data.avg,
+                    ratingSpread: [data.per5, data.per4, data.per3, data.per2, data.per1]
+                })
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
+        }
+        
     }
 
     // for adding rating
@@ -113,6 +137,39 @@ class CoursepackFeedbackPage extends Component {
         e.preventDefault();
         console.log(this.state.ratingCommentInput);
         console.log(this.state.ratingStarsInput);
+        let ratingCommentInput = this.state.ratingCommentInput;
+        let ratingStarsInput = this.state.ratingStarsInput;
+        if (ratingCommentInput && ratingStarsInput) {
+            let request = {
+                userId: localStorage.getItem('userId'),
+                coursepackId: this.state.coursepackId,
+                rating: ratingStarsInput,
+                comment: ratingCommentInput
+            }
+            axios
+                .post(`${API}/feedback/createRating`, request)
+                .then((result) => {
+                    console.log(result);
+                    this.setState({
+                        ratingStarsInput: "",
+                        ratingCommentInput: "",
+                        modalAddRating: false,
+                        message: "Rating added successfully",
+                        openSnackbar: true
+                    })
+                    return this.initPage();
+                })
+                .catch(error => {
+                    this.setState({
+                        ratingStarsInput: "",
+                        ratingCommentInput: "",
+                        modalAddRating: false,
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    })
+                    console.error("error in axios " + error);
+                });
+        }
     }
 
     showAddRatingDialog() {
@@ -220,7 +277,7 @@ class CoursepackFeedbackPage extends Component {
                                         </MDBCol>
                                         <MDBCol className="col-md-8">
                                             <Rating value={rating.rating} readOnly precision={0.1} /><br/>
-                                            {rating.description}
+                                            {rating.comment}
                                         </MDBCol>
                                     </MDBRow>
                                     <div className="mb-5" />

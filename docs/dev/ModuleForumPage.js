@@ -186,7 +186,9 @@ class ModuleForumPage extends Component {
                     ...this.state,
                     titleInput: "",
                     contentInput: "",
-                    modalAdd: false
+                    modalAdd: false,
+                    openSnackbar: true,
+                    message: "New forum post added"
                 })
                 return this.initPage()
             })
@@ -205,10 +207,6 @@ class ModuleForumPage extends Component {
     enterForumThread = (id) => {
         this.props.dataStore.setPath(`/modules/${this.state.moduleId}/forum/topics/${this.state.topicId}/${id}`);
         this.props.history.push(`/modules/${this.state.moduleId}/forum/topics/${this.state.topicId}/${id}`);
-    }
-
-    editForumThread = (id) => {
-        console.log(id)
     }
 
     deleteForumThread = (id) => {
