@@ -90,7 +90,7 @@ import AdminLoginPage from "./dev/Admin/AdminLoginPage";
 import StudentLoginPage from "./dev/Student/StudentLoginPage";
 import MobileLogin from "./dev/Student/MobileLogin";
 import ModuleQuizPageCreateQuiz from './dev/Teacher/ModuleQuizPageCreateQuiz';
-import ModuleQuizPageAnswerQuiz from "./dev/Student/ModuleQuizPageAnswerQuiz";
+import ModuleQuizPageAnswerNormalQuiz from "./dev/Student/ModuleQuizPageAnswerNormalQuiz";
 import ModuleForumTopicsPage from "./dev/ModuleForumTopicsPage";
 
 //COURSEPACK IMPORTS
@@ -178,7 +178,7 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/gradebook/:gradeItemId/viewGrades" component={ModuleGradebookPageTeacherViewGrades} />
 
         {/* LMS PAGES - Student */}
-        <Route exact path="/modules/:moduleId/quiz/:quizId" component={ModuleQuizPageAnswerQuiz} />
+        <Route exact path="/modules/:moduleId/quiz/:quizId" component={ModuleQuizPageAnswerNormalQuiz} />
         <Route exact path="/modules/:moduleId/markAttendanceStudent" component={MarkAttendanceStudent} />
         <Route exact path="/student/markAttendance" component={MarkAttendanceStudent} />
         <Route exact path="/student/mobileLogin/:classType/:classId/:attendanceId" component={MobileLogin} />

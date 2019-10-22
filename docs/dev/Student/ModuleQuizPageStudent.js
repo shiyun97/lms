@@ -161,7 +161,7 @@ class ModuleQuizPageStudent extends Component {
                 </h2>
                             </MDBCol>
                             <MDBCol md="4" align="right">
-                                <MDBBtn href="/modules/:moduleId/quiz/create" color="primary">Create Quiz</MDBBtn>
+                                {/* <MDBBtn href="/modules/:moduleId/quiz/create" color="primary">Create Quiz</MDBBtn> */}
                             </MDBCol>
                             {/* <MDBCol md="1">
                         <Fab onClick={() => this.getAllQuizDetails()} style={{ height: 50, width: 50, backgroundColor: "#bbb", borderRadius: "50%" }}><MDBIcon icon="sync" /></Fab>
@@ -221,7 +221,7 @@ class ModuleQuizPageStudent extends Component {
                 </h2>
                             </MDBCol>
                             <MDBCol md="4" align="right">
-                                <MDBBtn href="/modules/:moduleId/quiz/create" color="primary">Create Quiz</MDBBtn>
+                                {/* <MDBBtn href="/modules/:moduleId/quiz/create" color="primary">Create Quiz</MDBBtn> */}
                             </MDBCol>
                             {/* {this.renderEditQuizModalBox()} */}
                         </MDBRow>

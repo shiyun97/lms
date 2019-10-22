@@ -5,22 +5,14 @@ import { observer, inject } from 'mobx-react';
 import moment from 'moment';
 import styled from 'styled-components';
 import * as Survey from "survey-react";
-import ModuleSideNavigation from "./../ModuleSideNavigation";
+import ModuleSideNavigation from "../ModuleSideNavigation";
 
-@inject('dataStore')
-@observer
-class ModuleQuizPageAnswerQuiz extends Component {
-
-  state = {
-    studentName: "",
-    username: "",
-    userId: "",
-    email: "",
-    moduleId: 0,
-    message: "",
-    status: "retrieving",
-    json: {
-      title: "Quiz 1",
+var pathname = location.pathname;
+pathname = pathname.split("/");
+var quizId = pathname[4]
+var answers = []
+var json = {
+  title: "Quiz 1",
   showProgressBar: "top",
   description: "This is to test your knowledge on [topic].", //instructions
   quizType: "normal",
@@ -101,10 +93,21 @@ class ModuleQuizPageAnswerQuiz extends Component {
       ]
     }
   ]
-    }
-  }
+}
 
-  
+@inject('dataStore')
+@observer
+class ModuleQuizPageAnswerNormalQuiz extends Component {
+
+  state = {
+    studentName: "",
+    username: "",
+    userId: "",
+    email: "",
+    moduleId: 0,
+    message: "",
+    status: "retrieving"
+  }
 
   initPage() {
     var pathname = location.pathname;
@@ -122,12 +125,14 @@ class ModuleQuizPageAnswerQuiz extends Component {
   getModuleQuiz = () => {
     let userId = localStorage.getItem('userId');
     let quizId = this.props.dataStore.getCurrQuizId;
-    var tempJson = this.json
     axios
       .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveModuleQuiz/${quizId}?userId=${userId}`)
       .then(result => {
-        // this.setState({ status: "done" })
-        this.setState({ status: "done", json: result.data })
+        // console.log(result.data)
+        var newJson = result.data;
+        newJson['completedHtml'] = "<p><h4>You have completed the quiz!</h4></p>";
+        this.setState({ status: "done" })
+        json = newJson
       })
       .catch(error => {
         this.setState({ status: "error" })
@@ -136,17 +141,55 @@ class ModuleQuizPageAnswerQuiz extends Component {
   }
 
   onValueChanged(result) {
-    console.log("value changed!");
+    // match question name with answer and question Id
+    var tempResult = result.data
+    var questionAttempts = Object.keys(tempResult);
+    var questions = json.pages[0].elements;
+    // console.log(result.data)
+    for (var i = 0; i < questionAttempts.length; i++) {
+      // console.log(questionAttempts[i].substr(8, questionAttempts[i].length))
+      var questionNumber = questionAttempts[i].substr(8, questionAttempts[i].length)
+      for (var j = 0; j < questions.length; j++) {
+        if (questionNumber == questions[j].number) {
+          if (tempResult[questionAttempts[i]].text === undefined)
+            answers[questionNumber - 1] = { questionId: questions[j].questionId, answer: tempResult[questionAttempts[i]] }
+          else {
+            answers[questionNumber - 1] = { questionId: questions[j].questionId, answer: tempResult[questionAttempts[i]].text } //, quizId: 1
+          }
+        }
+      }
+    }
+    // console.log(answers)
   }
 
-  onComplete(result) {
-    console.log("Complete!");
-    console.log(result);
+  onComplete = (result) => {
+    let userId = localStorage.getItem('userId');
+    console.log(quizId)
+    console.log(answers)
+    axios
+      .post(`http://localhost:8080/LMS-war/webresources/Assessment/createQuizAttempt?userId=${userId}`, {
+        quizId: quizId,
+        questionAttempts: answers
+      })
+      .then(result => {
+        console.log("success")
+        // this.setState({ status: "done", quizzes: result.data.quizzes })
+      })
+      .catch(error => {
+        // this.setState({ status: "error" })
+        console.log("error")
+        console.error("error in axios " + error);
+      });
+  }
+
+  submitAnswers = () => {
+    var quizId = this.props.dataStore.getCurrQuizId;
+    console.log(json, quizId);
   }
 
   render() {
-    // console.log(this.state.json)
-    var model = new Survey.Model(this.state.json);
+    // console.log(json)
+    var model = new Survey.Model(json);
     var moduleId = this.props.dataStore.getCurrModId;
     return (
       <div className={this.props.className}>
@@ -156,14 +199,14 @@ class ModuleQuizPageAnswerQuiz extends Component {
             <MDBRow className="py-3">
               <MDBCol md="12">
                 <MDBCard cascade className="my-3 grey lighten-4">
-                  {this.state.status === "done" && 
-                  <Survey.Survey
-                    model={model}
-                    onComplete={this.onComplete}
-                    onValueChanged={this.onValueChanged}
-                  />
+                  {this.state.status === "done" &&
+                    <Survey.Survey
+                      model={model}
+                      onComplete={() => this.onComplete()}
+                      onValueChanged={this.onValueChanged}
+                    />
                   }
-                  {this.state.status !== "done" && <h1>Failed</h1> }
+                  {this.state.status !== "done" && <h5 align="center" style={{ padding: 20 }}>Error in retrieving quiz. Please try again later.</h5>}
                 </MDBCard>
               </MDBCol>
             </MDBRow>
@@ -174,7 +217,7 @@ class ModuleQuizPageAnswerQuiz extends Component {
   }
 }
 
-export default styled(ModuleQuizPageAnswerQuiz)`
+export default styled(ModuleQuizPageAnswerNormalQuiz)`
 .module-content{
     margin-left: 270px;
     margin-top: 40px;
