@@ -3,9 +3,9 @@ import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBIcon } from "mdbreact";
 import SectionContainer from "../../components/sectionContainer";
 import axios from "axios";
 import { NavLink } from 'react-router-dom'
-import Dropzone from 'react-dropzone';
 
-const API = "http://localhost:3001"
+const API_MOCK = "http://localhost:3001"
+const API = "http://localhost:8080/LMS-war/webresources/"
 
 class CoursePackCreate extends Component {
 
@@ -18,13 +18,13 @@ class CoursePackCreate extends Component {
         startDate: "",
         price: "",
         categories: "",
-        outline: [],
     }
 
     componentDidMount() {
         let userId = localStorage.getItem("userId")
-        this.setState({ userId: userId })
-        axios.get(`${API}/category`)
+        this.setState({ userId: 3 }) //TODO: change user id
+
+        axios.get(`${API_MOCK}/category`)
             .then(result => {
                 this.setState({ categories: result.data })
                 console.log(this.state.categories)
@@ -119,86 +119,26 @@ class CoursePackCreate extends Component {
                         </MDBCol>
                     </MDBRow>
 
-                    <MDBRow style={{ paddingTop: "20px" }}>
-                        <MDBCol sm="4">Start Date: </MDBCol>
-                        <MDBCol sm="8">
-                            <input
-                                value={this.state.startDate}
-                                name="startDate"
-                                type="date"
-                                className="form-control"
-                                placeholder="Start Date"
-                                onChange={this.handleOnChange}
-                            />
-                        </MDBCol>
-                    </MDBRow>
-                    {this.outline()}
                 </MDBContainer>
             </SectionContainer>
         )
     }
 
-    addSection = event => {
-        this.setState(prevState => ({ outline: [...prevState.outline, ''] }))
-    }
-
-    handleChange = (index, event) => {
-        let outline = [...this.state.outline];
-        outline[index] = event.target.value;
-        this.setState({ outline });
-        console.log(this.state.outline)
-    }
-
-    removeSection = index => {
-        let outline = [...this.state.outline];
-        outline.splice(index, 1);
-        this.setState({ outline });
-    }
-
-    outline = () => {
-        return (
-            <div>
-                {this.state.outline.map((outline, index) => {
-                    return (
-                        <MDBRow style={{ paddingTop: "20px" }} key={index}>
-                            <MDBCol size="4">Section {index + 1}:</MDBCol>
-                            <MDBCol size="8">
-                                <input
-                                    value={outline}
-                                    name="outline"
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Eg. Introduction"
-                                    onChange={this.handleChange.bind(this, index)} />
-                                <input type='button' value='remove' onClick={() => this.removeSection(index)} />
-                            </MDBCol>
-                        </MDBRow>
-                    )
-                })}
-                <MDBBtn onClick={this.addSection}> Add Section</MDBBtn>
-            </div>
-        )
-    }
-
     handleCreate = event => {
-        const { courseCode, courseTitle, courseDescription, category, startDate, price, outline } = this.state
-        console.log("create coursepack")
-        axios.post(`${API}/category`, {
-            courseCode: courseCode,
-            courseTitle: courseTitle,
-            courseDescription: courseDescription,
+        const { courseCode, courseTitle, courseDescription, category, price, userId } = this.state
+        axios.put(`${API}Coursepack/createCoursepack?userId=${userId}`, {
+            code: courseCode,
+            title: courseTitle,
+            description: courseDescription,
             category: category,
-            startDate: startDate,
-            price: price,
-            outline: outline
+            price: price
         })
             .then(result => {
-                alert("created")
-                console.log(this.state.categories)
+                alert("created") //TODO: go to previous page
             })
             .catch(error => {
                 console.error("error in axios " + error);
-            });
+            }); 
     }
 
     render() {

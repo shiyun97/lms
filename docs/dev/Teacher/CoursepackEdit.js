@@ -5,7 +5,8 @@ import axios from "axios";
 import CoursepackSideNavigation from '../CoursepackSideNavigation';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
 
-const API = "http://localhost:3001"
+const API_MOCK = "http://localhost:3001"
+const API = "http://localhost:8080/LMS-war/webresources/"
 
 class CoursePackEdit extends Component {
 
@@ -15,13 +16,12 @@ class CoursePackEdit extends Component {
         courseTitle: "",
         courseDescription: "",
         category: "",
-        startDate: "",
         price: "",
         categories: "",
-        outline: [],
         disabled: true,
         editSave: "Edit",
         open: false,
+        publish: false
     }
 
     componentDidMount() {
@@ -32,7 +32,10 @@ class CoursePackEdit extends Component {
          */
         /*         this.setState({ coursepackId: coursepackId })
          */
-        axios.get(`${API}/category`)
+
+        let coursepackId = 18 //TODO: remove
+        this.setState({ coursepackId: coursepackId })
+        axios.get(`${API_MOCK}/category`) //FIXME:
             .then(result => {
                 this.setState({ categories: result.data })
                 console.log(this.state.categories)
@@ -41,17 +44,15 @@ class CoursePackEdit extends Component {
                 console.error("error in axios " + error);
             });
 
-
-        axios.get(`${API}/coursepack/1`) //FIXME:change id
+        // axios.get(`${API}Coursepack/getCoursepack/${coursepackId}`)
+        axios.get(`${API}Coursepack/getCoursepack/${coursepackId}`)
             .then(result => {
                 this.setState({
-                    courseCode: result.data.courseCode,
-                    courseTitle: result.data.courseTitle,
-                    courseDescription: result.data.courseDescription,
-                    category: result.data.category,
-                    startDate: result.data.startDate,
+                    courseCode: result.data.code,
+                    courseTitle: result.data.title,
+                    courseDescription: result.data.description,
+                    /* category: result.data.category, */
                     price: result.data.price,
-                    outline: result.data.outline
                 })
             })
             .catch(error => {
@@ -68,8 +69,15 @@ class CoursePackEdit extends Component {
     }
 
     deleteCourse = event => {
-        console.log("delete course")
         this.setState({ open: false })
+        axios.delete(`${API}Coursepack/deleteCoursepack?coursepackId=${this.state.coursepackId}`)
+            .then(result => {
+                alert("deleted")
+                console.log(this.state.categories)
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
     }
 
     handleOnChange = event => {
@@ -79,49 +87,46 @@ class CoursePackEdit extends Component {
     handleSelectCategory = event => {
         this.setState({ category: event.target.value }, () => event);
     }
-    //TODO: Delete
-    delete = event => {
-        var index = this.state.index
-        /*         axios.delete(`${API}ModuleMounting/deleteModule?moduleId=${index}`)
-                    .then(result => {
-                        this.props.history.go(-1)
-                        alert("Deleted");
-                    })
-                    .catch(error => {
-                        console.error("error in axios " + error);
-                    }) */
-    }
 
     editSave = event => {
         this.setState({ disabled: false, editSave: "Save" })
-        const { index } = this.state
         if (this.state.editSave === "Save") {
             this.setState({ disabled: true })
-            const { code, title, semesterOffered, yearOffered, creditUnit, hasExam, examFullDateTime, examVenue, faculty, department, maxEnrollment, assignedTeacher, lectureDay } = this.state
-            /* axios.post(`${API}ModuleMounting/updateModule?moduleId=${index}&userId=2`, {
-                code: code,
-                title: title,
-                semesterOffered: semesterOffered,
-                yearOffered: yearOffered,
-                creditUnit: creditUnit,
-                hasExam: hasExam,
-                examFullDateTime: examFullDateTime,
-                examVenue: examVenue,
-                faculty: faculty,
-                department: department,
-                maxEnrollment: maxEnrollment,
-                assignedTeacher: assignedTeacher,
-                lectureDay: lectureDay
+            const { courseCode, courseTitle, courseDescription, category, price } = this.state
+            axios.post(`${API}Coursepack/updateCoursepack?coursepackId=${this.state.coursepackId}`, {
+                code: courseCode,
+                title: courseTitle,
+                description: courseDescription,
+                category: category,
+                price: price
             })
                 .then(result => {
-                    window.location.reload()
-                    this.props.history.go(-1)
+                    alert("updated")
                 })
                 .catch(error => {
                     alert(error)
                     console.error("error in axios " + error);
-                }); */
+                });
         }
+    }
+
+    publish = event => {
+        const { courseCode, courseTitle, courseDescription, category, price } = this.state
+        axios.post(`${API}Coursepack/updateCoursepack?coursepackId=${this.state.coursepackId}`, {
+            code: courseCode,
+            title: courseTitle,
+            description: courseDescription,
+            category: category,
+            price: price,
+            published: true,
+        })
+            .then(result => {
+                alert("published")
+            })
+            .catch(error => {
+                alert(error)
+                console.error("error in axios " + error);
+            });
     }
 
     form = () => {
@@ -133,7 +138,6 @@ class CoursePackEdit extends Component {
                         <MDBCol sm="8">
                             <input
                                 defaultValue={this.state.courseCode}
-                                value={this.state.courseCode}
                                 name="courseCode"
                                 type="text"
                                 className="form-control"
@@ -149,7 +153,6 @@ class CoursePackEdit extends Component {
                         <MDBCol sm="8">
                             <input
                                 defaultValue={this.state.courseTitle}
-                                value={this.state.courseTitle}
                                 name="courseTitle"
                                 type="text"
                                 className="form-control"
@@ -165,7 +168,6 @@ class CoursePackEdit extends Component {
                         <MDBCol sm="8">
                             <textarea
                                 defaultValue={this.state.courseDescription}
-                                value={this.state.courseDescription}
                                 name="courseDescription"
                                 type="text"
                                 className="form-control"
@@ -181,7 +183,7 @@ class CoursePackEdit extends Component {
                     <MDBRow style={{ paddingTop: "20px" }}>
                         <MDBCol sm="4">Category: </MDBCol>
                         <MDBCol sm="8">
-                            <select value={this.state.category} onChange={this.handleSelectCategory} className="browser-default custom-select" disabled={this.state.disabled}>
+                            <select defaultValue={this.state.category} onChange={this.handleSelectCategory} className="browser-default custom-select" disabled={this.state.disabled}>
                                 <option>Choose a category</option>
                                 {this.state.categories && this.state.categories.map(
                                     (category, index) => <option key={index} value={category}>{category}</option>)
@@ -196,7 +198,6 @@ class CoursePackEdit extends Component {
                         <MDBCol sm="8">
                             <input
                                 defaultValue={this.state.price}
-                                value={this.state.price}
                                 name="price"
                                 type="number"
                                 pattern="[0-9]*"
@@ -209,67 +210,9 @@ class CoursePackEdit extends Component {
                         </MDBCol>
                     </MDBRow>
 
-                    <MDBRow style={{ paddingTop: "20px" }}>
-                        <MDBCol sm="4">Start Date: </MDBCol>
-                        <MDBCol sm="8">
-                            <input
-                                defaultValue={this.state.startDate}
-                                name="startDate"
-                                type="date"
-                                className="form-control"
-                                placeholder="Start Date"
-                                onChange={this.handleOnChange}
-                                disabled={this.state.disabled}
-                            />
-                        </MDBCol>
-                    </MDBRow>
-                    {this.outline()}
+                    {/* this.outline() */}
                 </MDBContainer>
             </SectionContainer>
-        )
-    }
-
-    addSection = event => {
-        this.setState(prevState => ({ outline: [...prevState.outline, ''] }))
-    }
-
-    handleChange = (index, event) => {
-        let outline = [...this.state.outline];
-        outline[index] = event.target.value;
-        this.setState({ outline });
-        console.log(this.state.outline)
-    }
-
-    removeSection = index => {
-        let outline = [...this.state.outline];
-        outline.splice(index, 1);
-        this.setState({ outline });
-    }
-
-    outline = () => {
-        return (
-            <div>
-                {this.state.outline.map((outline, index) => {
-                    return (
-                        <MDBRow style={{ paddingTop: "20px" }} key={index}>
-                            <MDBCol size="4">Section {index + 1}:</MDBCol>
-                            <MDBCol size="8">
-                                <input
-                                    defaultValue={outline}
-                                    name="outline"
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Eg. Introduction"
-                                    onChange={this.handleChange.bind(this, index)}
-                                    disabled={this.state.disabled}
-                                />
-                                <input type='button' disabled={this.state.disabled} value='remove' onClick={() => this.removeSection(index)} />
-                            </MDBCol>
-                        </MDBRow>
-                    )
-                })}
-                <MDBBtn onClick={this.addSection}>Add Section</MDBBtn>
-            </div>
         )
     }
 
@@ -306,6 +249,7 @@ class CoursePackEdit extends Component {
                     {this.form()}
 
                     <MDBCol align="right">
+                        <MDBBtn onClick={this.publish} color="primary" variant="contained" >Publish</MDBBtn>
                         <MDBBtn onClick={this.editSave} color="primary" variant="contained" >{this.state.editSave}</MDBBtn>
                         <MDBBtn color="danger" onClick={this.handleClickOpen}>Delete Course</MDBBtn>
                         <Dialog open={this.state.open} onClose={this.handleClickOpen}>

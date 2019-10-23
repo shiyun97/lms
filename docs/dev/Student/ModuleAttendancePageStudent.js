@@ -13,7 +13,8 @@ class ModuleAttendancePageStudent extends Component {
     state = {
         value: 0,
         lectureList: "",
-        tutorialList: ""
+        tutorialList: "",
+        attendanceList: ""
     }
 
     componentDidMount() {
@@ -43,6 +44,14 @@ class ModuleAttendancePageStudent extends Component {
                 console.error("error in axios " + error);
             });
 
+        axios.get(`${API}Attendance/getStudentModuleAttandance?userId=${localStorage.getItem('userId')}&moduleId=${moduleId}`)
+            .then(result => {
+                this.setState({ attendanceList: result.data.attendanceList })
+                console.log(this.state.attendanceList)
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
     }
 
     handleChange = (event, value) => {

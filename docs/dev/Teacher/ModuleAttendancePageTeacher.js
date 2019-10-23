@@ -619,7 +619,6 @@ class ModuleAttendancePageTeacher extends Component {
     return attendance
   }
 
-  //FIXME: id is not in database
   check = (studentId) => {
     var attendeesId = []
     if (this.state.tutorialAttendees !== "") {
@@ -629,9 +628,9 @@ class ModuleAttendancePageTeacher extends Component {
     }
 
     if (attendeesId.filter(e => e === studentId).length > 0) {
-      return "Present"
+      return <div style={{ color: "green" }}>Present</div>
     } else {
-      return "Absent"
+      return <div style={{ color: "red" }}>Absent</div>
     }
   }
 
@@ -643,7 +642,7 @@ class ModuleAttendancePageTeacher extends Component {
   //TODO: align center
   showCheckbox = event => {
     return (
-      <MDBInput type="checkbox" id="checkbox1" />
+        <MDBInput type="checkbox" id="checkbox1" algin="center"/>
     )
   }
 
@@ -661,7 +660,6 @@ class ModuleAttendancePageTeacher extends Component {
         console.error("error in axios " + error);
       });
   }
-  //TODO: check
   markPresent = event => {
     var updateAsPresent = this.state.chosen
     for (var i = 0; i < updateAsPresent.length; i++) {
@@ -679,7 +677,6 @@ class ModuleAttendancePageTeacher extends Component {
         });
     }
   }
-  //TODO:check
   markAbsent = event => {
     var updateAsAbsent = this.state.chosen
     console.log(updateAsAbsent)

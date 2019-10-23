@@ -17,6 +17,7 @@ class CoursepackDashboardPageTeacher extends Component {
     }
 
     componentDidMount() {
+        //TODO: get all coursepack the teacher has created
         axios.get(`${API}/coursepack`)
             .then(result => {
                 this.setState({ createdCoursepacks: result.data })
@@ -43,7 +44,7 @@ class CoursepackDashboardPageTeacher extends Component {
                     {this.state.createdCoursepacks && this.state.createdCoursepacks.map((course) => {
                         return (
                             <MDBCol size="3" key={course.id}>
-                                <NavLink to={`/coursepack/${course.id}/`} activeClassName="activeClass">
+                                <NavLink to={`/coursepack/${course.id}/`} activeClassName="activeClass"> {/**TODO: coursepack id */}
                                     <MDBCard>
                                         <MDBCardBody>
                                             <MDBMedia object src="https://mdbootstrap.com/img/Photos/Others/placeholder1.jpg" alt="" />
