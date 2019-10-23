@@ -63,7 +63,7 @@ class ModuleConsultationPageStudent extends Component {
             .get(`http://localhost:8080/LMS-war/webresources/Consultation/viewAllAvailableConsultation/${moduleId}`)
             .then(result => {
                 // console.log(result.data.consultationTimeslot)
-                this.setState({ status: "done", rows: result.data.consultationTimeslot })
+                this.setState({ status: "done", rows: result.data.consultationTimeslot, recallConsultations: false })
             })
             .catch(error => {
                 this.setState({ status: "error" })
@@ -78,7 +78,7 @@ class ModuleConsultationPageStudent extends Component {
             .get(`http://localhost:8080/LMS-war/webresources/Consultation/viewConsultationByStudent?userId=${userId}`)
             .then(result => {
                 // console.log(result.data)
-                this.setState({ statusBooked: "done", bookedRows: result.data })
+                this.setState({ statusBooked: "done", bookedRows: result.data, recallConsultations: false })
             })
             .catch(error => {
                 this.setState({ statusBooked: "error" })

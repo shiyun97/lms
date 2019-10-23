@@ -78,7 +78,7 @@ class ModuleAnnouncementsPage extends Component {
             .get(`http://localhost:8080/LMS-war/webresources/Annoucement/getAllActiveAnnoucements?moduleId=${moduleId}`)
             .then(result => {
                 // console.log(result.data.annoucementList)
-                this.setState({ activeAnnouncements: result.data.annoucementList })
+                this.setState({ activeAnnouncements: result.data.annoucementList, recall: "" })
             })
             .catch(error => {
                 console.error("error in axios " + error);
@@ -91,7 +91,7 @@ class ModuleAnnouncementsPage extends Component {
             .get(`http://localhost:8080/LMS-war/webresources/Annoucement/getAllUpcomingAnnoucements?moduleId=${moduleId}`)
             .then(result => {
                 // console.log(result.data.annoucementList)
-                this.setState({ upcomingAnnouncements: result.data.annoucementList })
+                this.setState({ upcomingAnnouncements: result.data.annoucementList, recall: "" })
             })
             .catch(error => {
                 console.error("error in axios " + error);
@@ -104,7 +104,7 @@ class ModuleAnnouncementsPage extends Component {
             .get(`http://localhost:8080/LMS-war/webresources/Annoucement/getAllExpiredAnnoucements?moduleId=${moduleId}`)
             .then(result => {
                 // console.log(result.data.annoucementList)
-                this.setState({ expiredAnnouncements: result.data.annoucementList })
+                this.setState({ expiredAnnouncements: result.data.annoucementList, recall: "" })
             })
             .catch(error => {
                 console.error("error in axios " + error);

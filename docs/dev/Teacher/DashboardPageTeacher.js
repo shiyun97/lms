@@ -92,7 +92,7 @@ class DashboardPageTeacher extends Component {
       .get(`http://localhost:8080/LMS-war/webresources/Annoucement/getAllActiveSystemAnnoucement`)
       .then(result => {
         // console.log(result.data.annoucementList)
-        this.setState({ annoucementList: result.data.annoucementList })
+        this.setState({ annoucementList: result.data.annoucementList, recall: "" })
       })
       .catch(error => {
         console.error("error in axios " + error);

@@ -69,7 +69,7 @@ class ModuleConsultationPageTeacher extends Component {
             .get(`http://localhost:8080/LMS-war/webresources/Consultation/viewAllConsultationslot?moduleId=${moduleId}&userId=${userId}`)
             .then(result => {
                 // console.log(result.data.consultationTimeslots)
-                this.setState({ status: "done", rows: result.data.consultationTimeslots })
+                this.setState({ status: "done", rows: result.data.consultationTimeslots, recallConsultations: false })
             })
             .catch(error => {
                 this.setState({ status: "error", message: "An error has occured in retrieving connsultation slots." })

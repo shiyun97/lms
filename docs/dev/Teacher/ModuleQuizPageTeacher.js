@@ -118,7 +118,7 @@ class ModuleQuizPageTeacher extends Component {
             .get(` http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllModuleQuiz/${moduleId}?userId=${userId}`)
             .then(result => {
                 // console.log(result.data.quizzes)
-                this.setState({ status: "done", quizzes: result.data.quizzes })
+                this.setState({ status: "done", quizzes: result.data.quizzes, recallQuiz: false })
             })
             .catch(error => {
                 this.setState({ status: "error" })

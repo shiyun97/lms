@@ -56,7 +56,7 @@ class DashboardPageAdmin extends Component {
             .get(`http://localhost:8080/LMS-war/webresources/Annoucement/getAllActiveSystemAnnoucement`)
             .then(result => {
                 // console.log(result.data.annoucementList)
-                this.setState({ activeAnnouncements: result.data.annoucementList })
+                this.setState({ activeAnnouncements: result.data.annoucementList, recall: "" })
             })
             .catch(error => {
                 console.error("error in axios " + error);
@@ -69,7 +69,7 @@ class DashboardPageAdmin extends Component {
             .get(`http://localhost:8080/LMS-war/webresources/Annoucement/getAllUpcomingSystemAnnoucement`)
             .then(result => {
                 // console.log(result.data.annoucementList)
-                this.setState({ upcomingAnnouncements: result.data.annoucementList })
+                this.setState({ upcomingAnnouncements: result.data.annoucementList, recall: "" })
             })
             .catch(error => {
                 console.error("error in axios " + error);
@@ -82,7 +82,7 @@ class DashboardPageAdmin extends Component {
             .get(`http://localhost:8080/LMS-war/webresources/Annoucement/getAllExpiredSystemAnnoucement`)
             .then(result => {
                 // console.log(result.data.annoucementList)
-                this.setState({ expiredAnnouncements: result.data.annoucementList })
+                this.setState({ expiredAnnouncements: result.data.annoucementList, recall: "" })
             })
             .catch(error => {
                 console.error("error in axios " + error);
@@ -171,7 +171,7 @@ class DashboardPageAdmin extends Component {
     }
 
     openDeleteAnnouncementModalBox = (id) => {
-        console.log(id)
+        // console.log(id)
         this.toggle(3);
         this.setState({
             announcementIdToDelete: id
@@ -191,7 +191,6 @@ class DashboardPageAdmin extends Component {
                 this.setState({ message: error.response.data.errorMessage, openSnackbar: true })
                 console.error("error in axios " + error);
             });
-
     }
 
     handleCheckBoxChange = name => event => {

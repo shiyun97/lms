@@ -98,7 +98,8 @@ class ModuleQuizPageViewStudentAttempt extends Component {
                     type: type,
                     correctAnswer: correctAnswer,
                     totalMark: totalMark,
-                    questionList: questionList
+                    questionList: questionList,
+                    recallResults: false
                 });
             })
             .catch(error => {
