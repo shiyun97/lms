@@ -105,7 +105,7 @@ class ModuleOverviewPage extends Component {
             <div className={this.props.className}>
                 <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
                 <div className="module-navbar-small">
-                    <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'overview'}></ModuleSideNavigationDropdown>
+                    <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Module Overview'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
                     <MDBContainer>

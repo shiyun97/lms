@@ -12,7 +12,8 @@ class ModuleConsultationPageTeacher extends Component {
 
     state = {
         modal1: false,
-        date: "",
+        startDate: "",
+        endDate: "",
         status: "retrieving",
         startTime: "",
         endTime: "",
@@ -55,7 +56,8 @@ class ModuleConsultationPageTeacher extends Component {
         ],
         rows: [],
         openSnackbar: false,
-        message: ""
+        message: "",
+        recallConsultations: false
     }
 
     getAllConsultations = () => {
@@ -67,10 +69,10 @@ class ModuleConsultationPageTeacher extends Component {
             .get(`http://localhost:8080/LMS-war/webresources/Consultation/viewAllConsultationslot?moduleId=${moduleId}&userId=${userId}`)
             .then(result => {
                 // console.log(result.data.consultationTimeslots)
-                this.setState({ status: "done", rows: result.data.consultationTimeslots })
+                this.setState({ status: "done", rows: result.data.consultationTimeslots, recallConsultations: false })
             })
             .catch(error => {
-                this.setState({ status: "error" })
+                this.setState({ status: "error", message: "An error has occured in retrieving connsultation slots." })
                 console.error("error in axios " + error);
             });
     }
@@ -88,12 +90,19 @@ class ModuleConsultationPageTeacher extends Component {
     };
 
     componentDidMount() {
+        this.initPage();
         this.getAllConsultations();
     }
 
     componentDidUpdate() {
-        if (this.state.status === "recallConsultations")
+        if (this.state.recallConsultations)
             this.getAllConsultations();
+    }
+
+    initPage() {
+        var pathname = location.pathname;
+        pathname = pathname.split("/");
+        this.props.dataStore.setCurrModId(pathname[2]);
     }
 
     toggle = (nr) => {
@@ -106,22 +115,22 @@ class ModuleConsultationPageTeacher extends Component {
     createConsultationSlot = () => {
         const moduleId = this.props.dataStore.getCurrModId;
         const userId = this.props.dataStore.getUserId;
-        const newDate = moment(this.state.date).format('DD-MM-YYYY')
+        const newStartDate = moment(this.state.startDate).format('DD-MM-YYYY')
         this.toggle(1);
         axios
             // .post(`http://localhost:3001/allConsultations`, {
             .put(`http://localhost:8080/LMS-war/webresources/Consultation/createConsultation?userId=${userId}&moduleId=${moduleId}`, {
-                "startDate": newDate,
+                "startDate": newStartDate,
                 "startTime": this.state.startTime + ":00",
                 "endTime": this.state.endTime + ":00"
             })
             .then(result => {
                 // console.log(result.data)
-                this.setState({ status: "recallConsultations", message: "Successfully created consultation!", openSnackbar: true })
+                this.setState({ recallConsultations: true, message: "Successfully created consultation!", openSnackbar: true })
                 // console.log("creation successful")
             })
             .catch(error => {
-                this.setState({ status: "error" })
+                this.setState({ message: error.response.data.errorMessage, openSnackbar: true })
                 console.error("error in axios " + error);
             });
     }
@@ -134,11 +143,11 @@ class ModuleConsultationPageTeacher extends Component {
             // .delete(`http://localhost:3001/allConsultations/${consultationId}`)
             .then(result => {
                 // console.log(result.data)
-                this.setState({ status: "recallConsultations", message: "Successfully deleted consultation!", openSnackbar: true })
+                this.setState({ recallConsultations: true, message: "Successfully deleted consultation!", openSnackbar: true })
                 // console.log("deletion successful")
             })
             .catch(error => {
-                this.setState({ status: "error" })
+                this.setState({ message: error.response.data.errorMessage, openSnackbar: true })
                 console.error("error in axios " + error);
             });
     }
@@ -164,11 +173,11 @@ class ModuleConsultationPageTeacher extends Component {
                         <MDBRow>
                             <MDBCol md="12" className="mt-4">
                                 <TextField
-                                    id="date"
-                                    label="Date"
+                                    id="startDate"
+                                    label="Start Date"
                                     type="date"
-                                    name="date"
-                                    value={this.state.date}
+                                    name="startDate"
+                                    value={this.state.startDate}
                                     onChange={this.handleChange}
                                     fullWidth
                                     InputLabelProps={{
@@ -229,10 +238,10 @@ class ModuleConsultationPageTeacher extends Component {
         for (let i = 0; i < row.length; i++) {
             newRows.push({
                 consultationId: row[i].consultationTsId,
-                date: row[i].startD,
+                startDate: moment(row[i].startD).format('DD-MM-YYYY'),
                 startTime: row[i].startTs,
                 endTime: row[i].endTs,
-                // date: "",
+                // startDate: "",
                 // startTime: "",
                 // endTime: "",
                 booker: row[i].booker === undefined ? "-" : row[i].booker,

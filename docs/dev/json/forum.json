@@ -1,0 +1,115 @@
+{
+    "forums": [
+        {
+            "forumId": "1",
+            "title": "General FAQ - How can my team prepare for first system release?",
+            "description": "content",
+            "createTs": "2019-07-25T10:30:00",
+            "updateTs": "2019-07-25T10:30:00",
+            "numberOfReply": "5",
+            "owner": {
+                "userId": "2",
+                "firstName": "John",
+                "lastName": "Tan"
+            }
+        },
+        {
+            "forumId": "2",
+            "title": "General FAQ - How can my team prepare for first system release?",
+            "description": "content",
+            "createTs": "2019-07-25T10:30:00",
+            "updateTs": "2019-07-25T10:30:00",
+            "numberOfReply": "15",
+            "owner": {
+                "userId": "2",
+                "firstName": "Tom",
+                "lastName": "Lee"
+            }
+        }
+    ],
+    "forumDetails": {
+        "forumId": "1",
+        "title": "General FAQ - How can my team prepare for first system release?",
+        "description": "<div>content</div>",
+        "createTs": "2019-07-25T10:30:00",
+        "updateTs": "2019-07-25T10:30:00",
+        "numberOfReply": "5",
+        "owner": {
+            "userId": "2",
+            "firstName": "Lisa",
+            "lastName": "Wong"
+        },
+        "replies": [
+            {
+                "forumId": "2",
+                "title": "RE: General FAQ - How can my team prepare for first system release?",
+                "description": "This is a reply to Title 1",
+                "createTs": "2019-07-25T10:30:00",
+                "updateTs": "2019-07-25T10:30:00",
+                "numberOfReply": "5",
+                "owner": {
+                    "userId": "2",
+                    "firstName": "Mark",
+                    "lastName": "Tan"
+                },
+                "comments": [
+                    {
+                        "commentId": "5",
+                        "description": "This is a comment to Reply 1",
+                        "createTs": "2019-07-25T10:30:00",
+                        "owner": {
+                            "userId": "2",
+                            "firstName": "Mary",
+                            "lastName": "Lim"
+                        }
+                    },
+                    {
+                        "commentId": "6",
+                        "description": "This is another comment to Reply 1",
+                        "createTs": "2019-10-25T12:30:00",
+                        "owner": {
+                            "userId": "2",
+                            "firstName": "John",
+                            "lastName": "Doe"
+                        }
+                    }
+                ]
+            },
+            {
+                "forumId": "3",
+                "title": "RE: General FAQ - How can my team prepare for first system release?",
+                "description": "This is a reply to Title 1",
+                "createTs": "2019-07-25T10:30:00",
+                "updateTs": "2019-07-25T10:30:00",
+                "numberOfReply": "5",
+                "owner": {
+                    "userId": "2",
+                    "firstName": "John",
+                    "lastName": "Tan"
+                }
+            }
+        ],
+        "comments": [
+            {
+                "commentId": "21",
+                "description": "This is a comment to Title 1",
+                "createTs": "2019-07-25T10:30:00",
+                "owner": {
+                    "userId": "2",
+                    "firstName": "Mary",
+                    "lastName": "Lim"
+                }
+            },
+            {
+                "commentId": "22",
+                "description": "This is a comment to Title 1",
+                "createTs": "2019-10-25T12:30:00",
+                "owner": {
+                    "userId": "2",
+                    "firstName": "John",
+                    "lastName": "Doe"
+                }
+            }
+        ]
+    }
+}

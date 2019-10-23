@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import {
     MDBContainer,
@@ -13,9 +14,12 @@ import {
     MDBIcon
 } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
+import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
 import axios from "axios";
 import Snackbar from '@material-ui/core/Snackbar';
 
+@inject('dataStore')
+@observer
 class ModuleFeedbackPage extends Component {
 
     state = {
@@ -260,11 +264,20 @@ class ModuleFeedbackPage extends Component {
         }
     }
 
+    goToSemesterEvaluation = () => {
+        this.props.dataStore.setPath(`/modules/${this.state.moduleId}/feedback/evaluation`);
+        this.props.history.push(`/modules/${this.state.moduleId}/feedback/evaluation`);
+    }
+
     render() {
         let feedbacks = this.state.allFeedbacksTable;
+        let accessRight = "Student";
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Feedback'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
                     <MDBContainer>
                         <MDBRow>
@@ -308,7 +321,7 @@ class ModuleFeedbackPage extends Component {
                                     <MDBModalFooter>
                                         <MDBBtn color="secondary" onClick={this.toggle("ViewFeedback")}>
                                             Close
-                                                </MDBBtn>
+                                        </MDBBtn>
                                     </MDBModalFooter>
                                 </MDBModal>
 
@@ -355,6 +368,16 @@ class ModuleFeedbackPage extends Component {
                                         </MDBModalFooter>
                                     </form>
                                 </MDBModal>
+                                {
+                                    accessRight == "Student" &&
+                                    <MDBRow>
+                                        <MDBCol>
+                                            <h5 className="mt-5">End-of-Semester Evaluation</h5>
+                                            <div className="mb-3"></div>
+                                            <MDBBtn className="ml-0 mb-5" size="md" color="primary" onClick={e => { this.goToSemesterEvaluation() }}>Start Evaluation</MDBBtn>
+                                        </MDBCol>
+                                    </MDBRow>
+                                }
                             </MDBCol>
                         </MDBRow>
                         <Snackbar
@@ -384,9 +407,23 @@ export default styled(ModuleFeedbackPage)`
 .module-content{
     margin-top: 40px;
 }
-@media (min-width: 1199.98px) {
+@media screen and (min-width: 800px) {
     .module-content{
         margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
     }
 }
 .align-right{

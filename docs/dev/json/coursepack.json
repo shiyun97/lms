@@ -1,0 +1,46 @@
+{
+  "coursepack": [
+    {
+    "courseCode": "IS4103",
+    "courseTitle": "Capstone",
+    "courseDescription": "description",
+    "category": "Information Systems",
+    "startDate": "",
+    "rating": 1,
+    "price": 100,
+    "teacher": "Dr TWK",
+    "outline": ["Introduction", "OOP", "Recursion", "Summary"],
+    "id": 1
+  },
+  {
+    "courseCode": "IS4100",
+    "courseTitle": "Project Management",
+    "courseDescription": "description",
+    "category": "Information Systems",
+    "startDate": "",
+    "rating": 2,
+    "price": 20,
+    "teacher": "Prof Tan",
+    "outline": ["Introduction", "Project", "Summary"],
+    "id": 2
+  },
+  {
+    "courseCode": "IS3103",
+    "courseTitle": "Capstone",
+    "courseDescription": "description",
+    "category": "Information Systems",
+    "startDate": "",
+    "endDate": "",
+    "rating": 1,
+    "price": 0,
+    "teacher": "Prof OLB",
+    "outline": ["Introduction", "Presentation", "Summary"],
+    "id": 3
+  }
+],
+  "category": [
+    "ComputerScience",
+    "InformationSystems",
+    "BusinessAnalytics"
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "userList": [
+    {
+      "accessRight": "Student",
+      "email": "student@gmail.com",
+      "firstName": "John",
+      "gender": "Male",
+      "id": 2,
+      "lastName": "Tan",
+      "userId": 2,
+      "username": "student"
+    },
+    {
+      "accessRight": "Student",
+      "email": "student2@gmail.com",
+      "firstName": "Bob",
+      "gender": "Male",
+      "id": 3,
+      "lastName": "Lim",
+      "userId": 3,
+      "username": "student2"
+    },
+    {
+      "accessRight": "Student",
+      "email": "student3@gmail.com",
+      "firstName": "Mary",
+      "gender": "Female",
+      "id": 4,
+      "lastName": "Lee",
+      "userId": 4,
+      "username": "student3"
+    }
+  ],
+  "attendanceList": [
+    {
+      "accessRight": "Student",
+      "email": "student@gmail.com",
+      "firstName": "John",
+      "gender": "Male",
+      "id": 2,
+      "lastName": "Tan",
+      "userId": 2,
+      "username": "student"
+    },
+    {
+      "accessRight": "Student",
+      "email": "student2@gmail.com",
+      "firstName": "Bob",
+      "gender": "Male",
+      "id": 3,
+      "lastName": "Lim",
+      "userId": 3,
+      "username": "student2"
+    }
+  ]
+}

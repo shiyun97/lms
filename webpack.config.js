@@ -46,14 +46,24 @@ const config = {
       {
         test: /\.gif(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader?limit=10000&mimetype=image/gif'
-      }
+      },
+      {
+        test: /\.mp4$/,
+        use: 'file-loader?name=videos/[name].[ext]',
+      },
     ]
   },
   devServer: {
     historyApiFallback: true,
     open: true,
     compress: true,
-    port: 3100
+    port: 3100,
+    host: '127.0.0.1',
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "*",
+      "Access-Control-Allow-Headers": "*"
+    }
   },
   plugins: [
     new HtmlWebpackPlugin({

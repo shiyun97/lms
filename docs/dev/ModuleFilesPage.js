@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { observer, inject } from 'mobx-react';
 import { NavLink, withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import { 
@@ -8,9 +9,8 @@ import {
     MDBIcon, 
     MDBBtn, 
     MDBDataTable,
-    MDBTable, 
-    MDBTableHead, 
-    MDBTableBody,
+    MDBCard,
+    MDBCardBody,
     MDBModal,
     MDBModalHeader,
     MDBModalBody,
@@ -30,6 +30,8 @@ const API_URL = "http://localhost:8080/LMS-war/webresources";
 
 const FILE_SERVER = "http://127.0.0.1:8887/";
 
+@inject('dataStore')
+@observer
 class ModuleFilesPage extends Component {
 
     state = {
@@ -319,8 +321,8 @@ class ModuleFilesPage extends Component {
     }
 
     goToFolder = (folderId) => {
-        console.log(folderId)
         let moduleId = this.state.moduleId;
+        this.props.dataStore.setPath(`/modules/${moduleId}/files/${folderId}`);
         this.props.history.push(`/modules/${moduleId}/files/${folderId}`);
         return this.initPage()
     }
@@ -347,7 +349,6 @@ class ModuleFilesPage extends Component {
     }
 
     deleteFile = (fileId) => {
-        console.log(fileId);
         axios
             .delete(API_URL + "/file/deleteFile?fileId=" + fileId)
             .then((result) => {
@@ -368,8 +369,6 @@ class ModuleFilesPage extends Component {
     }
 
     downloadFile = (fileId, fileName) => {
-        console.log(fileName)
-        console.log(fileId)
         fetch(API_URL + "/file/downloadFile?fileId=" + fileId, {
             method: 'get'
         })
@@ -431,7 +430,6 @@ class ModuleFilesPage extends Component {
         let folderNameInput = this.state.folderNameInput;
         let folderStudentUploadInput = this.state.folderStudentUploadInput;
 
-        console.log(folderStudentUploadInput)
         if (this.state.folderStudentUploadInput === "true" && (!this.state.folderStudentUploadOpenDateInput 
             || this.state.folderStudentUploadOpenDateInput.length === 0 || !this.state.folderStudentUploadCloseDateInput
             || this.state.folderStudentUploadCloseDateInput.length === 0)) {
@@ -497,7 +495,6 @@ class ModuleFilesPage extends Component {
     }
 
     onDrop = (uploadedFiles) => {
-        console.log(uploadedFiles);
         let files = this.state.uploadedFiles;
         files.concat(uploadedFiles);
         this.setState({
@@ -508,61 +505,48 @@ class ModuleFilesPage extends Component {
 
     submitNewFilesHandler = event => {
         event.preventDefault();
-        console.log("hi")
-        console.log(this.state.uploadedFiles);
-        let userId = localStorage.getItem('userId');
-        userId = "3"
-        let moduleId = this.state.moduleId;
-        let folderId = this.state.folderId;
-        let files = this.state.uploadedFiles;
-        console.log(this.state)
-        console.log(files)
-        if (files == [] || !userId || !moduleId || !folderId) {
-            return;
+
+        var files = this.state.uploadedFiles;
+        if (files.length > 0 && this.state.moduleId && this.state.folderId && localStorage.getItem("userId")) {
+            const formData = new FormData();
+            for (let i = 0; i < files.length; i++) {
+                formData.append('file', files[i]);
+            }
+            
+            fetch(`${API_URL}/file/uploadMultiple?moduleId=${this.state.moduleId}&folderId=${this.state.folderId}&type=document&userId=${localStorage.getItem("userId")}`, {
+                method: 'post',
+                body: formData
+            })
+                .then((result) => {
+                    if (result.status == "200") {
+                        this.setState({
+                            ...this.state,
+                            modalUploadFiles: false,
+                            uploadedFiles: [],
+                            message: "New file uploaded successfully!",
+                            openSnackbar: true
+                        })
+                        return this.initPage();
+                    }
+                })
+                .catch(error => {
+                    this.setState({
+                    ...this.state,
+                    modalUploadFiles: false,
+                    uploadedFiles: [],
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                });
+                console.error("error in axios " + error);
+                return this.initPage();
+            });
         }
-        // call api to send
-        
-        var formData = new FormData();
-        /*files.map((file, index) => {
-            formData.append(index, file);
-        });*/
-        console.log(files[0])
-        formData.append('file', files[0])
-        axios({
-            method: 'post',
-            url: `${API_URL}/file/upload?moduleId=${moduleId}&type=document&folderId=${folderId}&userId=${userId}`,
-            body: formData
-        })
-        .then((result) => {
-            this.setState({
-                message: "File uploaded successfully!",
-                openSnackbar: true
-            });
-            return this.initPage()
-        })
-        .catch(error => {
-            this.setState({
-                message: error.response.data.errorMessage,
-                openSnackbar: true
-            });
-            console.error("error in axios " + error);
-            return this.initPage()
-        });
-        
-        
-        this.setState({
-            ...this.state,
-            modalUploadFiles: false,
-            uploadedFiles: []
-        })
     }
 
     removeFileUpload = (file) => {
-        console.log(file);
         var array = this.state.uploadedFiles.filter(function(item) {
             return item !== file
         });
-        console.log(array)
         this.setState({
             ...this.state,
             uploadedFiles: array
@@ -616,7 +600,6 @@ class ModuleFilesPage extends Component {
                 arr.folders.push(folderIds[i]);
             }
         }
-        console.log(arr)
     }
 
     deleteFiles = (e) => {
@@ -636,7 +619,6 @@ class ModuleFilesPage extends Component {
                 arr.folders.push(folderIds[i]);
             }
         }
-        console.log(arr)
     }
 
     upload = () => {
@@ -644,6 +626,41 @@ class ModuleFilesPage extends Component {
     }
 
     uploadFileOnChange = () => {
+        var files = this.fileUpload.files;
+        if (files.length > 0 && this.state.moduleId && this.state.folderId && localStorage.getItem("userId")) {
+            const formData = new FormData();
+            for (let i = 0; i < files.length; i++) {
+                formData.append('file', files[i]);
+            }
+            
+            fetch(`${API_URL}/file/uploadMultiple?moduleId=${this.state.moduleId}&folderId=${this.state.folderId}&type=document&userId=${localStorage.getItem("userId")}`, {
+                method: 'post',
+                body: formData
+            })
+                .then((result) => {
+                    if (result.status == "200") {
+                        console.log(result)
+                        this.setState({
+                            ...this.state,
+                            modalUploadFiles: false,
+                            message: "New file uploaded successfully!",
+                            openSnackbar: true
+                        })
+                        return this.initPage();
+                    }
+                })
+                .catch(error => {
+                    this.setState({
+                    ...this.state,
+                    modalUploadFiles: false,
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                });
+                console.error("error in axios " + error);
+                return this.initPage();
+            });
+        }
+        /*
         var file = this.fileUpload.files[0];
         
         if (file != null && this.state.moduleId && this.state.folderId && localStorage.getItem("userId")) {
@@ -674,7 +691,7 @@ class ModuleFilesPage extends Component {
                 console.error("error in axios " + error);
                 return this.initPage();
             });
-        }
+        }*/
     }
 
     render() {
@@ -706,7 +723,7 @@ class ModuleFilesPage extends Component {
             <div className={this.props.className}>
                 <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
                 <div className="module-navbar-small">
-                    <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'files'}></ModuleSideNavigationDropdown>
+                    <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Files'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
                     <MDBContainer className="mb-4">
@@ -844,14 +861,15 @@ class ModuleFilesPage extends Component {
                             <form className="needs-validation" noValidate onSubmit={this.submitNewFilesHandler}>
                                 <MDBModalBody>
                                     <div className="text-center mt-2">
+                                        {/*
                                         <SectionContainer className="mb-0 p-5 mt-1">
                                             <div onClick={e => this.upload()}>
                                                 <MDBIcon icon="upload" size="3x" className="mb-3 indigo-text"></MDBIcon><br></br>
                                                 Click to Upload Multimedia
                                             </div>
-                                        </SectionContainer>
+                                        </SectionContainer>*/}
                                         
-                                        {/*
+                                        
                                         <Dropzone onDrop={this.onDrop} multiple>
                                             {({ getRootProps, getInputProps, isDragActive, isDragReject, rejectedFiles }) => (
                                                 <div {...getRootProps()}>
@@ -862,11 +880,11 @@ class ModuleFilesPage extends Component {
                                                     </SectionContainer>
                                                 </div>
                                             )}
-                                        </Dropzone>*/}
+                                        </Dropzone>
                                     </div>
-                                    <input id="fileInput" type="file" value="" ref={(ref) => this.fileUpload = ref} style={{display: 'none'}} onChange={e => this.uploadFileOnChange()} />
+                                    <input id="fileInput" type="file" value="" ref={(ref) => this.fileUpload = ref} style={{display: 'none'}} onChange={e => this.uploadFileOnChange()} multiple />
 
-                                    <MDBListGroup className="my-4 mx-4" style={{width: "26rem", height:"auto", maxHeight: "120px", overflowY: "auto"}}>
+                                    <MDBListGroup className="my-4 mx-4" style={{maxWidth: "26rem", width:"auto", height:"auto", maxHeight: "120px", overflowY: "auto"}}>
                                         {uploadedFiles.length > 0 && uploadedFiles.map((uploadedFile, index) => (
                                             <MDBListGroupItem key={index}>
                                                 <MDBIcon icon="times" className="mr-3" onClick={e => this.removeFileUpload(uploadedFile)}></MDBIcon>{uploadedFile.name}
@@ -891,7 +909,9 @@ class ModuleFilesPage extends Component {
                             folders.rows.length > 0 && 
                             <MDBRow>
                                 <MDBCol>
-                                    <MDBDataTable striped bordered hover paging={false} searching={true} sortable={true} data={folders} />
+                                    <MDBCard><MDBCardBody>
+                                    <MDBDataTable striped bordered hover scrollX paging={false} searching={true} sortable={true} data={folders} />
+                                    </MDBCardBody></MDBCard>
                                 </MDBCol>
                             </MDBRow>
                         }
@@ -899,7 +919,7 @@ class ModuleFilesPage extends Component {
                             files.rows.length > 0 && 
                             <MDBRow>
                                 <MDBCol>
-                                    <MDBDataTable striped bordered hover paging={false} searching={true} sortable={true} data={files} />
+                                    <MDBDataTable striped bordered hover scrollX paging={false} searching={true} sortable={true} data={files} />
                                 </MDBCol>
                             </MDBRow>
                         }

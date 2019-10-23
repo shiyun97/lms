@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBIcon } from "mdbreact";
-import ModuleSideNavigation from "./ModuleSideNavigation";
-import SectionContainer from "../components/sectionContainer";
-
+import ModuleQuizPageStudent from "./Student/ModuleQuizPageStudent";
+import ModuleQuizPageTeacher from "./Teacher/ModuleQuizPageTeacher";
+import AccessDeniedPage from "./AccessDeniedPage";
 class ModuleQuizPage extends Component {
 
     state = {
+        moduleId: 0,
     }
 
     componentDidMount() {
@@ -16,27 +16,20 @@ class ModuleQuizPage extends Component {
     initPage() {
         let moduleId = this.props.match.params.moduleId;
         if (moduleId) {
-            console.log(moduleId);
+            // console.log(moduleId);
             // retrieve module & set state
+            this.setState({ moduleId: moduleId })
         }
     }
 
     render() {
-        return (
-            <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
-                <div className="module-content">
-                    <MDBContainer>
-                        <MDBRow>
-                            <MDBCol>
-                                <h4 className="font-weight-bold">Quiz</h4>
-                                <hr className="my-4" />
-                            </MDBCol>
-                        </MDBRow>
-                    </MDBContainer>
-                </div>
-            </div>
-          );
+        let accessRight = localStorage.getItem("accessRight")
+        if (accessRight === "Student")
+            return <ModuleQuizPageStudent moduleId={this.props.moduleId}/>
+        else if (accessRight === "Teacher")
+            return <ModuleQuizPageTeacher moduleId={this.props.moduleId} />
+        else
+            return <AccessDeniedPage />
     }
 }
 

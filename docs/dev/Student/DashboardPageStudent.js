@@ -1,16 +1,16 @@
 import React, { Component } from "react";
-import { MDBJumbotron, MDBCardBody, MDBCard, MDBCardTitle, MDBCardText, MDBIcon, MDBRow, MDBCol, MDBAnimation } from "mdbreact";
+import { MDBJumbotron, MDBCardBody, MDBCard, MDBCardTitle, MDBCardText, MDBRow, MDBCol, MDBAnimation } from "mdbreact";
 import { NavLink } from 'react-router-dom';
 import axios from "axios";
 import { observer, inject } from 'mobx-react';
-import { Fab } from '@material-ui/core';
 
 @inject('dataStore')
 @observer
 class DashboardPageStudent extends Component {
 
   state = {
-    status: "retrieving"
+    status: "retrieving",
+    annoucementList: []
   };
 
   componentDidMount() {
@@ -18,7 +18,7 @@ class DashboardPageStudent extends Component {
     axios
       .get(`http://localhost:8080/LMS-war/webresources/studentEnrollment/retrieveStudentModules/${userId}`)
       .then(result => {
-        // console.log(result.data.modules)
+        console.log(result.data.modules)
         this.props.dataStore.updateModules(result.data.modules);
         this.setState({
           status: "done"
@@ -30,11 +30,43 @@ class DashboardPageStudent extends Component {
         });
         console.error("error in axios " + error);
       });
+
+    this.getActiveAnnouncementDetails();
+  }
+
+  getActiveAnnouncementDetails = () => {
+    axios
+      .get(`http://localhost:8080/LMS-war/webresources/Annoucement/getAllActiveSystemAnnoucement`)
+      .then(result => {
+        // console.log(result.data.annoucementList)
+        this.setState({ annoucementList: result.data.annoucementList })
+      })
+      .catch(error => {
+        console.error("error in axios " + error);
+      });
+  }
+
+  renderAnnouncementSet = (announcement) => {
+    return (
+      <>
+        <MDBRow>
+          <MDBCol md="6">
+            <h6 style={{ fontWeight: "bold" }}>{announcement.title}</h6>
+          </MDBCol>
+          <MDBCol md="6" align="right">
+            <h6 style={{ fontStyle: "italic", fontSize: "10px" }}> {announcement.startDate} </h6>
+          </MDBCol>
+          <MDBCol md="12"> {announcement.content} </MDBCol>
+        </MDBRow>
+        <hr />
+      </>
+    )
   }
 
   setCurrModuleId = (moduleId) => { this.props.dataStore.setCurrModId(moduleId) }
 
   render() {
+    console.log("test")
     return (
       <MDBRow>
         <MDBCol md="12" className="mt-3 mx-auto">
@@ -71,83 +103,21 @@ class DashboardPageStudent extends Component {
               </MDBCol>
               <MDBCol md="4" className="mt-4">
                 <MDBAnimation reveal type="fadeInUp">
-                  <MDBCard cascade className="my-3 white scrollbar scrollbar-primary m-auto" style={{ maxHeight: "300px" }}>
+                  <MDBCard cascade className="my-3 white scrollbar scrollbar-primary m-auto" style={{ maxHeight: "600px" }}>
                     <MDBCardBody cascade>
                       <MDBRow>
                         <MDBCol md="9">
                           <MDBCardTitle style={{ fontSize: "20px" }}>Announcements</MDBCardTitle>
                         </MDBCol>
                         <MDBCol md="3" align="right">
-                          <Fab color="default" size="small" aria-label="add">
+                          {/* <Fab color="default" size="small" aria-label="add">
                             <MDBIcon icon="plus" />
-                          </Fab>
+                          </Fab> */}
                         </MDBCol>
                       </MDBRow>
                       <MDBCardText style={{ paddingTop: 40 }}>
-                        <MDBRow>
-                          <MDBCol md="6">
-                            <h6 style={{ fontWeight: "bold" }}>Title of Announcement</h6>
-                          </MDBCol>
-                          <MDBCol md="6" align="right">
-                            <h6 style={{ fontStyle: "italic", fontSize: "10px" }}>
-                              xx/xx/xxxx
-                                 </h6>
-                          </MDBCol>
-                          <MDBCol md="12">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                    </MDBCol>
-                        </MDBRow>
-                        <hr />
-                        <MDBRow>
-                          <MDBCol md="6">
-                            <h6 style={{ fontWeight: "bold" }}>Title of Announcement</h6>
-                          </MDBCol>
-                          <MDBCol md="6" align="right">
-                            <h6 style={{ fontStyle: "italic", fontSize: "10px" }}>
-                              xx/xx/xxxx
-                        </h6>
-                          </MDBCol>
-                          <MDBCol md="12">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                    </MDBCol>
-                        </MDBRow>
-                        <hr />
-                        <MDBRow>
-                          <MDBCol md="6">
-                            <h6 style={{ fontWeight: "bold" }}>Title of Announcement</h6>
-                          </MDBCol>
-                          <MDBCol md="6" align="right">
-                            <h6 style={{ fontStyle: "italic", fontSize: "10px" }}>
-                              xx/xx/xxxx
-                        </h6>
-                          </MDBCol>
-                          <MDBCol md="12">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                    </MDBCol>
-                        </MDBRow>
+                        {this.state.annoucementList.map((announcement) => this.renderAnnouncementSet(announcement))}
                       </MDBCardText>
-                    </MDBCardBody>
-                  </MDBCard>
-                  <br />
-                  <MDBCard cascade className="my-3 white scrollbar scrollbar-primary m-auto" style={{ maxHeight: "300px" }}>
-                    <MDBCardBody cascade>
-                      <MDBCardTitle style={{ fontSize: "20px" }}>What's Due</MDBCardTitle>
-                      <MDBCardText style={{ paddingTop: 40 }}>
-                        <strong>Task Name</strong>
-                        <br />Due Date
-                  <hr />
-                        <strong>Task Name</strong>
-                        <br />Due Date
-                  <hr />
-                        <strong>Task Name</strong>
-                        <br />Due Date
-                  <hr />
-                        <strong>Task Name</strong>
-                        <br />Due Date
-                  <hr />
-                        <strong>Task Name</strong>
-                        <br />Due Date
-                </MDBCardText>
                     </MDBCardBody>
                   </MDBCard>
                 </MDBAnimation>

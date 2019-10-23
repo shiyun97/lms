@@ -64,30 +64,55 @@ import TreeviewPage from './pages/TreeviewPage'
 import AnalyticsPage from './pages/AnalyticsPage';
 
 // LMS IMPORTS
-import PublicLoginPage from './dev/PublicLoginPage';
-import RegisterPage from './dev/RegisterPage';
+import PublicLoginPage from './dev/Public/PublicLoginPage';
+import RegisterPage from './dev/Public/RegisterPage';
 import ModuleOverviewPage from './dev/ModuleOverviewPage';
 import ModuleDetailsPage from './dev/ModuleDetailsPage';
 import ModuleAnnouncementsPage from './dev/ModuleAnnouncementsPage';
-import ModuleClassGroupsPage, { StudentRosterDetails, ClassGroupDetailsStyled, LectureGroupDetailsStyled, TutorialGroupDetailsStyled } from './dev/ModuleClassGroupsPage';
+import ModuleClassGroupsPage, { ClassGroupDetailsStyled, LectureGroupDetailsStyled, TutorialGroupDetailsStyled } from './dev/ModuleClassGroupsPage';
 import ModuleFilesPage from './dev/ModuleFilesPage';
 import ModuleForumPage from './dev/ModuleForumPage';
+import ModuleForumDetailsPage from './dev/ModuleForumDetailsPage';
 import ModuleGradebookPage from './dev/ModuleGradebookPage';
 import ModuleQuizPage from './dev/ModuleQuizPage';
-import ModuleMultimediaPage, { ModuleMultimediaDetailsPage } from './dev/ModuleMultimediaPage';
+import ModuleMultimediaPage, { ModuleMultimediaDetailsPageStyled } from './dev/ModuleMultimediaPage';
 import ModuleConsultationPage from './dev/ModuleConsultationPage';
 import ModuleAttendancePage from './dev/ModuleAttendancePage';
+import MarkAttendanceStudent from './dev/Student/MarkAttendanceStudent';
 import ModuleFeedbackPage from './dev/ModuleFeedbackPage';
+import ModuleFeedbackEvaluationPage from './dev/ModuleFeedbackEvaluationPage';
 import DashboardPage from './dev/DashboardPage';
 import ModulesPage from './dev/ModulesPage';
 import UsersManagementPage from './dev/UsersManagementPage';
-import CourseManagementDashboard from './dev/CourseManagementDashboard'
-import CourseManagementMyCourses from './dev/CourseManagementMyCourses';
-import CourseManagementExploreCourses from './dev/CourseManagementExploreCourses'
 import UserProfilePage from "./dev/UserProfilePage";
 import UnderMaintenancePage from "./dev/UnderMaintenancePage";
 import AdminLoginPage from "./dev/Admin/AdminLoginPage";
 import StudentLoginPage from "./dev/Student/StudentLoginPage";
+import MobileLogin from "./dev/Student/MobileLogin";
+import ModuleQuizPageCreateQuiz from './dev/Teacher/ModuleQuizPageCreateQuiz';
+import ModuleQuizPageAnswerQuiz from "./dev/Student/ModuleQuizPageAnswerQuiz";
+import ModuleForumTopicsPage from "./dev/ModuleForumTopicsPage";
+import ModuleQuizPageViewStudents from "./dev/Teacher/ModuleQuizPageViewStudents";
+import ModuleQuizPageViewStudentAttempt from "./dev/Teacher/ModuleQuizPageViewStudentAttempt";
+import ModuleGradebookPageTeacherViewGrades from "./dev/Teacher/ModuleGradebookPageTeacherViewGrades";
+import AccessDeniedPage from "./dev/AccessDeniedPage";
+import DashboardPageAdmin from "./dev/Admin/DashboardPageAdmin";
+
+//COURSEPACK IMPORTS
+import CoursepackEnrolledCourses from './dev/CoursepackEnrolledCourses';
+import CoursepackCreate from "./dev/Teacher/CoursepackCreate";
+import CoursepackDashboard from './dev/CoursepackDashboard';
+import CoursepackDetails from './dev/CoursepackDetails'
+import CoursepackMultimediaPage from './dev/CoursepackMultimediaPage';
+import CoursepackArrangements from "./dev/Teacher/CoursepackArrangement";
+import CoursepackEdit from "./dev/Teacher/CoursepackEdit";
+import CoursepackView from "./dev/CoursepackView";
+import CoursepackFeedbackPage from "./dev/CoursepackFeedbackPage";
+import CoursepackCategoryView from "./dev/CoursepackCategoryView";
+import CoursepackForumTopicsPage from "./dev/CoursepackForumTopicsPage";
+import CoursepackForumPage from "./dev/CoursepackForumPage";
+import CoursepackForumDetailsPage from "./dev/CoursepackForumDetailsPage";
+import ModuleQuizPageEditQuiz from "./dev/Teacher/ModuleQuizPageEditQuiz";
 
 @inject('dataStore')
 @observer
@@ -127,14 +152,40 @@ class Routes extends React.Component {
     )
     return (
       <Switch>
+        <Route exact path="/accessdenied" component={AccessDeniedPage} />
         <Route exact path="/undermaintenance" component={UnderMaintenancePage} />
         <Route exact path="/account" component={UserProfilePage} />
 
-        {/* LMS PAGES - Admin/ Teacher */}
+        {/* LMS PAGES - Public Student */}
+        <Route exact path="/coursepack/login" component={PublicLoginPage} />
+        <Route exact path="/coursepack/register" component={RegisterPage} />
+        <Route exact path="/coursepack/account" component={UserProfilePage} />
+
+        {/* LMS PAGES - Admin */}
         <Route exact path="/admin" component={AdminLoginPage} />
         <Route exact path="/users" component={UsersManagementPage} />
+        <Route exact path="/dashboard/active" component={DashboardPageAdmin} />
+        <Route exact path="/dashboard/upcoming" component={DashboardPageAdmin} />
+        <Route exact path="/dashboard/expired" component={DashboardPageAdmin} />
+
+        {/* LMS PAGES - Teacher */}
+        <Route exact path="/modules/:moduleId/quiz/create" component={ModuleQuizPageCreateQuiz} />
+        <Route exact path="/modules/:moduleId/quiz/:quizId/edit" component={ModuleQuizPageEditQuiz} />
+        <Route exact path="/coursepack/:coursepackId/arrangements" component={CoursepackArrangements} />
+        <Route exact path="/coursepack/:coursepackId/edit" component={CoursepackEdit} />
+        <Route exact path="/coursepack/:coursepackId/view/" component={CoursepackView} />
+        <Route exact path="/coursepack/create/" component={CoursepackCreate} />
+        <Route exact path="/modules/:moduleId/quiz/:quizId/review" component={ModuleQuizPageViewStudents} />
+        <Route exact path="/modules/:moduleId/quiz/:quizId/review/:studentId" component={ModuleQuizPageViewStudentAttempt} />
+        <Route exact path="/modules/:moduleId/gradebook/:gradeItemId/viewGrades" component={ModuleGradebookPageTeacherViewGrades} />
 
         {/* LMS PAGES - Student */}
+        <Route exact path="/modules/:moduleId/quiz/:quizId" component={ModuleQuizPageAnswerQuiz} />
+        <Route exact path="/modules/:moduleId/markAttendanceStudent" component={MarkAttendanceStudent} />
+        <Route exact path="/student/markAttendance" component={MarkAttendanceStudent} />
+        <Route exact path="/student/mobileLogin/:classType/:classId/:attendanceId" component={MobileLogin} />
+
+        {/* LMS PAGES - Student/ Teacher */}
         <Route exact path="/" component={StudentLoginPage} />
         <Route exact path="/login" component={StudentLoginPage} />
         <Route exact path="/dashboard" component={DashboardPage} />
@@ -155,21 +206,26 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/students/lecture-groups/:lectureGroupId" component={LectureGroupDetailsStyled} />
         <Route exact path="/modules/:moduleId/students/tutorial-groups" component={ModuleClassGroupsPage} />
         <Route exact path="/modules/:moduleId/students/tutorial-groups/:tutorialGroupId" component={TutorialGroupDetailsStyled} />
-        <Route exact path="/modules/:moduleId/forum" component={ModuleForumPage} />
+        <Route exact path="/modules/:moduleId/forum/topics" component={ModuleForumTopicsPage} />
+        <Route exact path="/modules/:moduleId/forum/topics/:topicId" component={ModuleForumPage} />
+        <Route exact path="/modules/:moduleId/forum/topics/:topicId/:forumId" component={ModuleForumDetailsPage} />
         <Route exact path="/modules/:moduleId/gradebook" component={ModuleGradebookPage} />
         <Route exact path="/modules/:moduleId/quiz" component={ModuleQuizPage} />
         <Route exact path="/modules/:moduleId/multimedia" component={ModuleMultimediaPage} />
-        <Route exact path="/modules/:moduleId/multimedia/:multimediaId" component={ModuleMultimediaDetailsPage} />
+        <Route exact path="/modules/:moduleId/multimedia/:multimediaId" component={ModuleMultimediaDetailsPageStyled} />
         <Route exact path="/modules/:moduleId/consultation" component={ModuleConsultationPage} />
         <Route exact path="/modules/:moduleId/attendance" component={ModuleAttendancePage} />
         <Route exact path="/modules/:moduleId/feedback" component={ModuleFeedbackPage} />
-        <Route exact path="/coursesDashboard" component={CourseManagementDashboard} />
-        <Route exact path="/myCourses" component={CourseManagementMyCourses} />
-        <Route exact path="/exploreCourses" component={CourseManagementExploreCourses} />
-
-        {/* LMS PAGES - Public Student */}
-        <Route exact path="/public/login" component={PublicLoginPage} />
-        <Route exact path="/register" component={RegisterPage} />
+        <Route exact path="/modules/:moduleId/feedback/evaluation" component={ModuleFeedbackEvaluationPage} />
+        <Route exact path="/coursepack/enrolledCourses" component={CoursepackEnrolledCourses} />
+        <Route exact path="/coursepack/dashboard" component={CoursepackDashboard} />
+        <Route exact path="/coursepack/:coursepackId/" component={CoursepackDetails} />
+        <Route exact path="/coursepack/:category/list" component={CoursepackCategoryView} />
+        <Route exact path="/coursepack/:coursepackId/multimedia" component={CoursepackMultimediaPage} />
+        <Route exact path="/coursepack/:coursepackId/forum/topics" component={CoursepackForumTopicsPage} />
+        <Route exact path="/coursepack/:coursepackId/forum/topics/:topicId" component={CoursepackForumPage} />
+        <Route exact path="/coursepack/:coursepackId/forum/topics/:topicId/:forumId" component={CoursepackForumDetailsPage} />
+        <Route exact path="/coursepack/:coursepackId/feedback" component={CoursepackFeedbackPage} />
 
         {/* FREE Templates */}
         <Route exact path="/home" component={HomePage} />
@@ -239,7 +295,7 @@ class Routes extends React.Component {
                 <MDBRow>
                   <MDBCol md="12" className="mt-3 mx-auto">
                     <MDBJumbotron>
-                      <img src="http://kalashreeheritage.com/wp-content/uploads/2018/08/maxresdefault.jpg" width="50%" />
+                      <img src="https://image.freepik.com/free-vector/design-404-error-page-is-lost-found-message-template-web-page-with-404-error-modern-line-design_6280-165.jpg" width="50%" />
                     </MDBJumbotron>
                   </MDBCol>
                 </MDBRow>
