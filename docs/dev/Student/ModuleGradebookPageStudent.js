@@ -155,7 +155,6 @@ class ModuleGradebookPageStudent extends Component {
                 </h2>
                             </MDBCol>
                             <MDBCol md="4" align="right">
-                                {/* <MDBBtn href="/modules/:moduleId/quiz/create" color="primary">Create Grade Item</MDBBtn> */}
                             </MDBCol>
                         </MDBRow>
                         {/* {this.renderEditQuizModalBox()} */}
@@ -212,7 +211,6 @@ class ModuleGradebookPageStudent extends Component {
                 </h2>
                             </MDBCol>
                             <MDBCol md="4" align="right">
-                                {/* <MDBBtn href="/modules/:moduleId/quiz/create" color="primary">Create Grade Item</MDBBtn> */}
                             </MDBCol>
                             {/* {this.renderEditQuizModalBox()} */}
                         </MDBRow>

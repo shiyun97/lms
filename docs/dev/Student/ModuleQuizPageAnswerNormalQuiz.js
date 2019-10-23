@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBRow, MDBCol, MDBCard } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBBtn } from "mdbreact";
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
 import moment from 'moment';
@@ -106,7 +106,8 @@ class ModuleQuizPageAnswerNormalQuiz extends Component {
     email: "",
     moduleId: 0,
     message: "",
-    status: "retrieving"
+    status: "retrieving",
+    start: false
   }
 
   initPage() {
@@ -191,7 +192,8 @@ class ModuleQuizPageAnswerNormalQuiz extends Component {
     // console.log(json)
     var model = new Survey.Model(json);
     var moduleId = this.props.dataStore.getCurrModId;
-    return (
+    if (this.state.start) {
+      return (
       <div className={this.props.className}>
         <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
         <div className="module-content">
@@ -214,6 +216,26 @@ class ModuleQuizPageAnswerNormalQuiz extends Component {
         </div>
       </div>
     );
+    
+  } else {
+    return (
+      <div className={this.props.className}>
+        <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+        <div className="module-content">
+          <MDBContainer className="mt-3">
+            <MDBRow className="py-3">
+              <MDBCol md="12">
+                <h1>Normal</h1>
+                <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
+                  <MDBBtn color="blue" onClick={() => { this.setState({ start: true }) }}><h2>Start Quiz</h2></MDBBtn>
+                </MDBCard>
+              </MDBCol>
+            </MDBRow>
+          </MDBContainer>
+        </div>
+      </div>
+    )
+  }
   }
 }
 

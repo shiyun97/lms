@@ -17,8 +17,6 @@ class ModuleQuizPageViewStudentAttempt extends Component {
         moduleId: 0,
         quizId: 0,
         name: "",
-        openingDate: "",
-        closingDate: "",
         quizStatus: "",
         marks: 0,
         questionAttemptId: 0,
@@ -52,7 +50,16 @@ class ModuleQuizPageViewStudentAttempt extends Component {
         status: "retrieving",
         openSnackbar: false,
         message: "",
-        recallResults: false
+        recallResults: false,
+        type: [],
+        correctAnswer: [],
+        totalMark: [],
+        questionList: [],
+        currTotalMarks: 0,
+        currCorrectAnswer: "",
+        questionType: "MCQ",
+        studentAnswer: "",
+        currQuestion: ""
     }
 
     componentDidMount() {
@@ -73,9 +80,25 @@ class ModuleQuizPageViewStudentAttempt extends Component {
             .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveQuestionAttempts?userId=${userId}&quizAttemptId=${quizAttemptId}`)
             .then(result => {
                 // console.log(result.data)
+                var tempDetails = result.data.questionAttempts
+                var type = []
+                var correctAnswer = []
+                var totalMark = []
+                var questionList = []
+                for (var i = 0; i < tempDetails.length; i++) {
+                    // console.log(result.data.questionAttempts[i].question)
+                    questionList.push(tempDetails[i].question.title)
+                    type.push(tempDetails[i].question.type)
+                    correctAnswer.push(tempDetails[i].question.correctAnswer)
+                    totalMark.push(tempDetails[i].question.points)
+                }
                 this.setState({
                     status: "done",
-                    rows: result.data.questionAttempts
+                    rows: result.data.questionAttempts,
+                    type: type,
+                    correctAnswer: correctAnswer,
+                    totalMark: totalMark,
+                    questionList: questionList
                 });
             })
             .catch(error => {
@@ -104,6 +127,7 @@ class ModuleQuizPageViewStudentAttempt extends Component {
                 });
                 console.error("error in axios " + error);
             });
+        this.toggle(1);
     }
 
     handleChange = event => {
@@ -112,15 +136,22 @@ class ModuleQuizPageViewStudentAttempt extends Component {
         console.log(event.target.value)
     }
 
-    toggle = (nr, questionAttemptId) => {
+    toggle = (nr, questionAttemptId, studentMarks, questionType, correctAnswer, totalMark, studentAnswer, question) => {
         let modalNumber = "modal" + nr;
         this.setState({
             [modalNumber]: !this.state[modalNumber],
-            questionAttemptId: questionAttemptId
+            questionAttemptId: questionAttemptId,
+            marks: studentMarks,
+            currTotalMarks: totalMark,
+            currCorrectAnswer: correctAnswer,
+            questionType: questionType,
+            studentAnswer: studentAnswer,
+            currQuestion: question
         });
     };
 
     renderMarkAnswerModalBox = () => {
+        const { currCorrectAnswer, currTotalMarks, currQuestion, studentAnswer } = this.state
         return (
             <MDBModal isOpen={this.state.modal1} toggle={() => this.toggle(1)}>
                 <MDBModalHeader
@@ -128,27 +159,27 @@ class ModuleQuizPageViewStudentAttempt extends Component {
                     titleClass="w-100 font-weight-bold"
                     toggle={() => this.toggle(1)}
                 >
-                    Mark Answer for Question #
+                    Mark Answer
                         </MDBModalHeader>
                 <MDBModalBody>
                     <form className="mx-3">
                         <MDBRow>
                             <MDBCol md="12" className="mt-4">
                                 <h5>Question</h5>
-                                <p>What is a Question?</p>
+                                <p>{currQuestion}</p>
                             </MDBCol>
                             <MDBCol md="12" className="mt-4">
                                 <h5>Correct Answer</h5>
-                                <p>It is a question.</p>
+                                <p>{currCorrectAnswer}</p>
                             </MDBCol>
                             <MDBCol md="12" className="mt-4">
-                                <p>Total Marks: #</p>
+                                <p>Total Marks: {currTotalMarks}</p>
                             </MDBCol>
                             <MDBCol md="12" className="mt-4">
                                 <label className="grey-text">
                                     Student's Answer
                                         </label>
-                                <textarea type="text" disabled className="form-control" value={"I do not know"} name="firstName" />
+                                <textarea type="text" disabled className="form-control" value={studentAnswer} name="firstName" />
                             </MDBCol>
                             <MDBCol md="12" className="mt-4">
                                 <label className="grey-text">
@@ -179,6 +210,7 @@ class ModuleQuizPageViewStudentAttempt extends Component {
     renderQuizStudentsTable = (tableData) => {
         var moduleId = this.props.dataStore.getCurrModId;
         var quizId = this.props.dataStore.getCurrQuizId;
+        var quizAttemptId = this.props.dataStore.getCurrQuizAttemptId;
         return (
             <div className={this.props.className}>
                 <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
@@ -187,9 +219,9 @@ class ModuleQuizPageViewStudentAttempt extends Component {
                         <MDBRow style={{ paddingTop: 60 }}>
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
-                                    <a href="/modules/:moduleId/quiz">Quiz</a>
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> <a href="/modules/:moduleId/quiz/:quizId">Quiz {quizId}</a>
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Attempt #
+                                    <a href={`/modules/${moduleId}/quiz`}>Quiz</a>
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> <a href={`/modules/${moduleId}/quiz/${quizId}/review`}>Quiz {quizId}</a>
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Attempt {quizAttemptId}
                                 </h2>
                             </MDBCol>
                         </MDBRow>
@@ -228,6 +260,7 @@ class ModuleQuizPageViewStudentAttempt extends Component {
     renderTableWithMessage = (message) => {
         var moduleId = this.props.dataStore.getCurrModId;
         var quizId = this.props.dataStore.getCurrQuizId;
+        var quizAttemptId = this.props.dataStore.getCurrQuizAttemptId;
         const data = () => ({ columns: this.state.columns, rows: [{ label: message }] })
 
         const tableData = {
@@ -244,9 +277,9 @@ class ModuleQuizPageViewStudentAttempt extends Component {
                         <MDBRow style={{ paddingTop: 60 }}>
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
-                                    <a href="/modules/:moduleId/quiz">Quiz</a>
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> <a href="/modules/:moduleId/quiz/:quizId">  {quizId}</a>
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Attempt #
+                                    <a href={`/modules/${moduleId}/quiz`}>Quiz</a>
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> <a href={`/modules/${moduleId}/quiz/${quizId}/review`}>Quiz {quizId}</a>
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Attempt {quizAttemptId}
                                 </h2>
                             </MDBCol>
                             {this.renderMarkAnswerModalBox()}
@@ -287,7 +320,6 @@ class ModuleQuizPageViewStudentAttempt extends Component {
     }
 
     initPage() {
-        var moduleId = this.props.dataStore.getCurrModId;
         var pathname = location.pathname;
         pathname = pathname.split("/");
         this.setState({ quizId: pathname[4] })
@@ -299,14 +331,20 @@ class ModuleQuizPageViewStudentAttempt extends Component {
     render() {
         var newRows = []
         const row = this.state.rows
+        const { type, correctAnswer, totalMark, questionList } = this.state
         for (let i = 0; i < row.length; i++) {
-            // console.log(row[i].question)
             newRows.push({
                 questionAttemptId: row[i].questionAttemptId,
-                // type: row[i].question.type,
-                type: "MCQ/Short Answer",
+                type: type[i] === "text" ? "Short Answer" : "MCQ",
+                // type: "MCQ/Short Answer",
                 score: row[i].marks,
-                editButton: <center><MDBIcon onClick={() => this.toggle(1, row[i].questionAttemptId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></center>
+                editButton: <center>
+                    <MDBIcon
+                        onClick={() => this.toggle(1, row[i].questionAttemptId, row[i].marks, type[i], correctAnswer[i], totalMark[i], row[i].answer, questionList[i])}
+                        style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }}
+                        icon="edit"
+                    />
+                </center>
             })
         }
         const data = () => ({ columns: this.state.columns, rows: newRows })

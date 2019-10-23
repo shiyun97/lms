@@ -91,6 +91,7 @@ class ModuleQuizPageViewStudents extends Component {
 
     renderQuizStudentsTable = (tableData) => {
         var moduleId = this.props.dataStore.getCurrModId;
+        var quizId = this.props.dataStore.getCurrQuizId;
         return (
             <div className={this.props.className}>
                 <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
@@ -100,7 +101,7 @@ class ModuleQuizPageViewStudents extends Component {
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
                                     <a href={`/modules/${moduleId}/quiz`}>Quiz</a>
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Quiz #
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Quiz {quizId}
                                 </h2>
                             </MDBCol>
                         </MDBRow>
@@ -136,6 +137,7 @@ class ModuleQuizPageViewStudents extends Component {
     }
 
     renderTableWithMessage = () => {
+        var quizId = this.props.dataStore.getCurrQuizId;
         var moduleId = this.props.dataStore.getCurrModId;
         const data = () => ({ columns: this.state.columns, rows: [{ label: this.state.label }] })
 
@@ -154,7 +156,7 @@ class ModuleQuizPageViewStudents extends Component {
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
                                     <a href={`/modules/${moduleId}/quiz`}>Quiz</a>
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Quiz #
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Quiz {quizId}
                                 </h2>
                             </MDBCol>
                             {/* {this.renderEditQuizModalBox()} */}

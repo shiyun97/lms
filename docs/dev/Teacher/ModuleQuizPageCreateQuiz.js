@@ -45,12 +45,10 @@ class ModuleQuizPageCreateQuiz extends Component {
     }
 
     initPage() {
-        let moduleId = this.props.match.params.moduleId;
-        if (moduleId) {
-            // console.log(moduleId);
-            // retrieve module & set state
-            this.setState({ moduleId: moduleId })
-        }
+        var pathname = location.pathname;
+        pathname = pathname.split("/");
+        this.setState({ quizId: pathname[4] })
+        this.props.dataStore.setCurrModId(pathname[2]);
     }
 
     handleSwitchChange = () => {
@@ -525,17 +523,18 @@ class ModuleQuizPageCreateQuiz extends Component {
 
     render() {
         const { steps, activeStep } = this.state;
+        var moduleId = this.props.dataStore.getCurrModId;
         // var test = this.props.dataStore.getQuestions
         // console.log(test[0])
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation>
+                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
-                                    <a href="/modules/:moduleId/quiz">Quiz</a>
+                                    <a href={`/modules/${moduleId}/quiz`}>Quiz</a>
                                     <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Create Quiz
                                 </h2>
                             </MDBCol>
