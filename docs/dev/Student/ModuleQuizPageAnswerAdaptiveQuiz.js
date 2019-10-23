@@ -296,9 +296,8 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
             <MDBContainer className="mt-3">
               <MDBRow className="py-3">
                 <MDBCol md="12">
-                  <h1>Adaptive</h1>
                   <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
-                    <MDBBtn color="blue" onClick={() => { this.setState({ start: true }) }}><h2>Start Quiz</h2></MDBBtn>
+                    <MDBBtn color="blue" onClick={() => { this.setState({ start: true }) }}><h4>Start Quiz</h4></MDBBtn>
                   </MDBCard>
                 </MDBCol>
               </MDBRow>

@@ -63,16 +63,14 @@ class ModuleConsultationPageTeacher extends Component {
     getAllConsultations = () => {
         const moduleId = this.props.dataStore.getCurrModId;
         const userId = this.props.dataStore.getUserId;
-        // console.log(moduleId);
         axios
-            // .get("http://localhost:3001/allConsultations")
             .get(`http://localhost:8080/LMS-war/webresources/Consultation/viewAllConsultationslot?moduleId=${moduleId}&userId=${userId}`)
             .then(result => {
                 // console.log(result.data.consultationTimeslots)
                 this.setState({ status: "done", rows: result.data.consultationTimeslots, recallConsultations: false })
             })
             .catch(error => {
-                this.setState({ status: "error", message: "An error has occured in retrieving connsultation slots." })
+                this.setState({ status: "error", message: "An error has occured in retrieving consultation slots." })
                 console.error("error in axios " + error);
             });
     }
@@ -241,10 +239,8 @@ class ModuleConsultationPageTeacher extends Component {
                 startDate: moment(row[i].startD).format('DD-MM-YYYY'),
                 startTime: row[i].startTs,
                 endTime: row[i].endTs,
-                // startDate: "",
-                // startTime: "",
-                // endTime: "",
-                booker: row[i].booker === undefined ? "-" : row[i].booker,
+                // booker: row[i].booker === undefined ? "-" : row[i].booker,
+                booker: row[i].booker === null ? "-" : (row[i].booker.firstName + " " + row[i].booker.lastName),
                 button: <MDBBtn size="small" onClick={() => this.deleteConsultationSlot(row[i].consultationTsId)} color="primary">Delete</MDBBtn>
             })
         }
