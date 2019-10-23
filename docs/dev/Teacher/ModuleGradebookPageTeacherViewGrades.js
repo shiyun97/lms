@@ -68,6 +68,14 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
             this.getGradeItemEntries();
         }
     }
+    
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackbar: false });
+    };
 
     handleChange = event => {
         event.preventDefault();

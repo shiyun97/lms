@@ -101,6 +101,14 @@ class ModuleGradebookPageTeacher extends Component {
             })
         }
     };
+    
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackbar: false });
+    };
 
     createGradeItem = () => {
         let userId = localStorage.getItem('userId');
@@ -129,6 +137,33 @@ class ModuleGradebookPageTeacher extends Component {
         this.toggle(1);
     }
 
+    createQuizGradeItem = (quizId) => {
+        let userId = localStorage.getItem('userId');
+        let moduleId = this.props.dataStore.getCurrModId;
+        axios
+            .post(`http://localhost:8080/LMS-war/webresources/Assessment/createGradeItemFromQuiz?userId=${userId}&quizId=${quizId}`, {
+                title: this.state.title,
+                description: this.state.description,
+                maxMarks: this.state.maxMarks,
+                moduleId: moduleId
+            })
+            .then(result => {
+                this.setState({
+                    recallGradebook: true,
+                    message: "Quiz grade item created successfully!",
+                    openSnackbar: true
+                });
+            })
+            .catch(error => {
+                this.setState({
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                });
+                console.error("error in axios " + error);
+            });
+        this.toggle(3);
+    }
+
     updateGradeItem = () => {
         let userId = localStorage.getItem('userId');
         axios
@@ -153,6 +188,46 @@ class ModuleGradebookPageTeacher extends Component {
                 console.error("error in axios " + error);
             });
         this.toggle(2);
+    }
+
+    unpublishGrade = (gradeItemId) => {
+        let userId = localStorage.getItem('userId');
+        axios
+            .post(`http://localhost:8080/LMS-war/webresources/Assessment/unpublishGrade?userId=${userId}&gradeItemId=${gradeItemId}`, {})
+            .then(result => {
+                this.setState({
+                    recallGradebook: true,
+                    message: "Grade item unpublished successfully!",
+                    openSnackbar: true
+                });
+            })
+            .catch(error => {
+                this.setState({
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                });
+                console.error("error in axios " + error);
+            });
+    }
+
+    publishGrade = (gradeItemId) => {
+        let userId = localStorage.getItem('userId');
+        axios
+            .post(`http://localhost:8080/LMS-war/webresources/Assessment/publishGrade?userId=${userId}&gradeItemId=${gradeItemId}`, {})
+            .then(result => {
+                this.setState({
+                    recallGradebook: true,
+                    message: "Grade item published successfully!",
+                    openSnackbar: true
+                });
+            })
+            .catch(error => {
+                this.setState({
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                });
+                console.error("error in axios " + error);
+            });
     }
 
     renderCreateGradeItemModalBox = () => {
@@ -199,6 +274,63 @@ class ModuleGradebookPageTeacher extends Component {
                         </MDBCol>
                         <MDBCol md="6">
                             <MDBBtn onClick={() => this.createGradeItem()} color="primary">Create</MDBBtn>
+                        </MDBCol>
+                    </MDBRow>
+                </MDBModalFooter>
+            </MDBModal>
+        )
+    }
+
+    renderCreateQuizGradeItemModalBox = () => {
+        return (
+            <MDBModal isOpen={this.state.modal3} toggle={() => this.toggle(3)}>
+                <MDBModalHeader
+                    className="text-center"
+                    titleClass="w-100 font-weight-bold"
+                    toggle={() => this.toggle(3)}
+                >
+                    Create Grade Item From Quiz
+                        </MDBModalHeader>
+                <MDBModalBody>
+                    <form className="mx-3 grey-text">
+                        <MDBRow>
+                            <MDBCol md="6" className="mt-4">
+                                <label className="grey-text mt-4">
+                                    Quiz ID
+                </label>
+                                <input type="text" name="quizId" onChange={this.handleChange} className="form-control" />
+                            </MDBCol>
+                            <MDBCol md="6" className="mt-4">
+                                <label className="grey-text mt-4">
+                                    Grade Item
+                </label>
+                                <input type="text" name="title" onChange={this.handleChange} className="form-control" />
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-4">
+                                <label className="grey-text mt-4">
+                                    Description
+                </label>
+                                <textarea rows="3" type="text" name="description" onChange={this.handleChange} className="form-control" />
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-4">
+                                <label className="grey-text mt-4">
+                                    Max Marks
+                </label>
+                                <input type="number" className="form-control" name="maxMarks"
+                                    onChange={this.handleChange}
+                                    min={1}
+                                    required />
+                            </MDBCol>
+                        </MDBRow>
+                    </form>
+                </MDBModalBody>
+                <MDBModalFooter className="justify-content-center">
+                    <MDBRow>
+                        <MDBCol md="6">
+                            <MDBBtn onClick={() => this.toggle(3)} color="grey">Cancel</MDBBtn>
+                        </MDBCol>
+                        <MDBCol md="6">
+                            <MDBBtn onClick={() => this.createQuizGradeItem(this.state.quizId)} color="primary">Create</MDBBtn>
                         </MDBCol>
                     </MDBRow>
                 </MDBModalFooter>
@@ -313,8 +445,8 @@ class ModuleGradebookPageTeacher extends Component {
                     viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/gradebook/${item[i].gradeItemId}/viewGrades`}>View Grades</MDBBtn></center>,
                     publishGrades: <center> {
                         item[i].publish ?
-                            <MDBBtn color="grey" outline size="sm">Unpublish</MDBBtn> :
-                            <MDBBtn color="primary" outline size="sm">Publish</MDBBtn>
+                            <MDBBtn color="grey" outline size="sm" onClick={() => this.unpublishGrade(item[i].gradeItemId)}>Unpublish</MDBBtn> :
+                            <MDBBtn color="primary" outline size="sm" onClick={() => this.publishGrade(item[i].gradeItemId)}>Publish</MDBBtn>
                     }</center>
                 })
             }
@@ -351,6 +483,7 @@ class ModuleGradebookPageTeacher extends Component {
                                 <MDBBtn color="primary" onClick={() => this.toggle(3)}>Create Quiz Grade Item</MDBBtn>
                             </MDBCol>
                         </MDBRow>
+                        {this.renderCreateQuizGradeItemModalBox()}
                         {this.renderCreateGradeItemModalBox()}
                         {this.renderEditGradeItemModalBox()}
                         <MDBRow className="py-3">
@@ -409,6 +542,7 @@ class ModuleGradebookPageTeacher extends Component {
                                 <MDBBtn color="primary" onClick={() => this.toggle(1)}>Create Grade Item</MDBBtn>
                                 <MDBBtn color="primary" onClick={() => this.toggle(3)}>Create Quiz Grade Item</MDBBtn>
                             </MDBCol>
+                            {this.renderCreateQuizGradeItemModalBox()}
                             {this.renderCreateGradeItemModalBox()}
                             {this.renderEditGradeItemModalBox()}
                         </MDBRow>

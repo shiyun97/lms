@@ -135,6 +135,14 @@ class ModuleQuizPageViewStudentAttempt extends Component {
         this.setState({ [event.target.name]: event.target.value });
         console.log(event.target.value)
     }
+    
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackbar: false });
+    };
 
     toggle = (nr, questionAttemptId, studentMarks, questionType, correctAnswer, totalMark, studentAnswer, question) => {
         let modalNumber = "modal" + nr;

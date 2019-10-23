@@ -94,6 +94,14 @@ class ModuleQuizPageStudent extends Component {
             // this.updateQuizState(row);
         }
     };
+    
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackbar: false });
+    };
 
     getAllModuleQuizzes = () => {
         let userId = localStorage.getItem('userId');

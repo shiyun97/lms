@@ -95,6 +95,14 @@ class ModuleQuizPageTeacher extends Component {
         event.preventDefault();
         this.setState({ [event.target.name]: event.target.value });
     }
+    
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        this.setState({ openSnackbar: false });
+    };
 
     initPage() {
         var pathname = location.pathname;
