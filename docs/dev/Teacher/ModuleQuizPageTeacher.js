@@ -139,9 +139,10 @@ class ModuleQuizPageTeacher extends Component {
     }
 
     deleteQuiz = (quizId) => {
+        let userId = localStorage.getItem('userId');
         event.preventDefault();
         axios
-            .delete(`http://localhost:8080/LMS-war/webresources/Assessment/deleteModuleQuiz?userId=5&quizId=${quizId}`)
+            .delete(`http://localhost:8080/LMS-war/webresources/Assessment/deleteModuleQuiz?userId=${userId}&quizId=${quizId}`)
             .then(result => {
                 this.setState({
                     recallQuiz: true,

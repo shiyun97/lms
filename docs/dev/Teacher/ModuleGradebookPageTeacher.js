@@ -110,6 +110,27 @@ class ModuleGradebookPageTeacher extends Component {
             });
     }
 
+    deleteGradeItem = (gradeItemId) => {
+        let userId = localStorage.getItem('userId');
+        event.preventDefault();
+        axios
+            .delete(`http://localhost:8080/LMS-war/webresources/Assessment/deleteGradeItem?gradeItemId=${gradeItemId}&userId=${userId}`)
+            .then(result => {
+                this.setState({
+                    recallGradebook: true,
+                    message: "Grade item deleted successfully!",
+                    openSnackbar: true
+                });
+            })
+            .catch(error => {
+                this.setState({
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                });
+                console.error("error in axios " + error);
+            });
+    }
+
     renderGradebookTable = () => {
         var item = this.state.gradeItems;
         var moduleId = this.props.dataStore.getCurrModId;
@@ -124,10 +145,14 @@ class ModuleGradebookPageTeacher extends Component {
                     maxMarks: item[i].maxMarks,
                     editButton: <MDBRow align="center">
                         <MDBCol md={6}><MDBIcon onClick={() => this.editQuiz(2, item[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
-                        <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(item[i].gradeItemId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
+                        <MDBCol md={6}><MDBIcon onClick={() => this.deleteGradeItem(item[i].gradeItemId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
                     </MDBRow>,
                     viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/gradebook/${item[i].gradeItemId}/viewGrades`}>View Grades</MDBBtn></center>,
-                publishGrades: <center> {item[i].publish ? "Published" : <MDBBtn color="primary" outline size="sm">Publish</MDBBtn>}</center>
+                    publishGrades: <center> {
+                        item[i].publish ?
+                            <MDBBtn color="grey" outline size="sm">Unpublish</MDBBtn> :
+                            <MDBBtn color="primary" outline size="sm">Publish</MDBBtn>
+                    }</center>
                 })
             }
         } else {

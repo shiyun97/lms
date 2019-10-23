@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Stepper, Step, StepLabel, TextField, Typography, Switch, Snackbar } from '@material-ui/core';
 import axios from 'axios';
+import moment from "moment";
 
 @inject('dataStore')
 @observer
@@ -23,18 +24,20 @@ class ModuleQuizPageEditQuiz extends Component {
         activeStep: 0,
         steps: ['Quiz Configuration', 'Build Quiz'],
         questionType: "",
+        publish: false,
+        publishAnswer: false,
 
         //create quiz inputs
         quizType: "normal", // adaptive
-        questionsOrder: false, // "random" or "normal"
+        questionsOrder: false, // "random" => true or "initial" => false
         noOfAttempts: 1,
         maxTimeToFinish: 60, // timeLimit
-        openingDate: "",
-        closingDate: "",
+        openingDate: "2019-10-23T00:00",
+        closingDate: "2019-12-23T00:00",
         points: 1,
         level: 0,
         number: 0,
-        title: "",
+        questionTitle: "",
         isRequired: true,
         explanation: "",
         correctAnswer: "",
@@ -67,54 +70,89 @@ class ModuleQuizPageEditQuiz extends Component {
     }
 
     getModuleQuiz = () => {
-      let userId = localStorage.getItem('userId');
-      let quizId = this.props.dataStore.getCurrQuizId;
-      axios
-        .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveModuleQuiz/${quizId}?userId=${userId}`)
-        .then(result => {
-          console.log(result.data)
-          this.setState({ status: "done" })
-        })
-        .catch(error => {
-          this.setState({ status: "error" })
-          console.error("error in axios " + error);
-        });
+        let userId = localStorage.getItem('userId');
+        let quizId = this.props.dataStore.getCurrQuizId;
+        axios
+            .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveModuleQuiz/${quizId}?userId=${userId}`)
+            .then(result => {
+                console.log(result.data)
+                var elements = result.data.pages[0].elements
+                var choices = []
+                for (var i = 0; i < elements.length; i++) {
+                    if (elements[i].type === "radiogroup") {
+                        for (var j = 0; j < elements[i].choices.length; j++) {
+                            choices.push({ text: elements[i].choices[j] })
+                        }
+                        if (choices.length !== 0) {
+                            console.log(elements[i].type)
+                            elements[i].choices = choices
+                            choices = []
+                        }
+                    }
+                }
+                this.setState({
+                    status: "done",
+                    title: result.data.title,
+                    // closingDate: moment(result.data.closingDate).format("yyyy-MM-ddTHH:mm"),
+                    // openingDate: result.data.openingDate,
+                    description: result.data.description,
+                    maxTimeToFinish: result.data.maxTimeToFinish,
+                    noOfAttempts: result.data.noOfAttempts,
+                    questionsOrder: result.data.questionsOrder === "initial" ? false : true,
+                    publish: result.data.publish,
+                    publishAnswer: result.data.publishAnswer,
+                    quizType: result.data.quizType,
+                    elements: result.data.pages[0].elements
+                })
+            })
+            .catch(error => {
+                this.setState({ status: "error" })
+                console.error("error in axios " + error);
+            });
     }
 
-    handleSubmit = () => {
+    handleFormSubmit = () => {
         // call api to submit quiz
         let userId = localStorage.getItem('userId');
+        let moduleId = this.props.dataStore.getCurrModId;
+        let quizId = this.props.dataStore.getCurrQuizId;
+        var openingDate = this.state.openingDate
+        var closingDate = this.state.closingDate
         console.log({
+            quizId: quizId,
             title: this.state.title,
-            moduleId: this.state.moduleId,
-            description: this.state.explanation,
+            moduleId: moduleId,
+            description: this.state.description,
             quizType: this.state.quizType,
             questionsOrder: this.state.questionsOrder ? "random" : "initial",
-            openingDate: this.state.openingDate,
-            closingDate: this.state.closingDate,
-            publish: this.state.publish,
+            openingDate: openingDate + ":00",
+            closingDate: closingDate + ":00",
             noOfAttempts: this.state.noOfAttempts,
+            // publish: this.state.publish,
+            // publishAnswer: this.state.publishAnswer,
             maxTimeToFinish: this.state.maxTimeToFinish,
             questions: this.state.elements
         })
         axios
-            .post(`http://localhost:8080/LMS-war/webresources/Assessment/createModuleQuiz?userId=${userId}`, {
+            .post(`http://localhost:8080/LMS-war/webresources/Assessment/updateModuleQuiz?userId=${userId}`, {
                 title: this.state.title,
-                moduleId: this.state.moduleId,
-                description: this.state.explanation,
+                moduleId: moduleId,
+                quizId: quizId,
+                description: this.state.description,
                 quizType: this.state.quizType,
                 questionsOrder: this.state.questionsOrder ? "random" : "initial",
-                openingDate: this.state.openingDate,
-                closingDate: this.state.closingDate,
+                openingDate: openingDate + ":00",
+                closingDate: closingDate + ":00",
                 publish: this.state.publish,
+                // publishAnswer: this.state.publishAnswer,
                 noOfAttempts: this.state.noOfAttempts,
                 maxTimeToFinish: this.state.maxTimeToFinish,
                 questions: this.state.elements
             })
             .then(result => {
-                console.log("success")
+                // console.log("success")
                 this.setState({
-                    message: "Quiz created successfully!",
+                    message: "Quiz updated successfully!",
                     openSnackbar: true
                 });
             })
@@ -145,7 +183,7 @@ class ModuleQuizPageEditQuiz extends Component {
                             type: "radiogroup",
                             name: "MCQ",
                             number: number,
-                            title: this.state.title,
+                            title: this.state.questionTitle,
                             isRequired: true,
                             level: this.state.level, //only for adaptive,
                             explanation: this.state.explanation,
@@ -160,7 +198,7 @@ class ModuleQuizPageEditQuiz extends Component {
                             type: "text", //text
                             name: "Short Answer",
                             number: number,
-                            title: this.state.title,
+                            title: this.state.questionTitle,
                             isRequired: true,
                             level: this.state.level, //only for adaptive,
                             explanation: this.state.explanation,
@@ -195,13 +233,13 @@ class ModuleQuizPageEditQuiz extends Component {
                     <label className="grey-text mt-4">
                         Question
                     </label>
-                    <textarea rows="3" type="text" name="title" onChange={this.handleChange} className="form-control" />
+                    <textarea rows="3" type="text" name="questionTitle" onChange={this.handleChange} defaultValue={this.state.questionTitle} className="form-control" />
                 </MDBCol>
                     <MDBCol md="12" className="mt-4">
                         <label className="grey-text">
                             Explanation
                     </label>
-                        <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} className="form-control" />
+                        <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} defaultValue={this.state.explanation} className="form-control" />
                     </MDBCol>
                     <MDBCol md="8" className="mt-4" style={{ paddingTop: 28 }}>
                         <MDBInputGroup
@@ -259,13 +297,13 @@ class ModuleQuizPageEditQuiz extends Component {
                         <label className="grey-text mt-4">
                             Question
                                 </label>
-                        <textarea rows="3" type="text" name="question" onChange={this.handleChange} className="form-control" />
+                        <textarea rows="3" type="text" name="question" onChange={this.handleChange} defaultValue={this.state.question} className="form-control" />
                     </MDBCol>
                     <MDBCol md="10" className="mt-4">
                         <label className="grey-text">
                             Answer #
                 </label>
-                        <textarea rows="5" type="text" name="answer" onChange={this.handleChange} className="form-control" />
+                        <textarea rows="5" type="text" name="answer" onChange={this.handleChange} defaultValue={this.state.answer} className="form-control" />
                     </MDBCol>
                     <MDBCol md="2" className="mt-4">
                         {this.state.quizType === "adaptive" &&
@@ -294,7 +332,7 @@ class ModuleQuizPageEditQuiz extends Component {
                         <label className="grey-text">
                             Explanation
                                     </label>
-                        <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} className="form-control" />
+                        <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} defaultValue={this.state.explanation} className="form-control" />
                         <br />
                         <hr />
                     </MDBCol>
@@ -308,7 +346,7 @@ class ModuleQuizPageEditQuiz extends Component {
                 <label className="grey-text">
                     Answer #
                 </label>
-                <input type="text" name="answer" onChange={this.handleChange} className="form-control" />
+                <input type="text" name="answer" onChange={this.handleChange} defaultValue={this.state.answer} className="form-control" />
                 <br />
             </>
         )
@@ -327,7 +365,7 @@ class ModuleQuizPageEditQuiz extends Component {
                         type: "radiogroup",
                         name: "MCQ",
                         number: number,
-                        title: this.state.title,
+                        title: this.state.questionTitle,
                         isRequired: true,
                         level: this.state.level, //only for adaptive,
                         explanation: this.state.explanation,
@@ -342,7 +380,7 @@ class ModuleQuizPageEditQuiz extends Component {
                         type: "text", //text
                         name: "Short Answer",
                         number: number,
-                        title: this.state.title,
+                        title: this.state.questionTitle,
                         isRequired: true,
                         level: this.state.level, //only for adaptive,
                         explanation: this.state.explanation,
@@ -423,12 +461,12 @@ class ModuleQuizPageEditQuiz extends Component {
                         <label className="grey-text">
                             Quiz Title
                         </label>
-                        <input type="text" name="title" onChange={this.handleChange} className="form-control" />
+                        <input type="text" name="title" onChange={this.handleChange} defaultValue={this.state.title} className="form-control" />
                         <br />
                         <label className="grey-text">
                             Instructions
                         </label>
-                        <textarea type="text" rows="3" name="description" onChange={this.handleChange} className="form-control" />
+                        <textarea type="text" rows="3" name="description" value={this.state.description} onChange={this.handleChange} className="form-control" />
                         <MDBRow>
                             <MDBCol md="9" className="mt-4">
                                 <MDBInputGroup
@@ -437,7 +475,7 @@ class ModuleQuizPageEditQuiz extends Component {
                                     prepend="Quiz Type"
                                     required
                                     inputs={
-                                        <select name="quizType" onChange={this.handleChange} className="browser-default custom-select">
+                                        <select name="quizType" onChange={this.handleChange} defaultValue={this.state.quizType} className="browser-default custom-select">
                                             <option value="Normal">Normal</option>
                                             <option value="Adaptive">Adaptive</option>
                                         </select>
@@ -578,7 +616,7 @@ class ModuleQuizPageEditQuiz extends Component {
                                                         </h5>
                                                         <br />
                                                         <div className="text-center">
-                                                            <MDBBtn type="submit" color="blue" onClick={() => { this.handleSubmit() }}>Submit</MDBBtn>
+                                                            <MDBBtn color="blue" onClick={() => { this.handleFormSubmit() }}>Submit</MDBBtn>
                                                         </div>
                                                     </div>
                                                 ) : (
