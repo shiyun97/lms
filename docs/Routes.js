@@ -95,6 +95,7 @@ import ModuleForumTopicsPage from "./dev/ModuleForumTopicsPage";
 import ModuleQuizPageViewStudents from "./dev/Teacher/ModuleQuizPageViewStudents";
 import ModuleQuizPageViewStudentAttempt from "./dev/Teacher/ModuleQuizPageViewStudentAttempt";
 import ModuleGradebookPageTeacherViewGrades from "./dev/Teacher/ModuleGradebookPageTeacherViewGrades";
+import ModuleQuizPageEditQuiz from "./dev/Teacher/ModuleQuizPageEditQuiz";
 import AccessDeniedPage from "./dev/AccessDeniedPage";
 import DashboardPageAdmin from "./dev/Admin/DashboardPageAdmin";
 
@@ -112,7 +113,8 @@ import CoursepackCategoryView from "./dev/CoursepackCategoryView";
 import CoursepackForumTopicsPage from "./dev/CoursepackForumTopicsPage";
 import CoursepackForumPage from "./dev/CoursepackForumPage";
 import CoursepackForumDetailsPage from "./dev/CoursepackForumDetailsPage";
-import ModuleQuizPageEditQuiz from "./dev/Teacher/ModuleQuizPageEditQuiz";
+import CoursepackQuizPage from './dev/CoursepackQuizPage';
+import CoursepackQuizPageCreateQuiz from "./dev/Teacher/CoursepackQuizPageCreateQuiz";
 
 @inject('dataStore')
 @observer
@@ -178,6 +180,7 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/quiz/:quizId/review" component={ModuleQuizPageViewStudents} />
         <Route exact path="/modules/:moduleId/quiz/:quizId/review/:studentId" component={ModuleQuizPageViewStudentAttempt} />
         <Route exact path="/modules/:moduleId/gradebook/:gradeItemId/viewGrades" component={ModuleGradebookPageTeacherViewGrades} />
+        <Route exact path="/coursepack/:coursepackId/quiz/create" component={CoursepackQuizPageCreateQuiz} />
 
         {/* LMS PAGES - Student */}
         <Route exact path="/modules/:moduleId/quiz/:quizId" component={ModuleQuizPageAnswerQuiz} />
@@ -226,6 +229,7 @@ class Routes extends React.Component {
         <Route exact path="/coursepack/:coursepackId/forum/topics/:topicId" component={CoursepackForumPage} />
         <Route exact path="/coursepack/:coursepackId/forum/topics/:topicId/:forumId" component={CoursepackForumDetailsPage} />
         <Route exact path="/coursepack/:coursepackId/feedback" component={CoursepackFeedbackPage} />
+        <Route exact path="/coursepack/:coursepackId/quiz" component={CoursepackQuizPage} />
 
         {/* FREE Templates */}
         <Route exact path="/home" component={HomePage} />
