@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Snackbar } from '@material-ui/core';
 import axios from 'axios';
@@ -13,12 +13,13 @@ class ModuleGradebookPageTeacher extends Component {
     state = {
         modal1: false,
         modal2: false,
+        modal3: false,
         moduleId: 0,
         quizId: 0,
-        name: "",
-        openingDate: "",
-        closingDate: "",
-        quizStatus: "",
+        maxMarks: 0,
+        description: "",
+        gradeItemId: 0,
+        title: "",
         gradeItems: [],
         columns: [
             {
@@ -86,14 +87,176 @@ class ModuleGradebookPageTeacher extends Component {
 
     toggle = (nr, row) => {
         let modalNumber = "modal" + nr;
+        console.log("toggle")
         this.setState({
             [modalNumber]: !this.state[modalNumber]
         });
 
         if (row !== undefined) {
-            // this.updateQuizState(row);
+            this.setState({
+                title: row.title,
+                maxMarks: row.maxMarks,
+                description: row.description,
+                gradeItemId: row.gradeItemId
+            })
         }
     };
+
+    createGradeItem = () => {
+        let userId = localStorage.getItem('userId');
+        let moduleId = this.props.dataStore.getCurrModId;
+        axios
+            .post(`http://localhost:8080/LMS-war/webresources/Assessment/createGradeItem?userId=${userId}`, {
+                title: this.state.title,
+                description: this.state.description,
+                maxMarks: this.state.maxMarks,
+                moduleId: moduleId
+            })
+            .then(result => {
+                this.setState({
+                    recallGradebook: true,
+                    message: "Grade item created successfully!",
+                    openSnackbar: true
+                });
+            })
+            .catch(error => {
+                this.setState({
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                });
+                console.error("error in axios " + error);
+            });
+        this.toggle(1);
+    }
+
+    updateGradeItem = () => {
+        let userId = localStorage.getItem('userId');
+        axios
+            .post(`http://localhost:8080/LMS-war/webresources/Assessment/updateGradeItem?userId=${userId}`, {
+                gradeItemId: this.state.gradeItemId,
+                title: this.state.title,
+                description: this.state.description,
+                maxMarks: this.state.maxMarks
+            })
+            .then(result => {
+                this.setState({
+                    recallGradebook: true,
+                    message: "Grade item updated successfully!",
+                    openSnackbar: true
+                });
+            })
+            .catch(error => {
+                this.setState({
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                });
+                console.error("error in axios " + error);
+            });
+        this.toggle(2);
+    }
+
+    renderCreateGradeItemModalBox = () => {
+        return (
+            <MDBModal isOpen={this.state.modal1} toggle={() => this.toggle(1)}>
+                <MDBModalHeader
+                    className="text-center"
+                    titleClass="w-100 font-weight-bold"
+                    toggle={() => this.toggle(1)}
+                >
+                    Create Grade Item
+                        </MDBModalHeader>
+                <MDBModalBody>
+                    <form className="mx-3 grey-text">
+                        <MDBRow>
+                            <MDBCol md="12" className="mt-4">
+                                <label className="grey-text mt-4">
+                                    Grade Item
+                </label>
+                                <input type="text" name="title" onChange={this.handleChange} className="form-control" />
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-4">
+                                <label className="grey-text mt-4">
+                                    Description
+                </label>
+                                <textarea rows="3" type="text" name="description" onChange={this.handleChange} className="form-control" />
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-4">
+                                <label className="grey-text mt-4">
+                                    Max Marks
+                </label>
+                                <input type="number" className="form-control" name="maxMarks"
+                                    onChange={this.handleChange}
+                                    min={1}
+                                    required />
+                            </MDBCol>
+                        </MDBRow>
+                    </form>
+                </MDBModalBody>
+                <MDBModalFooter className="justify-content-center">
+                    <MDBRow>
+                        <MDBCol md="6">
+                            <MDBBtn onClick={() => this.toggle(1)} color="grey">Cancel</MDBBtn>
+                        </MDBCol>
+                        <MDBCol md="6">
+                            <MDBBtn onClick={() => this.createGradeItem()} color="primary">Create</MDBBtn>
+                        </MDBCol>
+                    </MDBRow>
+                </MDBModalFooter>
+            </MDBModal>
+        )
+    }
+
+    renderEditGradeItemModalBox = () => {
+        return (
+            <MDBModal isOpen={this.state.modal2} toggle={() => this.toggle(2)}>
+                <MDBModalHeader
+                    className="text-center"
+                    titleClass="w-100 font-weight-bold"
+                    toggle={() => this.toggle(2)}
+                >
+                    Edit Grade Item
+                        </MDBModalHeader>
+                <MDBModalBody>
+                    <form className="mx-3 grey-text">
+                        <MDBRow>
+                            <MDBCol md="12" className="mt-4">
+                                <label className="grey-text mt-4">
+                                    Grade Item
+                </label>
+                                <input type="text" name="title" onChange={this.handleChange} defaultValue={this.state.title} className="form-control" />
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-4">
+                                <label className="grey-text mt-4">
+                                    Description
+                </label>
+                                <textarea rows="3" type="text" name="description" onChange={this.handleChange} value={this.state.description} className="form-control" />
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-4">
+                                <label className="grey-text mt-4">
+                                    Max Marks
+                </label>
+                                <input type="number" className="form-control" name="maxMarks"
+                                    value={this.state.maxMarks}
+                                    onChange={this.handleChange}
+                                    min={1}
+                                    required />
+                            </MDBCol>
+                        </MDBRow>
+                    </form>
+                </MDBModalBody>
+                <MDBModalFooter className="justify-content-center">
+                    <MDBRow>
+                        <MDBCol md="6">
+                            <MDBBtn onClick={() => this.toggle(2)} color="grey">Cancel</MDBBtn>
+                        </MDBCol>
+                        <MDBCol md="6">
+                            <MDBBtn onClick={() => this.updateGradeItem()} color="primary">Update</MDBBtn>
+                        </MDBCol>
+                    </MDBRow>
+                </MDBModalFooter>
+            </MDBModal>
+        )
+    }
 
     getAllGradeItem = () => {
         let userId = localStorage.getItem('userId');
@@ -144,7 +307,7 @@ class ModuleGradebookPageTeacher extends Component {
                     description: item[i].description,
                     maxMarks: item[i].maxMarks,
                     editButton: <MDBRow align="center">
-                        <MDBCol md={6}><MDBIcon onClick={() => this.editQuiz(2, item[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
+                        <MDBCol md={6}><MDBIcon onClick={() => this.toggle(2, item[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
                         <MDBCol md={6}><MDBIcon onClick={() => this.deleteGradeItem(item[i].gradeItemId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
                     </MDBRow>,
                     viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/gradebook/${item[i].gradeItemId}/viewGrades`}>View Grades</MDBBtn></center>,
@@ -178,16 +341,18 @@ class ModuleGradebookPageTeacher extends Component {
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
-                            <MDBCol md="8">
+                            <MDBCol md="4">
                                 <h2 className="font-weight-bold">
                                     Gradebook
                 </h2>
                             </MDBCol>
-                            <MDBCol md="4" align="right">
-                                <MDBBtn color="primary">Create Grade Item</MDBBtn>
+                            <MDBCol md="8" align="right">
+                                <MDBBtn color="primary" onClick={() => this.toggle(1)}>Create Grade Item</MDBBtn>
+                                <MDBBtn color="primary" onClick={() => this.toggle(3)}>Create Quiz Grade Item</MDBBtn>
                             </MDBCol>
                         </MDBRow>
-                        {/* {this.renderEditQuizModalBox()} */}
+                        {this.renderCreateGradeItemModalBox()}
+                        {this.renderEditGradeItemModalBox()}
                         <MDBRow className="py-3">
                             <MDBCol md="12">
                                 <MDBCard>
@@ -235,15 +400,17 @@ class ModuleGradebookPageTeacher extends Component {
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
-                            <MDBCol md="8">
+                            <MDBCol md="4">
                                 <h2 className="font-weight-bold">
                                     Gradebook
                 </h2>
                             </MDBCol>
-                            <MDBCol md="4" align="right">
-                                <MDBBtn color="primary">Create Grade Item</MDBBtn>
+                            <MDBCol md="8" align="right">
+                                <MDBBtn color="primary" onClick={() => this.toggle(1)}>Create Grade Item</MDBBtn>
+                                <MDBBtn color="primary" onClick={() => this.toggle(3)}>Create Quiz Grade Item</MDBBtn>
                             </MDBCol>
-                            {/* {this.renderEditQuizModalBox()} */}
+                            {this.renderCreateGradeItemModalBox()}
+                            {this.renderEditGradeItemModalBox()}
                         </MDBRow>
                         <MDBRow className="py-3">
                             <MDBCol md="12">

@@ -91,7 +91,7 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
         axios
             .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveGradeEntries?userId=${userId}&gradeItemId=${gradeItemId}`)
             .then(result => {
-                // console.log(result.data.gradeEntries)
+                console.log(result.data.gradeEntries)
                 this.setState({ status: "done", gradeEntries: result.data.gradeEntries })
             })
             .catch(error => {
@@ -140,7 +140,7 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
                         <MDBRow style={{ paddingTop: 60 }}>
                             <MDBCol md="8">
                                 <h2 className="font-weight-bold">
-                                    Gradebook
+                                    <a href={`/modules/${moduleId}/gradebook`}>Gradebook</a>
                                     <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Grade Item
                 </h2>
                             </MDBCol>
@@ -198,7 +198,7 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
                         <MDBRow style={{ paddingTop: 60 }}>
                             <MDBCol md="8">
                                 <h2 className="font-weight-bold">
-                                    Gradebook
+                                    <a href={`/modules/${moduleId}/gradebook`}>Gradebook</a>
                                     <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Grade Item
                 </h2>
                             </MDBCol>

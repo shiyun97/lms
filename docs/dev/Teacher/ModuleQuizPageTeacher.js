@@ -215,7 +215,6 @@ class ModuleQuizPageTeacher extends Component {
                                 <MDBBtn href={`/modules/${moduleId}/quiz/create`} color="primary">Create Quiz</MDBBtn>
                             </MDBCol>
                         </MDBRow>
-                        {/* {this.renderEditQuizModalBox()} */}
                         <MDBRow className="py-3">
                             <MDBCol md="12">
                                 <MDBCard>
@@ -268,7 +267,6 @@ class ModuleQuizPageTeacher extends Component {
                                     Quiz
                                 </h2>
                             </MDBCol>
-                            {/* {this.renderEditQuizModalBox()} */}
                         </MDBRow>
                         <MDBRow className="py-3">
                             <MDBCol md="12">
