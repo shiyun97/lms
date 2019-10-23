@@ -127,7 +127,7 @@ class ModuleGradebookPageTeacher extends Component {
                         <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(item[i].gradeItemId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
                     </MDBRow>,
                     viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/gradebook/${item[i].gradeItemId}/viewGrades`}>View Grades</MDBBtn></center>,
-                    publishGrades: item[i].publish ? "Published" : <center><MDBBtn color="primary" outline size="sm">Publish</MDBBtn></center>
+                publishGrades: <center> {item[i].publish ? "Published" : <MDBBtn color="primary" outline size="sm">Publish</MDBBtn>}</center>
                 })
             }
         } else {

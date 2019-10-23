@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBIcon, MDBInputGroup } from "mdbreact";
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
-import ModuleSideNavigation from "./../ModuleSideNavigation";
+import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Stepper, Step, StepLabel, TextField, Typography, Switch, Snackbar } from '@material-ui/core';
 import axios from 'axios';
 
 @inject('dataStore')
 @observer
-class ModuleQuizPageCreateQuiz extends Component {
+class ModuleQuizPageEditQuiz extends Component {
 
     state = {
         studentName: "",
@@ -41,13 +41,16 @@ class ModuleQuizPageCreateQuiz extends Component {
         publish: false,
         choices: [],
         answer: "",
-        elements: []
+        elements: [],
+        quizId: 0
     }
 
     initPage() {
         var pathname = location.pathname;
         pathname = pathname.split("/");
+        this.setState({ quizId: pathname[4] })
         this.props.dataStore.setCurrModId(pathname[2]);
+        this.props.dataStore.setCurrQuizId(pathname[4]);
     }
 
     handleSwitchChange = () => {
@@ -60,6 +63,22 @@ class ModuleQuizPageCreateQuiz extends Component {
 
     componentDidMount() {
         this.initPage();
+        this.getModuleQuiz();
+    }
+
+    getModuleQuiz = () => {
+      let userId = localStorage.getItem('userId');
+      let quizId = this.props.dataStore.getCurrQuizId;
+      axios
+        .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveModuleQuiz/${quizId}?userId=${userId}`)
+        .then(result => {
+          console.log(result.data)
+          this.setState({ status: "done" })
+        })
+        .catch(error => {
+          this.setState({ status: "error" })
+          console.error("error in axios " + error);
+        });
     }
 
     handleSubmit = () => {
@@ -534,7 +553,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
                                     <a href={`/modules/${moduleId}/quiz`}>Quiz</a>
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Create Quiz
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Edit Quiz
                                 </h2>
                             </MDBCol>
                         </MDBRow>
@@ -610,7 +629,7 @@ class ModuleQuizPageCreateQuiz extends Component {
     }
 }
 
-export default styled(ModuleQuizPageCreateQuiz)`
+export default styled(ModuleQuizPageEditQuiz)`
 .module-content{
     margin-left: 270px;
     margin-top: 40px;

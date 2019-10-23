@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable, NavLink } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Snackbar } from '@material-ui/core';
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
-import moment from 'moment';
 
 @inject('dataStore')
 @observer
@@ -67,6 +66,11 @@ class ModuleQuizPageTeacher extends Component {
                 "label": "Review Students Answers",
                 "field": "view",
                 "width": 100
+            },
+            {
+                "label": "Publish Answers",
+                "field": "publish",
+                "width": 100
             }
         ],
         rows: [{ label: "Retrieving data..." }],
@@ -114,8 +118,24 @@ class ModuleQuizPageTeacher extends Component {
             });
     }
 
-    editQuiz = () => {
-        //edit
+    publishAnswers = (quizId) => {
+        let userId = localStorage.getItem('userId');
+        axios
+            .post(`http://localhost:8080/LMS-war/webresources/Assessment/publishQuizAnswer?userId=${userId}&quizId=${quizId}`)
+            .then(result => {
+                this.setState({
+                    recallQuiz: true,
+                    message: "Quiz answers published successfully!",
+                    openSnackbar: true
+                });
+            })
+            .catch(error => {
+                this.setState({
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                });
+                console.error("error in axios " + error);
+            });
     }
 
     deleteQuiz = (quizId) => {
@@ -151,18 +171,15 @@ class ModuleQuizPageTeacher extends Component {
                     openingDate: quiz[i].openingDate,
                     closingDate: quiz[i].closingDate,
                     status: quiz[i].publish ? "Published" : "Unpublished",
-                    // description: quiz[i].description,
-                    // order: quiz[i].questionsOrder,
-                    // publishAnswer: quiz[i].publishAnswer,
-                    // numOfAttempts: quiz[i].noOfAttempts,
-                    // maxTimeToFinish: quiz[i].maxTimeToFinish,
-                    // quizType: quiz[i].quizType,
                     maxMarks: quiz[i].maxMarks,
                     editButton: <MDBRow align="center">
-                        <MDBCol md={6}><MDBIcon onClick={() => this.editQuiz(2, quiz[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
-                        <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(quiz[i].quizId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
+                        <MDBCol md={6}><NavLink to={`/modules/${moduleId}/quiz/${quiz[i].quizId}/edit`}><MDBIcon style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></NavLink></MDBCol>
+                        <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(quiz[i].quizId)} style={{ paddingTop:12, cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
                     </MDBRow>,
-                    viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quiz[i].quizId}/review`}>Review</MDBBtn></center>
+                    viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quiz[i].quizId}/review`}>Review</MDBBtn></center>,
+                    publishButton: <center>
+                        {quiz[i].publishAnswer ? "Published" : <MDBBtn color="primary" outline size="sm" onClick={() => this.publishAnswers(quiz[i].quizId)}>Publish</MDBBtn>}
+                    </center>
                 })
             }
         } else {
