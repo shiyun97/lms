@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Snackbar } from '@material-ui/core';
 import axios from 'axios';
@@ -12,13 +12,12 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
 
     state = {
         modal1: false,
-        modal2: false,
         moduleId: 0,
         quizId: 0,
         name: "",
-        openingDate: "",
-        closingDate: "",
-        quizStatus: "",
+        gradeEntryId: 0,
+        marks: 0,
+        remarks: "",
         gradeEntries: [],
         columns: [
             {
@@ -68,7 +67,7 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
             this.getGradeItemEntries();
         }
     }
-    
+
     handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -89,7 +88,11 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
         });
 
         if (row !== undefined) {
-            // this.updateQuizState(row);
+            this.setState({
+                gradeEntryId: row.gradeEntryId,
+                marks: row.marks === null ? 0 : row.marks,
+                remarks: row.remarks === null ? "": row.remarks
+            })
         }
     };
 
@@ -99,13 +102,87 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
         axios
             .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveGradeEntries?userId=${userId}&gradeItemId=${gradeItemId}`)
             .then(result => {
-                console.log(result.data.gradeEntries)
-                this.setState({ status: "done", gradeEntries: result.data.gradeEntries })
+                // console.log(result.data.gradeEntries)
+                this.setState({ status: "done", gradeEntries: result.data.gradeEntries, recallGradebook: false })
             })
             .catch(error => {
                 this.setState({ status: "error" })
                 console.error("error in axios " + error);
             });
+    }
+
+    updateGrades = () => {
+        let userId = localStorage.getItem('userId');
+        // console.log({gradeEntryId: this.state.gradeEntryId,
+        //     marks: this.state.marks,
+        //     remarks: this.state.remarks})
+        axios
+            .post(`http://localhost:8080/LMS-war/webresources/Assessment/enterGradeMarks?userId=${userId}`, {
+                gradeEntryId: this.state.gradeEntryId,
+                marks: this.state.marks,
+                remarks: this.state.remarks
+            })
+            .then(result => {
+                this.setState({
+                    recallGradebook: true,
+                    message: "Grade entry updated successfully!",
+                    openSnackbar: true
+                });
+            })
+            .catch(error => {
+                this.setState({
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                });
+                console.error("error in axios " + error);
+            });
+        this.toggle(1);
+    }
+
+    renderUpdateGradeEntryModalBox = () => {
+        return (
+            <MDBModal isOpen={this.state.modal1} toggle={() => this.toggle(1)}>
+                <MDBModalHeader
+                    className="text-center"
+                    titleClass="w-100 font-weight-bold"
+                    toggle={() => this.toggle(1)}
+                >
+                    Update Grade Entry
+                        </MDBModalHeader>
+                <MDBModalBody>
+                    <form className="mx-3 grey-text">
+                        <MDBRow>
+                            <MDBCol md="12" className="mt-4">
+                                <label className="grey-text mt-4">
+                                    Marks
+                </label>
+                                <input type="number" className="form-control" name="marks"
+                                    value={this.state.marks}
+                                    onChange={this.handleChange}
+                                    min={0}
+                                    required />
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-4">
+                                <label className="grey-text mt-4">
+                                    Remarks
+                </label>
+                                <textarea rows="3" type="text" name="remarks" onChange={this.handleChange} value={this.state.remarks} className="form-control" />
+                            </MDBCol>
+                        </MDBRow>
+                    </form>
+                </MDBModalBody>
+                <MDBModalFooter className="justify-content-center">
+                    <MDBRow>
+                        <MDBCol md="6">
+                            <MDBBtn onClick={() => this.toggle(1)} color="grey">Cancel</MDBBtn>
+                        </MDBCol>
+                        <MDBCol md="6">
+                            <MDBBtn onClick={() => this.updateGrades()} color="primary">Update</MDBBtn>
+                        </MDBCol>
+                    </MDBRow>
+                </MDBModalFooter>
+            </MDBModal>
+        )
     }
 
     renderGradebookTable = () => {
@@ -120,7 +197,7 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
                     gradeEntryId: item[i].gradeEntryId,
                     score: item[i].marks === null ? "-" : item[i].marks,
                     remarks: item[i].remarks === null ? "-" : item[i].remarks,
-                    viewButton: <center><MDBIcon onClick={() => this.editQuiz(2, item[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></center>
+                    viewButton: <center><MDBIcon onClick={() => this.toggle(1, item[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></center>
                 })
             }
         } else {
@@ -153,10 +230,9 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
                 </h2>
                             </MDBCol>
                             <MDBCol md="4" align="right">
-                                {/* <MDBBtn color="primary">Create Grade Item</MDBBtn> */}
                             </MDBCol>
                         </MDBRow>
-                        {/* {this.renderEditQuizModalBox()} */}
+                        {this.renderUpdateGradeEntryModalBox()}
                         <MDBRow className="py-3">
                             <MDBCol md="12">
                                 <MDBCard>
@@ -211,9 +287,8 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
                 </h2>
                             </MDBCol>
                             <MDBCol md="4" align="right">
-                                {/* <MDBBtn color="primary">Create Grade Item</MDBBtn> */}
                             </MDBCol>
-                            {/* {this.renderEditQuizModalBox()} */}
+                            {this.renderUpdateGradeEntryModalBox()}
                         </MDBRow>
                         <MDBRow className="py-3">
                             <MDBCol md="12">

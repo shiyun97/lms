@@ -397,7 +397,7 @@ class ModuleGradebookPageTeacher extends Component {
             .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveGradeItems/${moduleId}?userId=${userId}`)
             .then(result => {
                 // console.log(result.data.gradeItems)
-                this.setState({ status: "done", gradeItems: result.data.gradeItems })
+                this.setState({ status: "done", gradeItems: result.data.gradeItems, recallGradebook: false })
             })
             .catch(error => {
                 this.setState({ status: "error", label: error.response.data.errorMessage })
