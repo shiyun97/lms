@@ -56,6 +56,7 @@ class CoursepackFeedbackPage extends Component {
         ],
         averageRating: 4.6,
         ratingSpread: [64,29,6,1,0],
+        ratingValues: [5,4,3,2,1],
         modalAddRating: false,
         ratingCommentInput: "",
         ratingStarsInput: 5,
@@ -222,6 +223,7 @@ class CoursepackFeedbackPage extends Component {
 
     render() {
         let ratingSpread = this.state.ratingSpread;
+        let ratingValues = this.state.ratingValues;
         let ratings = this.state.ratings;
         return (
             <div className="module-content">
@@ -236,7 +238,7 @@ class CoursepackFeedbackPage extends Component {
                         </MDBCol>
                     </MDBRow>
                     <MDBRow>
-                        <MDBCol className="col-md-4">
+                        <MDBCol className="col-md-3">
                             <MDBRow>
                                 <div style={{fontSize: "4rem"}}>{this.state.averageRating}</div>
                             </MDBRow>
@@ -247,14 +249,22 @@ class CoursepackFeedbackPage extends Component {
                                 <div className="mt-1" style={{color: "#808080"}}>Average Rating</div>
                             </MDBRow>
                         </MDBCol>
-                        <MDBCol className="col-md-7">
+                        <MDBCol className="col-md-6">
                             {ratingSpread.map((rating, index) => (
                                 <MDBProgress value={rating} className="my-2" key={index} />
                             ))}
                         </MDBCol>
+                        <MDBCol className="col-md-2">
+                            <div className="mt-1" />
+                            {ratingValues.map((ratingValue, index) => (
+                                <Rating value={ratingValue} key={index} readOnly size="small" />
+                            ))}
+                        </MDBCol>
                         <MDBCol className="col-md-1">
                             {ratingSpread.map((rating, index) => (
-                                <div className="my-2" key={index} style={{fontSize: "11px"}}>{rating} %</div>
+                                <div className="my-2" key={index} style={{fontSize: "11px"}}>
+                                    <span>{rating} %</span>
+                                </div>
                             ))}
                         </MDBCol>
                     </MDBRow>

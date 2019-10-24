@@ -129,7 +129,7 @@ class DashboardPageAdmin extends Component {
         var endDate = this.state.endDate;
         endDate = moment(endDate).format("DD-MM-YYYY HH:mm:ss")
         axios
-            .post(`http://localhost:8080/LMS-war/webresources/Annoucement/createSystemAnnoucement`, {
+            .post(`http://localhost:8080/LMS-war/webresources/Annoucement/createSystemAnnoucement?userId=${localStorage.getItem('userId')}`, {
                 content: this.state.content,
                 emailNotification: this.state.emailNotification,
                 publish: this.state.publish,
@@ -175,7 +175,7 @@ class DashboardPageAdmin extends Component {
         var endDate = this.state.endDate;
         endDate = moment(endDate).format("DD-MM-YYYY HH:mm:ss")
         axios
-            .put(`http://localhost:8080/LMS-war/webresources/Annoucement/updateAnnoucement?annoucementId=${this.state.currAnnouncementId}`, {
+            .put(`http://localhost:8080/LMS-war/webresources/Annoucement/updateSystemAnnoucement?annoucementId=${this.state.currAnnouncementId}&userId=${localStorage.getItem('userId')}`, {
                 content: this.state.content,
                 emailNotification: this.state.emailNotification,
                 publish: this.state.publish,
@@ -187,6 +187,7 @@ class DashboardPageAdmin extends Component {
             })
             .then(result => {
                 // console.log(result.data.annoucementList)
+                console.log(result)
                 this.setState({ openSnackbar: true, message: "Announcement successfully updated", recall: "recallAnn" })
             })
             .catch(error => {
@@ -581,10 +582,8 @@ class AnnouncementListItem extends Component {
                     </div>
                 }
 
-                <MDBIcon icon="user" className="mr-2 fa-fw" />
-                by {announcement.createdBy}<br />
                 <MDBIcon icon="calendar-alt" className="mr-2 fa-fw" />
-                on {announcement.startDate}
+                on {new Date(announcement.startDate).toLocaleString()}
                 <div className="mb-2"></div>
                 {announcement.content}
             </div>

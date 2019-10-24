@@ -150,7 +150,7 @@ class ModuleAnnouncementsPageTeacher extends Component {
         var endDate = this.state.endDate;
         endDate = moment(endDate).format("DD-MM-YYYY HH:mm:ss")
         axios
-            .post(`http://localhost:8080/LMS-war/webresources/Annoucement/createAnnoucement/${this.state.moduleId}`, {
+            .post(`http://localhost:8080/LMS-war/webresources/Annoucement/createModuleAnnoucement/${this.state.moduleId}?userId=${localStorage.getItem('userId')}`, {
                 content: this.state.content,
                 emailNotification: this.state.emailNotification,
                 publish: this.state.publish,
@@ -162,7 +162,7 @@ class ModuleAnnouncementsPageTeacher extends Component {
             })
             .then(result => {
                 // console.log(result.data.annoucementList)
-                this.setState({ openSnackbar: true, message: "Announcement successfully created", recall: "recallAnn" })
+                this.setState({ openSnackbar: true, message: "Announcement successfully created", recall: "recallAnn", modal1: false })
             })
             .catch(error => {
                 this.setState({ message: error.response.data.errorMessage, openSnackbar: true })
@@ -196,7 +196,7 @@ class ModuleAnnouncementsPageTeacher extends Component {
         var endDate = this.state.endDate;
         endDate = moment(endDate).format("DD-MM-YYYY HH:mm:ss")
         axios
-            .put(`http://localhost:8080/LMS-war/webresources/Annoucement/updateAnnoucement?annoucementId=${this.state.currAnnouncementId}`, {
+            .put(`http://localhost:8080/LMS-war/webresources/Annoucement/updateModuleAnnoucement?moduleId=${this.state.moduleId}&annoucementId=${this.state.currAnnouncementId}&userId=${localStorage.getItem('userId')}`, {
                 content: this.state.content,
                 emailNotification: this.state.emailNotification,
                 publish: this.state.publish,
@@ -615,7 +615,7 @@ class AnnouncementListItem extends Component {
                 {/* <MDBIcon icon="user" className="mr-2 fa-fw" /> */}
                 {/* by {announcement.createdBy}<br /> */}
                 <MDBIcon icon="calendar-alt" className="mr-2 fa-fw" />
-                on {announcement.startDate}
+                on {new Date(announcement.startDate).toLocaleString()}
                 <div className="mb-2"></div>
                 {announcement.content}
             </div>
