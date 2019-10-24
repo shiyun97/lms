@@ -45,14 +45,54 @@ class ModuleQuizPageAnswerQuiz extends Component {
         var newJson = result.data;
         newJson['completedHtml'] = "<p><h4>You have completed the quiz!</h4></p>";
         if (result.data.reachedMaxAttempt) {
-          this.setState({ status: "maximumAttempt" })
+          this.setState({ status: "maximumAttempt", json: newJson })
         } else
-        this.setState({ status: "done", json: newJson })
+          this.setState({ status: "done", json: newJson })
       })
       .catch(error => {
         this.setState({ status: "error" })
         console.error("error in axios " + error);
       });
+  }
+
+  renderEmptyCardWithMessage = (message) => {
+    var moduleId = this.props.dataStore.getCurrModId;
+    return (
+      <div className={this.props.className}>
+        <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+        <div className="module-content">
+          <MDBContainer className="mt-3">
+            <MDBRow className="py-3">
+              <MDBCol md="12">
+                <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
+                  <h5>{message}</h5>
+                </MDBCard>
+                {this.state.json.publishAnswer === true &&
+                  <>
+                    <br />
+                    <br />
+                    <h1>Quiz Answers</h1>
+                    <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
+                      <p>{this.state.json.pages[0].elements.map((element) =>
+                        <>
+                          <b><h6>Question {element.number}</h6></b>
+                          {element.title} <br />
+                          <br />
+                          Correct Answer: {element.correctAnswer} <br />
+                          Explanation: {element.explanation} <br />
+                          <br />
+                          <hr />
+                        </>
+                      )}</p>
+                    </MDBCard>
+                  </>
+                }
+              </MDBCol>
+            </MDBRow>
+          </MDBContainer>
+        </div>
+      </div>
+    )
   }
 
   render() {
@@ -63,73 +103,13 @@ class ModuleQuizPageAnswerQuiz extends Component {
       else
         return <ModuleQuizPageAnswerNormalQuiz />;
     } else if (this.state.status === "retrieving") {
-      return (
-        <div className={this.props.className}>
-          <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
-          <div className="module-content">
-            <MDBContainer className="mt-3">
-              <MDBRow className="py-3">
-                <MDBCol md="12">
-                  <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
-                    <h3>Retrieving Quiz Details...</h3>
-                  </MDBCard>
-              </MDBCol>
-            </MDBRow>
-          </MDBContainer>
-        </div>
-      </div>
-      )
+      return this.renderEmptyCardWithMessage("Retrieving Quiz Details...");
     } else if (this.state.status === "error") {
-      return (
-        <div className={this.props.className}>
-          <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
-          <div className="module-content">
-            <MDBContainer className="mt-3">
-              <MDBRow className="py-3">
-                <MDBCol md="12">
-                  <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
-                    <h3>Unable to retrieve quiz details. Please try again later.</h3>
-                  </MDBCard>
-              </MDBCol>
-            </MDBRow>
-          </MDBContainer>
-        </div>
-      </div>
-      )
+      return this.renderEmptyCardWithMessage("Unable to retrieve quiz details. Please try again later.")
     } else if (this.state.status === "maximumAttempt") {
-      return (
-        <div className={this.props.className}>
-          <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
-          <div className="module-content">
-            <MDBContainer className="mt-3">
-              <MDBRow className="py-3">
-                <MDBCol md="12">
-                  <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
-                    <h3>Sorry, you have exhausted all your quiz attempts.</h3>
-                  </MDBCard>
-              </MDBCol>
-            </MDBRow>
-          </MDBContainer>
-        </div>
-      </div>
-      )
+      return this.renderEmptyCardWithMessage("Sorry, you have exhausted all your quiz attempts.")
     } else {
-      return (
-        <div className={this.props.className}>
-          <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
-          <div className="module-content">
-            <MDBContainer className="mt-3">
-              <MDBRow className="py-3">
-                <MDBCol md="12">
-                  <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
-                    <h3>No such quiz exist.</h3>
-                  </MDBCard>
-              </MDBCol>
-            </MDBRow>
-          </MDBContainer>
-        </div>
-      </div>
-      )
+      return this.renderEmptyCardWithMessage("No such quiz exist.")
     }
   }
 }

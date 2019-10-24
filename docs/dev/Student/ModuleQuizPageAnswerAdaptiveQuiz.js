@@ -117,7 +117,7 @@ var json = {
     },
   ]
 }
-var page = 2
+var page = 1
 
 @inject('dataStore')
 @observer
@@ -150,14 +150,16 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
 
   // arrange pages according to quiz level
   arrangeQuizPages = () => {
-    // console.log(json.pages[0].elements)
-    // var pages = []
-    // for (var i = 0; i < json.pages[0].elements.length; i++) {
-    //   if (json.pages[0].elements[i].level === i + 1) {
-    //     console.log(pages[json.pages[0].elements[i].level - 1] = { elements: json.pages[0].elements[i] })
-    //   }
-    // }
-    // console.log(pages)
+    console.log("json", json.pages)
+    var pages = []
+    for (var i = 0; i < json.pages.length; i++) {
+      if (json.pages[i].elements[0].level == i + 1) {
+        console.log(json.pages[i].elements[0].level - 1)
+        // var num = json.pages[i].elements.level - 1
+        // pages[num] = { elements: json.pages[i].elements }
+      }
+    }
+    console.log(pages)
   }
 
   getModuleQuiz = () => {
@@ -181,33 +183,7 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
   }
 
   doOnCurrentPageChanged(result) {
-    page = 4
-    // console.log("test", result.data)
-    // var newJson = {
-    //   "elements": [
-    //     {
-    //       "questionId": 485,
-    //       "type": "radiogroup",
-    //       "title": "Do you ask questions s?",
-    //       "number": 3,
-    //       "explanation": null,
-    //       "correctAnswer": "Answer Choice 1",
-    //       "points": 3,
-    //       "level": 3,
-    //       "isRequired": true,
-    //       "choices": [
-    //         "Answer Choice 1",
-    //         "Answer Choice 2",
-    //         "Answer Choice 3",
-    //         "Answer Choice 4"
-    //       ],
-    //       "html": null
-    //     },
-    //   ]
-    // }
-    // var pages = json.pages
-    // var newPages = pages.concat(newJson)
-    // json.pages = newPages
+    page = 3
   }
 
   onValueChanged(result) {

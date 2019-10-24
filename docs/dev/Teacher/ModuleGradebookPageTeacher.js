@@ -137,11 +137,11 @@ class ModuleGradebookPageTeacher extends Component {
         this.toggle(1);
     }
 
-    createQuizGradeItem = (quizId) => {
+    createQuizGradeItem = () => {
         let userId = localStorage.getItem('userId');
         let moduleId = this.props.dataStore.getCurrModId;
         axios
-            .post(`http://localhost:8080/LMS-war/webresources/Assessment/createGradeItemFromQuiz?userId=${userId}&quizId=${quizId}`, {
+            .post(`http://localhost:8080/LMS-war/webresources/Assessment/createGradeItemFromQuiz?userId=${userId}&quizId=${this.state.quizId}`, {
                 title: this.state.title,
                 description: this.state.description,
                 maxMarks: this.state.maxMarks,
@@ -330,7 +330,7 @@ class ModuleGradebookPageTeacher extends Component {
                             <MDBBtn onClick={() => this.toggle(3)} color="grey">Cancel</MDBBtn>
                         </MDBCol>
                         <MDBCol md="6">
-                            <MDBBtn onClick={() => this.createQuizGradeItem(this.state.quizId)} color="primary">Create</MDBBtn>
+                            <MDBBtn onClick={() => this.createQuizGradeItem()} color="primary">Create</MDBBtn>
                         </MDBCol>
                     </MDBRow>
                 </MDBModalFooter>
