@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import CoursepackQuizPageStudent from "./Student/CoursepackQuizPageStudent";
 import CoursepackQuizPageTeacher from "./Teacher/CoursepackQuizPageTeacher";
 import AccessDeniedPage from "./AccessDeniedPage";
 
@@ -25,9 +24,7 @@ class CoursepackQuizPage extends Component {
 
     render() {
         let accessRight = localStorage.getItem("accessRight")
-        if (accessRight === "Student")
-            return <CoursepackQuizPageStudent moduleId={this.props.moduleId}/> //NEED TO CHANGE TO COURSEPACK
-        else if (accessRight === "Teacher")
+        if (accessRight === "Teacher")
             return <CoursepackQuizPageTeacher moduleId={this.props.moduleId} /> //NEED TO CHANGE TO COURSEPACK
         else
             return <AccessDeniedPage />

@@ -28,13 +28,13 @@ class CoursepackSideNavigation extends Component {
                             Multimedia
                         </MDBListGroupItem>
                     </NavLink>
-                    <NavLink /* to={`/modules/${moduleId}/announcements`} */ activeClassName="activeClass">
+                    <NavLink to={`/coursepack/${courseId}/quiz`} activeClassName="activeClass">
                         <MDBListGroupItem>
                             <MDBIcon icon="star" className="mr-3 fa-fw" />
                             Quizzes
                         </MDBListGroupItem>
                     </NavLink>
-                    <NavLink to={`/coursepack/${courseId}/arrangements`}  activeClassName="activeClass">
+                    <NavLink to={`/coursepack/${courseId}/arrangements`} activeClassName="activeClass">
                         <MDBListGroupItem>
                             <MDBIcon icon="layer-group" className="mr-3 fa-fw" />
                             Arrangements

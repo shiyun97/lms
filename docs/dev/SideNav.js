@@ -15,6 +15,12 @@ class SideNav extends Component {
         this.props.dataStore.setPath(path);
     }
 
+    componentDidMount() {
+        var pathname = location.pathname;
+        console.log(pathname)
+        this.props.dataStore.setPath(pathname);
+    }
+
     renderCoursepackSideNav = () => {
         // Coursepack Dashboard
         // My Courses

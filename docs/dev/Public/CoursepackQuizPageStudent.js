@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
 import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable } from "mdbreact";
-import CoursepackSideNavigation from "../CoursepackSideNavigation";
 import { Snackbar } from '@material-ui/core';
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
-import moment from 'moment';
 
 @inject('dataStore')
 @observer
@@ -158,48 +156,43 @@ class CoursepackQuizPageStudent extends Component {
         }
 
         return (
-            <div className={this.props.className}>
-                <CoursepackSideNavigation moduleId={moduleId}></CoursepackSideNavigation>
-                <div className="module-content">
-                    <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }}>
-                            <MDBCol md="8">
-                                <h2 className="font-weight-bold">
-                                    Quiz
+            <MDBContainer className="mt-3">
+                <MDBRow style={{ paddingTop: 60 }}>
+                    <MDBCol md="8">
+                        <h2 className="font-weight-bold">
+                            Quiz
                 </h2>
-                            </MDBCol>
-                            <MDBCol md="4" align="right">
-                            </MDBCol>
-                        </MDBRow>
-                        {/* {this.renderEditQuizModalBox()} */}
-                        <MDBRow className="py-3">
-                            <MDBCol md="12">
-                                <MDBCard>
-                                    <MDBCardBody>
-                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={widerData} pagesAmount={4} />
-                                    </MDBCardBody>
-                                </MDBCard>
-                            </MDBCol>
-                        </MDBRow>
-                        <Snackbar
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            open={this.state.openSnackbar}
-                            autoHideDuration={6000}
-                            onClose={this.handleClose}
-                            ContentProps={{
-                                'aria-describedby': 'message-id',
-                            }}
-                            message={<span id="message-id">{this.state.message}</span>}
-                            action={[
-                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-                            ]}
-                        />
-                    </MDBContainer>
-                </div>
-            </div>
+                    </MDBCol>
+                    <MDBCol md="4" align="right">
+                    </MDBCol>
+                </MDBRow>
+                {/* {this.renderEditQuizModalBox()} */}
+                <MDBRow className="py-3">
+                    <MDBCol md="12">
+                        <MDBCard>
+                            <MDBCardBody>
+                                <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={widerData} pagesAmount={4} />
+                            </MDBCardBody>
+                        </MDBCard>
+                    </MDBCol>
+                </MDBRow>
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.openSnackbar}
+                    autoHideDuration={6000}
+                    onClose={this.handleClose}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">{this.state.message}</span>}
+                    action={[
+                        <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                    ]}
+                />
+            </MDBContainer>
         )
     }
 
@@ -214,52 +207,42 @@ class CoursepackQuizPageStudent extends Component {
             })], rows: [...data().rows]
         }
         return (
-            <div className={this.props.className}>
-                <CoursepackSideNavigation moduleId={moduleId}></CoursepackSideNavigation>
-                <div className="module-content">
-                    <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }}>
-                            <MDBCol md="8">
-                                <h2 className="font-weight-bold">
-                                    Quiz
+            <MDBContainer className="mt-3">
+                <MDBRow style={{ paddingTop: 60 }}>
+                    <MDBCol md="8">
+                        <h2 className="font-weight-bold">
+                            Quiz
                 </h2>
-                            </MDBCol>
-                            <MDBCol md="4" align="right">
-                            </MDBCol>
-                            {/* {this.renderEditQuizModalBox()} */}
-                        </MDBRow>
-                        <MDBRow className="py-3">
-                            <MDBCol md="12">
-                                <MDBCard>
-                                    <MDBCardBody>
-                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
-                                    </MDBCardBody>
-                                </MDBCard>
-                            </MDBCol>
-                        </MDBRow>
-                    </MDBContainer>
-                </div>
-            </div>
+                    </MDBCol>
+                    <MDBCol md="4" align="right">
+                    </MDBCol>
+                    {/* {this.renderEditQuizModalBox()} */}
+                </MDBRow>
+                <MDBRow className="py-3">
+                    <MDBCol md="12">
+                        <MDBCard>
+                            <MDBCardBody>
+                                <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
+                            </MDBCardBody>
+                        </MDBCard>
+                    </MDBCol>
+                </MDBRow>
+            </MDBContainer>
         )
     }
 
     renderAwaiting = () => {
         var moduleId = this.props.dataStore.getCurrModId;
         return (
-            <div className={this.props.className}>
-                <CoursepackSideNavigation moduleId={moduleId}></CoursepackSideNavigation>
-                <div className="module-content">
-                    <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }} align="center">
-                            <MDBCol md="12">
-                                <div className="spinner-border text-primary" role="status">
-                                    <span className="sr-only">Loading...</span>
-                                </div>
-                            </MDBCol>
-                        </MDBRow>
-                    </MDBContainer>
-                </div>
-            </div>
+            <MDBContainer className="mt-3">
+                <MDBRow style={{ paddingTop: 60 }} align="center">
+                    <MDBCol md="12">
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </div>
+                    </MDBCol>
+                </MDBRow>
+            </MDBContainer>
         )
     }
 
@@ -284,7 +267,7 @@ class CoursepackQuizPageStudent extends Component {
 
 export default styled(CoursepackQuizPageStudent)`
 .module-content{
-    margin-left: 270px;
+    margin-left: 1200px;
     margin-top: 40px;
 }
 `;
