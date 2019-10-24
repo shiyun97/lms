@@ -1,11 +1,11 @@
 {
     "title": "Quiz",
-    "moduleId": 7,
-    "description": "This is to test your knowledge on [topic].",
+    "moduleId": 11,
+    "description": "Description",
     "quizType": "normal",
     "questionsOrder": "initial",
-    "openingDate": "24-10-2019T00:00:00",
-    "closingDate": "24-12-2019T00:00:00",
+    "openingDate": "2019-10-15T00:00:00",
+    "closingDate": "2019-12-22T00:00:00",
     "publish": true,
     "noOfAttempts": 1,
     "maxTimeToFinish": 60,
@@ -14,24 +14,20 @@
             "type": "radiogroup",
             "title": "What is a MCQ question?",
             "isRequired": true,
-            "points": 1,
-            "explanation": "this is an explanation",
-            "correctAnswer": "c",
+            "points": 2,
+            "explanation": "This is an explanation",
+            "correctAnswer": "Answer Choice 2",
             "choices": [
                 {
-                    "value": "a",
                     "text": "Answer Choice 1"
                 },
                 {
-                    "value": "b",
                     "text": "Answer Choice 2"
                 },
                 {
-                    "value": "c",
                     "text": "Answer Choice 3"
                 },
                 {
-                    "value": "d",
                     "text": "Answer Choice 4"
                 }
             ]
@@ -40,98 +36,20 @@
             "type": "radiogroup",
             "title": "Do you ask questions?",
             "isRequired": true,
-            "points": 3,
-            "correctAnswer": "a",
+            "points": 2,
+            "explanation": "This is an explanation",
+            "correctAnswer": "Answer Choice 2",
             "choices": [
                 {
-                    "value": "a",
                     "text": "Answer Choice 1"
                 },
                 {
-                    "value": "b",
                     "text": "Answer Choice 2"
                 },
                 {
-                    "value": "c",
                     "text": "Answer Choice 3"
                 },
                 {
-                    "value": "d",
-                    "text": "Answer Choice 4"
-                }
-            ]
-        },
-        {
-            "type": "radiogroup",
-            "title": "Do you ask questions s?",
-            "isRequired": true,
-            "points": 3,
-            "correctAnswer": "a",
-            "choices": [
-                {
-                    "value": "a",
-                    "text": "Answer Choice 1"
-                },
-                {
-                    "value": "b",
-                    "text": "Answer Choice 2"
-                },
-                {
-                    "value": "c",
-                    "text": "Answer Choice 3"
-                },
-                {
-                    "value": "d",
-                    "text": "Answer Choice 4"
-                }
-            ]
-        },
-        {
-            "type": "radiogroup",
-            "title": "Do you ask questionss?",
-            "isRequired": true,
-            "points": 3,
-            "correctAnswer": "a",
-            "choices": [
-                {
-                    "value": "a",
-                    "text": "Answer Choice 1"
-                },
-                {
-                    "value": "b",
-                    "text": "Answer Choice 2"
-                },
-                {
-                    "value": "c",
-                    "text": "Answer Choice 3"
-                },
-                {
-                    "value": "d",
-                    "text": "Answer Choice 4"
-                }
-            ]
-        },
-        {
-            "type": "radiogroup",
-            "title": "Do you ask questions  a?",
-            "isRequired": true,
-            "points": 3,
-            "correctAnswer": "a",
-            "choices": [
-                {
-                    "value": "a",
-                    "text": "Answer Choice 1"
-                },
-                {
-                    "value": "b",
-                    "text": "Answer Choice 2"
-                },
-                {
-                    "value": "c",
-                    "text": "Answer Choice 3"
-                },
-                {
-                    "value": "d",
                     "text": "Answer Choice 4"
                 }
             ]

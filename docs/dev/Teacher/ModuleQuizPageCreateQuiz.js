@@ -3,9 +3,8 @@ import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBIcon, MDBInputGroup }
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import ModuleSideNavigation from "./../ModuleSideNavigation";
-import { Stepper, Step, StepLabel, TextField, Typography, Switch, Snackbar } from '@material-ui/core';
+import { Stepper, Step, StepLabel, TextField, Typography, Switch, Snackbar, Checkbox } from '@material-ui/core';
 import axios from 'axios';
-import backupJson from '../json/backupCreateQuiz';
 
 @inject('dataStore')
 @observer
@@ -42,7 +41,7 @@ class ModuleQuizPageCreateQuiz extends Component {
         publish: false,
         choices: [],
         answer: "",
-        elements: []
+        elements: [],
     }
 
     initPage() {
@@ -51,13 +50,10 @@ class ModuleQuizPageCreateQuiz extends Component {
         this.props.dataStore.setCurrModId(pathname[2]);
     }
 
-    handleSwitchChange = () => {
-        const currState = this.state.questionsOrder
-        this.setState({
-            questionsOrder: !currState
-        });
-        // console.log(this.state.questionsOrder)
-    }
+    handleCheckBoxChange = name => event => {
+        this.setState({ [name]: event.target.checked });
+        // console.log(this.state.emailNotification, this.state.publish)
+    };
 
     componentDidMount() {
         this.initPage();
@@ -66,106 +62,57 @@ class ModuleQuizPageCreateQuiz extends Component {
     handleSubmit = () => {
         // call api to submit quiz
         let userId = localStorage.getItem('userId');
-        console.log({
-            title: this.state.title,
-            moduleId: this.state.moduleId,
-            description: this.state.explanation,
-            quizType: this.state.quizType,
-            questionsOrder: this.state.questionsOrder ? "random" : "initial",
-            openingDate: this.state.openingDate,
-            closingDate: this.state.closingDate,
-            publish: this.state.publish,
-            noOfAttempts: this.state.noOfAttempts,
-            maxTimeToFinish: this.state.maxTimeToFinish,
-            questions: this.state.elements
-        })
-        // axios
-        //     .post(`http://localhost:8080/LMS-war/webresources/Assessment/createModuleQuiz?userId=${userId}`, {
-        //         title: this.state.title,
-        //         moduleId: this.state.moduleId,
-        //         description: this.state.explanation,
-        //         quizType: this.state.quizType,
-        //         questionsOrder: this.state.questionsOrder ? "random" : "initial",
-        //         openingDate: this.state.openingDate,
-        //         closingDate: this.state.closingDate,
-        //         publish: this.state.publish,
-        //         noOfAttempts: this.state.noOfAttempts,
-        //         maxTimeToFinish: this.state.maxTimeToFinish,
-        //         questions: this.state.elements
-        //     })
-        //     .then(result => {
-        //         console.log("success")
-        //         this.setState({
-        //             message: "Quiz created successfully!",
-        //             openSnackbar: true
-        //         });
-        //     })
-        //     .catch(error => {
-        //         axios
-        //             .post(`http://localhost:8080/LMS-war/webresources/Assessment/createModuleQuiz?userId=${userId}`, backupJson)
-        //             .then(result => {
-        //                 console.log("success")
-        //                 this.setState({
-        //                     message: "Quiz created successfully!",
-        //                     openSnackbar: true
-        //                 });
-        //             })
-        //             .catch(error => {
-        //                 this.setState({
-        //                     message: error.response.data.errorMessage,
-        //                     openSnackbar: true
-        //                 });
-        //                 console.error("error in axios " + error);
-        //             });
-        //     });
+        var moduleId = this.props.dataStore.getCurrModId;
+        // console.log({
+        //     title: this.state.title,
+        //     moduleId: moduleId,
+        //     description: this.state.explanation,
+        //     quizType: this.state.quizType,
+        //     questionsOrder: this.state.questionsOrder ? "random" : "initial",
+        //     openingDate: this.state.openingDate + ":00",
+        //     closingDate: this.state.closingDate + ":00",
+        //     publish: this.state.publish,
+        //     noOfAttempts: this.state.noOfAttempts,
+        //     maxTimeToFinish: this.state.maxTimeToFinish,
+        //     questions: this.state.elements
+        // })
+        axios
+            .post(`http://localhost:8080/LMS-war/webresources/Assessment/createModuleQuiz?userId=${userId}`, {
+                title: this.state.title,
+                moduleId: moduleId,
+                description: this.state.explanation,
+                quizType: this.state.quizType,
+                questionsOrder: this.state.questionsOrder ? "random" : "initial",
+                openingDate: this.state.openingDate + ":00",
+                closingDate: this.state.closingDate + ":00",
+                publish: this.state.publish,
+                noOfAttempts: this.state.noOfAttempts,
+                maxTimeToFinish: this.state.maxTimeToFinish,
+                questions: this.state.elements
+            })
+            .then(result => {
+                console.log("success")
+                this.setState({
+                    message: "Quiz created successfully!",
+                    openSnackbar: true
+                });
+            })
+            .catch(error => {
+                this.setState({
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                });
+                console.error("error in axios " + error);
+                // });
+            });
 
-        // to reset
-        // this.setState({ activeStep: 0 });
+        //to reset
+        this.setState({ activeStep: 0 });
     }
 
     handleNext = () => {
         const currStep = this.state.activeStep;
         this.setState({ activeStep: currStep + 1 });
-
-        var number = this.props.dataStore.getQuestions.length + 1
-
-        if (this.state.activeStep === 1) {
-            if (this.props.dataStore.getQuestions.length > 0) {
-                var newQuestions = this.state.elements
-                if (this.state.questionType === "mcq") {
-                    newQuestions.push(
-                        {
-                            type: "radiogroup",
-                            name: "MCQ",
-                            number: number,
-                            title: this.state.title,
-                            isRequired: true,
-                            level: this.state.level, //only for adaptive,
-                            explanation: this.state.explanation,
-                            correctAnswer: this.state.choices[this.state.correctAnswer].text,
-                            points: this.state.points,
-                            choices: this.state.choices,
-                        })
-                    this.setState({ elements: newQuestions })
-                } else if (this.state.questionType === "short-answer") {
-                    newQuestions.push(
-                        {
-                            type: "text", //text
-                            name: "Short Answer",
-                            number: number,
-                            title: this.state.title,
-                            isRequired: true,
-                            level: this.state.level, //only for adaptive,
-                            explanation: this.state.explanation,
-                            correctAnswer: this.state.correctAnswer,
-                            points: this.state.points,
-                        })
-                    this.setState({ elements: newQuestions })
-                } else {
-                    this.setState({ openSnackbar: true, message: "Invalid question field" })
-                }
-            }
-        }
     };
 
     handleBack = () => {
@@ -240,6 +187,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                         {element.choices.map((answer) => { return this.renderAnswerInput(answer) })}
                     </MDBCol>
                     <MDBCol md="12" className="mt-4" align="center">
+                        {this.props.dataStore.getQuestions.length !== 0 && <MDBBtn onClick={() => this.saveQuestionsToList()} align="center" size="small" color="grey">Save</MDBBtn>}
                         <hr />
                     </MDBCol>
                 </>
@@ -247,18 +195,12 @@ class ModuleQuizPageCreateQuiz extends Component {
         } else {
             return (
                 <>
-                    <MDBCol md="12" className="mt-4" key={element.number}>
+                    <MDBCol md="10" className="mt-4" key={element.number}>
                         <h3>Question {element.number}</h3>
                         <label className="grey-text mt-4">
                             Question
                                 </label>
                         <textarea rows="3" type="text" name="question" onChange={this.handleChange} className="form-control" />
-                    </MDBCol>
-                    <MDBCol md="10" className="mt-4">
-                        <label className="grey-text">
-                            Answer #
-                </label>
-                        <textarea rows="5" type="text" name="answer" onChange={this.handleChange} className="form-control" />
                     </MDBCol>
                     <MDBCol md="2" className="mt-4">
                         {this.state.quizType === "adaptive" &&
@@ -274,7 +216,8 @@ class ModuleQuizPageCreateQuiz extends Component {
                             </>
                         }
                         <br />
-                        <label className="grey-text">
+                        <br />
+                        <label className="grey-text" style={{ paddingTop: 8 }}>
                             Points
                                     </label>
                         <input type="number" className="form-control" name="points"
@@ -289,6 +232,9 @@ class ModuleQuizPageCreateQuiz extends Component {
                                     </label>
                         <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} className="form-control" />
                         <br />
+                        <center>
+                            {this.props.dataStore.getQuestions.length !== 0 && <MDBBtn onClick={() => this.saveQuestionsToList()} align="center" size="small" color="grey">Save</MDBBtn>}
+                        </center>
                         <hr />
                     </MDBCol>
                 </>)
@@ -307,19 +253,18 @@ class ModuleQuizPageCreateQuiz extends Component {
         )
     }
 
-    addQuestionToList = () => {
-        var number = this.props.dataStore.getQuestions.length + 1
+    saveQuestionsToList = () => {
         if (this.props.dataStore.getQuestions.length > 0) {
-            var answers = this.state.choices;
-            answers.push({ text: this.state.answer })
-            this.setState({ choices: answers })
             var newQuestions = this.state.elements
             if (this.state.questionType === "mcq") {
+                var answers = this.state.choices;
+                answers.push({ text: this.state.answer })
+                this.setState({ choices: answers })
                 newQuestions.push(
                     {
                         type: "radiogroup",
-                        name: "MCQ",
-                        number: number,
+                        // name: "MCQ",
+                        // number: number,
                         title: this.state.title,
                         isRequired: true,
                         level: this.state.level, //only for adaptive,
@@ -333,13 +278,13 @@ class ModuleQuizPageCreateQuiz extends Component {
                 newQuestions.push(
                     {
                         type: "text", //text
-                        name: "Short Answer",
-                        number: number,
+                        // name: "Short Answer",
+                        // number: number,
                         title: this.state.title,
                         isRequired: true,
                         level: this.state.level, //only for adaptive,
                         explanation: this.state.explanation,
-                        correctAnswer: this.state.correctAnswer,
+                        // correctAnswer: this.state.correctAnswer,
                         points: this.state.points,
                     })
                 this.setState({ elements: newQuestions })
@@ -347,7 +292,10 @@ class ModuleQuizPageCreateQuiz extends Component {
                 this.setState({ openSnackbar: true, message: "Invalid question field" })
             }
         }
-        console.log(this.state.elements)
+    }
+
+    addQuestionToList = () => {
+        var number = this.props.dataStore.getQuestions.length + 1
         if (this.state.questionType === "short-answer") {
             this.props.dataStore.getQuestions.push(
                 {
@@ -423,7 +371,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                         </label>
                         <textarea type="text" rows="3" name="description" onChange={this.handleChange} className="form-control" />
                         <MDBRow>
-                            <MDBCol md="9" className="mt-4">
+                            <MDBCol md="7" className="mt-4">
                                 <MDBInputGroup
                                     style={{ paddingTop: 22 }}
                                     containerClassName="mb-3"
@@ -438,10 +386,30 @@ class ModuleQuizPageCreateQuiz extends Component {
                                 />
                             </MDBCol>
                             <MDBCol md="3" className="mt-4" style={{ paddingTop: 20 }}>
-                                <label className="grey-text">
-                                    Shuffle Questions
-                        </label>
-                                <Switch checked={this.state.questionsOrder} onChange={() => this.handleSwitchChange()} color="primary" name="questionsOrder" />
+                                <label>  Shuffle Questions </label>
+                                <Checkbox
+                                    checked={this.state.questionsOrder}
+                                    onChange={this.handleCheckBoxChange('questionsOrder')}
+                                    value="questionsOrder"
+                                    name="questionsOrder"
+                                    color="primary"
+                                    inputProps={{
+                                        'aria-label': 'secondary checkbox',
+                                    }}
+                                />
+                            </MDBCol>
+                            <MDBCol md="2" className="mt-4" style={{ paddingTop: 20 }}>
+                                <label> Publish</label>
+                                <Checkbox
+                                    checked={this.state.publish}
+                                    onChange={this.handleCheckBoxChange('publish')}
+                                    value="publish"
+                                    name="publish"
+                                    color="primary"
+                                    inputProps={{
+                                        'aria-label': 'secondary checkbox',
+                                    }}
+                                />
                             </MDBCol>
                             <MDBCol md="6">
                                 <br />
@@ -535,6 +503,7 @@ class ModuleQuizPageCreateQuiz extends Component {
     render() {
         const { steps, activeStep } = this.state;
         var moduleId = this.props.dataStore.getCurrModId;
+        console.log(this.state.elements)
         // var test = this.props.dataStore.getQuestions
         // console.log(test[0])
         return (
