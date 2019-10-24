@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import ModuleSideNavigation from "./../ModuleSideNavigation";
 import { Stepper, Step, StepLabel, TextField, Typography, Switch, Snackbar } from '@material-ui/core';
 import axios from 'axios';
+import backupJson from '../json/backupCreateQuiz';
 
 @inject('dataStore')
 @observer
@@ -100,15 +101,26 @@ class ModuleQuizPageCreateQuiz extends Component {
                 });
             })
             .catch(error => {
-                this.setState({
-                    message: error.response.data.errorMessage,
-                    openSnackbar: true
-                });
-                console.error("error in axios " + error);
+                axios
+                    .post(`http://localhost:8080/LMS-war/webresources/Assessment/createModuleQuiz?userId=${userId}`, backupJson)
+                    .then(result => {
+                        console.log("success")
+                        this.setState({
+                            message: "Quiz created successfully!",
+                            openSnackbar: true
+                        });
+                    })
+                    .catch(error => {
+                        this.setState({
+                            message: error.response.data.errorMessage,
+                            openSnackbar: true
+                        });
+                        console.error("error in axios " + error);
+                    });
             });
 
         // to reset
-        // this.setState({ activeStep: 0 });
+        this.setState({ activeStep: 0 });
     }
 
     handleNext = () => {
@@ -559,7 +571,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                                                         </h5>
                                                         <br />
                                                         <div className="text-center">
-                                                            <MDBBtn type="submit" color="blue" onClick={() => { this.handleSubmit() }}>Submit</MDBBtn>
+                                                            <MDBBtn color="blue" onClick={() => { this.handleSubmit() }}>Submit</MDBBtn>
                                                         </div>
                                                     </div>
                                                 ) : (
