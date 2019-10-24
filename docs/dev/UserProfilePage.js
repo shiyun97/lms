@@ -26,8 +26,32 @@ class UserProfilePage extends Component {
     }
 
     componentDidUpdate() {
-        if (this.state.status === "recallUsers"){
-            //call user specific api
+        let userId = localStorage.getItem('userId')
+        if (this.state.status === "recallUsers") {
+            event.preventDefault();
+            axios
+                .get(`http://localhost:8080/LMS-war/webresources/User/getUser/${userId}`)
+                .then(result => {
+                    // console.log(result)
+                    this.setState({ status: "" });
+                    this.props.dataStore.setSignInStatus(
+                        true,
+                        result.data.email,
+                        result.data.password,
+                        result.data.accessRight
+                    )
+                    this.props.dataStore.setUserDetails(
+                        result.data.userId,
+                        result.data.gender,
+                        result.data.firstName,
+                        result.data.lastName,
+                        result.data.username
+                    )
+                })
+                .catch(error => {
+                    this.setState({ status: "error" });
+                    console.error("error in axios " + error);
+                });
         }
     }
 
@@ -184,13 +208,6 @@ class UserProfilePage extends Component {
     handleChange = event => {
         event.preventDefault();
         this.setState({ [event.target.name]: event.target.value });
-        // console.log(this.state.accessRight) 
-        // console.log(this.state.gender)
-        // console.log(this.state.password)
-        // console.log(this.state.email)
-        // console.log(this.state.username)
-        // console.log(this.state.firstName)
-        // console.log(this.state.lastName)
     }
 
     updateUserState = () => {
@@ -253,7 +270,7 @@ class UserProfilePage extends Component {
                                             Password:
                                         </MDBCol>
                                         <MDBCol md="10">
-                                            {this.props.dataStore.getEmail} 
+                                            {this.props.dataStore.getEmail}
                                             <br />********
                                         </MDBCol>
                                     </MDBRow>

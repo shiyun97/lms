@@ -218,7 +218,6 @@ class ModuleAnnouncementsPageTeacher extends Component {
     }
 
     deleteAnnouncement = (id) => {
-        // call api to delete announcement
         axios
             .delete(`http://localhost:8080/LMS-war/webresources/Annoucement/deleteAnnoucement?annoucementId=${id}`)
             .then(result => {
