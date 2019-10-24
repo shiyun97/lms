@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBIcon, MDBInputGroup } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBIcon, MDBInputGroup, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from "mdbreact";
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import ModuleSideNavigation from "../ModuleSideNavigation";
@@ -25,6 +25,8 @@ class ModuleQuizPageEditQuiz extends Component {
         questionType: "",
         publish: false,
         publishAnswer: false,
+        modal1: false,
+        modal2: false,
 
         //create quiz inputs
         quizType: "normal", // adaptive
@@ -44,7 +46,8 @@ class ModuleQuizPageEditQuiz extends Component {
         choices: [],
         answer: "",
         elements: [],
-        quizId: 0
+        quizId: 0,
+        questionId: 0
     }
 
     initPage() {
@@ -60,13 +63,21 @@ class ModuleQuizPageEditQuiz extends Component {
         this.setState({
             questionsOrder: !currState
         });
-        // console.log(this.state.questionsOrder)
     }
 
     componentDidMount() {
         this.initPage();
         this.getModuleQuiz();
     }
+
+    toggle = (nr, id) => {
+        let modalNumber = "modal" + nr;
+        this.setState({ [modalNumber]: !this.state[modalNumber] });
+
+        if (id !== undefined) {
+            this.setState({ questionId: id });
+        }
+    };
 
     getModuleQuiz = () => {
         let userId = localStorage.getItem('userId');
@@ -92,8 +103,6 @@ class ModuleQuizPageEditQuiz extends Component {
                 this.setState({
                     status: "done",
                     title: result.data.title,
-                    // closingDate: moment(result.data.closingDate).format("yyyy-MM-ddTHH:mm"),
-                    // openingDate: result.data.openingDate,
                     description: result.data.description,
                     maxTimeToFinish: result.data.maxTimeToFinish,
                     noOfAttempts: result.data.noOfAttempts,
@@ -227,28 +236,33 @@ class ModuleQuizPageEditQuiz extends Component {
         // console.log(element.type)
         if (element.type === "radiogroup") {
             return (
-                <><MDBCol md="12" className="mt-4" key={element.number}>
-                    <h3>Question {element.number}</h3>
-                    <label className="grey-text mt-4">
-                        Question
+                <>
+                    <MDBCol md="10" className="mt-4" key={element.number}>
+                        <h3>Question {element.number}</h3>
+                    </MDBCol>
+                    <MDBCol md="2" className="mt-4">
+                        <MDBBtn onClick={() => this.toggle(2, element.questionId)} color="blue">Edit</MDBBtn>
+                    </MDBCol>
+                    <MDBCol md="12" className="mt-4">
+                        <label className="grey-text mt-4">
+                            Question
                     </label>
-                    <textarea rows="3" type="text" name="questionTitle" onChange={this.handleChange} value={element.title} className="form-control" />
-                </MDBCol>
+                        <input rows="3" type="text" name="questionTitle" disabled value={element.title} className="form-control" />
+                    </MDBCol>
                     <MDBCol md="12" className="mt-4">
                         <label className="grey-text">
                             Explanation
                     </label>
-                        <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} value={element.explanation} className="form-control" />
+                        <input rows="3" type="text" name="explanation" disabled value={element.explanation} className="form-control" />
                     </MDBCol>
                     <MDBCol md="8" className="mt-4" style={{ paddingTop: 28 }}>
                         <MDBInputGroup
                             containerClassName="mb-3"
                             prepend="Correct Answer"
-                            required
+                            disabled
                             inputs={
-                                <select name="correctAnswer" onChange={this.handleChange} className="browser-default custom-select">
-                                    <option value={-1}>Choose...</option>
-                                    {element.choices.map((answer, index) => { return <option value={index}>Answer {index + 1}</option> })}
+                                <select name="correctAnswer" className="browser-default custom-select">
+                                    <option value={element.correctAnswer}>{element.correctAnswer}</option>
                                 </select>
                             }
                         />
@@ -259,11 +273,11 @@ class ModuleQuizPageEditQuiz extends Component {
                                 <label className="grey-text">
                                     Level
                     </label>
-                                <input type="number" className="form-control" name="level"
+                                <input type="number" className="form-control" disabled name="level"
                                     value={element.level}
-                                    onChange={this.handleChange}
                                     min={1}
-                                    required />
+                                    disabled
+                                />
                             </>
                         }
                     </MDBCol>
@@ -273,9 +287,9 @@ class ModuleQuizPageEditQuiz extends Component {
                     </label>
                         <input type="number" className="form-control" name="points"
                             value={element.points}
-                            onChange={this.handleChange}
                             min={1}
-                            required />
+                            disabled
+                        />
                     </MDBCol>
                     <MDBCol md="12" className="mt-4">
                         {element.choices.map((answer, index) => { return this.renderAnswerInput(answer, index) })}
@@ -288,18 +302,23 @@ class ModuleQuizPageEditQuiz extends Component {
         } else {
             return (
                 <>
-                    <MDBCol md="12" className="mt-4" key={element.number}>
+                    <MDBCol md="10" className="mt-4" key={element.number}>
                         <h3>Question {element.number}</h3>
+                    </MDBCol>
+                    <MDBCol md="2" className="mt-4">
+                        <MDBBtn onClick={() => this.toggle(2, element.questionId)} color="blue">Edit</MDBBtn>
+                    </MDBCol>
+                    <MDBCol md="12" className="mt-4">
                         <label className="grey-text mt-4">
                             Question
                                 </label>
-                        <textarea rows="3" type="text" name="question" onChange={this.handleChange} defaultValue={element.question} className="form-control" />
+                        <textarea rows="3" type="text" name="question" defaultValue={element.question} disabled className="form-control" />
                     </MDBCol>
                     <MDBCol md="10" className="mt-4">
                         <label className="grey-text">
                             Answer
                 </label>
-                        <textarea rows="5" type="text" name="answer" onChange={this.handleChange} defaultValue={element.answer} className="form-control" />
+                        <textarea rows="5" type="text" name="answer" defaultValue={element.answer} disabled className="form-control" />
                     </MDBCol>
                     <MDBCol md="2" className="mt-4">
                         {this.state.quizType === "adaptive" &&
@@ -309,9 +328,8 @@ class ModuleQuizPageEditQuiz extends Component {
                                     </label>
                                 <input type="number" className="form-control" name="level"
                                     value={element.level}
-                                    onChange={this.handleChange}
                                     min={1}
-                                    required />
+                                    disabled />
                             </>
                         }
                         <br />
@@ -321,14 +339,14 @@ class ModuleQuizPageEditQuiz extends Component {
                         <input type="number" className="form-control" name="points"
                             value={element.points}
                             onChange={this.handleChange}
-                            min={1}
-                            required />
+                            disabled
+                            min={1} />
                     </MDBCol>
                     <MDBCol md="12" className="mt-4">
                         <label className="grey-text">
                             Explanation
                                     </label>
-                        <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} value={element.explanation} className="form-control" />
+                        <textarea rows="3" type="text" disabled name="explanation" value={element.explanation} className="form-control" />
                         <br />
                         <hr />
                     </MDBCol>
@@ -342,7 +360,7 @@ class ModuleQuizPageEditQuiz extends Component {
                 <label className="grey-text">
                     Answer {index + 1}
                 </label>
-                <input type="text" name="answer" onChange={this.handleChange} defaultValue={answer.text} className="form-control" />
+                <input type="text" name="answer" disabled defaultValue={answer.text} className="form-control" />
                 <br />
             </>
         )
@@ -350,6 +368,7 @@ class ModuleQuizPageEditQuiz extends Component {
 
     addNewQuestionToQuiz = () => {
         // api to add question
+
     }
 
     handleOpenSnackbar = () => {
@@ -363,6 +382,94 @@ class ModuleQuizPageEditQuiz extends Component {
 
         this.setState({ openSnackbar: false });
     };
+
+    renderAddQuestionModalBox = () => {
+        // this.state.questionId
+        return (
+            <MDBModal isOpen={this.state.modal1} toggle={() => this.toggle(1)}>
+                <MDBModalHeader
+                    className="text-center"
+                    titleClass="w-100 font-weight-bold"
+                    toggle={() => this.toggle(1)}
+                >
+                    Add Question
+      </MDBModalHeader>
+                <MDBModalBody>
+                    <form className="mx-3 grey-text">
+                        <MDBRow>
+                            <MDBCol md="12">
+                                <label className="grey-text mt-4">
+                                    Announcement Title
+                  </label>
+                                <input type="text" name="title" onChange={this.handleChange} className="form-control" />
+                            </MDBCol>
+                            <MDBCol md="12">
+                                <label className="grey-text mt-4">
+                                    Announcement Content
+                  </label>
+                                <textarea rows="3" type="text" name="content" onChange={this.handleChange} className="form-control" />
+                                <br />
+                            </MDBCol>
+                        </MDBRow>
+                    </form>
+                </MDBModalBody>
+                <MDBModalFooter className="justify-content-center">
+                    <MDBRow>
+                        <MDBCol md="6">
+                            <MDBBtn onClick={() => this.toggle(1)} color="grey">Cancel</MDBBtn>
+                        </MDBCol>
+                        <MDBCol md="6">
+                            <MDBBtn onClick={() => this.createAnnouncement()} color="primary">Create</MDBBtn>
+                        </MDBCol>
+                    </MDBRow>
+                </MDBModalFooter>
+            </MDBModal>
+        )
+    }
+
+    renderEditQuestionModalBox = () => {
+        // this.state.questionId
+        return (
+            <MDBModal isOpen={this.state.modal2} toggle={() => this.toggle(2)} >
+                <MDBModalHeader
+                    className="text-center"
+                    titleClass="w-100 font-weight-bold"
+                    toggle={() => this.toggle(2)}
+                >
+                    Update Question
+      </MDBModalHeader>
+                <MDBModalBody>
+                    <form className="mx-3 grey-text">
+                        <MDBRow>
+                            <MDBCol md="12">
+                                <label className="grey-text mt-4">
+                                    Announcement Title
+                  </label>
+                                <input type="text" name="title" onChange={this.handleChange} defaultValue={this.state.title} className="form-control" />
+                            </MDBCol>
+                            <MDBCol md="12">
+                                <label className="grey-text mt-4">
+                                    Announcement Content
+                  </label>
+                                <textarea rows="3" type="text" name="content" onChange={this.handleChange} defaultValue={this.state.content} className="form-control" />
+                                <br />
+                            </MDBCol>
+                        </MDBRow>
+                    </form>
+                </MDBModalBody>
+                <MDBModalFooter className="justify-content-center">
+                    <MDBRow>
+                        <MDBCol md="6">
+                            <MDBBtn onClick={() => this.toggle(2)} color="grey">Cancel</MDBBtn>
+                        </MDBCol>
+                        <MDBCol md="6">
+                            <MDBBtn onClick={() => this.updateAnnouncement()} color="primary">Update</MDBBtn>
+                        </MDBCol>
+                    </MDBRow>
+                </MDBModalFooter>
+            </MDBModal>
+        )
+    }
 
     getStepContent = (stepIndex) => {
         switch (stepIndex) {
@@ -483,8 +590,10 @@ class ModuleQuizPageEditQuiz extends Component {
                                     }
                                 />
                             </MDBCol>
-                            <MDBBtn onClick={() => this.addNewQuestionToQuiz()} align="center" size="small" color="blue">Add Question</MDBBtn>
+                            <MDBBtn onClick={() => this.toggle(1)} align="center" size="small" color="blue">Add Question</MDBBtn>
                         </center>
+                        {this.renderAddQuestionModalBox()}
+                        {this.renderEditQuestionModalBox()}
                     </div>
                 );
             default:
@@ -495,8 +604,6 @@ class ModuleQuizPageEditQuiz extends Component {
     render() {
         const { steps, activeStep } = this.state;
         var moduleId = this.props.dataStore.getCurrModId;
-        // var test = this.props.dataStore.getQuestions
-        // console.log(test[0])
         return (
             <div className={this.props.className}>
                 <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>

@@ -5,10 +5,6 @@ import { RandomPassword } from "./utils/RandomPassword";
 import { observer, inject } from 'mobx-react';
 import { Snackbar } from '@material-ui/core';
 
-// function goToProfilePage(userId) {
-//     console.log(userId);
-// }
-
 @inject('dataStore')
 @observer
 class UsersManagementPage extends Component {
@@ -281,10 +277,10 @@ class UsersManagementPage extends Component {
                                         </label>
                             </MDBCol>
                             <MDBCol md="6">
-                                <input type="text" className="form-control" onChange={this.handleChange} value={this.state.password} />
+                                <input type="text" className="form-control" onChange={this.handleChange} disabled value={this.state.password} />
                             </MDBCol>
                             <MDBCol md="6" align="right">
-                                <MDBBtn onClick={() => this.generatePwd()} outline size="sm" color="primary">Reset Password</MDBBtn>
+                                {/* <MDBBtn onClick={() => this.generatePwd()} outline size="sm" color="primary">Reset Password</MDBBtn> */}
                             </MDBCol>
                             <MDBCol md="12" className="mt-4">
                                 <MDBInputGroup
