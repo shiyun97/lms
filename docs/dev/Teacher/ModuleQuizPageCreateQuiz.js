@@ -79,48 +79,48 @@ class ModuleQuizPageCreateQuiz extends Component {
             maxTimeToFinish: this.state.maxTimeToFinish,
             questions: this.state.elements
         })
-        axios
-            .post(`http://localhost:8080/LMS-war/webresources/Assessment/createModuleQuiz?userId=${userId}`, {
-                title: this.state.title,
-                moduleId: this.state.moduleId,
-                description: this.state.explanation,
-                quizType: this.state.quizType,
-                questionsOrder: this.state.questionsOrder ? "random" : "initial",
-                openingDate: this.state.openingDate,
-                closingDate: this.state.closingDate,
-                publish: this.state.publish,
-                noOfAttempts: this.state.noOfAttempts,
-                maxTimeToFinish: this.state.maxTimeToFinish,
-                questions: this.state.elements
-            })
-            .then(result => {
-                console.log("success")
-                this.setState({
-                    message: "Quiz created successfully!",
-                    openSnackbar: true
-                });
-            })
-            .catch(error => {
-                axios
-                    .post(`http://localhost:8080/LMS-war/webresources/Assessment/createModuleQuiz?userId=${userId}`, backupJson)
-                    .then(result => {
-                        console.log("success")
-                        this.setState({
-                            message: "Quiz created successfully!",
-                            openSnackbar: true
-                        });
-                    })
-                    .catch(error => {
-                        this.setState({
-                            message: error.response.data.errorMessage,
-                            openSnackbar: true
-                        });
-                        console.error("error in axios " + error);
-                    });
-            });
+        // axios
+        //     .post(`http://localhost:8080/LMS-war/webresources/Assessment/createModuleQuiz?userId=${userId}`, {
+        //         title: this.state.title,
+        //         moduleId: this.state.moduleId,
+        //         description: this.state.explanation,
+        //         quizType: this.state.quizType,
+        //         questionsOrder: this.state.questionsOrder ? "random" : "initial",
+        //         openingDate: this.state.openingDate,
+        //         closingDate: this.state.closingDate,
+        //         publish: this.state.publish,
+        //         noOfAttempts: this.state.noOfAttempts,
+        //         maxTimeToFinish: this.state.maxTimeToFinish,
+        //         questions: this.state.elements
+        //     })
+        //     .then(result => {
+        //         console.log("success")
+        //         this.setState({
+        //             message: "Quiz created successfully!",
+        //             openSnackbar: true
+        //         });
+        //     })
+        //     .catch(error => {
+        //         axios
+        //             .post(`http://localhost:8080/LMS-war/webresources/Assessment/createModuleQuiz?userId=${userId}`, backupJson)
+        //             .then(result => {
+        //                 console.log("success")
+        //                 this.setState({
+        //                     message: "Quiz created successfully!",
+        //                     openSnackbar: true
+        //                 });
+        //             })
+        //             .catch(error => {
+        //                 this.setState({
+        //                     message: error.response.data.errorMessage,
+        //                     openSnackbar: true
+        //                 });
+        //                 console.error("error in axios " + error);
+        //             });
+        //     });
 
         // to reset
-        this.setState({ activeStep: 0 });
+        // this.setState({ activeStep: 0 });
     }
 
     handleNext = () => {

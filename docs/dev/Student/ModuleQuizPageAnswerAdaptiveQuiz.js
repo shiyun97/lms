@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBBtn } from "mdbreact";
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
-import moment from 'moment';
 import styled from 'styled-components';
 import * as Survey from "survey-react";
 import ModuleSideNavigation from "../ModuleSideNavigation";
@@ -81,7 +80,7 @@ var json = {
           "explanation": null,
           "correctAnswer": "Answer Choice 1",
           "points": 3,
-          "level": 2,
+          "level": 3,
           "isRequired": true,
           "choices": [
             "Answer Choice 1",
@@ -117,7 +116,7 @@ var json = {
     },
   ]
 }
-var page = 1
+var page = 0
 
 @inject('dataStore')
 @observer
@@ -132,6 +131,7 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
     message: "",
     status: "retrieving",
     start: false,
+    pages: []
   }
 
   initPage() {
@@ -145,21 +145,32 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
   componentDidMount() {
     this.initPage();
     this.getModuleQuiz();
-    this.arrangeQuizPages();
   }
 
   // arrange pages according to quiz level
-  arrangeQuizPages = () => {
-    console.log("json", json.pages)
-    var pages = []
-    for (var i = 0; i < json.pages.length; i++) {
-      if (json.pages[i].elements[0].level == i + 1) {
-        console.log(json.pages[i].elements[0].level - 1)
-        // var num = json.pages[i].elements.level - 1
-        // pages[num] = { elements: json.pages[i].elements }
-      }
+  arrangeQuizLevels = () => {
+    // console.log("json", json.pages[0].elements)
+    var currPages = json.pages[0].elements
+    var pages = [] // {pageNum: 0, level: 1}
+
+    // console.log(currPages)
+    for (var i = 0; i < currPages.length; i++) {
+      // console.log(currPages[i].level)
+      pages.push({ pageNum: i, level: currPages[i].level })
     }
-    console.log(pages)
+    // console.log(pages)
+    this.setState({ pages: pages })
+  }
+
+  rearrangePages = () => {
+    var currPages = json.pages[0].elements
+    var newPages = []
+    for (var i = 0; i < currPages.length; i++) {
+      // console.log(currPages[i])
+      newPages.push({ elements: [currPages[i]] })
+    }
+    // console.log(newPages)
+    json.pages = newPages
   }
 
   getModuleQuiz = () => {
@@ -173,17 +184,15 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
         newJson['completedHtml'] = "<p><h4>You have completed the quiz!</h4></p>";
         newJson['goNextPageAutomatic'] = true
         newJson['showNavigationButtons'] = false
+        json = newJson
+        this.rearrangePages();
         this.setState({ status: "done" })
-        // json = newJson
+        this.arrangeQuizLevels();
       })
       .catch(error => {
         this.setState({ status: "error" })
         console.error("error in axios " + error);
       });
-  }
-
-  doOnCurrentPageChanged(result) {
-    page = 3
   }
 
   onValueChanged(result) {
@@ -210,8 +219,8 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
 
   onComplete = (result) => {
     let userId = localStorage.getItem('userId');
-    console.log(quizId)
-    console.log(answers)
+    // console.log(quizId)
+    // console.log(answers)
     axios
       .post(`http://localhost:8080/LMS-war/webresources/Assessment/createQuizAttempt?userId=${userId}`, {
         quizId: quizId,
@@ -234,6 +243,7 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
   }
 
   render() {
+    console.log(page)
     // console.log(json)
     var model = new Survey.Model(json);
     var moduleId = this.props.dataStore.getCurrModId;
@@ -245,7 +255,7 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
             <MDBContainer className="mt-3">
               <MDBRow className="py-3">
                 <MDBCol md="12">
-                  <h1>Adaptive</h1>
+                  {/* <h1>Adaptive</h1> */}
                   <MDBCard cascade className="my-3 grey lighten-4">
                     {this.state.status === "done" &&
                       <Survey.Survey
@@ -253,7 +263,6 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
                         onComplete={() => this.onComplete()}
                         currentPageNo={page}
                         onValueChanged={this.onValueChanged}
-                        onCurrentPageChanged={this.doOnCurrentPageChanged}
                       />
                     }
                     {this.state.status !== "done" && <h5 align="center" style={{ padding: 20 }}>Error in retrieving quiz. Please try again later.</h5>}

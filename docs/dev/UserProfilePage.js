@@ -3,6 +3,7 @@ import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBIcon, MDBCardBody, MD
 import { observer, inject } from 'mobx-react';
 import axios from "axios";
 import { Snackbar } from '@material-ui/core';
+import { Redirect } from "react-router-dom";
 
 @inject('dataStore')
 @observer
@@ -22,7 +23,9 @@ class UserProfilePage extends Component {
         gender: "",
         userRole: "",
         username: "",
-        status: ""
+        status: "",
+        modal1: false,
+        modal2: false
     }
 
     componentDidUpdate() {
@@ -92,10 +95,11 @@ class UserProfilePage extends Component {
             .delete(`http://localhost:8080/LMS-war/webresources/User/deleteUser?userId=${userId}`)
             .then(result => {
                 this.setState({
-                    status: "recallUsers",
+                    status: "logout",
                     message: "User deleted successfully!",
                     openSnackbar: true
                 });
+                this.props.dataStore.setSignOutStatus();
             })
             .catch(error => {
                 this.setState({
@@ -104,6 +108,7 @@ class UserProfilePage extends Component {
                 });
                 console.error("error in axios " + error);
             });
+        this.toggle(2);
     }
 
     toggle = (nr) => {
@@ -116,6 +121,34 @@ class UserProfilePage extends Component {
     };
 
     renderEditUserModalBox = () => {
+        return (
+            <MDBModal isOpen={this.state.modal2} toggle={() => this.toggle(2)}>
+                <MDBModalHeader
+                    className="text-center"
+                    titleClass="w-100 font-weight-bold"
+                    toggle={() => this.toggle(2)}
+                >
+                    Delete Account
+                        </MDBModalHeader>
+                <MDBModalBody>
+                    <center>You will not be able to revert this action. <br />
+                        Are you sure you wish to delete account?</center>
+                </MDBModalBody>
+                <MDBModalFooter className="justify-content-center">
+                    <MDBRow>
+                        <MDBCol md="6">
+                            <MDBBtn onClick={() => this.toggle(2)} color="grey">Cancel</MDBBtn>
+                        </MDBCol>
+                        <MDBCol md="6">
+                            <MDBBtn onClick={() => this.deleteUser(this.props.dataStore.getUserId)} color="primary">Delete</MDBBtn>
+                        </MDBCol>
+                    </MDBRow>
+                </MDBModalFooter>
+            </MDBModal>
+        )
+    }
+
+    renderDeleteUserModalBox = () => {
         return (
             <MDBModal isOpen={this.state.modal1} toggle={() => this.toggle(1)}>
                 <MDBModalHeader
@@ -224,6 +257,9 @@ class UserProfilePage extends Component {
     }
 
     render() {
+        if (this.state.status === "logout") {
+            return <Redirect to={`/coursepack/login`} />
+        }
         return (
             <MDBContainer className="mt-3">
                 <MDBRow style={{ paddingTop: 60 }}>
@@ -236,7 +272,7 @@ class UserProfilePage extends Component {
                         {/* to edit profile for coursepack users */}
                         {this.props.dataStore.accessRight === "Public" &&
                             <><MDBBtn color="primary" onClick={() => this.toggle(1)}>Edit Profile</MDBBtn>
-                                <MDBBtn color="grey" onClick={() => this.deleteUser(this.props.dataStore.getUserId)}>Delete Account</MDBBtn></>
+                                <MDBBtn color="grey" onClick={() => this.toggle(2)}>Delete Account</MDBBtn></>
                         }
                     </MDBCol>
                 </MDBRow>
@@ -280,6 +316,7 @@ class UserProfilePage extends Component {
                     </MDBCol>
                 </MDBRow>
                 {this.renderEditUserModalBox()}
+                {this.renderDeleteUserModalBox()}
                 <Snackbar
                     anchorOrigin={{
                         vertical: 'bottom',

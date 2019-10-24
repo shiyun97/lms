@@ -132,8 +132,8 @@ class ModuleQuizPageAnswerNormalQuiz extends Component {
         // console.log(result.data)
         var newJson = result.data;
         newJson['completedHtml'] = "<p><h4>You have completed the quiz!</h4></p>";
-        this.setState({ status: "done" })
         json = newJson
+        this.setState({ status: "done" })
       })
       .catch(error => {
         this.setState({ status: "error" })
