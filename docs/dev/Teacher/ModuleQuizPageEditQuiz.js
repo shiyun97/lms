@@ -33,8 +33,8 @@ class ModuleQuizPageEditQuiz extends Component {
         questionsOrder: false, // "random" => true or "initial" => false
         noOfAttempts: 1,
         maxTimeToFinish: 60, // timeLimit
-        openingDate: "2019-10-23T00:00",
-        closingDate: "2019-12-23T00:00",
+        openingDate: "",
+        closingDate: "",
         points: 1,
         level: 0,
         number: 0,
@@ -105,6 +105,8 @@ class ModuleQuizPageEditQuiz extends Component {
                     title: result.data.title,
                     description: result.data.description,
                     maxTimeToFinish: result.data.maxTimeToFinish,
+                    openingDate: result.data.openingDate,
+                    closingDate: result.data.closingDate,
                     noOfAttempts: result.data.noOfAttempts,
                     questionsOrder: result.data.questionsOrder === "initial" ? false : true,
                     publish: result.data.publish,

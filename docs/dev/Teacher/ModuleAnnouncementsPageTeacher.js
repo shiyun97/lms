@@ -173,13 +173,16 @@ class ModuleAnnouncementsPageTeacher extends Component {
 
     openEditAnnouncementModalBox = (id, announcement) => {
         // console.log(announcement)
+        var sdate = new Date(announcement.startDate)
+        var startDate = moment(sdate).format("YYYY-MM-DDTHH:mm")
+        // var endDate = moment(announcement.endDate).format("YYYY-MM-DDTHH:mm")
         this.setState({
             content: announcement.content,
             emailNotification: announcement.emailNotification,
             publish: announcement.publish,
             createdDate: announcement.createdDate,
             lastUpdatedDate: announcement.lastUpdatedDate,
-            startDate: announcement.startDate,
+            startDate: startDate,
             endDate: announcement.endDate,
             title: announcement.title,
             currAnnouncementId: id
