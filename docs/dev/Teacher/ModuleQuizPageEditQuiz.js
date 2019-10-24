@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Stepper, Step, StepLabel, TextField, Typography, Switch, Snackbar } from '@material-ui/core';
 import axios from 'axios';
-import moment from "moment";
 
 @inject('dataStore')
 @observer
@@ -84,7 +83,7 @@ class ModuleQuizPageEditQuiz extends Component {
                             choices.push({ text: elements[i].choices[j] })
                         }
                         if (choices.length !== 0) {
-                            console.log(elements[i].type)
+                            // console.log(elements[i].type)
                             elements[i].choices = choices
                             choices = []
                         }
@@ -233,13 +232,13 @@ class ModuleQuizPageEditQuiz extends Component {
                     <label className="grey-text mt-4">
                         Question
                     </label>
-                    <textarea rows="3" type="text" name="questionTitle" onChange={this.handleChange} defaultValue={this.state.questionTitle} className="form-control" />
+                    <textarea rows="3" type="text" name="questionTitle" onChange={this.handleChange} value={element.title} className="form-control" />
                 </MDBCol>
                     <MDBCol md="12" className="mt-4">
                         <label className="grey-text">
                             Explanation
                     </label>
-                        <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} defaultValue={this.state.explanation} className="form-control" />
+                        <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} value={element.explanation} className="form-control" />
                     </MDBCol>
                     <MDBCol md="8" className="mt-4" style={{ paddingTop: 28 }}>
                         <MDBInputGroup
@@ -249,7 +248,7 @@ class ModuleQuizPageEditQuiz extends Component {
                             inputs={
                                 <select name="correctAnswer" onChange={this.handleChange} className="browser-default custom-select">
                                     <option value={-1}>Choose...</option>
-                                    {element.choices.map((answer, index) => { return <option value={index}>Option {index + 1}</option> })}
+                                    {element.choices.map((answer, index) => { return <option value={index}>Answer {index + 1}</option> })}
                                 </select>
                             }
                         />
@@ -261,7 +260,7 @@ class ModuleQuizPageEditQuiz extends Component {
                                     Level
                     </label>
                                 <input type="number" className="form-control" name="level"
-                                    value={this.state.level}
+                                    value={element.level}
                                     onChange={this.handleChange}
                                     min={1}
                                     required />
@@ -273,16 +272,13 @@ class ModuleQuizPageEditQuiz extends Component {
                             Points
                     </label>
                         <input type="number" className="form-control" name="points"
-                            value={this.state.points}
+                            value={element.points}
                             onChange={this.handleChange}
                             min={1}
                             required />
                     </MDBCol>
-                    <MDBCol md="12" className="mt-4" align="center">
-                        <MDBBtn onClick={() => this.addAnswerToQuestion(element.number)} size="small" color="grey">Add Answer</MDBBtn>
-                    </MDBCol>
                     <MDBCol md="12" className="mt-4">
-                        {element.choices.map((answer) => { return this.renderAnswerInput(answer) })}
+                        {element.choices.map((answer, index) => { return this.renderAnswerInput(answer, index) })}
                     </MDBCol>
                     <MDBCol md="12" className="mt-4" align="center">
                         <hr />
@@ -297,13 +293,13 @@ class ModuleQuizPageEditQuiz extends Component {
                         <label className="grey-text mt-4">
                             Question
                                 </label>
-                        <textarea rows="3" type="text" name="question" onChange={this.handleChange} defaultValue={this.state.question} className="form-control" />
+                        <textarea rows="3" type="text" name="question" onChange={this.handleChange} defaultValue={element.question} className="form-control" />
                     </MDBCol>
                     <MDBCol md="10" className="mt-4">
                         <label className="grey-text">
-                            Answer #
+                            Answer
                 </label>
-                        <textarea rows="5" type="text" name="answer" onChange={this.handleChange} defaultValue={this.state.answer} className="form-control" />
+                        <textarea rows="5" type="text" name="answer" onChange={this.handleChange} defaultValue={element.answer} className="form-control" />
                     </MDBCol>
                     <MDBCol md="2" className="mt-4">
                         {this.state.quizType === "adaptive" &&
@@ -312,7 +308,7 @@ class ModuleQuizPageEditQuiz extends Component {
                                     Level
                                     </label>
                                 <input type="number" className="form-control" name="level"
-                                    value={this.state.level}
+                                    value={element.level}
                                     onChange={this.handleChange}
                                     min={1}
                                     required />
@@ -323,7 +319,7 @@ class ModuleQuizPageEditQuiz extends Component {
                             Points
                                     </label>
                         <input type="number" className="form-control" name="points"
-                            value={this.state.points}
+                            value={element.points}
                             onChange={this.handleChange}
                             min={1}
                             required />
@@ -332,7 +328,7 @@ class ModuleQuizPageEditQuiz extends Component {
                         <label className="grey-text">
                             Explanation
                                     </label>
-                        <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} defaultValue={this.state.explanation} className="form-control" />
+                        <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} value={element.explanation} className="form-control" />
                         <br />
                         <hr />
                     </MDBCol>
@@ -340,101 +336,20 @@ class ModuleQuizPageEditQuiz extends Component {
         }
     }
 
-    renderAnswerInput = (answer) => {
+    renderAnswerInput = (answer, index) => {
         return (
             <>
                 <label className="grey-text">
-                    Answer #
+                    Answer {index + 1}
                 </label>
-                <input type="text" name="answer" onChange={this.handleChange} defaultValue={this.state.answer} className="form-control" />
+                <input type="text" name="answer" onChange={this.handleChange} defaultValue={answer.text} className="form-control" />
                 <br />
             </>
         )
     }
 
-    addQuestionToList = () => {
-        var number = this.props.dataStore.getQuestions.length + 1
-        if (this.props.dataStore.getQuestions.length > 0) {
-            var answers = this.state.choices;
-            answers.push({ text: this.state.answer })
-            this.setState({ choices: answers })
-            var newQuestions = this.state.elements
-            if (this.state.questionType === "mcq") {
-                newQuestions.push(
-                    {
-                        type: "radiogroup",
-                        name: "MCQ",
-                        number: number,
-                        title: this.state.questionTitle,
-                        isRequired: true,
-                        level: this.state.level, //only for adaptive,
-                        explanation: this.state.explanation,
-                        correctAnswer: this.state.choices[this.state.correctAnswer].text,
-                        points: this.state.points,
-                        choices: this.state.choices,
-                    })
-                this.setState({ elements: newQuestions, choices: [] })
-            } else if (this.state.questionType === "short-answer") {
-                newQuestions.push(
-                    {
-                        type: "text", //text
-                        name: "Short Answer",
-                        number: number,
-                        title: this.state.questionTitle,
-                        isRequired: true,
-                        level: this.state.level, //only for adaptive,
-                        explanation: this.state.explanation,
-                        correctAnswer: this.state.correctAnswer,
-                        points: this.state.points,
-                    })
-                this.setState({ elements: newQuestions })
-            } else {
-                this.setState({ openSnackbar: true, message: "Invalid question field" })
-            }
-        }
-        console.log(this.state.elements)
-        if (this.state.questionType === "short-answer") {
-            this.props.dataStore.getQuestions.push(
-                {
-                    type: "text", //text
-                    name: "Short Answer",
-                    number: number,
-                    title: "",
-                    isRequired: true,
-                    level: 1, //only for adaptive
-                    explanation: "",
-                    correctAnswer: "",
-                    points: 0,
-                })
-        } else if (this.state.questionType === "mcq") {
-            this.props.dataStore.getQuestions.push(
-                {
-                    type: "radiogroup",
-                    name: "MCQ",
-                    number: number,
-                    title: "",
-                    isRequired: true,
-                    level: 1, //only for adaptive,
-                    explanation: "",
-                    correctAnswer: "",
-                    points: 0,
-                    choices: [
-                        {
-                            text: ""
-                        }
-                    ],
-                })
-            // console.log(this.props.dataStore.getQuestions)
-        } else {
-            this.setState({ openSnackbar: true, message: "No question type was selected" })
-        }
-    }
-
-    addAnswerToQuestion = (number) => {
-        this.props.dataStore.addAnswerToQuestion(number, { text: "" })
-        var answers = this.state.choices;
-        answers.push({ text: this.state.answer })
-        this.setState({ choices: answers })
+    addNewQuestionToQuiz = () => {
+        // api to add question
     }
 
     handleOpenSnackbar = () => {
@@ -545,12 +460,12 @@ class ModuleQuizPageEditQuiz extends Component {
                 return (
                     <div style={{ padding: 60 }}>
                         <h4 className="text-center">
-                            Build Quiz
+                            Edit Quiz Build
                     </h4>
                         <hr />
                         <MDBRow>
                             {/* Add Questions List here */}
-                            {this.props.dataStore.getQuestions.map((element) => { return this.renderQuestion(element) })}
+                            {this.state.elements.map((element) => { return this.renderQuestion(element) })}
                         </MDBRow>
                         <center>
                             <MDBCol md="12" className="mt-4" align="center">
@@ -568,7 +483,7 @@ class ModuleQuizPageEditQuiz extends Component {
                                     }
                                 />
                             </MDBCol>
-                            <MDBBtn onClick={() => this.addQuestionToList()} align="center" size="small" color="blue">Add Question</MDBBtn>
+                            <MDBBtn onClick={() => this.addNewQuestionToQuiz()} align="center" size="small" color="blue">Add Question</MDBBtn>
                         </center>
                     </div>
                 );

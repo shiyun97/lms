@@ -192,7 +192,7 @@ class CoursepackQuizPageCreateQuiz extends Component {
                             inputs={
                                 <select name="correctAnswer" onChange={this.handleChange} className="browser-default custom-select">
                                     <option value={-1}>Choose...</option>
-                                    {element.choices.map((answer, index) => { return <option value={index}>Option {index + 1}</option> })}
+                                    {element.choices.map((answer, index) => { return <option value={index}>Answer {index + 1}</option> })}
                                 </select>
                             }
                         />
