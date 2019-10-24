@@ -15,7 +15,7 @@ class CoursepackQuizPageCreateQuiz extends Component {
         username: "",
         userId: "",
         email: "",
-        moduleId: 0, //NEED TO CHANGE TO COURSEPACK
+        coursepackId: 0,
         message: "",
         openSnackbar: false,
         description: "", // title
@@ -25,7 +25,7 @@ class CoursepackQuizPageCreateQuiz extends Component {
         questionType: "",
 
         //create quiz inputs
-        quizType: "normal", // adaptive
+        quizType: "normal",
         questionsOrder: false, // "random" or "normal"
         noOfAttempts: 1,
         maxTimeToFinish: 60, // timeLimit
@@ -41,22 +41,19 @@ class CoursepackQuizPageCreateQuiz extends Component {
         publish: false,
         choices: [],
         answer: "",
-        elements: []
+        elements: [],
     }
 
     initPage() {
         var pathname = location.pathname;
         pathname = pathname.split("/");
-        this.props.dataStore.setCurrModId(pathname[2]);
+        this.props.dataStore.setCurrCoursepackId(pathname[2]);
     }
 
-    handleSwitchChange = () => {
-        const currState = this.state.questionsOrder
-        this.setState({
-            questionsOrder: !currState
-        });
-        // console.log(this.state.questionsOrder)
-    }
+    handleCheckBoxChange = name => event => {
+        this.setState({ [name]: event.target.checked });
+        // console.log(this.state.emailNotification, this.state.publish)
+    };
 
     componentDidMount() {
         this.initPage();
@@ -65,28 +62,29 @@ class CoursepackQuizPageCreateQuiz extends Component {
     handleSubmit = () => {
         // call api to submit quiz
         let userId = localStorage.getItem('userId');
-        console.log({
-            title: this.state.title,
-            moduleId: this.state.moduleId, //NEED TO CHANGE TO COURSEPACK
-            description: this.state.explanation,
-            quizType: this.state.quizType,
-            questionsOrder: this.state.questionsOrder ? "random" : "initial",
-            openingDate: this.state.openingDate,
-            closingDate: this.state.closingDate,
-            publish: this.state.publish,
-            noOfAttempts: this.state.noOfAttempts,
-            maxTimeToFinish: this.state.maxTimeToFinish,
-            questions: this.state.elements
-        })
+        var coursepackId = this.props.dataStore.getCurrCoursepackId;
+        // console.log({
+        //     title: this.state.title,
+        //     coursepackId: coursepackId,
+        //     description: this.state.explanation,
+        //     quizType: this.state.quizType,
+        //     questionsOrder: this.state.questionsOrder ? "random" : "initial",
+        //     openingDate: this.state.openingDate + ":00",
+        //     closingDate: this.state.closingDate + ":00",
+        //     publish: this.state.publish,
+        //     noOfAttempts: this.state.noOfAttempts,
+        //     maxTimeToFinish: this.state.maxTimeToFinish,
+        //     questions: this.state.elements
+        // })
         axios
             .post(`http://localhost:8080/LMS-war/webresources/Assessment/createModuleQuiz?userId=${userId}`, {
                 title: this.state.title,
-                moduleId: this.state.moduleId, //NEED TO CHANGE TO COURSEPACK
+                coursepackId: coursepackId,
                 description: this.state.explanation,
                 quizType: this.state.quizType,
                 questionsOrder: this.state.questionsOrder ? "random" : "initial",
-                openingDate: this.state.openingDate,
-                closingDate: this.state.closingDate,
+                openingDate: this.state.openingDate + ":00",
+                closingDate: this.state.closingDate + ":00",
                 publish: this.state.publish,
                 noOfAttempts: this.state.noOfAttempts,
                 maxTimeToFinish: this.state.maxTimeToFinish,
@@ -105,55 +103,16 @@ class CoursepackQuizPageCreateQuiz extends Component {
                     openSnackbar: true
                 });
                 console.error("error in axios " + error);
+                // });
             });
 
-        // to reset
-        // this.setState({ activeStep: 0 });
+        //to reset
+        this.setState({ activeStep: 0 });
     }
 
     handleNext = () => {
         const currStep = this.state.activeStep;
         this.setState({ activeStep: currStep + 1 });
-
-        var number = this.props.dataStore.getQuestions.length + 1
-
-        if (this.state.activeStep === 1) {
-            if (this.props.dataStore.getQuestions.length > 0) {
-                var newQuestions = this.state.elements
-                if (this.state.questionType === "mcq") {
-                    newQuestions.push(
-                        {
-                            type: "radiogroup",
-                            name: "MCQ",
-                            number: number,
-                            title: this.state.title,
-                            isRequired: true,
-                            level: this.state.level, //only for adaptive,
-                            explanation: this.state.explanation,
-                            correctAnswer: this.state.choices[this.state.correctAnswer].text,
-                            points: this.state.points,
-                            choices: this.state.choices,
-                        })
-                    this.setState({ elements: newQuestions })
-                } else if (this.state.questionType === "short-answer") {
-                    newQuestions.push(
-                        {
-                            type: "text", //text
-                            name: "Short Answer",
-                            number: number,
-                            title: this.state.title,
-                            isRequired: true,
-                            level: this.state.level, //only for adaptive,
-                            explanation: this.state.explanation,
-                            correctAnswer: this.state.correctAnswer,
-                            points: this.state.points,
-                        })
-                    this.setState({ elements: newQuestions })
-                } else {
-                    this.setState({ openSnackbar: true, message: "Invalid question field" })
-                }
-            }
-        }
     };
 
     handleBack = () => {
@@ -197,21 +156,7 @@ class CoursepackQuizPageCreateQuiz extends Component {
                             }
                         />
                     </MDBCol>
-                    <MDBCol md="2" className="mt-4">
-                        {this.state.quizType === "adaptive" &&
-                            <>
-                                <label className="grey-text">
-                                    Level
-                    </label>
-                                <input type="number" className="form-control" name="level"
-                                    value={this.state.level}
-                                    onChange={this.handleChange}
-                                    min={1}
-                                    required />
-                            </>
-                        }
-                    </MDBCol>
-                    <MDBCol md="2" className="mt-4">
+                    <MDBCol md="4" className="mt-4">
                         <label className="grey-text">
                             Points
                     </label>
@@ -228,6 +173,7 @@ class CoursepackQuizPageCreateQuiz extends Component {
                         {element.choices.map((answer) => { return this.renderAnswerInput(answer) })}
                     </MDBCol>
                     <MDBCol md="12" className="mt-4" align="center">
+                        {this.props.dataStore.getQuestions.length !== 0 && <MDBBtn onClick={() => this.saveQuestionsToList()} align="center" size="small" color="grey">Save</MDBBtn>}
                         <hr />
                     </MDBCol>
                 </>
@@ -235,34 +181,17 @@ class CoursepackQuizPageCreateQuiz extends Component {
         } else {
             return (
                 <>
-                    <MDBCol md="12" className="mt-4" key={element.number}>
+                    <MDBCol md="10" className="mt-4" key={element.number}>
                         <h3>Question {element.number}</h3>
                         <label className="grey-text mt-4">
                             Question
                                 </label>
                         <textarea rows="3" type="text" name="question" onChange={this.handleChange} className="form-control" />
                     </MDBCol>
-                    <MDBCol md="10" className="mt-4">
-                        <label className="grey-text">
-                            Answer #
-                </label>
-                        <textarea rows="5" type="text" name="answer" onChange={this.handleChange} className="form-control" />
-                    </MDBCol>
-                    <MDBCol md="2" className="mt-4">
-                        {this.state.quizType === "adaptive" &&
-                            <>
-                                <label className="grey-text">
-                                    Level
-                                    </label>
-                                <input type="number" className="form-control" name="level"
-                                    value={this.state.level}
-                                    onChange={this.handleChange}
-                                    min={1}
-                                    required />
-                            </>
-                        }
+                    <MDBCol md="4" className="mt-4">
                         <br />
-                        <label className="grey-text">
+                        <br />
+                        <label className="grey-text" style={{ paddingTop: 8 }}>
                             Points
                                     </label>
                         <input type="number" className="form-control" name="points"
@@ -277,6 +206,9 @@ class CoursepackQuizPageCreateQuiz extends Component {
                                     </label>
                         <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} className="form-control" />
                         <br />
+                        <center>
+                            {this.props.dataStore.getQuestions.length !== 0 && <MDBBtn onClick={() => this.saveQuestionsToList()} align="center" size="small" color="grey">Save</MDBBtn>}
+                        </center>
                         <hr />
                     </MDBCol>
                 </>)
@@ -295,19 +227,18 @@ class CoursepackQuizPageCreateQuiz extends Component {
         )
     }
 
-    addQuestionToList = () => {
-        var number = this.props.dataStore.getQuestions.length + 1
+    saveQuestionsToList = () => {
         if (this.props.dataStore.getQuestions.length > 0) {
-            var answers = this.state.choices;
-            answers.push({ text: this.state.answer })
-            this.setState({ choices: answers })
             var newQuestions = this.state.elements
             if (this.state.questionType === "mcq") {
+                var answers = this.state.choices;
+                answers.push({ text: this.state.answer })
+                this.setState({ choices: answers })
                 newQuestions.push(
                     {
                         type: "radiogroup",
-                        name: "MCQ",
-                        number: number,
+                        // name: "MCQ",
+                        // number: number,
                         title: this.state.title,
                         isRequired: true,
                         level: this.state.level, //only for adaptive,
@@ -321,13 +252,13 @@ class CoursepackQuizPageCreateQuiz extends Component {
                 newQuestions.push(
                     {
                         type: "text", //text
-                        name: "Short Answer",
-                        number: number,
+                        // name: "Short Answer",
+                        // number: number,
                         title: this.state.title,
                         isRequired: true,
                         level: this.state.level, //only for adaptive,
                         explanation: this.state.explanation,
-                        correctAnswer: this.state.correctAnswer,
+                        // correctAnswer: this.state.correctAnswer,
                         points: this.state.points,
                     })
                 this.setState({ elements: newQuestions })
@@ -335,7 +266,10 @@ class CoursepackQuizPageCreateQuiz extends Component {
                 this.setState({ openSnackbar: true, message: "Invalid question field" })
             }
         }
-        console.log(this.state.elements)
+    }
+
+    addQuestionToList = () => {
+        var number = this.props.dataStore.getQuestions.length + 1
         if (this.state.questionType === "short-answer") {
             this.props.dataStore.getQuestions.push(
                 {
@@ -411,25 +345,31 @@ class CoursepackQuizPageCreateQuiz extends Component {
                         </label>
                         <textarea type="text" rows="3" name="description" onChange={this.handleChange} className="form-control" />
                         <MDBRow>
-                            <MDBCol md="9" className="mt-4">
-                                <MDBInputGroup
-                                    style={{ paddingTop: 22 }}
-                                    containerClassName="mb-3"
-                                    prepend="Quiz Type"
-                                    required
-                                    inputs={
-                                        <select name="quizType" onChange={this.handleChange} className="browser-default custom-select">
-                                            <option value="Normal">Normal</option>
-                                            <option value="Adaptive">Adaptive</option>
-                                        </select>
-                                    }
+                            <MDBCol md="6" className="mt-4" style={{ paddingTop: 20 }}>
+                                <label>  Shuffle Questions </label>
+                                <Checkbox
+                                    checked={this.state.questionsOrder}
+                                    onChange={this.handleCheckBoxChange('questionsOrder')}
+                                    value="questionsOrder"
+                                    name="questionsOrder"
+                                    color="primary"
+                                    inputProps={{
+                                        'aria-label': 'secondary checkbox',
+                                    }}
                                 />
                             </MDBCol>
-                            <MDBCol md="3" className="mt-4" style={{ paddingTop: 20 }}>
-                                <label className="grey-text">
-                                    Shuffle Questions
-                        </label>
-                                <Switch checked={this.state.questionsOrder} onChange={() => this.handleSwitchChange()} color="primary" name="questionsOrder" />
+                            <MDBCol md="6" className="mt-4" style={{ paddingTop: 20 }}>
+                                <label> Publish</label>
+                                <Checkbox
+                                    checked={this.state.publish}
+                                    onChange={this.handleCheckBoxChange('publish')}
+                                    value="publish"
+                                    name="publish"
+                                    color="primary"
+                                    inputProps={{
+                                        'aria-label': 'secondary checkbox',
+                                    }}
+                                />
                             </MDBCol>
                             <MDBCol md="6">
                                 <br />
@@ -522,18 +462,19 @@ class CoursepackQuizPageCreateQuiz extends Component {
 
     render() {
         const { steps, activeStep } = this.state;
-        var moduleId = this.props.dataStore.getCurrModId; //NEED TO CHANGE TO COURSEPACK
+        var coursepackId = this.props.dataStore.getCurrCoursepackId;
+        console.log(this.state.elements)
         // var test = this.props.dataStore.getQuestions
         // console.log(test[0])
         return (
             <div className={this.props.className}>
-                <CoursepackSideNavigation moduleId={moduleId}></CoursepackSideNavigation> //NEED TO CHANGE TO COURSEPACK
+                <CoursepackSideNavigation courseId={coursepackId}></CoursepackSideNavigation>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
-                                    <a href={`/modules/${moduleId}/quiz`}>Quiz</a> //NEED TO CHANGE TO COURSEPACK
+                                    <a href={`/coursepack/${coursepackId}/quiz`}>Quiz</a>
                                     <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Create Quiz
                                 </h2>
                             </MDBCol>
@@ -559,7 +500,7 @@ class CoursepackQuizPageCreateQuiz extends Component {
                                                         </h5>
                                                         <br />
                                                         <div className="text-center">
-                                                            <MDBBtn type="submit" color="blue" onClick={() => { this.handleSubmit() }}>Submit</MDBBtn>
+                                                            <MDBBtn color="blue" onClick={() => { this.handleSubmit() }}>Submit</MDBBtn>
                                                         </div>
                                                     </div>
                                                 ) : (

@@ -11,7 +11,7 @@ import { observer, inject } from 'mobx-react';
 class CoursepackQuizPageTeacher extends Component {
 
     state = {
-        moduleId: 0,
+        coursepackId: 0,
         quizId: 0,
         name: "",
         openingDate: "",
@@ -78,16 +78,17 @@ class CoursepackQuizPageTeacher extends Component {
         message: "",
         status: "retrieving",
         recallQuiz: false,
+        label: ""
     }
 
     componentDidMount() {
         this.initPage();
-        this.getAllModuleQuizzes();
+        this.getAllCoursepackQuizzes();
     }
 
     componentDidUpdate() {
         if (this.state.recallQuiz) {
-            this.getAllModuleQuizzes();
+            this.getAllCoursepackQuizzes();
         }
     }
 
@@ -111,17 +112,17 @@ class CoursepackQuizPageTeacher extends Component {
         this.props.dataStore.setCurrModId(pathname[2]);
     }
 
-    getAllModuleQuizzes = () => {
+    getAllCoursepackQuizzes = () => {
         let userId = localStorage.getItem('userId');
-        let moduleId = this.props.dataStore.getCurrModId;
+        let coursepackId = this.props.dataStore.getCurrModId;
         axios
-            .get(` http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllModuleQuiz/${moduleId}?userId=${userId}`)
+            .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllCoursepackQuiz/${coursepackId}?userId=${userId}`)
             .then(result => {
                 // console.log(result.data.quizzes)
                 this.setState({ status: "done", quizzes: result.data.quizzes, recallQuiz: false })
             })
             .catch(error => {
-                this.setState({ status: "error" })
+                this.setState({ status: "error", label: error.response.data.errorMessage })
                 console.error("error in axios " + error);
             });
     }
@@ -150,7 +151,7 @@ class CoursepackQuizPageTeacher extends Component {
         let userId = localStorage.getItem('userId');
         event.preventDefault();
         axios
-            .delete(`http://localhost:8080/LMS-war/webresources/Assessment/deleteModuleQuiz?userId=${userId}&quizId=${quizId}`)
+            .delete(`http://localhost:8080/LMS-war/webresources/Assessment/deleteCoursepackQuiz?userId=${userId}&quizId=${quizId}`)
             .then(result => {
                 this.setState({
                     recallQuiz: true,
@@ -169,7 +170,7 @@ class CoursepackQuizPageTeacher extends Component {
 
     renderQuizTable = () => {
         var quiz = this.state.quizzes;
-        var moduleId = this.props.dataStore.getCurrModId;
+        var coursepackId = this.props.dataStore.getCurrModId;
         // console.log(quiz)
         if (this.state.quizzes.length !== 0) {
             var tempQuizzes = []
@@ -182,10 +183,10 @@ class CoursepackQuizPageTeacher extends Component {
                     status: quiz[i].publish ? "Published" : "Unpublished",
                     maxMarks: quiz[i].maxMarks,
                     editButton: <MDBRow align="center">
-                        <MDBCol md={6}><NavLink to={`/modules/${moduleId}/quiz/${quiz[i].quizId}/edit`}><MDBIcon style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></NavLink></MDBCol>
+                        <MDBCol md={6}><NavLink to={`/coursepack/${coursepackId}/quiz/${quiz[i].quizId}/edit`}><MDBIcon style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></NavLink></MDBCol>
                         <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(quiz[i].quizId)} style={{ paddingTop: 12, cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
                     </MDBRow>,
-                    viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quiz[i].quizId}/review`}>Review</MDBBtn></center>,
+                    viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/coursepack/${coursepackId}/quiz/${quiz[i].quizId}/review`}>Review</MDBBtn></center>,
                     publishButton: <center>
                         {quiz[i].publishAnswer ? "Published" : <MDBBtn color="primary" outline size="sm" onClick={() => this.publishAnswers(quiz[i].quizId)}>Publish</MDBBtn>}
                     </center>
@@ -210,7 +211,7 @@ class CoursepackQuizPageTeacher extends Component {
 
         return (
             <div className={this.props.className}>
-                <CoursepackSideNavigation moduleId={moduleId}></CoursepackSideNavigation>
+                <CoursepackSideNavigation courseId={coursepackId}></CoursepackSideNavigation>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
@@ -220,7 +221,7 @@ class CoursepackQuizPageTeacher extends Component {
                 </h2>
                             </MDBCol>
                             <MDBCol md="4" align="right">
-                                <MDBBtn href={`/modules/${moduleId}/quiz/create`} color="primary">Create Quiz</MDBBtn>
+                                <MDBBtn href={`/coursepack/${coursepackId}/quiz/create`} color="primary">Create Quiz</MDBBtn>
                             </MDBCol>
                         </MDBRow>
                         <MDBRow className="py-3">
@@ -254,9 +255,9 @@ class CoursepackQuizPageTeacher extends Component {
         )
     }
 
-    renderTableWithMessage = (message) => {
-        var moduleId = this.props.dataStore.getCurrModId;
-        const data = () => ({ columns: this.state.columns, rows: [{ label: message }] })
+    renderTableWithMessage = () => {
+        var coursepackId = this.props.dataStore.getCurrModId;
+        const data = () => ({ columns: this.state.columns, rows: [{ label: this.state.label }] })
 
         const tableData = {
             columns: [...data().columns.map(col => {
@@ -266,7 +267,7 @@ class CoursepackQuizPageTeacher extends Component {
         }
         return (
             <div className={this.props.className}>
-                <CoursepackSideNavigation moduleId={moduleId}></CoursepackSideNavigation>
+                <CoursepackSideNavigation courseId={coursepackId}></CoursepackSideNavigation>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
@@ -292,10 +293,10 @@ class CoursepackQuizPageTeacher extends Component {
     }
 
     renderAwaiting = () => {
-        var moduleId = this.props.dataStore.getCurrModId;
+        var coursepackId = this.props.dataStore.getCurrModId;
         return (
             <div className={this.props.className}>
-                <CoursepackSideNavigation moduleId={moduleId}></CoursepackSideNavigation>
+                <CoursepackSideNavigation courseId={coursepackId}></CoursepackSideNavigation>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }} align="center">
@@ -315,11 +316,11 @@ class CoursepackQuizPageTeacher extends Component {
         if (this.state.status === "retrieving")
             return this.renderAwaiting();
         else if (this.state.status === "error")
-            return this.renderTableWithMessage("Error in retrieving quizzes. Please try again later.");
+            return this.renderTableWithMessage();
         else if (this.state.status === "done")
             return this.renderQuizTable();
         else
-            return this.renderTableWithMessage("No quizzes found.");
+            return this.renderTableWithMessage();
     }
 }
 
