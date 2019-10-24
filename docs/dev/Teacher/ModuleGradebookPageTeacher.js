@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader, MDBInputGroup } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Snackbar } from '@material-ui/core';
 import axios from 'axios';
@@ -66,17 +66,21 @@ class ModuleGradebookPageTeacher extends Component {
         status: "retrieving",
         openSnackbar: false,
         message: "",
-        recallGradebook: false
+        recallGradebook: false,
+        ungradedQuizzes: [],
+        type: "",
     }
 
     componentDidMount() {
         this.initPage();
         this.getAllGradeItem();
+        this.getUngradedModuleQuiz()
     }
 
     componentDidUpdate() {
         if (this.state.recallGradebook) {
             this.getAllGradeItem();
+            this.getUngradedModuleQuiz()
         }
     }
 
@@ -110,6 +114,19 @@ class ModuleGradebookPageTeacher extends Component {
         this.setState({ openSnackbar: false });
     };
 
+    getUngradedModuleQuiz = () => {
+        let userId = localStorage.getItem('userId');
+        let moduleId = this.props.dataStore.getCurrModId;
+        axios
+            .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveModuleQuizNotInGradebook/${moduleId}?userId=${userId}`)
+            .then(result => {
+                this.setState({ ungradedQuizzes: result.data.quizzes });
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
+    }
+
     createGradeItem = () => {
         let userId = localStorage.getItem('userId');
         let moduleId = this.props.dataStore.getCurrModId;
@@ -140,11 +157,20 @@ class ModuleGradebookPageTeacher extends Component {
     createQuizGradeItem = () => {
         let userId = localStorage.getItem('userId');
         let moduleId = this.props.dataStore.getCurrModId;
+        var title = ""
+        var description = ""
+        var maxMarks = 0
+        this.state.ungradedQuizzes.map((quiz) => { 
+            title = quiz.title;
+            description = quiz.description;
+            maxMarks = quiz.maxMarks;
+             })
+
         axios
-            .post(`http://localhost:8080/LMS-war/webresources/Assessment/createGradeItemFromQuiz?userId=${userId}&quizId=${this.state.quizId}`, {
-                title: this.state.title,
-                description: this.state.description,
-                maxMarks: this.state.maxMarks,
+            .post(`http://localhost:8080/LMS-war/webresources/Assessment/createGradeItemFromQuiz?userId=${userId}&quizId=${this.state.quizId}&type=${this.state.type}`, {
+                title: title,
+                description: description,
+                maxMarks: maxMarks,
                 moduleId: moduleId
             })
             .then(result => {
@@ -294,32 +320,35 @@ class ModuleGradebookPageTeacher extends Component {
                 <MDBModalBody>
                     <form className="mx-3 grey-text">
                         <MDBRow>
-                            <MDBCol md="6" className="mt-4">
-                                <label className="grey-text mt-4">
-                                    Quiz ID
-                </label>
-                                <input type="text" name="quizId" onChange={this.handleChange} className="form-control" />
-                            </MDBCol>
-                            <MDBCol md="6" className="mt-4">
-                                <label className="grey-text mt-4">
-                                    Grade Item
-                </label>
-                                <input type="text" name="title" onChange={this.handleChange} className="form-control" />
+                            <MDBCol md="12" className="mt-4">
+                            <MDBInputGroup
+                                    style={{ paddingTop: 22 }}
+                                    containerClassName="mb-3"
+                                    prepend="Quiz ID"
+                                    required
+                                    inputs={
+                                        <select name="quizId" onChange={this.handleChange} className="browser-default custom-select">
+                                            <option value={0}>Choose..</option>
+                                            {this.state.ungradedQuizzes.map((quiz) => { return <option value={quiz.quizId}>{quiz.title}</option> })}
+                                        </select>
+                                    }
+                                />
                             </MDBCol>
                             <MDBCol md="12" className="mt-4">
-                                <label className="grey-text mt-4">
-                                    Description
-                </label>
-                                <textarea rows="3" type="text" name="description" onChange={this.handleChange} className="form-control" />
-                            </MDBCol>
-                            <MDBCol md="12" className="mt-4">
-                                <label className="grey-text mt-4">
-                                    Max Marks
-                </label>
-                                <input type="number" className="form-control" name="maxMarks"
-                                    onChange={this.handleChange}
-                                    min={1}
-                                    required />
+                            <MDBInputGroup
+                                    style={{ paddingTop: 22 }}
+                                    containerClassName="mb-3"
+                                    prepend="Pick Score Type"
+                                    required
+                                    inputs={
+                                        <select name="type" onChange={this.handleChange} className="browser-default custom-select">
+                                            <option value="">Choose..</option>
+                                            <option value="best">Best attempt score</option>
+                                            <option value="first">First attempt score</option>
+                                            <option value="last">Last attempt score</option>
+                                        </select>
+                                    }
+                                />
                             </MDBCol>
                         </MDBRow>
                     </form>
