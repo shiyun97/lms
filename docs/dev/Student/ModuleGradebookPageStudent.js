@@ -69,7 +69,7 @@ class ModuleGradebookPageStudent extends Component {
                 this.setState({ status: "done", gradeItems: result.data.gradeItems })
             })
             .catch(error => {
-                this.setState({ status: "error" })
+                this.setState({ status: "error", label: error.response.data.errorMessage })
                 console.error("error in axios " + error);
             });
     }
@@ -136,9 +136,9 @@ class ModuleGradebookPageStudent extends Component {
         )
     }
 
-    renderTableWithMessage = (message) => {
+    renderTableWithMessage = () => {
         var moduleId = this.props.dataStore.getCurrModId;
-        const data = () => ({ columns: this.state.columns, rows: [{ label: message }] })
+        const data = () => ({ columns: this.state.columns, rows: [{ label: this.state.label }] })
 
         const tableData = {
             columns: [...data().columns.map(col => {
@@ -207,11 +207,11 @@ class ModuleGradebookPageStudent extends Component {
         if (this.state.status === "retrieving")
             return this.renderAwaiting();
         else if (this.state.status === "error")
-            return this.renderTableWithMessage("Error in Retrieving Grade Item. Please try again later.");
+            return this.renderTableWithMessage();
         else if (this.state.status === "done")
             return this.renderGradebookTable();
         else
-            return this.renderTableWithMessage("No grade items found.");
+            return this.renderTableWithMessage();
     }
 }
 export default styled(ModuleGradebookPageStudent)`

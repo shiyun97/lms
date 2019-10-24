@@ -105,7 +105,7 @@ class ModuleGradebookPageTeacher extends Component {
             })
         }
     };
-    
+
     handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -160,11 +160,11 @@ class ModuleGradebookPageTeacher extends Component {
         var title = ""
         var description = ""
         var maxMarks = 0
-        this.state.ungradedQuizzes.map((quiz) => { 
+        this.state.ungradedQuizzes.map((quiz) => {
             title = quiz.title;
             description = quiz.description;
             maxMarks = quiz.maxMarks;
-             })
+        })
 
         axios
             .post(`http://localhost:8080/LMS-war/webresources/Assessment/createGradeItemFromQuiz?userId=${userId}&quizId=${this.state.quizId}&type=${this.state.type}`, {
@@ -321,7 +321,7 @@ class ModuleGradebookPageTeacher extends Component {
                     <form className="mx-3 grey-text">
                         <MDBRow>
                             <MDBCol md="12" className="mt-4">
-                            <MDBInputGroup
+                                <MDBInputGroup
                                     style={{ paddingTop: 22 }}
                                     containerClassName="mb-3"
                                     prepend="Quiz ID"
@@ -335,7 +335,7 @@ class ModuleGradebookPageTeacher extends Component {
                                 />
                             </MDBCol>
                             <MDBCol md="12" className="mt-4">
-                            <MDBInputGroup
+                                <MDBInputGroup
                                     style={{ paddingTop: 22 }}
                                     containerClassName="mb-3"
                                     prepend="Pick Score Type"
