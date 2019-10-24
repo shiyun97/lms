@@ -15,39 +15,37 @@ class CoursepackArrangements extends Component {
         outlineName: "",
         edittedOutlineName: "",
         modalAddVideo: "",
-        lessonOrder: ['video1', 'video2', 'quiz1'],
         coursepackId: "",
-        courseOutline: ""
+        courseOutline: "",
+        videos: [{ "id": 1, "name": "video1" }, { "id": 2, "name": "video2" }, { "id": 3, "name": "video3" }],
+        quiz: [{ "id": 1, "name": "quiz1" }, { "id": 2, "name": "quiz2" }, { "id": 3, "name": "quiz3" }],
+        selectedVideo: "",
+        selectedQuiz: "",
+        selectedType: "",
+        listOfOutlineId: ""
     }
 
     componentDidMount() {
-
-/*         let coursepackId = this.props.params.coursepackId
- */        let coursepackId = 18
+        let coursepackId = this.props.match.params.coursepackId;
         this.setState({ coursepackId: coursepackId })
 
-        axios.get(`${API}/coursepack/1`) //FIXME:change id
+        axios.get(`${API}Coursepack/getCoursepack/${coursepackId}`)
             .then(result => {
-                this.setState({
-                    courseCode: result.data.courseCode,
-                    courseTitle: result.data.courseTitle,
-                    courseDescription: result.data.courseDescription,
-                    category: result.data.category,
-                    startDate: result.data.startDate,
-                    price: result.data.price,
-                })
+                this.setState({ courseOutline: result.data.outlineList,  listOfOutlineId: this.getListOfOutlineId(result.data.outlineList)})
             })
             .catch(error => {
                 console.error("error in axios " + error);
             });
+    }
 
-        axios.get(`${API}Coursepack/getCoursepack/${coursepackId}`) //TODO: remove
-            .then(result => {
-                this.setState({ courseOutline: result.data.outlineList })
-            })
-            .catch(error => {
-                console.error("error in axios " + error);
-            });
+    getListOfOutlineId = (outlines) => {
+        var list = []
+        if (outlines.length!==0) {
+            for (var i=0; i<outlines.length; i++) {
+                list.push(outlines[i].outlineId)
+            }
+        return list
+        }
     }
 
     toggleAddOutline = event => {
@@ -83,16 +81,49 @@ class CoursepackArrangements extends Component {
         this.setState({ [event.target.name]: event.target.value })
     }
 
-    /*  swap = (prevPos, newPos) => {
-         this.setState({outline[prevPos]: })
-         this.state.outline[prevPos] = this.state.outline.splice(newPos, 1, this.state.outline[prevPos])[0]
-     } */
+    handleSelectType = event => {
+        event.preventDefault();
+        this.setState({ selectedType: event.target.value }, () => event);
+    }
 
-    moveUp = event => {
+    handleSelectedVideos = event => {
+        this.setState({ selectedVideo: event.target.value }, () => event);
+    }
+
+    handleSelectedQuiz = event => {
+        this.setState({ selectedQuiz: event.target.value }, () => event)
+        console.log(event.target.value)
+    }
+
+    handleSaveSelected = outlineId => {
+        if (this.state.selectedType === "Video") {
+            axios.put(`${API}Coursepack/createLessonOrder?outlineId=${outlineId}&type=video&id=${this.state.selectedVideo}`)
+                .then(result => {
+                    alert("outline created")
+                    window.location.reload()
+                })
+                .catch(error => {
+                    console.error("error in axios " + error);
+                });
+        } else {
+            console.log(outlineId)
+
+            axios.put(`${API}Coursepack/createLessonOrder?outlineId=${outlineId}&type=quiz&id=${this.state.selectedQuiz}`)
+                .then(result => {
+                    alert("outline created")
+                    window.location.reload()
+                })
+                .catch(error => {
+                    console.error("error in axios " + error);
+                });
+        }
+    }
+
+    moveUpOutline = event => {
         console.log("move section up")
     }
 
-    moveDown = event => {
+    moveDownOutline = event => {
         console.log("move section down")
     }
 
@@ -105,24 +136,65 @@ class CoursepackArrangements extends Component {
         //*TODO: post to backend
     }
 
-    displayUploaded = () => {
-        //map function of the lesson order
-        //     <MDBCol align="right" size="4"> {/**can only move up if its not the first. can only move down if it is not the last*/}
-        //     <MDBIcon icon="arrow-up" size="2x" onClick={this.moveUp} style={{ paddingRight: 8 }} />
-        //     <MDBIcon icon="arrow-down" size="2x" onClick={this.moveDown} />
-        // </MDBCol>
+    displayUploaded = outlineId => {
         return (
-            this.state.lessonOrder && this.state.lessonOrder.map((order, index) => {
-                return (
-                    <div>
-                        <MDBCol align="center" key={index}>
-                            {order}
-                            <MDBIcon icon="arrow-up" onClick={this.moveUp} style={{ paddingRight: 8 }} />
-                            <MDBIcon icon="arrow-down" onClick={this.moveDown} />
+            <div>{outlineId}</div>
+        )
+
+    }
+
+    displayOptionsFromSelected = (outlineId) => {
+        if (this.state.selectedType === "Video") {
+            return (
+                <div>
+                    <MDBRow style={{ paddingTop: "20px" }}>
+                        <MDBCol sm="4">Video: </MDBCol>
+                        <MDBCol sm="8">
+                            <select onChange={this.handleSelectedVideos} className="browser-default custom-select">
+                                <option>Choose your option</option>
+                                {this.state.videos && this.state.videos.map(
+                                    (video, index) => <option key={index} value={video.id}>{video.name}</option>)
+                                }
+                            </select>
                         </MDBCol>
-                    </div>
-                )
-            }))
+                    </MDBRow>
+
+                    <MDBRow style={{ paddingTop: "20px" }}>
+                        <MDBCol align="center">
+                            <MDBBtn color="primary" onClick={() => this.handleSaveSelected(outlineId)}>
+                                Save
+                  </MDBBtn>
+                        </MDBCol>
+                    </MDBRow>
+                </div>
+            )
+        } else if (this.state.selectedType === "Quiz") {
+            return (
+                <div>
+                    <MDBRow style={{ paddingTop: "20px" }}>
+                        <MDBCol sm="4">Quiz: </MDBCol>
+                        <MDBCol sm="8">
+                            <select onChange={this.handleSelectedQuiz} className="browser-default custom-select">
+                                <option>Choose an option</option>
+                                {this.state.quiz && this.state.quiz.map(
+                                    (quiz, index) => <option key={index} value={quiz.id}>{quiz.name}</option>)
+                                }
+                            </select>
+                        </MDBCol>
+                    </MDBRow>
+
+                    <MDBRow style={{ paddingTop: "20px" }}>
+                        <MDBCol align="center">
+                            <MDBBtn color="primary" onClick={() => this.handleSaveSelected(outlineId)}>
+                                Save
+                    </MDBBtn>
+                        </MDBCol>
+                    </MDBRow>
+                </div>
+            );
+        } else {
+            return null;
+        }
     }
 
     modelEdit = (index) => {
@@ -144,10 +216,6 @@ class CoursepackArrangements extends Component {
                         </MDBCol>
                     </MDBRow>
                 </MDBModalBody>
-
-                <MDBModalFooter>
-                    <MDBBtn color="secondary" onClick={this.saveEditOutlineName}>Save</MDBBtn>
-                </MDBModalFooter>
             </MDBModal>
         )
     }
@@ -163,9 +231,7 @@ class CoursepackArrangements extends Component {
             });
     }
 
-
     showOutline = () => {
-        console.log(this.state.outline)
         return (
             <MDBContainer>
                 {this.state.courseOutline && this.state.courseOutline.map((outline, index) => {
@@ -187,31 +253,31 @@ class CoursepackArrangements extends Component {
                             <ExpansionPanelDetails>
                                 <MDBContainer>
                                     <MDBRow>
-                                        <h6>show uploaded videos and quiz</h6><hr />
-                                        {/* this.displayUploaded() */}
+                                        {this.displayUploaded(outline.outlineId)}
                                     </MDBRow>
                                     <MDBRow>
-                                        <MDBCol align="left" size="4">
-                                            <MDBIcon icon="arrow-up" onClick={this.moveUp} style={{ paddingRight: 8 }} />
-                                            <MDBIcon icon="arrow-down" onClick={this.moveDown} />
-                                        </MDBCol>
                                         <MDBCol align="right" size="4">
-                                            <MDBBtn onClick={this.toggleAddVideo} >Add Video</MDBBtn>
+                                            <MDBIcon icon="arrow-up" onClick={this.moveUpOutline} style={{ paddingRight: 8 }} />
+                                            <MDBIcon icon="arrow-down" onClick={this.moveDownOutline} />
+                                            <MDBBtn onClick={this.toggleAddVideo} >Add Video/ Quiz</MDBBtn>
                                             <MDBModal isOpen={this.state.modalAddVideo} toggle={this.toggleAddVideo}>
                                                 <MDBModalHeader toggle={this.toggleAddVideo}>
-                                                    Add Video
+                                                    Add Video/ Quiz
                                                 </MDBModalHeader>
                                                 <MDBModalBody>
                                                     <MDBRow>
-                                                        insert multimedia upload code
+                                                        <MDBCol sm="4">Select Type: </MDBCol>
+                                                        <MDBCol sm="8">
+                                                            <select onChange={this.handleSelectType} className="browser-default custom-select">
+                                                                <option>Choose video option</option>
+                                                                <option value="Video">Video</option>
+                                                                <option value="Quiz">Quiz</option>
+                                                            </select>
+                                                        </MDBCol>
+                                                        <MDBCol>{this.displayOptionsFromSelected(outline.outlineId)}</MDBCol>
                                                     </MDBRow>
                                                 </MDBModalBody>
-
-                                                <MDBModalFooter>
-                                                    <MDBBtn>save</MDBBtn>
-                                                </MDBModalFooter>
                                             </MDBModal>
-                                            <MDBBtn>Add Quiz</MDBBtn>
                                         </MDBCol>
                                         <MDBCol align="right" size="4">
                                             <MDBBtn color="danger" onClick={() => this.deleteOutline(outline.outlineId)}>Delete</MDBBtn>
@@ -231,11 +297,7 @@ class CoursepackArrangements extends Component {
 
     }
 
-
-
     render() {
-        console.log(this.props.match.params.coursepackId)
-
         return (
             <div className="module-content">
                 <CoursepackSideNavigation /* coursepackId={this.props.match.params.coursepackId} */ />

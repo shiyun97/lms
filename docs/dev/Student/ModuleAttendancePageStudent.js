@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBModal, MDBModalHeader, MDBRow, MDBModalBody, MDBModalFooter, MDBCol, MDBBtn } from "mdbreact";
+import { MDBContainer, MDBModal, MDBModalHeader, MDBRow, MDBModalBody, MDBModalFooter, MDBCol, MDBBtn, MDBTable, MDBTableHead, MDBTableBody } from "mdbreact";
 import { Dialog, DialogTitle, DialogContent, DialogActions, AppBar, Tabs, Tab, Typography, Paper, InputLabel, Select } from '@material-ui/core';
 import axios from "axios";
 import SwipeableViews from 'react-swipeable-views';
-import { Table } from 'semantic-ui-react'
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 
@@ -12,9 +11,11 @@ class ModuleAttendancePageStudent extends Component {
 
     state = {
         value: 0,
-        lectureList: "",
+        allLectures: "",
+        allLecturesLength: "",
         tutorialList: "",
-        attendanceList: ""
+        attendanceList: "",
+        attendanceListLength: ""
     }
 
     componentDidMount() {
@@ -26,28 +27,22 @@ class ModuleAttendancePageStudent extends Component {
         this.setState({ moduleId: moduleId })
         console.log(moduleId)
 
-        //get all lectures
-        axios.get(`${API}ModuleMounting/getModule/${moduleId}`)
+        // get all attendance for lecture
+        axios.get(`${API}Attendance/getAllAttendance?moduleId=${moduleId}`)
             .then(result => {
-                this.setState({ lectureList: result.data.lectureDetails })
+                this.setState({ allLectures: result.data.attendanceList, allLecturesLength: result.data.attendanceList.length })
             })
             .catch(error => {
                 console.error("error in axios " + error);
             });
 
+
         //get all tutorials
-        axios.get(`${API}ModuleMounting/getAllTutorialByModule?moduleId=${moduleId}`)
-            .then(result => {
-                this.setState({ tutorialList: result.data.tutorials })
-            })
-            .catch(error => {
-                console.error("error in axios " + error);
-            });
+
 
         axios.get(`${API}Attendance/getStudentModuleAttandance?userId=${localStorage.getItem('userId')}&moduleId=${moduleId}`)
             .then(result => {
-                this.setState({ attendanceList: result.data.attendanceList })
-                console.log(this.state.attendanceList)
+                this.setState({ attendanceList: result.data.attendanceList, attendanceListLength: result.data.attendanceList.length })
             })
             .catch(error => {
                 console.error("error in axios " + error);
@@ -84,7 +79,7 @@ class ModuleAttendancePageStudent extends Component {
                         index={this.state.value}
                         onChangeIndex={this.handleChangeIndex}
                     >
-                        <Typography component="div">{/* this.displayLectureSlots() */}</Typography>
+                        <Typography component="div">{this.displayLecture()}</Typography>
                         <Typography component="div">{/* this.displayTutorialSlots() */}</Typography>
                     </SwipeableViews>
                 </Paper>
@@ -92,39 +87,90 @@ class ModuleAttendancePageStudent extends Component {
         )
     }
 
-    displayLectureSlots = () => {
-        //get all attendance dates for lecture
+    displayLecture = () => {
 
-        var lectureAttendanceDate = []
-        var allLectureAttendance = this.state.allLectureAttendance;
-        for (var i = -0; i < allLectureAttendance.length; i++) {
-            lectureAttendanceDate.push({
-                date: (allLectureAttendance[i].startTs).substring(0, 10),
-                id: allLectureAttendance[i].attendanceId
-            })
+        //get all attendance dates for lecture
+        var lectureAttendance = []
+        if (this.state.allLecturesLength !== 0) {
+            for (var i = 0; i < this.state.allLecturesLength; i++) {
+                lectureAttendance.push({
+                    date: (this.state.allLectures[i].startTs).substring(0, 10),
+                    id: this.state.allLectures[i].attendanceId
+                })
+            }
         }
 
-        return (
-            <div>
-                <MDBRow>
-                    <MDBCol align="right">
-                        <select className="browser-default custom-select" style={{ maxWidth: 250 }}>
-                            <option>Group</option>
-                            <option value="1">Group 1</option>
-                        </select>
+        var attendedLecture = []
+        if (this.state.attendanceListLength !== 0) {
+            for (var x = 0; x < this.state.attendanceListLength; x++) {
+                if (this.state.attendanceList[x].module !== undefined) {
+                    attendedLecture.push(this.state.attendanceList[x].attendanceId)
+                }
+            }
+        }
 
-                        <select className="browser-default custom-select" style={{ maxWidth: 250 }} onChange={this.handleLectureDate}>
-                            <option>Date</option>
-                            {lectureAttendanceDate && lectureAttendanceDate.map(
-                                (lecture) => <option key={lecture.id} value={lecture.id}>{lecture.date}</option>)
-                            }
-                        </select>
-                        <MDBBtn onClick={this.getLectureAttendance}>Get</MDBBtn>
-                    </MDBCol>
-                </MDBRow>
-                {this.displaySelectedLectureAttendance()}
-            </div>
-        )
+        console.log(lectureAttendance)
+        console.log(attendedLecture)
+
+        lectureAttendance && lectureAttendance.map((attendance, index) => {
+            console.log(attendance.date)
+            return (
+                <MDBTable>
+                    <MDBTableHead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Attendance</th>
+                        </tr>
+                    </MDBTableHead>
+                    <MDBTableBody>
+                        <tr>
+                            <td>date</td>
+                            <td>Mark</td>
+                        </tr>
+                    </MDBTableBody>
+                </MDBTable>
+            )
+        })
+
+
+        /*             return (
+                        <MDBTable>
+                            <MDBTableHead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Attendance</th>
+                                </tr>
+                            </MDBTableHead>
+                            <MDBTableBody>
+                                <tr>
+                                    {/* <td>{attendance.date}</td> */
+        /*                    <td>Mark</td>
+                       </tr>
+                   </MDBTableBody>
+               </MDBTable>
+           )  */
+
+        // return (
+        //     <div>
+        //         <MDBRow>
+        //             <MDBCol align="right">
+        //                 <select className="browser-default custom-select" style={{ maxWidth: 250 }}>
+        //                     <option>Group</option>
+        //                     <option value="1">Group 1</option>
+        //                 </select>
+
+        //                 <select className="browser-default custom-select" style={{ maxWidth: 250 }} onChange={this.handleLectureDate}>
+        //                     <option>Date</option>
+        //                     {lectureAttendanceDate && lectureAttendanceDate.map(
+        //                         (lecture) => <option key={lecture.id} value={lecture.id}>{lecture.date}</option>)
+        //                     }
+        //                 </select>
+        //                 <MDBBtn onClick={this.getLectureAttendance}>Get</MDBBtn>
+        //             </MDBCol>
+        //         </MDBRow>
+        //         {this.displaySelectedLectureAttendance()}
+        //     </div>
+        // )
     }
 
 

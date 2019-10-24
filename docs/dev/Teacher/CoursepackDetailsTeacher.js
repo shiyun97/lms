@@ -6,7 +6,6 @@ import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, E
 import CoursepackSideNavigation from "../CoursepackSideNavigation";
 import SectionContainer from "../../components/sectionContainer";
 
-const API_MOCK = "http://localhost:3001"
 const API = "http://localhost:8080/LMS-war/webresources/"
 
 class CoursepackDetailsTeacher extends Component {
@@ -17,10 +16,9 @@ class CoursepackDetailsTeacher extends Component {
     }
 
     componentDidMount() {
-/*         let coursepackId = this.props.coursepackId;
- */        let coursepackId = 18;
-        // axios.get(`${API}Coursepack/getCoursepack/${coursepackId}`)
-        axios.get(`${API}Coursepack/getCoursepack/${coursepackId}`) //TODO: remove
+
+        let coursepackId = this.props.coursepackId;
+        axios.get(`${API}Coursepack/getCoursepack/${coursepackId}`)
             .then(result => {
                 this.setState({ courseDetails: result.data })
                 console.log(this.state.courseDetails)
@@ -39,24 +37,25 @@ class CoursepackDetailsTeacher extends Component {
             <MDBContainer style={{ paddingTop: 20 }}>
                 <MDBRow>
                     <MDBCol size="8">
-                        <h1 style={{ paddingBottom: 20 }}>{this.state.courseDetails.title}</h1>
-                        <h4 style={{ paddingBottom: 20 }}> {this.state.courseDetails.description}</h4>
+                        <h2 style={{ paddingBottom: 20 }}>{this.state.courseDetails.title}</h2>
+                        <h5 style={{ paddingBottom: 20 }}> {this.state.courseDetails.description}</h5>
                         <h6> SGD {this.state.courseDetails.price}</h6>
+
                         <MDBCol align="right">
                             <MDBBtn color="primary" onClick={this.viewCourse} >View Course</MDBBtn>
                         </MDBCol>
                     </MDBCol>
                     <MDBCol size="4">
-                        <MDBCard style={{ width: "23rem", minHeight: "12rem" }}>
+{/*                         <MDBCard style={{ width: "23rem", minHeight: "12rem" }}>
                             <MDBMedia object src="https://mdbootstrap.com/img/Photos/Others/placeholder1.jpg" alt="" />
-                        </MDBCard>
+                        </MDBCard> */}
                     </MDBCol>
                 </MDBRow>
             </MDBContainer>)
     }
 
     showCoursepackOutline = () => {
-        if (this.state.courseDetails.outlineList === "") { //FIXME:
+        if (this.state.courseDetails.outline === 0) { //FIXME:
             return <h4>No outline created</h4>
         }
         return (
@@ -100,10 +99,10 @@ class CoursepackDetailsTeacher extends Component {
         }
     }
 
-    showTeacherBackground = () => {
+    showTeacherBackground = () => {//FIXME: teacher's background
         return (
             <div>
-                <h4>Get Teacher's Background</h4>
+                <h4> Background</h4> 
                 <hr />
                 <h6>{this.state.courseDetails.teacherBackground}</h6>
             </div>
@@ -111,7 +110,6 @@ class CoursepackDetailsTeacher extends Component {
     }
 
     render() {
-        console.log("teacher")
         return (
 
             <div className="module-content" style={{ paddingTop: 20 }}>

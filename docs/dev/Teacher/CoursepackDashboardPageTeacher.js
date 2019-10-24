@@ -6,7 +6,8 @@ import {
 import axios from "axios";
 import { NavLink } from 'react-router-dom'
 
-const API = "http://localhost:3001"
+const API_MOCK = "http://localhost:3001"
+const API = "http://localhost:8080/LMS-war/webresources/"
 
 class CoursepackDashboardPageTeacher extends Component {
 
@@ -17,11 +18,10 @@ class CoursepackDashboardPageTeacher extends Component {
     }
 
     componentDidMount() {
-        //TODO: get all coursepack the teacher has created
-        axios.get(`${API}/coursepack`)
+        //TODO: change userid
+        axios.get(`${API}Coursepack/getUserCoursepack/3`)
             .then(result => {
-                this.setState({ createdCoursepacks: result.data })
-                console.log(this.state.createdCoursepacks)
+                this.setState({ createdCoursepacks: result.data.coursepack })
             })
             .catch(error => {
                 console.error("error in axios " + error);
@@ -36,7 +36,7 @@ class CoursepackDashboardPageTeacher extends Component {
         }
     }
 
-    //TODO: check start date against current
+    //TODO: not published
     showAllDrafts = () => {
         return (
             <MDBContainer>
@@ -44,15 +44,14 @@ class CoursepackDashboardPageTeacher extends Component {
                     {this.state.createdCoursepacks && this.state.createdCoursepacks.map((course) => {
                         return (
                             <MDBCol size="3" key={course.id}>
-                                <NavLink to={`/coursepack/${course.id}/`} activeClassName="activeClass"> {/**TODO: coursepack id */}
+                                <NavLink to={`/coursepack/${course.coursepackId}/`} activeClassName="activeClass">
                                     <MDBCard>
                                         <MDBCardBody>
-                                            <MDBMedia object src="https://mdbootstrap.com/img/Photos/Others/placeholder1.jpg" alt="" />
+                                            {/* <MDBMedia object src="https://mdbootstrap.com/img/Photos/Others/placeholder1.jpg" alt="" /> */}
                                             <MDBCardTitle>
-                                                <MDBCardText>{course.courseTitle}</MDBCardText>
+                                                <MDBCardText>{course.title}</MDBCardText>
                                                 <MDBCardText>{course.category}</MDBCardText>
-                                                <MDBCardText>{course.price}</MDBCardText>
-                                                <MDBCardText>{course.teacher}</MDBCardText>
+                                                <MDBCardText>SGD {course.price}</MDBCardText>
                                             </MDBCardTitle>
                                         </MDBCardBody>
                                     </MDBCard>

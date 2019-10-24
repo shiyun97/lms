@@ -28,12 +28,11 @@ class CoursePackEdit extends Component {
         /* let userId = localStorage.getItem("userId") */
         /*         this.setState({ userId: userId })
          */
-        /*         let coursepackId = this.props.match.params.coursepackId;
-         */
+               let coursepackId = this.props.match.params.coursepackId;
+         
         /*         this.setState({ coursepackId: coursepackId })
          */
 
-        let coursepackId = 18 //TODO: remove
         this.setState({ coursepackId: coursepackId })
         axios.get(`${API_MOCK}/category`) //FIXME:
             .then(result => {
@@ -167,7 +166,7 @@ class CoursePackEdit extends Component {
                         <MDBCol sm="4">Course Description: </MDBCol>
                         <MDBCol sm="8">
                             <textarea
-                                defaultValue={this.state.courseDescription}
+                                default={this.state.courseDescription}
                                 name="courseDescription"
                                 type="text"
                                 className="form-control"
@@ -175,6 +174,7 @@ class CoursePackEdit extends Component {
                                 onChange={this.handleOnChange}
                                 rows={8}
                                 disabled={this.state.disabled}
+                                //FIXME:
                             />
                         </MDBCol>
                     </MDBRow>
