@@ -7,6 +7,7 @@ import ModuleSideNavigation from "../ModuleSideNavigation";
 import ModuleSideNavigationDropdown from "../ModuleSideNavigationDropdown";
 import axios from "axios";
 import { observer, inject } from 'mobx-react';
+import moment from 'moment';
 
 @inject('dataStore')
 @observer
@@ -143,7 +144,7 @@ class AnnouncementListItem extends Component {
                 {/* <MDBIcon icon="user" className="mr-2 fa-fw" /> */}
                 {/* by {announcement.createdBy}<br /> */}
                 <MDBIcon icon="calendar-alt" className="mr-2 fa-fw" />
-                on {announcement.startDate}
+                on {moment(announcement.startDate).format('DD-MM-YYYY HH:mm:ss')}
                 <div className="mb-2"></div>
                 {announcement.content}
             </div>

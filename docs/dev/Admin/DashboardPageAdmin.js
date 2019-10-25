@@ -583,7 +583,7 @@ class AnnouncementListItem extends Component {
                 }
 
                 <MDBIcon icon="calendar-alt" className="mr-2 fa-fw" />
-                on {announcement.startDate}
+                on {moment(announcement.startDate).format('DD-MM-YYYY HH:mm:ss')}
                 <div className="mb-2"></div>
                 {announcement.content}
             </div>

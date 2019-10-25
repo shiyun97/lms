@@ -245,7 +245,7 @@ class ModuleConsultationPageTeacher extends Component {
                     startTime: row[i].startTs,
                     endTime: row[i].endTs,
                     // booker: row[i].booker === undefined ? "-" : row[i].booker,
-                    booker: row[i].booker === null ? "-" : (row[i].booker.firstName + " " + row[i].booker.lastName),
+                    booker: row[i].booker === undefined ? "-" : (row[i].booker.firstName + " " + row[i].booker.lastName),
                     button: <MDBBtn size="small" onClick={() => this.deleteConsultationSlot(row[i].consultationTsId)} color="primary">Delete</MDBBtn>
                 })
             }

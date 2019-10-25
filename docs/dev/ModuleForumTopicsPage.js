@@ -410,7 +410,11 @@ class ModuleForumTopicsPage extends Component {
                         </MDBRow>
                         <MDBRow>
                             <MDBCol>
-                                <MDBBtn className="ml-0 mb-4" color="primary" block onClick={e => {this.newTopic()}}>Add New Discussion Category</MDBBtn>
+                                {
+                                    localStorage.getItem('accessRight') == 'Teacher' &&
+                                    <MDBBtn className="ml-0 mb-4" color="primary" block onClick={e => {this.newTopic()}}>Add New Discussion Category</MDBBtn>
+                                }
+                                
                                 {
                                     topics.length > 0 && topics.map((topic) => (
                                         <TopicListItem key={topic.forumTopicId} 
