@@ -18,7 +18,7 @@ class ModuleQuizPageCreateQuiz extends Component {
         moduleId: 0,
         message: "",
         openSnackbar: false,
-        description: "", // title
+        description: "", 
         title: "", // title
         activeStep: 0,
         steps: ['Quiz Configuration', 'Build Quiz'],
@@ -34,7 +34,7 @@ class ModuleQuizPageCreateQuiz extends Component {
         points: 1,
         level: 0,
         number: 0,
-        title: "",
+        questionTitle: "", //title
         isRequired: true,
         explanation: "",
         correctAnswer: "",
@@ -135,7 +135,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                     <label className="grey-text mt-4">
                         Question
                     </label>
-                    <textarea rows="3" type="text" name="title" onChange={this.handleChange} className="form-control" />
+                    <textarea rows="3" type="text" name="questionTitle" onChange={this.handleChange} className="form-control" />
                 </MDBCol>
                     <MDBCol md="12" className="mt-4">
                         <label className="grey-text">
@@ -265,7 +265,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                         type: "radiogroup",
                         // name: "MCQ",
                         // number: number,
-                        title: this.state.title,
+                        title: this.state.questionTitle,
                         isRequired: true,
                         level: this.state.level, //only for adaptive,
                         explanation: this.state.explanation,
@@ -280,7 +280,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                         type: "text", //text
                         // name: "Short Answer",
                         // number: number,
-                        title: this.state.title,
+                        title: this.state.questionTitle,
                         isRequired: true,
                         level: this.state.level, //only for adaptive,
                         explanation: this.state.explanation,
@@ -503,7 +503,7 @@ class ModuleQuizPageCreateQuiz extends Component {
     render() {
         const { steps, activeStep } = this.state;
         var moduleId = this.props.dataStore.getCurrModId;
-        console.log(this.state.elements)
+        // console.log(this.state.elements)
         // var test = this.props.dataStore.getQuestions
         // console.log(test[0])
         return (
