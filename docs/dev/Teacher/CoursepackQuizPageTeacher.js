@@ -56,6 +56,11 @@ class CoursepackQuizPageTeacher extends Component {
                 "label": "Max Marks",
                 "field": "maxMarks",
                 "width": 100
+            },
+            {
+                "label": "Preview Quiz",
+                "field": "preview",
+                "width": 100
             }
             // {
             //     "label": "",
@@ -116,28 +121,7 @@ class CoursepackQuizPageTeacher extends Component {
                 console.error("error in axios " + error);
             });
     }
-
-    deleteQuiz = (quizId) => {
-        let userId = localStorage.getItem('userId');
-        event.preventDefault();
-        axios
-            .delete(`http://localhost:8080/LMS-war/webresources/Assessment/deleteCoursepackQuiz?userId=${userId}&quizId=${quizId}`)
-            .then(result => {
-                this.setState({
-                    recallQuiz: true,
-                    message: "Quiz deleted successfully!",
-                    openSnackbar: true
-                });
-            })
-            .catch(error => {
-                this.setState({
-                    message: error.response.data.errorMessage,
-                    openSnackbar: true
-                });
-                console.error("error in axios " + error);
-            });
-    }
-
+    
     renderQuizTable = () => {
         var quiz = this.state.quizzes;
         var coursepackId = this.props.dataStore.getCurrModId;
@@ -156,6 +140,7 @@ class CoursepackQuizPageTeacher extends Component {
                     //     <MDBCol md={6}><NavLink to={`/coursepack/${coursepackId}/quiz/${quiz[i].quizId}/edit`}><MDBIcon style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></NavLink></MDBCol>
                     //     <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(quiz[i].quizId)} style={{ paddingTop: 12, cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
                     // </MDBRow>,
+                    previewButton: <center><MDBBtn color="primary" outline size="sm" href={`/coursepack/${coursepackId}/quiz/${quiz[i].quizId}/preview`}>Preview</MDBBtn></center>,
                 })
             }
         } else {

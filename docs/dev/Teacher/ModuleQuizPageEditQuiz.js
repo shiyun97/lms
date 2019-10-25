@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBIcon, MDBInputGroup, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBIcon, MDBInputGroup } from "mdbreact";
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import { TextField, Checkbox, Snackbar } from '@material-ui/core';
 import axios from 'axios';
+import { Redirect } from "react-router-dom";
 
 @inject('dataStore')
 @observer
@@ -45,7 +46,8 @@ class ModuleQuizPageEditQuiz extends Component {
         answer: "",
         elements: [],
         quizId: 0,
-        questionId: 0
+        questionId: 0,
+        redirect: false,
     }
 
     initPage() {
@@ -160,7 +162,8 @@ class ModuleQuizPageEditQuiz extends Component {
                 // console.log("success")
                 this.setState({
                     message: "Quiz updated successfully!",
-                    openSnackbar: true
+                    openSnackbar: true,
+                    redirect: true
                 });
             })
             .catch(error => {
@@ -207,6 +210,9 @@ class ModuleQuizPageEditQuiz extends Component {
 
     render() {
         var moduleId = this.props.dataStore.getCurrModId;
+        if (this.state.redirect === true) {
+            return <Redirect to={`/modules/${moduleId}/quiz`} />
+        }
         return (
             <div className={this.props.className}>
                 <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>

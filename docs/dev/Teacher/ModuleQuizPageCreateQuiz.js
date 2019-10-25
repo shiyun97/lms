@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import ModuleSideNavigation from "./../ModuleSideNavigation";
 import { Stepper, Step, StepLabel, TextField, Typography, Switch, Snackbar, Checkbox } from '@material-ui/core';
 import axios from 'axios';
+import { Redirect } from "react-router-dom";
 
 @inject('dataStore')
 @observer
@@ -18,7 +19,7 @@ class ModuleQuizPageCreateQuiz extends Component {
         moduleId: 0,
         message: "",
         openSnackbar: false,
-        description: "", 
+        description: "",
         title: "", // title
         activeStep: 0,
         steps: ['Quiz Configuration', 'Build Quiz'],
@@ -42,6 +43,7 @@ class ModuleQuizPageCreateQuiz extends Component {
         choices: [],
         answer: "",
         elements: [],
+        redirect: false,
     }
 
     initPage() {
@@ -94,7 +96,8 @@ class ModuleQuizPageCreateQuiz extends Component {
                 console.log("success")
                 this.setState({
                     message: "Quiz created successfully!",
-                    openSnackbar: true
+                    openSnackbar: true,
+                    redirect: true
                 });
             })
             .catch(error => {
@@ -245,7 +248,7 @@ class ModuleQuizPageCreateQuiz extends Component {
         return (
             <>
                 <label className="grey-text">
-                    Answer {index+1}
+                    Answer {index + 1}
                 </label>
                 <input type="text" name="answer" onChange={this.handleChange} className="form-control" />
                 <br />
@@ -506,6 +509,9 @@ class ModuleQuizPageCreateQuiz extends Component {
         // console.log(this.state.elements)
         // var test = this.props.dataStore.getQuestions
         // console.log(test[0])
+        if (this.state.redirect) {
+            return <Redirect to={`/modules/${moduleId}/quiz`} />
+        }
         return (
             <div className={this.props.className}>
                 <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
@@ -515,7 +521,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
                                     <a href={`/modules/${moduleId}/quiz`}>Quiz</a>
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Create Quiz
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Create Module Quiz
                                 </h2>
                             </MDBCol>
                         </MDBRow>

@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import CoursepackSideNavigation from "../CoursepackSideNavigation";
 import { Stepper, Step, StepLabel, TextField, Typography, Snackbar, Checkbox } from '@material-ui/core';
 import axios from 'axios';
+import { Redirect } from "react-router-dom";
 
 @inject('dataStore')
 @observer
@@ -18,7 +19,7 @@ class CoursepackQuizPageCreateQuiz extends Component {
         coursepackId: 0,
         message: "",
         openSnackbar: false,
-        description: "", 
+        description: "",
         title: "", // title
         activeStep: 0,
         steps: ['Quiz Configuration', 'Build Quiz'],
@@ -42,6 +43,7 @@ class CoursepackQuizPageCreateQuiz extends Component {
         choices: [],
         answer: "",
         elements: [],
+        redirect: false,
     }
 
     initPage() {
@@ -95,7 +97,8 @@ class CoursepackQuizPageCreateQuiz extends Component {
                 console.log("success")
                 this.setState({
                     message: "Quiz created successfully!",
-                    openSnackbar: true
+                    openSnackbar: true,
+                    redirect: true
                 });
             })
             .catch(error => {
@@ -353,6 +356,9 @@ class CoursepackQuizPageCreateQuiz extends Component {
         // console.log(this.state.elements)
         // var test = this.props.dataStore.getQuestions
         // console.log(test[0])
+        if (this.state.redirect) {
+            return <Redirect to={`/coursepack/${coursepackId}/quiz`} />
+        }
         return (
             <div className={this.props.className}>
                 <CoursepackSideNavigation courseId={coursepackId}></CoursepackSideNavigation>
@@ -362,7 +368,7 @@ class CoursepackQuizPageCreateQuiz extends Component {
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
                                     <a href={`/coursepack/${coursepackId}/quiz`}>Quiz</a>
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Create Quiz
+                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Create Coursepack Quiz
                                 </h2>
                             </MDBCol>
                         </MDBRow>
