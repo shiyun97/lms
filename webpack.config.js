@@ -58,7 +58,7 @@ const config = {
     open: true,
     compress: true,
     port: 3100,
-    host: '127.0.0.1',
+    host: '0.0.0.0',
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "*",
