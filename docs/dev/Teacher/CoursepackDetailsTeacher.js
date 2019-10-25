@@ -5,6 +5,7 @@ import axios from "axios";
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
 import CoursepackSideNavigation from "../CoursepackSideNavigation";
 import SectionContainer from "../../components/sectionContainer";
+import CoursepackFeedbackPage from "../CoursepackFeedbackPage";
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 
@@ -13,6 +14,9 @@ class CoursepackDetailsTeacher extends Component {
     state = {
         courseDetails: "",
         open: false,
+        courseOutline: "",
+        listOfOutlineId: "",
+        coursepackId: "",
     }
 
     componentDidMount() {
@@ -20,7 +24,11 @@ class CoursepackDetailsTeacher extends Component {
         let coursepackId = this.props.coursepackId;
         axios.get(`${API}Coursepack/getCoursepack/${coursepackId}`)
             .then(result => {
-                this.setState({ courseDetails: result.data })
+                this.setState({
+                    courseDetails: result.data,
+                    courseOutline: result.data.outlineList.sort((a, b) => (a.number - b.number)),
+                    listOfOutlineId: this.getListOfOutlineId(result.data.outlineList)
+                })
                 console.log(this.state.courseDetails)
             })
             .catch(error => {
@@ -28,9 +36,27 @@ class CoursepackDetailsTeacher extends Component {
             });
     }
 
-    viewCourse = event => {
-        console.log("view assessments")
+    getListOfOutlineId = (outlines) => {
+        var list = []
+        if (outlines.length !== 0) {
+            for (var i = 0; i < outlines.length; i++) {
+                list.push(outlines[i].outlineId)
+            }
+            return list
+        }
     }
+
+    getListOfLessonOrderId = (lessonOrder) => {
+        var list = []
+        if (lessonOrder.length !== 0) {
+            for (var i = 0; i < lessonOrder.length; i++) {
+                list.push(lessonOrder[i].lessonOrderId)
+            }
+            return list
+        }
+    }
+
+
 
     showDescriptions = () => {
         return (
@@ -46,7 +72,7 @@ class CoursepackDetailsTeacher extends Component {
                         </MDBCol>
                     </MDBCol>
                     <MDBCol size="4">
-{/*                         <MDBCard style={{ width: "23rem", minHeight: "12rem" }}>
+                        {/*                         <MDBCard style={{ width: "23rem", minHeight: "12rem" }}>
                             <MDBMedia object src="https://mdbootstrap.com/img/Photos/Others/placeholder1.jpg" alt="" />
                         </MDBCard> */}
                     </MDBCol>
@@ -54,30 +80,88 @@ class CoursepackDetailsTeacher extends Component {
             </MDBContainer>)
     }
 
-    showCoursepackOutline = () => {
-        if (this.state.courseDetails.outline === 0) { //FIXME:
-            return <h4>No outline created</h4>
-        }
+    getLessonOrder = outlineId => {
+        axios.get(`${API}Coursepack/getLessonOrderByOutlineId/${outlineId}`)
+            .then(result => {
+                this.setState({
+                    lessonOrder: result.data.lessonOrder.sort((a, b) => (a.number - b.number)),
+                    listOfLessonOrderId: this.getListOfLessonOrderId(result.data.lessonOrder),
+                })
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
+    }
+
+    displayUploaded = () => {
+        var order = []
+        this.state.lessonOrder && this.state.lessonOrder.map((lessons, index) => {
+            order.push(lessons.file || lessons.quiz)
+        })
+        order = order.filter(Boolean)
         return (
-            <MDBContainer>
-                {this.state.courseDetails.outlineList && this.state.courseDetails.outlineList.map((outline, index) => {
-                    return (
-                        <ExpansionPanel key={index}>
-                            <ExpansionPanelSummary
-                                expandIcon={<MDBIcon icon="angle-down" />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header"
-                            >
-                                <Typography >{outline.name}</Typography>
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails>
-                                {this.showLessonOrder(outline)}
-                            </ExpansionPanelDetails>
-                        </ExpansionPanel>
-                    )
-                })}
-            </MDBContainer>
+            this.state.lessonOrder && this.state.lessonOrder.map((lessons, index) => {
+                return (
+                    <MDBCol key={index} size="12">
+                        {order[index].name}
+                    </MDBCol>
+                )
+            })
+
         )
+    }
+
+    handleExpandChange = index => {
+        this.setState({ changeExpand: index })
+    }
+
+    checkExpanded = (index) => {
+        if (index === this.state.changeExpand) {
+            return true
+        }
+        return false
+    }
+
+    showCoursepackOutline = () => {
+        if (this.state.courseOutline) {
+            return (
+                <MDBContainer>
+                    {this.state.courseOutline && this.state.courseOutline.map((outline, index) => {
+
+                        return (
+                            <ExpansionPanel
+                                key={index}
+                                expanded={this.checkExpanded(index)}
+                                onChange={() => this.handleExpandChange(index)}
+                            >
+                                <ExpansionPanelSummary
+                                    expandIcon={<MDBIcon icon="angle-down" />}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                    key={index}
+                                    onClick={() => this.getLessonOrder(outline.outlineId)}
+                                >
+                                    <Typography key={index}>
+                                        {outline.name}
+                                    </Typography>
+                                </ExpansionPanelSummary>
+
+                                <ExpansionPanelDetails>
+                                    <MDBContainer>
+                                        <MDBRow>
+                                            {this.displayUploaded()}
+                                        </MDBRow>
+                                    </MDBContainer>
+                                </ExpansionPanelDetails>
+                            </ExpansionPanel>
+                        )
+                    })
+                    }
+                </MDBContainer >
+            )
+        } else {
+            return "No outline"
+        }
     }
 
     showLessonOrder = (outline) => {
@@ -90,7 +174,7 @@ class CoursepackDetailsTeacher extends Component {
                     return (
                         <MDBContainer ley={index}>
                             <MDBRow size="12">
-                                {order.number}. {order.name}
+                                {order.number} {order.name}
                                 <br />
                             </MDBRow>
                         </MDBContainer>
@@ -102,7 +186,7 @@ class CoursepackDetailsTeacher extends Component {
     showTeacherBackground = () => {//FIXME: teacher's background
         return (
             <div>
-                <h4> Background</h4> 
+                <h4> Teacher's Background</h4>
                 <hr />
                 <h6>{this.state.courseDetails.teacherBackground}</h6>
             </div>
@@ -128,6 +212,9 @@ class CoursepackDetailsTeacher extends Component {
                             <hr />
                             {this.showCoursepackOutline()}
                         </MDBContainer>
+                    </SectionContainer>
+                    <SectionContainer>
+                        <CoursepackFeedbackPage />
                     </SectionContainer>
                     <SectionContainer>
                         <MDBContainer>

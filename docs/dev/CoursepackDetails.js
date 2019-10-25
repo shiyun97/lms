@@ -9,7 +9,6 @@ class CoursepackDetails extends Component {
         let accessRight = localStorage.getItem("accessRight")
         return (
             <div>
-                <CoursepackDetailsTeacher coursepackId={this.props.match.params.coursepackId} />}
                 {accessRight === "Student" && <CoursepackDetailsPageStudent coursepackId={this.props.match.params.coursepackId} />}
                 {accessRight === "Teacher" && <CoursepackDetailsTeacher coursepackId={this.props.match.params.coursepackId} />}
                 {/* accessRight === "Public" && <CoursepackDashboardPageStudent /> */}

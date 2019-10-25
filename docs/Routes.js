@@ -224,7 +224,7 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/attendance" component={ModuleAttendancePage} />
         <Route exact path="/modules/:moduleId/feedback" component={ModuleFeedbackPage} />
         <Route exact path="/modules/:moduleId/feedback/evaluation" component={ModuleFeedbackEvaluationPage} />
-        <Route exact path="/coursepack/enrolledCourses" component={CoursepackEnrolledCourses} />
+        <Route exact path="/coursepack/myCourses" component={CoursepackEnrolledCourses} />
         <Route exact path="/coursepack/dashboard" component={CoursepackDashboard} />
         <Route exact path="/coursepack/:coursepackId/" component={CoursepackDetails} />
         <Route exact path="/coursepack/:category/list" component={CoursepackCategoryView} />

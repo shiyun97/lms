@@ -14,12 +14,11 @@ class CoursepackDashboardPageTeacher extends Component {
     state = {
         activeItem: "1",
         createdCoursepacks: "",
-        coursepackId: ""
+        coursepackId: "",
     }
 
     componentDidMount() {
-        //TODO: change userid
-        axios.get(`${API}Coursepack/getUserCoursepack/3`)
+        axios.get(`${API}Coursepack/getUserCoursepack/${localStorage.getItem('userId')}`)
             .then(result => {
                 this.setState({ createdCoursepacks: result.data.coursepack })
             })
@@ -38,12 +37,14 @@ class CoursepackDashboardPageTeacher extends Component {
 
     //TODO: not published
     showAllDrafts = () => {
+
+
         return (
             <MDBContainer>
                 <MDBRow>
                     {this.state.createdCoursepacks && this.state.createdCoursepacks.map((course) => {
                         return (
-                            <MDBCol size="3" key={course.id}>
+                            <MDBCol size="3" key={course.id} style={{paddingBottom: 30}}>
                                 <NavLink to={`/coursepack/${course.coursepackId}/`} activeClassName="activeClass">
                                     <MDBCard>
                                         <MDBCardBody>
@@ -96,8 +97,18 @@ class CoursepackDashboardPageTeacher extends Component {
 
     render() {
         return (
-            <MDBContainer>
-                {this.displayCourses()}
+            <MDBContainer style={{ paddingBottom: 240 }}>
+                <MDBRow>
+                    <MDBCol md="8" className="mt-4">
+                        <h2 className="font-weight-bold" style={{ paddingTop: 50 }}>
+                            Coursepack
+                        </h2>
+                        <hr/>
+                    </MDBCol>
+                    <MDBContainer>
+                        {this.displayCourses()}
+                    </MDBContainer>
+                </MDBRow>
             </MDBContainer>
         )
     }

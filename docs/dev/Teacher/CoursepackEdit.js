@@ -28,8 +28,8 @@ class CoursePackEdit extends Component {
         /* let userId = localStorage.getItem("userId") */
         /*         this.setState({ userId: userId })
          */
-               let coursepackId = this.props.match.params.coursepackId;
-         
+        let coursepackId = this.props.match.params.coursepackId;
+
         /*         this.setState({ coursepackId: coursepackId })
          */
 
@@ -52,6 +52,7 @@ class CoursePackEdit extends Component {
                     courseDescription: result.data.description,
                     /* category: result.data.category, */
                     price: result.data.price,
+                    publish: result.data.published
                 })
             })
             .catch(error => {
@@ -111,21 +112,27 @@ class CoursePackEdit extends Component {
 
     publish = event => {
         const { courseCode, courseTitle, courseDescription, category, price } = this.state
-        axios.post(`${API}Coursepack/updateCoursepack?coursepackId=${this.state.coursepackId}`, {
-            code: courseCode,
-            title: courseTitle,
-            description: courseDescription,
-            category: category,
-            price: price,
-            published: true,
-        })
-            .then(result => {
-                alert("published")
+
+        if (this.state.publish === true) {
+            alert("this course has already been published")
+        } else {
+            axios.post(`${API}Coursepack/updateCoursepack?coursepackId=${this.state.coursepackId}`, {
+                code: courseCode,
+                title: courseTitle,
+                description: courseDescription,
+                category: category,
+                price: price,
+                published: true,
             })
-            .catch(error => {
-                alert(error)
-                console.error("error in axios " + error);
-            });
+                .then(result => {
+                    alert("published")
+                    
+                })
+                .catch(error => {
+                    alert(error)
+                    console.error("error in axios " + error);
+                })
+        }
     }
 
     form = () => {
@@ -174,7 +181,7 @@ class CoursePackEdit extends Component {
                                 onChange={this.handleOnChange}
                                 rows={8}
                                 disabled={this.state.disabled}
-                                //FIXME:
+                            //FIXME:
                             />
                         </MDBCol>
                     </MDBRow>

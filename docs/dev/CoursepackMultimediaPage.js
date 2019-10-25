@@ -420,17 +420,10 @@ class CoursepackMultimediaPage extends Component {
             <div className="module-content">
                 <CoursepackSideNavigation courseId={this.props.match.params.coursepackId} />
 
-                <div style={{ backgroundColor: '#B8CECD', minHeight: 250 }}>
-                    < div /* className="module-content" */>
-                        <MDBContainer>
-                            {this.showDescriptions()}
-                        </MDBContainer>
-                    </div>
-                </div>
                 <MDBContainer style={{ paddingTop: 50 }}>
                     <MDBRow>
                         <MDBCol>
-                            <h5>Library</h5>
+                            <h5>Multimedia</h5>
                         </MDBCol>
                     </MDBRow>
                     <MDBRow>

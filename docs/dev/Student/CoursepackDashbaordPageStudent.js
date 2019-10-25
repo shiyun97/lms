@@ -12,19 +12,20 @@ import Pexels from '../pexels.mp4'
 import CoursepackTopNav from "../CoursepackTopNav";
 
 
-const API = "http://localhost:3001"
+const API_MOCK = "http://localhost:3001"
+const API = "http://localhost:8080/LMS-war/webresources/"
 
 class CoursepackDashboardPageStudent extends Component {
   state = {
     coursepackList: "",
-    category: ""
+    category: "",
+    filesList: ""
   }
 
   componentDidMount() {
-    axios.get(`${API}/coursepack`)
+    axios.get(`${API}Coursepack/getAllCoursepack`)
       .then(result => {
-        this.setState({ coursepackList: result.data })
-        console.log(this.state.coursepackList)
+        this.setState({ coursepackList: result.data.coursepack })
       })
       .catch(error => {
         console.error("error in axios " + error);
@@ -33,6 +34,16 @@ class CoursepackDashboardPageStudent extends Component {
     axios.get(`${API}/category`)
       .then(result => {
         this.setState({ category: result.data })
+        console.log(result.data)
+      })
+      .catch(error => {
+        console.error("error in axios " + error);
+      });
+
+    //get all coursepack multimedia
+    axios.get(`${API}file/retrieveAllMultimediaForCoursepack?coursepackId=30`) //FIXME:
+      .then(result => {
+        this.setState({ filesList: result.data.files })
         console.log(result.data)
       })
       .catch(error => {
@@ -57,36 +68,21 @@ class CoursepackDashboardPageStudent extends Component {
           style={{ height: 400, width: 700 }}
         >
           <MDBCarouselInner>
-            <MDBCarouselItem itemId="1" onClick={this.handleClick}>
-              <MDBView >
-                <VideoThumbnail
-                  videoUrl={Night}
-                  thumbnailHandler={(thumbnail) => (thumbnail)}
-                  width={680}
-                  height={500}
-                />
-              </MDBView>
-            </MDBCarouselItem>
-            <MDBCarouselItem itemId="2" onClick={this.handleClick}>
-              <MDBView>
-                <VideoThumbnail
-                  videoUrl={Pexels}
-                  thumbnailHandler={(thumbnail) => (thumbnail)}
-                  width={680}
-                  height={500}
-                />
-              </MDBView>
-            </MDBCarouselItem>
-            <MDBCarouselItem itemId="3" onClick={this.handleClick}>
-              <MDBView>
-                <VideoThumbnail
-                  videoUrl={Night}
-                  thumbnailHandler={(thumbnail) => (thumbnail)}
-                  width={680}
-                  height={500}
-                />
-              </MDBView>
-            </MDBCarouselItem>
+            {this.state.filesList && this.state.filesList.map((file, index) => {
+              return (
+                <MDBCarouselItem itemId={index} onClick={this.handleClick}>
+                  <MDBView >
+                    <VideoThumbnail
+                      videoUrl={file.location}
+                      thumbnailHandler={(thumbnail) => (thumbnail)}
+                      width={680}
+                      height={500}
+                    />
+                  </MDBView>
+                </MDBCarouselItem>
+
+              )
+            })}
           </MDBCarouselInner>
         </MDBCarousel>
       </MDBCol>
@@ -101,16 +97,15 @@ class CoursepackDashboardPageStudent extends Component {
         <MDBRow>
           {this.state.coursepackList && this.state.coursepackList.map((course) => {
             return (
-              <MDBCol size="3" key={course.id}>
-                <NavLink to={`/coursepack/${course.id}/`} activeClassName="activeClass">
-                  <MDBCard>
+              <MDBCol size="3" key={course.coursepackId} style={{paddingBottom: 30}}>
+                <NavLink to={`/coursepack/${course.coursepackId}/`} activeClassName="activeClass">
+                  <MDBCard >
                     <MDBCardBody>
                       <MDBMedia object src="https://mdbootstrap.com/img/Photos/Others/placeholder1.jpg" alt="" />
                       <MDBCardTitle>
-                        <MDBCardText>{course.courseTitle}</MDBCardText>
+                        <MDBCardText>{course.title}</MDBCardText>
                         <MDBCardText>{course.category}</MDBCardText>
                         <MDBCardText>{course.price}</MDBCardText>
-                        <MDBCardText>{course.teacher}</MDBCardText>
                       </MDBCardTitle>
                     </MDBCardBody>
                   </MDBCard>
@@ -169,7 +164,7 @@ class CoursepackDashboardPageStudent extends Component {
     console.log("student")
     return (
       <div>
-       <CoursepackTopNav/>
+        <CoursepackTopNav />
 
         <MDBContainer style={{ paddingTop: 100 }} >
           {this.mediaCarousel()}

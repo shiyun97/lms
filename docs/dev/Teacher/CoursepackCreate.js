@@ -15,7 +15,7 @@ class CoursePackCreate extends Component {
         courseCode: "",
         courseTitle: "",
         courseDescription: "",
-        category: "",
+        category: ["Computer Science", "Information System", "Information Security"],
         startDate: "",
         price: "",
         categories: "",
@@ -23,16 +23,7 @@ class CoursePackCreate extends Component {
 
     componentDidMount() {
         let userId = localStorage.getItem("userId")
-        this.setState({ userId: 3 }) //TODO: change user id
-
-        axios.get(`${API_MOCK}/category`)
-            .then(result => {
-                this.setState({ categories: result.data })
-                console.log(this.state.categories)
-            })
-            .catch(error => {
-                console.error("error in axios " + error);
-            });
+        this.setState({ userId: userId })
     }
 
     handleOnChange = event => {
@@ -127,6 +118,7 @@ class CoursePackCreate extends Component {
 
     handleCreate = event => {
         const { courseCode, courseTitle, courseDescription, category, price, userId } = this.state
+        console.log(userId)
         axios.put(`${API}Coursepack/createCoursepack?userId=${userId}`, {
             code: courseCode,
             title: courseTitle,
@@ -135,6 +127,7 @@ class CoursePackCreate extends Component {
             price: price
         })
             .then(result => {
+                window.location.reload()
                 alert("created") //TODO: go to previous page
             })
             .catch(error => {
