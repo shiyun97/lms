@@ -77,7 +77,7 @@ class ModuleConsultationPageStudent extends Component {
         axios
             .get(`http://localhost:8080/LMS-war/webresources/Consultation/viewConsultationByStudent?userId=${userId}`)
             .then(result => {
-                console.log(result.data)
+                // console.log(result.data.consultationTimeslot)
                 this.setState({ statusBooked: "done", bookedRows: result.data.consultationTimeslot, recallConsultations: false })
             })
             .catch(error => {

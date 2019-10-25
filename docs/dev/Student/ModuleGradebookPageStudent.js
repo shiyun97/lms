@@ -69,7 +69,10 @@ class ModuleGradebookPageStudent extends Component {
                 this.setState({ status: "done", gradeItems: result.data.gradeItems })
             })
             .catch(error => {
-                this.setState({ status: "error", label: error.response.data.errorMessage })
+                if (error.response.data.errorMessage === "No grade entries for the student")
+                    this.setState({ status: "error", label: "No grade entries found." })
+                else
+                    this.setState({ status: "error", label: error.response.data.errorMessage })
                 console.error("error in axios " + error);
             });
     }

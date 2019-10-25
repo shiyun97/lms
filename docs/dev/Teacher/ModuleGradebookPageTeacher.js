@@ -429,7 +429,10 @@ class ModuleGradebookPageTeacher extends Component {
                 this.setState({ status: "done", gradeItems: result.data.gradeItems, recallGradebook: false })
             })
             .catch(error => {
-                this.setState({ status: "error", label: error.response.data.errorMessage })
+                if (error.response.data.errorMessage === "No grade items yet for this module")
+                    this.setState({ status: "error", label: "No grade entries found." })
+                else
+                    this.setState({ status: "error", label: error.response.data.errorMessage })
                 console.error("error in axios " + error);
             });
     }
