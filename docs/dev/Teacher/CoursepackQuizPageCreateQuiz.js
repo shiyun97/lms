@@ -84,11 +84,11 @@ class CoursepackQuizPageCreateQuiz extends Component {
                 description: this.state.description,
                 quizType: this.state.quizType,
                 questionsOrder: "initial",
-                openingDate: this.state.openingDate + ":00", //remove
-                closingDate: this.state.closingDate + ":00", //remove
+                // openingDate: this.state.openingDate + ":00", //remove
+                // closingDate: this.state.closingDate + ":00", //remove
                 publish: true,
-                noOfAttempts: this.state.noOfAttempts, //remove
-                maxTimeToFinish: this.state.maxTimeToFinish, //remove
+                // noOfAttempts: this.state.noOfAttempts, //remove
+                // maxTimeToFinish: this.state.maxTimeToFinish, //remove
                 questions: this.state.elements
             })
             .then(result => {
@@ -272,7 +272,7 @@ class CoursepackQuizPageCreateQuiz extends Component {
                             Instructions
                         </label>
                         <textarea type="text" rows="3" name="description" onChange={this.handleChange} className="form-control" />
-                        <MDBRow>
+                        {/* <MDBRow>
                             <MDBCol md="6">
                                 <br />
                                 <TextField
@@ -323,7 +323,7 @@ class CoursepackQuizPageCreateQuiz extends Component {
                                     min={1}
                                     required />
                             </MDBCol>
-                        </MDBRow>
+                        </MDBRow> */}
                     </div>
                 );
             case 1:

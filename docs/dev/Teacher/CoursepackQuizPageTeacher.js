@@ -37,16 +37,16 @@ class CoursepackQuizPageTeacher extends Component {
                     "aria-label": "Name"
                 }
             },
-            {
-                "label": "Opening Date",
-                "field": "openingDate",
-                "width": 200
-            },
-            {
-                "label": "Closing Date",
-                "field": "closingDate",
-                "width": 100
-            },
+            // {
+            //     "label": "Opening Date",
+            //     "field": "openingDate",
+            //     "width": 200
+            // },
+            // {
+            //     "label": "Closing Date",
+            //     "field": "closingDate",
+            //     "width": 100
+            // },
             // {
             //     "label": "Status",
             //     "field": "quizStatus",
@@ -148,8 +148,8 @@ class CoursepackQuizPageTeacher extends Component {
                 tempQuizzes.push({
                     quizId: quiz[i].quizId,
                     name: quiz[i].title,
-                    openingDate: quiz[i].openingDate,
-                    closingDate: quiz[i].closingDate,
+                    // openingDate: quiz[i].openingDate,
+                    // closingDate: quiz[i].closingDate,
                     // status: quiz[i].publish ? "Published" : "Unpublished",
                     maxMarks: quiz[i].maxMarks,
                     // editButton: <MDBRow align="center">
