@@ -127,8 +127,8 @@ class CoursePackCreate extends Component {
             price: price
         })
             .then(result => {
+                this.props.history.goBack()
                 window.location.reload()
-                alert("created") //TODO: go to previous page
             })
             .catch(error => {
                 console.error("error in axios " + error);

@@ -6,6 +6,7 @@ import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, E
 import CoursepackSideNavigation from "../CoursepackSideNavigation";
 import SectionContainer from "../../components/sectionContainer";
 import CoursepackFeedbackPage from "../CoursepackFeedbackPage";
+import { Snackbar } from '@material-ui/core';
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 
@@ -17,6 +18,8 @@ class CoursepackDetailsTeacher extends Component {
         courseOutline: "",
         listOfOutlineId: "",
         coursepackId: "",
+        message: "",
+        openSnackbar: false,
     }
 
     componentDidMount() {
@@ -56,8 +59,6 @@ class CoursepackDetailsTeacher extends Component {
         }
     }
 
-
-
     showDescriptions = () => {
         return (
             <MDBContainer style={{ paddingTop: 20 }}>
@@ -89,6 +90,7 @@ class CoursepackDetailsTeacher extends Component {
                 })
             })
             .catch(error => {
+                this.setState({ message: error.response, openSnackbar: true })
                 console.error("error in axios " + error);
             });
     }
@@ -223,6 +225,22 @@ class CoursepackDetailsTeacher extends Component {
 
                     </SectionContainer>
                 </div>
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.openSnackbar}
+                    autoHideDuration={6000}
+                    onClose={this.handleClose}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">{this.state.message}</span>}
+                    action={[
+                        <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                    ]}
+                />
             </div >
         )
     }

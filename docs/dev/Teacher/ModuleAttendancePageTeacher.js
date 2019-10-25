@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
 import { MDBInput, MDBDataTable, MDBContainer, MDBModal, MDBModalHeader, MDBRow, MDBModalBody, MDBModalFooter, MDBCol, MDBBtn, MDBIcon } from "mdbreact";
-import { Dialog, DialogTitle, DialogContent, DialogActions, AppBar, Tabs, Tab, Typography, Paper } from '@material-ui/core';
+import { Dialog, DialogTitle, DialogContent, DialogActions, AppBar, Tabs, Tab, Typography, Paper, Checkbox } from '@material-ui/core';
 import axios from "axios";
 import SwipeableViews from 'react-swipeable-views';
 import { Snackbar } from '@material-ui/core';
@@ -49,7 +49,7 @@ class ModuleAttendancePageTeacher extends Component {
         this.setState({ lectureList: result.data.lectureDetails })
       })
       .catch(error => {
-        this.setState({ message: error.response.data, openSnackbar: true })
+        this.setState({ message: error.response, openSnackbar: true })
         console.error("error in axios " + error);
       });
 
@@ -59,7 +59,7 @@ class ModuleAttendancePageTeacher extends Component {
         this.setState({ tutorialList: result.data.tutorials })
       })
       .catch(error => {
-        this.setState({ message: error.response.data, openSnackbar: true })
+        this.setState({ message: error.response, openSnackbar: true })
         console.error("error in axios " + error);
       });
 
@@ -69,7 +69,7 @@ class ModuleAttendancePageTeacher extends Component {
         this.setState({ studentListLecture: result.data.userList })
       })
       .catch(error => {
-        this.setState({ message: error.response.data, openSnackbar: true })
+        this.setState({ message: error.response, openSnackbar: true })
         console.error("error in axios " + error);
       });
 
@@ -79,7 +79,7 @@ class ModuleAttendancePageTeacher extends Component {
         this.setState({ allLectureAttendance: result.data.attendanceList })
       })
       .catch(error => {
-        this.setState({ message: error.response.data, openSnackbar: true })
+        this.setState({ message: error.response, openSnackbar: true })
         console.error("error in axios " + error);
       });
   }
@@ -145,7 +145,7 @@ class ModuleAttendancePageTeacher extends Component {
         console.log(this.state.allTutorialAttendance)
       })
       .catch(error => {
-        this.setState({ message: error.response.data, openSnackbar: true })
+        this.setState({ message: error.response, openSnackbar: true })
         console.error("error in axios " + error);
       });
   }
@@ -212,14 +212,15 @@ class ModuleAttendancePageTeacher extends Component {
     let date = new Date()
     if ((this.state.classType === "") || (this.state.classType === "lecture" && this.state.classgroup === "") || (this.state.classType === 'tutorial' && this.state.classgroup === "")) {
       return (
-        //TODO: add alert/ snackbar
-        <h6>Please select all fields!</h6>
+        this.setState({
+          openSnackbar: true,
+          message: `Please select all options.`
+        })
       )
     } else if (this.state.classType === 'lecture') { //create lecture attendance
       this.setState({ open: true, modal: false })
       axios.post(`${API}Attendance/createAttendance?moduleId=${this.state.moduleId}`, { startTs: date })
         .then(result => {
-          /* alert(`lecture attendance ${result.data.attendanceId}  created`) */
           this.setState({
             attendanceId: result.data.attendanceId,
             openSnackbar: true,
@@ -244,7 +245,7 @@ class ModuleAttendancePageTeacher extends Component {
           this.generateQRCode()
         })
         .catch(error => {
-          this.setState({ message: error.response.data, openSnackbar: true })
+          this.setState({ message: error.response, openSnackbar: true })
           console.error("error in axios " + error);
         });
     } else {
@@ -335,7 +336,7 @@ class ModuleAttendancePageTeacher extends Component {
         this.setState({ lectureAttendees: result.data.attendees, display: true })
       })
       .catch(error => {
-        this.setState({ message: error.response.data, openSnackbar: true })
+        this.setState({ message: error.response, openSnackbar: true })
         console.error("error in axios " + error);
       });
   }
@@ -434,7 +435,7 @@ class ModuleAttendancePageTeacher extends Component {
           window.location.reload()
         })
         .catch(error => {
-          this.setState({ message: error.response.data, openSnackbar: true })
+          this.setState({ message: error.response, openSnackbar: true })
           console.error("error in axios " + error);
         });
     }
@@ -454,7 +455,7 @@ class ModuleAttendancePageTeacher extends Component {
           window.location.reload()
         })
         .catch(error => {
-          this.setState({ message: error.response.data, openSnackbar: true })
+          this.setState({ message: error.response, openSnackbar: true })
           console.error("error in axios " + error);
         });
     }
@@ -470,7 +471,7 @@ class ModuleAttendancePageTeacher extends Component {
         window.location.reload()
       })
       .catch(error => {
-        this.setState({ message: error.response.data, openSnackbar: true })
+        this.setState({ message: error.response, openSnackbar: true })
         console.error("error in axios " + error);
       });
   }
@@ -536,7 +537,7 @@ class ModuleAttendancePageTeacher extends Component {
         })
       })
       .catch(error => {
-        this.setState({ message: error.response.data, openSnackbar: true })
+        this.setState({ message: error.response, openSnackbar: true })
         console.error("error in axios " + error);
       });
 
@@ -546,7 +547,7 @@ class ModuleAttendancePageTeacher extends Component {
         this.setState({ studentListTutorial: result.data.userList })
       })
       .catch(error => {
-        this.setState({ message: error.response.data, openSnackbar: true })
+        this.setState({ message: error.response, openSnackbar: true })
         console.error("error in axios " + error);
       });
   }
@@ -639,10 +640,9 @@ class ModuleAttendancePageTeacher extends Component {
       this.state.chosen = this.state.chosen.filter(item => item !== index);
     console.log(this.state.chosen)
   }
-  //TODO: align center
   showCheckbox = event => {
     return (
-        <MDBInput type="checkbox" id="checkbox1" algin="center"/>
+      <Checkbox fullWidth color="primary"/>
     )
   }
 
@@ -656,7 +656,7 @@ class ModuleAttendancePageTeacher extends Component {
         window.location.reload()
       })
       .catch(error => {
-        this.setState({ message: error.response.data, openSnackbar: true })
+        this.setState({ message: error.response, openSnackbar: true })
         console.error("error in axios " + error);
       });
   }
@@ -672,7 +672,7 @@ class ModuleAttendancePageTeacher extends Component {
           window.location.reload()
         })
         .catch(error => {
-          this.setState({ message: error.response.data, openSnackbar: true })
+          this.setState({ message: error.response, openSnackbar: true })
           console.error("error in axios " + error);
         });
     }
@@ -690,7 +690,7 @@ class ModuleAttendancePageTeacher extends Component {
           window.location.reload()
         })
         .catch(error => {
-          this.setState({ message: error.response.data, openSnackbar: true })
+          this.setState({ message: error.response, openSnackbar: true })
           console.error("error in axios " + error);
         });
     }

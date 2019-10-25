@@ -4,6 +4,7 @@ import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBIcon, MDBModal, MDBModalHeader
 import axios from "axios";
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
 import SectionContainer from '../../components/sectionContainer';
+import { Snackbar } from '@material-ui/core';
 
 const API_MOCK = "http://localhost:3001"
 const API = "http://localhost:8080/LMS-war/webresources/"
@@ -28,7 +29,9 @@ class CoursepackArrangements extends Component {
         lessonOrder: "",
         changeExpand: "",
         currentName: "",
-        currentId: ""
+        currentId: "",
+        message: "",
+        openSnackbar: false,
     }
 
     componentDidMount() {
@@ -43,6 +46,7 @@ class CoursepackArrangements extends Component {
                 })
             })
             .catch(error => {
+                this.setState({ message: error.response, openSnackbar: true })
                 console.error("error in axios " + error);
             });
 
@@ -52,6 +56,7 @@ class CoursepackArrangements extends Component {
                 this.setState({ videos: result.data.files })
             })
             .catch(error => {
+                this.setState({ message: error.response, openSnackbar: true })
                 console.error("error in axios " + error);
             });
 
@@ -88,6 +93,7 @@ class CoursepackArrangements extends Component {
                 })
             })
             .catch(error => {
+                this.setState({ message: error.response, openSnackbar: true })
                 console.error("error in axios " + error);
             });
     }
@@ -111,11 +117,13 @@ class CoursepackArrangements extends Component {
     addOutline = event => {
         this.setState({ modalAddOutline: false })
 
-        axios.put(`${API}Coursepack/createOutline?coursepackId=${this.state.coursepackId}&name=${this.state.outlineName}`) //FIXME:change id
+        axios.put(`${API}Coursepack/createOutline?coursepackId=${this.state.coursepackId}&name=${this.state.outlineName}`)
             .then(result => {
+                this.setState({ message: "New outline added", openSnackbar: true })
                 window.location.reload()
             })
             .catch(error => {
+                this.setState({ message: error.response, openSnackbar: true })
                 console.error("error in axios " + error);
             });
     }
@@ -146,22 +154,32 @@ class CoursepackArrangements extends Component {
         if (this.state.selectedType === "Video") {
             axios.put(`${API}Coursepack/createLessonOrder?outlineId=${outlineId}&type=file&id=${this.state.selectedVideo}`)
                 .then(result => {
-                    alert(`lesson created with ${outlineId} and video id ${this.state.selectedVideo}`)
+                    this.setState({
+                        message: `Lesson created in ${outlineId} with video id ${this.state.selectedVideo} added`,
+                        openSnackbar: true
+                    })
                     window.location.reload()
                 })
                 .catch(error => {
+                    this.setState({ message: error.response, openSnackbar: true })
                     console.error("error in axios " + error);
                 });
-        } else {
+        } else if (this.state.selectedType === "Quiz") {
 
             axios.put(`${API}Coursepack/createLessonOrder?outlineId=${outlineId}&type=quiz&id=${this.state.selectedQuiz}`)
                 .then(result => {
-                    alert("outline created")
+                    this.setState({
+                        message: `Lesson created in ${outlineId} with quiz id ${this.state.selectedQuiz} added`,
+                        openSnackbar: true
+                    })
                     window.location.reload()
                 })
                 .catch(error => {
+                    this.setState({ message: error.response, openSnackbar: true })
                     console.error("error in axios " + error);
                 });
+        } else {
+            return "Please select an option"
         }
     }
 
@@ -171,12 +189,14 @@ class CoursepackArrangements extends Component {
 
         axios.post(`${API}Coursepack/swapOutline?outlineId1=${currentOutlineId}&outlineId2=${previousOutlineId}`)
             .then(result => {
+                this.setState({
+                    message: "Outline swapped with previous",
+                    openSnackbar: true
+                })
                 window.location.reload()
-                alert("swapped")
             })
             .catch(error => {
                 console.error("error in axios " + error);
-                console.log(error.response)
             });
     }
 
@@ -188,7 +208,10 @@ class CoursepackArrangements extends Component {
         axios.post(`${API}Coursepack/swapOutline?outlineId1=${currentOutlineId}&outlineId2=${nextOutlineId}`)
             .then(result => {
                 window.location.reload()
-                alert("swapped")
+                this.setState({
+                    message: "Outline swapped with next",
+                    openSnackbar: true
+                })
             })
             .catch(error => {
                 console.error("error in axios " + error);
@@ -203,7 +226,10 @@ class CoursepackArrangements extends Component {
         axios.post(`${API}Coursepack/swapLessonOrder?lessonOrderId1=${currentOutlineId}&lessonOrderId2=${previousOutlineId}`)
             .then(result => {
                 window.location.reload()
-                alert("swapped")
+                this.setState({
+                    message: "Lesson swapped with previous",
+                    openSnackbar: true
+                })
             })
             .catch(error => {
                 console.error("error in axios " + error);
@@ -218,21 +244,14 @@ class CoursepackArrangements extends Component {
         axios.post(`${API}Coursepack/swapLessonOrder?lessonOrderId1=${currentOutlineId}&lessonOrderId2=${nextOutlineId}`)
             .then(result => {
                 window.location.reload()
-                alert("swapped")
+                this.setState({
+                    message: "Lesson swapped with next",
+                    openSnackbar: true
+                })
             })
             .catch(error => {
                 console.error("error in axios " + error);
             });
-    }
-
-
-    editOutlineName = event => {
-        console.log("edit outline name")
-    }
-
-    saveEditOutlineName = event => {
-        this.setState({ modalAddOutline: false })
-        //*TODO: post to backend
     }
 
     displayUploaded = () => {
@@ -270,10 +289,17 @@ class CoursepackArrangements extends Component {
     deleteLessonOrder = lessonOrderId => {
         axios.delete(`${API}Coursepack/deleteLessonOrder?lessonOrderId=${lessonOrderId}`)
             .then(result => {
-                alert("deleted")
+                this.setState({
+                    message: "Lesson deleted",
+                    openSnackbar: true
+                })
                 window.location.reload()
             })
             .catch(error => {
+                this.setState({
+                    message: error.response,
+                    openSnackbar: true
+                })
                 console.error("error in axios " + error);
             });
     }
@@ -338,10 +364,17 @@ class CoursepackArrangements extends Component {
         console.log(this.state.edittedOutlineName)
         axios.post(`${API}Coursepack/updateOutline?outlineId=${this.state.currentId}&name=${this.state.edittedOutlineName}`)
             .then(result => {
-                alert("updated")
+                this.setState({
+                    message: "Outline updated",
+                    openSnackbar: true
+                })
                 window.location.reload()
             })
             .catch(error => {
+                this.setState({
+                    message: error.response,
+                    openSnackbar: true
+                })
                 console.error("error in axios " + error);
             });
     }
@@ -375,10 +408,17 @@ class CoursepackArrangements extends Component {
     deleteOutline = outlineId => {
         axios.delete(`${API}Coursepack/deleteOutline?outlineId=${outlineId}`)
             .then(result => {
-                alert("deleted")
+                this.setState({
+                    message: "Outline deleted",
+                    openSnackbar: true
+                })
                 window.location.reload()
             })
             .catch(error => {
+                this.setState({
+                    message: error.response,
+                    openSnackbar: true
+                })
                 console.error("error in axios " + error);
             });
     }
@@ -502,6 +542,22 @@ class CoursepackArrangements extends Component {
                     {this.showOutline()}
 
                 </MDBContainer>
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.openSnackbar}
+                    autoHideDuration={6000}
+                    onClose={this.handleClose}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">{this.state.message}</span>}
+                    action={[
+                        <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                    ]}
+                />
             </div>
         )
     }

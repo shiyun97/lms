@@ -4,6 +4,7 @@ import SectionContainer from "../../components/sectionContainer";
 import axios from "axios";
 import CoursepackSideNavigation from '../CoursepackSideNavigation';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
+import { Snackbar } from '@material-ui/core';
 
 const API_MOCK = "http://localhost:3001"
 const API = "http://localhost:8080/LMS-war/webresources/"
@@ -21,7 +22,9 @@ class CoursePackEdit extends Component {
         disabled: true,
         editSave: "Edit",
         open: false,
-        publish: false
+        publish: false,
+        message: "",
+        openSnackbar: false,
     }
 
     componentDidMount() {
@@ -72,10 +75,12 @@ class CoursePackEdit extends Component {
         this.setState({ open: false })
         axios.delete(`${API}Coursepack/deleteCoursepack?coursepackId=${this.state.coursepackId}`)
             .then(result => {
-                alert("deleted")
+                this.setState({ message: "Coursepack deleted.", openSnackbar: true })
+                this.props.history.go(-1)//TODO:
                 console.log(this.state.categories)
             })
             .catch(error => {
+                this.setState({ message: error.response, openSnackbar: true })
                 console.error("error in axios " + error);
             });
     }
@@ -101,10 +106,11 @@ class CoursePackEdit extends Component {
                 price: price
             })
                 .then(result => {
-                    alert("updated")
+                    this.setState({ message: "Coursepack updated.", openSnackbar: true })
+                    window.location.reload()
                 })
                 .catch(error => {
-                    alert(error)
+                    this.setState({ message: error.response, openSnackbar: true })
                     console.error("error in axios " + error);
                 });
         }
@@ -114,7 +120,7 @@ class CoursePackEdit extends Component {
         const { courseCode, courseTitle, courseDescription, category, price } = this.state
 
         if (this.state.publish === true) {
-            alert("this course has already been published")
+            this.setState({ message: "This coursepack has been published", openSnackbar: true })            
         } else {
             axios.post(`${API}Coursepack/updateCoursepack?coursepackId=${this.state.coursepackId}`, {
                 code: courseCode,
@@ -125,11 +131,11 @@ class CoursePackEdit extends Component {
                 published: true,
             })
                 .then(result => {
-                    alert("published")
-                    
+                    this.setState({ message: "Coursepack published.", openSnackbar: true })
+                    window.location.reload()
                 })
                 .catch(error => {
-                    alert(error)
+                    this.setState({ message: error.response, openSnackbar: true })
                     console.error("error in axios " + error);
                 })
         }
@@ -171,15 +177,16 @@ class CoursePackEdit extends Component {
 
                     <MDBRow style={{ paddingTop: "20px" }}>
                         <MDBCol sm="4">Course Description: </MDBCol>
+                        {console.log(this.state.courseDescription)}
                         <MDBCol sm="8">
-                            <textarea
-                                default={this.state.courseDescription}
+                            <input
+                                defaultValue={this.state.courseDescription}
                                 name="courseDescription"
                                 type="text"
                                 className="form-control"
                                 placeholder="Course Description"
                                 onChange={this.handleOnChange}
-                                rows={8}
+                                height='100px'
                                 disabled={this.state.disabled}
                             //FIXME:
                             />
@@ -236,10 +243,13 @@ class CoursePackEdit extends Component {
             outline: outline
         })
             .then(result => {
-                alert("created")
+                this.setState({ message: "Coursepack created.", openSnackbar: true })
+                this.props.history.go(-1)
+                window.location.reload()
                 console.log(this.state.categories)
             })
             .catch(error => {
+                this.setState({ message: error.response, openSnackbar: true })
                 console.error("error in axios " + error);
             });
     }
@@ -272,6 +282,22 @@ class CoursePackEdit extends Component {
                         </Dialog>
                     </MDBCol>
                 </MDBContainer>
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.openSnackbar}
+                    autoHideDuration={6000}
+                    onClose={this.handleClose}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">{this.state.message}</span>}
+                    action={[
+                        <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                    ]}
+                />
             </div >
         );
     }
