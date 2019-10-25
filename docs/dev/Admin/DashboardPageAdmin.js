@@ -132,7 +132,7 @@ class DashboardPageAdmin extends Component {
             .post(`http://localhost:8080/LMS-war/webresources/Annoucement/createSystemAnnoucement?userId=${localStorage.getItem('userId')}`, {
                 content: this.state.content,
                 emailNotification: this.state.emailNotification,
-                publish: this.state.publish,
+                // publish: this.state.publish,
                 createdDate: createdDate,
                 lastUpdatedDate: lastUpdateDate,
                 startDate: startDate + ":00",
@@ -155,7 +155,7 @@ class DashboardPageAdmin extends Component {
         this.setState({
             content: announcement.content,
             emailNotification: announcement.emailNotification,
-            publish: announcement.publish,
+            // publish: announcement.publish,
             createdDate: announcement.createdDate,
             lastUpdatedDate: announcement.lastUpdatedDate,
             startDate: announcement.startDate,
@@ -178,7 +178,7 @@ class DashboardPageAdmin extends Component {
             .put(`http://localhost:8080/LMS-war/webresources/Annoucement/updateSystemAnnoucement?annoucementId=${this.state.currAnnouncementId}&userId=${localStorage.getItem('userId')}`, {
                 content: this.state.content,
                 emailNotification: this.state.emailNotification,
-                publish: this.state.publish,
+                // publish: this.state.publish,
                 createdDate: this.state.createdDate,
                 lastUpdatedDate: lastUpdateDate,
                 startDate: startDate + ":00",
@@ -270,7 +270,7 @@ class DashboardPageAdmin extends Component {
                                 />
                             </MDBCol>
                             <MDBCol md="12" className="mt-4">
-                                Publish
+                                {/* Publish
                   <Checkbox
                                     checked={this.state.publish}
                                     onChange={this.handleCheckBoxChange('publish')}
@@ -280,7 +280,7 @@ class DashboardPageAdmin extends Component {
                                     inputProps={{
                                         'aria-label': 'secondary checkbox',
                                     }}
-                                />
+                                /> */}
                                 Email Notification
                   <Checkbox
                                     checked={this.state.emailNotification}
@@ -365,7 +365,7 @@ class DashboardPageAdmin extends Component {
                                 />
                             </MDBCol>
                             <MDBCol md="12" className="mt-4">
-                                Publish
+                                {/* Publish
                   <Checkbox
                                     checked={this.state.publish}
                                     onChange={this.handleCheckBoxChange('publish')}
@@ -375,7 +375,7 @@ class DashboardPageAdmin extends Component {
                                     inputProps={{
                                         'aria-label': 'secondary checkbox',
                                     }}
-                                />
+                                /> */}
                                 Email Notification
                   <Checkbox
                                     checked={this.state.emailNotification}

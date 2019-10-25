@@ -153,7 +153,7 @@ class ModuleAnnouncementsPageTeacher extends Component {
             .post(`http://localhost:8080/LMS-war/webresources/Annoucement/createModuleAnnoucement/${this.state.moduleId}?userId=${localStorage.getItem('userId')}`, {
                 content: this.state.content,
                 emailNotification: this.state.emailNotification,
-                publish: this.state.publish,
+                // publish: this.state.publish,
                 createdDate: createdDate,
                 lastUpdatedDate: lastUpdateDate,
                 startDate: startDate + ":00",
@@ -176,7 +176,7 @@ class ModuleAnnouncementsPageTeacher extends Component {
         this.setState({
             content: announcement.content,
             emailNotification: announcement.emailNotification,
-            publish: announcement.publish,
+            // publish: announcement.publish,
             createdDate: announcement.createdDate,
             lastUpdatedDate: announcement.lastUpdatedDate,
             startDate: announcement.startDate,
@@ -199,7 +199,7 @@ class ModuleAnnouncementsPageTeacher extends Component {
             .put(`http://localhost:8080/LMS-war/webresources/Annoucement/updateModuleAnnoucement?moduleId=${this.state.moduleId}&annoucementId=${this.state.currAnnouncementId}&userId=${localStorage.getItem('userId')}`, {
                 content: this.state.content,
                 emailNotification: this.state.emailNotification,
-                publish: this.state.publish,
+                // publish: this.state.publish,
                 createdDate: this.state.createdDate,
                 lastUpdatedDate: lastUpdateDate,
                 startDate: startDate + ":00",
@@ -290,7 +290,7 @@ class ModuleAnnouncementsPageTeacher extends Component {
                                 />
                             </MDBCol>
                             <MDBCol md="12" className="mt-4">
-                                Publish
+                                {/* Publish
                   <Checkbox
                                     checked={this.state.publish}
                                     onChange={this.handleCheckBoxChange('publish')}
@@ -300,7 +300,7 @@ class ModuleAnnouncementsPageTeacher extends Component {
                                     inputProps={{
                                         'aria-label': 'secondary checkbox',
                                     }}
-                                />
+                                /> */}
                                 Email Notification
                   <Checkbox
                                     checked={this.state.emailNotification}
@@ -385,7 +385,7 @@ class ModuleAnnouncementsPageTeacher extends Component {
                                 />
                             </MDBCol>
                             <MDBCol md="12" className="mt-4">
-                                Publish
+                                {/* Publish
                   <Checkbox
                                     checked={this.state.publish}
                                     onChange={this.handleCheckBoxChange('publish')}
@@ -395,7 +395,7 @@ class ModuleAnnouncementsPageTeacher extends Component {
                                     inputProps={{
                                         'aria-label': 'secondary checkbox',
                                     }}
-                                />
+                                /> */}
                                 Email Notification
                   <Checkbox
                                     checked={this.state.emailNotification}

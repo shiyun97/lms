@@ -118,33 +118,33 @@ class DashboardPageTeacher extends Component {
 
   createAnnouncement = () => {
     // console.log(this.state)
-        var createdDate = new Date;
-        createdDate = moment(createdDate).format("DD-MM-YYYY HH:mm:ss")
-        var lastUpdateDate = createdDate
-        var startDate = this.state.startDate;
-        startDate = moment(startDate).format("DD-MM-YYYY HH:mm:ss")
-        var endDate = this.state.endDate;
-        endDate = moment(endDate).format("DD-MM-YYYY HH:mm:ss")
-        var userId = localStorage.getItem('userId');
-        axios
-            .post(`http://localhost:8080/LMS-war/webresources/Annoucement/createModuleAnnoucement/${this.state.moduleId}?userId=${userId}`, {
-                content: this.state.content,
-                emailNotification: this.state.emailNotification,
-                publish: this.state.publish,
-                createdDate: createdDate,
-                lastUpdatedDate: lastUpdateDate,
-                startDate: startDate + ":00",
-                endDate: endDate + ":00",
-                title: this.state.title
-            })
-            .then(result => {
-                // console.log(result.data.annoucementList)
-                this.setState({ openSnackbar: true, message: "Announcement successfully created", recall: "recallAnn", modal1: false })
-            })
-            .catch(error => {
-                this.setState({ message: error.response.data.errorMessage, openSnackbar: true })
-                console.error("error in axios " + error);
-            });
+    var createdDate = new Date;
+    createdDate = moment(createdDate).format("DD-MM-YYYY HH:mm:ss")
+    var lastUpdateDate = createdDate
+    var startDate = this.state.startDate;
+    startDate = moment(startDate).format("DD-MM-YYYY HH:mm:ss")
+    var endDate = this.state.endDate;
+    endDate = moment(endDate).format("DD-MM-YYYY HH:mm:ss")
+    var userId = localStorage.getItem('userId');
+    axios
+      .post(`http://localhost:8080/LMS-war/webresources/Annoucement/createModuleAnnoucement/${this.state.moduleId}?userId=${userId}`, {
+        content: this.state.content,
+        emailNotification: this.state.emailNotification,
+        // publish: this.state.publish,
+        createdDate: createdDate,
+        lastUpdatedDate: lastUpdateDate,
+        startDate: startDate + ":00",
+        endDate: endDate + ":00",
+        title: this.state.title
+      })
+      .then(result => {
+        // console.log(result.data.annoucementList)
+        this.setState({ openSnackbar: true, message: "Announcement successfully created", recall: "recallAnn", modal1: false })
+      })
+      .catch(error => {
+        this.setState({ message: error.response.data.errorMessage, openSnackbar: true })
+        console.error("error in axios " + error);
+      });
   }
 
   renderCreateAnnouncementModalBox = () => {
@@ -215,7 +215,7 @@ class DashboardPageTeacher extends Component {
                 />
               </MDBCol>
               <MDBCol md="12" className="mt-4">
-                Publish
+                {/* Publish
                 <Checkbox
                   checked={this.state.publish}
                   onChange={this.handleCheckBoxChange('publish')}
@@ -225,7 +225,7 @@ class DashboardPageTeacher extends Component {
                   inputProps={{
                     'aria-label': 'secondary checkbox',
                   }}
-                />
+                /> */}
                 Email Notification
                 <Checkbox
                   checked={this.state.emailNotification}

@@ -117,7 +117,6 @@ class ModuleGradebookPageTeacher extends Component {
     getUngradedModuleQuiz = () => {
         let userId = localStorage.getItem('userId');
         let moduleId = this.props.dataStore.getCurrModId;
-        console.log("test")
         axios
             .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveModuleQuizNotInGradebook/${moduleId}?userId=${userId}`)
             .then(result => {

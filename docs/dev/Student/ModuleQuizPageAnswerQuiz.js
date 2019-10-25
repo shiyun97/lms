@@ -73,6 +73,7 @@ class ModuleQuizPageAnswerQuiz extends Component {
                     <br />
                     <h1>Quiz Answers</h1>
                     <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
+                      {/* {console.log(this.state.json.pages[0].elements)} */}
                       <p>{this.state.json.pages[0].elements.map((element) =>
                         <>
                           <b><h6>Question {element.number}</h6></b>
