@@ -67,7 +67,7 @@ class CoursepackDetailsTeacher extends Component {
             })
             // get ratings list
             axios
-                .get(`${API}/feedback/retrieveAllRatings?coursepackId=${coursepackId}`)
+                .get(`${API}feedback/retrieveAllRatings?coursepackId=${coursepackId}`)
                 .then((result) => {
                     console.log(result);
                     let data = result.data;

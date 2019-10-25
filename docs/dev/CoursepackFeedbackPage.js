@@ -23,6 +23,8 @@ import { Rating } from '@material-ui/lab';
 import TextField from '@material-ui/core/TextField';
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
 import Slide from '@material-ui/core/Slide';
+import { observer, inject } from 'mobx-react';
+import moment from 'moment';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -30,12 +32,14 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const API = "http://localhost:8080/LMS-war/webresources";
 
+@inject('dataStore')
+@observer
 class CoursepackFeedbackPage extends Component {
 
     state = {
         coursepackId: "",
         ratings: [
-            {
+            /*{
                 ratingId: 2,
                 comment: "This is a good course. yay",
                 rating: 5,
@@ -52,7 +56,7 @@ class CoursepackFeedbackPage extends Component {
                     firstName: "Tom",
                     lastName: "Doe"
                 }
-            }
+            }*/
         ],
         averageRating: 4.6,
         ratingSpread: [64, 29, 6, 1, 0],
@@ -69,7 +73,11 @@ class CoursepackFeedbackPage extends Component {
     }
 
     async initPage() {
-        let coursepackId = this.props.coursepackId;
+        //let coursepackId = this.props.coursepackId;
+        var pathname = location.pathname;
+        pathname = pathname.split('/');
+        let coursepackId = pathname[2];
+        console.log(coursepackId)
         let accessRight = localStorage.getItem("accessRight");
 
         if (coursepackId) {
@@ -77,7 +85,7 @@ class CoursepackFeedbackPage extends Component {
                 coursepackId: coursepackId
             })
             // get ratings list
-            axios
+            await axios
                 .get(`${API}/feedback/retrieveAllRatings?coursepackId=${coursepackId}`)
                 .then((result) => {
                     console.log(result);

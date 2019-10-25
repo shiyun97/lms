@@ -53,6 +53,7 @@ class CoursepackDetailsPageStudent extends Component {
         ratingStarsInput: 5,
         message: "",
         openSnackbar: false,
+        ratingCoursepackId: ""
     }
 
     componentDidMount() {
@@ -69,6 +70,31 @@ class CoursepackDetailsPageStudent extends Component {
             })
             .catch(error => {
                 console.error("error in axios " + error);
+            });
+        
+        this.initPage();
+    }
+
+    initPage() {
+        var pathname = location.pathname;
+        pathname = pathname.split('/');
+        let ratingCoursepackId = pathname[2];
+        this.setState({ ratingCoursepackId: ratingCoursepackId })
+        axios
+            .get(`${API}feedback/retrieveAllRatings?coursepackId=${ratingCoursepackId}`)
+            .then((result) => {
+                console.log(result);
+                let data = result.data;
+                if (data) {
+                    this.setState({
+                        ratings: data.ratings,
+                        averageRating: data.avg,
+                        ratingSpread: [data.per5, data.per4, data.per3, data.per2, data.per1]
+                    })
+                }
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
             });
     }
 
@@ -253,12 +279,12 @@ class CoursepackDetailsPageStudent extends Component {
         if (ratingCommentInput && ratingStarsInput) {
             let request = {
                 userId: localStorage.getItem('userId'),
-                coursepackId: this.state.coursepackId,
+                coursepackId: this.state.ratingCoursepackId,
                 rating: ratingStarsInput,
                 comment: ratingCommentInput
             }
             axios
-                .post(`${API}/feedback/createRating`, request)
+                .post(`${API}feedback/createRating`, request)
                 .then((result) => {
                     console.log(result);
                     this.setState({
@@ -340,12 +366,16 @@ class CoursepackDetailsPageStudent extends Component {
                 {localStorage.getItem('accessRight') === 'Teacher' ? <CoursepackSideNavigation courseId={this.props.coursepackId} /> : null}
                 {/*                 <CoursepackSideNavigation courseId={this.props.coursepackId} />
  */}
-                <MDBContainer style={{ paddingTop: 50 }}>
+                <MDBContainer style={{ paddingTop: 20 }}>
                     {localStorage.getItem('accessRight') !== 'Teacher' ? (
-                        <div>
-                            <MDBBtn onClick={e => this.addRating()} color="primary">Rate</MDBBtn>
-                            {this.showAddRatingDialog()}
-                        </div>
+                        <MDBRow>
+                            <MDBCol>
+                                <div style={{ float: "right" }}>
+                                    <MDBBtn onClick={e => this.addRating()} color="primary">Rate</MDBBtn>
+                                    {this.showAddRatingDialog()}
+                                </div>
+                            </MDBCol>
+                        </MDBRow>
                     )
                         : null
                     }
