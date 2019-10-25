@@ -37,6 +37,7 @@
     "chart.js": "2.8.0",
     "classnames": "2.2.6",
     "google-map-react": "^1.1.4",
+    "image-webpack-loader": "^6.0.0",
     "json-server": "^0.15.1",
     "material-ui-pickers": "2.2.4",
     "mobx": "^5.13.1",

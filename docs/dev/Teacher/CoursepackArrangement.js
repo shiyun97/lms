@@ -19,7 +19,6 @@ class CoursepackArrangements extends Component {
         modalAddVideo: "",
         coursepackId: "",
         courseOutline: "",
-        quiz: [{ "id": 1, "name": "quiz1" }, { "id": 2, "name": "quiz2" }, { "id": 3, "name": "quiz3" }],
         selectedVideo: "",
         selectedQuiz: "",
         selectedType: "",
@@ -32,6 +31,8 @@ class CoursepackArrangements extends Component {
         currentId: "",
         message: "",
         openSnackbar: false,
+        quizzes: "",
+        videos: ""
     }
 
     componentDidMount() {
@@ -60,7 +61,16 @@ class CoursepackArrangements extends Component {
                 console.error("error in axios " + error);
             });
 
-        //get created coursepack quiz //TODO:
+        //get created coursepack quiz 
+        axios.get(`${API}Assessment/retrieveAllCoursepackQuiz/${coursepackId}?userId=${localStorage.getItem('userId')}`)
+        .then(result => {
+            this.setState({ quizzes: result.data.quizzes })
+            console.log(result.data.quizzes)
+        })
+        .catch(error => {
+            this.setState({ message: error.response, openSnackbar: true })
+            console.error("error in axios " + error);
+        });
 
     }
 
@@ -268,6 +278,7 @@ class CoursepackArrangements extends Component {
                         <MDBCol key={index} size="12">
                             <SectionContainer>
                                 <MDBCol size="8" >
+                                    {order[index].title}
                                     {order[index].name}
                                 </MDBCol>
                                 <MDBCol align="right">
@@ -337,8 +348,8 @@ class CoursepackArrangements extends Component {
                         <MDBCol sm="8">
                             <select onChange={this.handleSelectedQuiz} className="browser-default custom-select">
                                 <option>Choose an option</option>
-                                {this.state.quiz && this.state.quiz.map(
-                                    (quiz, index) => <option key={index} value={quiz.id}>{quiz.name}</option>)
+                                {this.state.quizzes && this.state.quizzes.map(
+                                    (quiz, index) => <option key={index} value={quiz.quizId}>{quiz.title}</option>)
                                 }
                             </select>
                         </MDBCol>

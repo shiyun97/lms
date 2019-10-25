@@ -20,7 +20,7 @@ class CoursepackDashboardPageTeacher extends Component {
     componentDidMount() {
         axios.get(`${API}Coursepack/getUserCoursepack/${localStorage.getItem('userId')}`)
             .then(result => {
-                this.setState({ createdCoursepacks: result.data.coursepack })
+                this.setState({ createdCoursepacks: result.data.coursepack, published: result.data.coursepack })
             })
             .catch(error => {
                 console.error("error in axios " + error);
@@ -37,6 +37,7 @@ class CoursepackDashboardPageTeacher extends Component {
 
     //TODO: not published
     showAllDrafts = () => {
+
 
         return (
             <MDBContainer>

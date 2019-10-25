@@ -7,19 +7,18 @@ import {
 import axios from "axios";
 import { NavLink } from 'react-router-dom';
 import VideoThumbnail from 'react-video-thumbnail';
-import Night from '../night.mp4'
-import Pexels from '../pexels.mp4'
+import biz from '../biz.jpg'
+import design from '../design.jpg'
+import cprog from '../cprog.jpg'
 import CoursepackTopNav from "../CoursepackTopNav";
 
-
-const API_MOCK = "http://localhost:3001"
 const API = "http://localhost:8080/LMS-war/webresources/"
 const FILE_SERVER = "http://127.0.0.1:8887/";
 
 class CoursepackDashboardPageStudent extends Component {
   state = {
     coursepackList: "",
-    category: "",
+    category: ["Computer Science", "Business Management", "Engineering"],
     filesList: ""
   }
 
@@ -32,65 +31,82 @@ class CoursepackDashboardPageStudent extends Component {
         console.error("error in axios " + error);
       });
 
-    axios.get(`${API}/category`)
-      .then(result => {
-        this.setState({ category: result.data })
-        console.log(result.data)
-      })
-      .catch(error => {
-        console.error("error in axios " + error);
-      });
 
     //get all coursepack multimedia
-    axios.get(`${API}file/retrieveAllMultimediaForCoursepacks`) //FIXME:
+    axios.get(`${API}file/retrieveAllMultimediaForCoursepacks`)
       .then(result => {
         this.setState({ filesList: result.data.files })
-        console.log(result.data)
       })
       .catch(error => {
         console.error("error in axios " + error);
       });
   }
 
-  //TODO:
-  handleClick = event => {
-    console.log("go into course view")
-  }
 
   mediaCarousel = () => {
     return (
       <MDBCol align="center">
-        <MDBCarousel
+
+       {/*  <MDBCarousel
           interval={1500}
           activeItem={1}
-          length={5}
+          length={3}
           showControls={true}
           showIndicators={true}
           style={{ height: 400, width: 700 }}
         >
-          <MDBCarouselInner>
-            {this.state.filesList && this.state.filesList.map((file, index) => {
-              let savedFileName = file && file.location.split('\\')[1];
-              let fullPath = FILE_SERVER + savedFileName;
-              return (
-                <MDBCarouselItem itemId={index} onClick={this.handleClick}>
-                  <MDBView >
-                    <VideoThumbnail
-                      videoUrl={fullPath}
-                      thumbnailHandler={(thumbnail) => thumbnail}
-                      width={680}
-                      height={500}
-                    />
-                  </MDBView>
-                </MDBCarouselItem>
+          {this.state.coursepackList && this.state.coursepackList.map((coursepack, index) => {
+            return (
+              <NavLink to={`/coursepack/${coursepack.coursepackId}`}>
+                <MDBCarouselInner item>
+                  <MDBCarouselItem itemId={index}>
+                    {this.showImage(index)}
+                  </MDBCarouselItem>
+                </MDBCarouselInner>
+              </NavLink>
 
-              )
-            })}
-          </MDBCarouselInner>
-        </MDBCarousel>
-      </MDBCol>
+            )
+          })}
+        </MDBCarousel> */}
+      </MDBCol >
     );
   };
+
+  showImage = (index) => {
+    if (index === 1) {
+      return (
+        <MDBView>
+          <img
+            className="d-block w-100"
+            src={biz}
+            alt="First slide"
+          />
+        </MDBView>
+      )
+    } else if (index === 2) {
+      return (
+        <MDBView>
+          <img
+            className="d-block w-100"
+            src={cprog}
+            alt="First slide"
+          />
+        </MDBView>
+      )
+    } else if (index === 3) {
+      return (
+        <MDBView>
+          <img
+            className="d-block w-100"
+            src={design}
+            alt="First slide"
+          />
+        </MDBView>
+      )
+    } else {
+      return null
+    }
+  }
 
   courseRecommendation = () => {
     return (
@@ -100,7 +116,7 @@ class CoursepackDashboardPageStudent extends Component {
         <MDBRow>
           {this.state.coursepackList && this.state.coursepackList.map((course) => {
             return (
-              <MDBCol size="3" key={course.coursepackId} style={{paddingBottom: 30}}>
+              <MDBCol size="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
                 <NavLink to={`/coursepack/${course.coursepackId}/`} activeClassName="activeClass">
                   <MDBCard >
                     <MDBCardBody>
@@ -122,46 +138,6 @@ class CoursepackDashboardPageStudent extends Component {
     )
   };
 
-  // lastAccessed = () => {
-  //   //only show if student is enrolled into some courses
-  //   return (
-  //     <MDBContainer>
-  //       <h4>Continue from where you are</h4>
-  //       <hr />
-  //       {/* <Card style={{ maxWidth: 500 }}> */}
-  //       <MDBRow>
-  //         {this.state.coursepackList && this.state.coursepackList.map((course) => {
-  //           return (
-  //             <MDBCol size="3" key={course.id}>
-  //               <Card style={{ maxHeight: 300 }}>
-  //                 <CardActionArea >
-  //                   <CardMedia
-  //                     style={{ height: 140 }}
-  //                     image="/static/images/cards/contemplative-reptile.jpg"
-  //                     title="Contemplative Reptile"
-  //                   />
-  //                   <CardContent>
-  //                     <Typography gutterBottom variant="h5" component="h2">
-  //                       {course.courseTitle}
-  //                     </Typography>
-  //                     <Typography variant="body2" color="textSecondary" component="p">
-  //                       {course.category}
-  //                     </Typography>
-  //                     <Typography variant="body2" color="textSecondary" component="p">
-  //                       {course.price}
-  //                     </Typography>
-  //                     <Typography variant="body2" color="textSecondary" component="p">
-  //                       {course.teacher}
-  //                     </Typography>
-  //                   </CardContent>
-  //                 </CardActionArea>
-  //               </Card>
-  //             </MDBCol>
-  //           )
-  //         })}
-  //       </MDBRow>
-  //     </MDBContainer>)
-  // }
 
   render() {
     console.log("student")
@@ -172,7 +148,6 @@ class CoursepackDashboardPageStudent extends Component {
         <MDBContainer style={{ paddingTop: 100 }} >
           {this.mediaCarousel()}
           <br />
-          {/* this.lastAccessed() */}
           <br />
           <br />
           {this.courseRecommendation()}
