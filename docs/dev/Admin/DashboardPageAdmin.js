@@ -583,7 +583,7 @@ class AnnouncementListItem extends Component {
                 }
 
                 <MDBIcon icon="calendar-alt" className="mr-2 fa-fw" />
-                on {new Date(announcement.startDate).toLocaleString()}
+                on {announcement.startDate}
                 <div className="mb-2"></div>
                 {announcement.content}
             </div>

@@ -184,7 +184,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                         <MDBBtn onClick={() => this.addAnswerToQuestion(element.number)} size="small" color="grey">Add Answer</MDBBtn>
                     </MDBCol>
                     <MDBCol md="12" className="mt-4">
-                        {element.choices.map((answer) => { return this.renderAnswerInput(answer) })}
+                        {element.choices.map((answer, index) => { return this.renderAnswerInput(answer, index) })}
                     </MDBCol>
                     <MDBCol md="12" className="mt-4" align="center">
                         {this.props.dataStore.getQuestions.length !== 0 && <MDBBtn onClick={() => this.saveQuestionsToList()} align="center" size="small" color="grey">Save</MDBBtn>}
@@ -241,11 +241,11 @@ class ModuleQuizPageCreateQuiz extends Component {
         }
     }
 
-    renderAnswerInput = (answer) => {
+    renderAnswerInput = (answer, index) => {
         return (
             <>
                 <label className="grey-text">
-                    Answer #
+                    Answer {index+1}
                 </label>
                 <input type="text" name="answer" onChange={this.handleChange} className="form-control" />
                 <br />

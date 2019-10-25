@@ -107,7 +107,7 @@ class DashboardPageTeacher extends Component {
             <h6 style={{ fontWeight: "bold" }}>{announcement.title}</h6>
           </MDBCol>
           <MDBCol md="6" align="right">
-            <h6 style={{ fontStyle: "italic", fontSize: "10px" }}> {new Date(announcement.startDate).toLocaleString()} </h6>
+            <h6 style={{ fontStyle: "italic", fontSize: "10px" }}> {announcement.startDate} </h6>
           </MDBCol>
           <MDBCol md="12"> {announcement.content} </MDBCol>
         </MDBRow>
