@@ -49,7 +49,7 @@ class ModuleConsultationPageTeacher extends Component {
                 width: 200
             },
             {
-                label: "",
+                label: "Delete Slot",
                 field: "button",
                 width: 200
             }
@@ -57,7 +57,8 @@ class ModuleConsultationPageTeacher extends Component {
         rows: [],
         openSnackbar: false,
         message: "",
-        recallConsultations: false
+        recallConsultations: false,
+        label: ""
     }
 
     getAllConsultations = () => {
@@ -70,7 +71,7 @@ class ModuleConsultationPageTeacher extends Component {
                 this.setState({ status: "done", rows: result.data.consultationTimeslots, recallConsultations: false })
             })
             .catch(error => {
-                this.setState({ status: "error", message: "An error has occured in retrieving consultation slots." })
+                this.setState({ status: "error", rows: [], label: "No consultations found." })
                 console.error("error in axios " + error);
             });
     }
@@ -233,18 +234,23 @@ class ModuleConsultationPageTeacher extends Component {
         var newRows = []
         const row = this.state.rows
         // console.log(row[0])
-        for (let i = 0; i < row.length; i++) {
-            newRows.push({
-                consultationId: row[i].consultationTsId,
-                startDate: moment(row[i].startD).format('DD-MM-YYYY'),
-                startTime: row[i].startTs,
-                endTime: row[i].endTs,
-                // booker: row[i].booker === undefined ? "-" : row[i].booker,
-                booker: row[i].booker === null ? "-" : (row[i].booker.firstName + " " + row[i].booker.lastName),
-                button: <MDBBtn size="small" onClick={() => this.deleteConsultationSlot(row[i].consultationTsId)} color="primary">Delete</MDBBtn>
-            })
+        var data = {}
+        if (row.length === 0) {
+            data = { columns: this.state.columns, rows: [{ label: this.state.label }] }
+        } else {
+            for (let i = 0; i < row.length; i++) {
+                newRows.push({
+                    consultationId: row[i].consultationTsId,
+                    startDate: moment(row[i].startD).format('DD-MM-YYYY'),
+                    startTime: row[i].startTs,
+                    endTime: row[i].endTs,
+                    // booker: row[i].booker === undefined ? "-" : row[i].booker,
+                    booker: row[i].booker === null ? "-" : (row[i].booker.firstName + " " + row[i].booker.lastName),
+                    button: <MDBBtn size="small" onClick={() => this.deleteConsultationSlot(row[i].consultationTsId)} color="primary">Delete</MDBBtn>
+                })
+            }
+            data = { columns: this.state.columns, rows: newRows }
         }
-        const data = { columns: this.state.columns, rows: newRows }
         const widerData = {
             columns: [...data.columns.map(col => {
                 col.width = 200;

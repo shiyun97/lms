@@ -53,20 +53,21 @@ class ModuleConsultationPageStudent extends Component {
         status: "retrieving",
         statusBooked: "retrieving",
         recallConsultations: false,
+        label: "No available consultations found.",
+        bookedLabel: "No booked consultations found."
     }
 
     getAllAvailableConsultations = () => {
         const moduleId = this.props.dataStore.getCurrModId;
         // console.log(moduleId);
         axios
-            // .get("http://localhost:3001/allConsultations")
             .get(`http://localhost:8080/LMS-war/webresources/Consultation/viewAllAvailableConsultation/${moduleId}`)
             .then(result => {
                 // console.log(result.data.consultationTimeslot)
                 this.setState({ status: "done", rows: result.data.consultationTimeslot, recallConsultations: false })
             })
             .catch(error => {
-                this.setState({ status: "error" })
+                this.setState({ status: "error", rows: [] })
                 console.error("error in axios " + error);
             });
     }
@@ -74,14 +75,13 @@ class ModuleConsultationPageStudent extends Component {
     getBookedConsultations = () => {
         const userId = this.props.dataStore.getUserId;
         axios
-            // .get("http://localhost:3001/allConsultations")
             .get(`http://localhost:8080/LMS-war/webresources/Consultation/viewConsultationByStudent?userId=${userId}`)
             .then(result => {
-                // console.log(result.data)
-                this.setState({ statusBooked: "done", bookedRows: result.data, recallConsultations: false })
+                console.log(result.data)
+                this.setState({ statusBooked: "done", bookedRows: result.data.consultationTimeslot, recallConsultations: false })
             })
             .catch(error => {
-                this.setState({ statusBooked: "error" })
+                this.setState({ statusBooked: "error", bookedRows: [] })
                 console.error("error in axios " + error);
             });
     }
@@ -121,7 +121,6 @@ class ModuleConsultationPageStudent extends Component {
         const userId = this.props.dataStore.getUserId;
         axios
             .post(`http://localhost:8080/LMS-war/webresources/Consultation/bookConsultation?consultationTimeslotId=${consultationId}&userId=${userId}`)
-            // .put(`http://localhost:3001/allConsultations/${row.id}`, {
             .then(result => {
                 // console.log(result.data)
                 this.setState({ recallConsultations: true, message: "Consultation slot booked!", openSnackbar: true })
@@ -156,19 +155,24 @@ class ModuleConsultationPageStudent extends Component {
     render() {
         var availableConsultations = []
         const row = this.state.rows
-        for (let i = 0; i < row.length; i++) {
-            availableConsultations.push({
-                consultationId: row[i].consultationTsId,
-                startDate: moment(row[i].startD).format('DD-MM-YYYY'),
-                startTime: row[i].startTs,
-                endTime: row[i].endTs,
-                // date: "",
-                // startTime: "",
-                // endTime: "",
-                button: <MDBBtn size="small" onClick={() => this.bookConsultationSlot(row[i].consultationTsId)} color="primary">Book Slot</MDBBtn>
-            })
+        var avaiData = {}
+        if (row.length === 0) {
+            avaiData = { columns: this.state.columns, rows: [{ label: this.state.label }] }
+        } else {
+            for (let i = 0; i < row.length; i++) {
+                availableConsultations.push({
+                    consultationId: row[i].consultationTsId,
+                    startDate: moment(row[i].startD).format('DD-MM-YYYY'),
+                    startTime: row[i].startTs,
+                    endTime: row[i].endTs,
+                    // date: "",
+                    // startTime: "",
+                    // endTime: "",
+                    button: <MDBBtn size="small" onClick={() => this.bookConsultationSlot(row[i].consultationTsId)} color="primary">Book Slot</MDBBtn>
+                })
+            }
+            avaiData = { columns: this.state.columns, rows: availableConsultations }
         }
-        const avaiData = { columns: this.state.columns, rows: availableConsultations }
         const availableConsultationData = {
             columns: [...avaiData.columns.map(col => {
                 col.width = 200;
@@ -177,19 +181,24 @@ class ModuleConsultationPageStudent extends Component {
         }
         var bookedConsultations = []
         const bookedRow = this.state.bookedRows
-        for (let i = 0; i < bookedRow.length; i++) {
-            bookedConsultations.push({
-                consultationId: bookedRow[i].consultationTsId,
-                startDate: moment(bookedRow[i].startD).format('DD-MM-YYYY'),
-                startTime: bookedRow[i].startTs,
-                endTime: bookedRow[i].endTs,
-                // date: "",
-                // startTime: "",
-                // endTime: "",
-                button: <MDBBtn size="small" onClick={() => this.dropConsultationSlot(bookedRow[i].consultationTsId)} color="primary">Drop Slot</MDBBtn>
-            })
+        var bookedData = {}
+        if (bookedRow.length === 0) {
+            bookedData = { columns: this.state.columns, rows: [{ bookedLabel: this.state.bookedLabel }] }
+        } else {
+            for (let i = 0; i < bookedRow.length; i++) {
+                bookedConsultations.push({
+                    consultationId: bookedRow[i].consultationTsId,
+                    startDate: moment(bookedRow[i].startD).format('DD-MM-YYYY'),
+                    startTime: bookedRow[i].startTs,
+                    endTime: bookedRow[i].endTs,
+                    // date: "",
+                    // startTime: "",
+                    // endTime: "",
+                    button: <MDBBtn size="small" onClick={() => this.dropConsultationSlot(bookedRow[i].consultationTsId)} color="primary">Drop Slot</MDBBtn>
+                })
+            }
+            bookedData = { columns: this.state.columns, rows: bookedConsultations }
         }
-        const bookedData = { columns: this.state.columns, rows: bookedConsultations }
         const bookedConsultationData = {
             columns: [...bookedData.columns.map(col => {
                 col.width = 200;
