@@ -63,6 +63,11 @@ class ModuleQuizPageTeacher extends Component {
                 "width": 100
             },
             {
+                "label": "Preview Quiz",
+                "field": "preview",
+                "width": 100
+            },
+            {
                 "label": "Review Students Answers",
                 "field": "view",
                 "width": 100
@@ -95,7 +100,7 @@ class ModuleQuizPageTeacher extends Component {
         event.preventDefault();
         this.setState({ [event.target.name]: event.target.value });
     }
-    
+
     handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -183,8 +188,9 @@ class ModuleQuizPageTeacher extends Component {
                     maxMarks: quiz[i].maxMarks,
                     editButton: <MDBRow align="center">
                         <MDBCol md={6}><NavLink to={`/modules/${moduleId}/quiz/${quiz[i].quizId}/edit`}><MDBIcon style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></NavLink></MDBCol>
-                        <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(quiz[i].quizId)} style={{ paddingTop:12, cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
+                        <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(quiz[i].quizId)} style={{ paddingTop: 12, cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
                     </MDBRow>,
+                    previewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quiz[i].quizId}/preview`}>Preview</MDBBtn></center>,
                     viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quiz[i].quizId}/review`}>Review</MDBBtn></center>,
                     publishButton: <center>
                         {quiz[i].publishAnswer ? "Published" : <MDBBtn color="primary" outline size="sm" onClick={() => this.publishAnswers(quiz[i].quizId)}>Publish</MDBBtn>}
