@@ -74,13 +74,13 @@ class ModuleGradebookPageTeacher extends Component {
     componentDidMount() {
         this.initPage();
         this.getAllGradeItem();
-        this.getUngradedModuleQuiz()
+        this.getUngradedModuleQuiz();
     }
 
     componentDidUpdate() {
         if (this.state.recallGradebook) {
             this.getAllGradeItem();
-            this.getUngradedModuleQuiz()
+            this.getUngradedModuleQuiz();
         }
     }
 
@@ -91,7 +91,7 @@ class ModuleGradebookPageTeacher extends Component {
 
     toggle = (nr, row) => {
         let modalNumber = "modal" + nr;
-        console.log("toggle")
+        // console.log("toggle")
         this.setState({
             [modalNumber]: !this.state[modalNumber]
         });
@@ -117,6 +117,7 @@ class ModuleGradebookPageTeacher extends Component {
     getUngradedModuleQuiz = () => {
         let userId = localStorage.getItem('userId');
         let moduleId = this.props.dataStore.getCurrModId;
+        console.log("test")
         axios
             .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveModuleQuizNotInGradebook/${moduleId}?userId=${userId}`)
             .then(result => {

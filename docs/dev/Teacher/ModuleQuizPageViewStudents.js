@@ -67,9 +67,10 @@ class ModuleQuizPageViewStudents extends Component {
     };
 
     getAllStudentsAttempts = () => {
+        let userId = localStorage.getItem('userId');
         var quizId = this.props.dataStore.getCurrQuizId
         axios
-            .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllQuizAttempts?userId=5&quizId=${quizId}`)
+            .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllQuizAttempts?userId=${userId}&quizId=${quizId}`)
             .then(result => {
                 // console.log(result.data)
                 this.setState({

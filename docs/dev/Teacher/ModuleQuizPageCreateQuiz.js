@@ -190,7 +190,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                         {element.choices.map((answer, index) => { return this.renderAnswerInput(answer, index) })}
                     </MDBCol>
                     <MDBCol md="12" className="mt-4" align="center">
-                        {this.props.dataStore.getQuestions.length !== 0 && <MDBBtn onClick={() => this.saveQuestionsToList()} align="center" size="small" color="grey">Save</MDBBtn>}
+                        {this.props.dataStore.getQuestions.length !== 0 && <MDBBtn onClick={() => this.saveQuestionsToList("mcq")} align="center" size="small" color="grey">Save</MDBBtn>}
                         <hr />
                     </MDBCol>
                 </>
@@ -236,7 +236,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                         <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} className="form-control" />
                         <br />
                         <center>
-                            {this.props.dataStore.getQuestions.length !== 0 && <MDBBtn onClick={() => this.saveQuestionsToList()} align="center" size="small" color="grey">Save</MDBBtn>}
+                            {this.props.dataStore.getQuestions.length !== 0 && <MDBBtn onClick={() => this.saveQuestionsToList("short-answer")} align="center" size="small" color="grey">Save</MDBBtn>}
                         </center>
                         <hr />
                     </MDBCol>
@@ -256,10 +256,10 @@ class ModuleQuizPageCreateQuiz extends Component {
         )
     }
 
-    saveQuestionsToList = () => {
+    saveQuestionsToList = (questionType) => {
         if (this.props.dataStore.getQuestions.length > 0) {
             var newQuestions = this.state.elements
-            if (this.state.questionType === "mcq") {
+            if (questionType === "mcq") {
                 var answers = this.state.choices;
                 answers.push({ text: this.state.answer })
                 this.setState({ choices: answers })
@@ -277,7 +277,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                         choices: this.state.choices,
                     })
                 this.setState({ elements: newQuestions, choices: [] })
-            } else if (this.state.questionType === "short-answer") {
+            } else if (questionType === "short-answer") {
                 newQuestions.push(
                     {
                         type: "text", //text
@@ -336,6 +336,27 @@ class ModuleQuizPageCreateQuiz extends Component {
         }
     }
 
+    addQuestionToAdaptiveList = () => {
+        var number = this.props.dataStore.getQuestions.length + 1
+        this.props.dataStore.getQuestions.push(
+            {
+                type: "radiogroup",
+                name: "MCQ",
+                number: number,
+                title: "",
+                isRequired: true,
+                level: 1, //only for adaptive,
+                explanation: "",
+                correctAnswer: "",
+                points: 0,
+                choices: [
+                    {
+                        text: ""
+                    }
+                ],
+            })
+    }
+
     addAnswerToQuestion = (number) => {
         this.props.dataStore.addAnswerToQuestion(number, { text: "" })
         var answers = this.state.choices;
@@ -382,8 +403,8 @@ class ModuleQuizPageCreateQuiz extends Component {
                                     required
                                     inputs={
                                         <select name="quizType" onChange={this.handleChange} className="browser-default custom-select">
-                                            <option value="Normal">Normal</option>
-                                            <option value="Adaptive">Adaptive</option>
+                                            <option value="normal">Normal</option>
+                                            <option value="adaptive">Adaptive</option>
                                         </select>
                                     }
                                 />
@@ -479,22 +500,27 @@ class ModuleQuizPageCreateQuiz extends Component {
                             {this.props.dataStore.getQuestions.map((element) => { return this.renderQuestion(element) })}
                         </MDBRow>
                         <center>
-                            <MDBCol md="12" className="mt-4" align="center">
-                                <MDBInputGroup
-                                    style={{ paddingTop: 22, width: 350 }}
-                                    containerClassName="mb-3"
-                                    prepend="Question Type"
-                                    required
-                                    inputs={
-                                        <select name="questionType" onChange={this.handleChange} className="browser-default custom-select">
-                                            <option value="0">Choose...</option>
-                                            <option value="mcq">MCQ</option>
-                                            <option value="short-answer">Short Answer</option>
-                                        </select>
-                                    }
-                                />
-                            </MDBCol>
-                            <MDBBtn onClick={() => this.addQuestionToList()} align="center" size="small" color="blue">Add Question</MDBBtn>
+                            {this.state.quizType === "normal" &&
+                                <>
+                                    <MDBCol md="12" className="mt-4" align="center">
+                                        <MDBInputGroup
+                                            style={{ paddingTop: 22, width: 350 }}
+                                            containerClassName="mb-3"
+                                            prepend="Question Type"
+                                            required
+                                            inputs={
+                                                <select name="questionType" onChange={this.handleChange} className="browser-default custom-select">
+                                                    <option value="0">Choose...</option>
+                                                    <option value="mcq">MCQ</option>
+                                                    <option value="short-answer">Short Answer</option>
+                                                </select>
+                                            }
+                                        />
+                                    </MDBCol>
+                                    <MDBBtn onClick={() => this.addQuestionToList()} align="center" size="small" color="blue">Add Question</MDBBtn>
+                                </>
+                            }
+                            {this.state.quizType === "adaptive" && <MDBBtn onClick={() => this.addQuestionToAdaptiveList()} align="center" size="small" color="blue">Add Question</MDBBtn>}
                         </center>
                     </div>
                 );
