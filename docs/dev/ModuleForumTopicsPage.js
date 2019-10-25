@@ -355,7 +355,7 @@ class ModuleForumTopicsPage extends Component {
                         <MDBBtn color="grey" onClick={this.toggleModal("Edit")}>
                             Cancel
                         </MDBBtn>
-                        <MDBBtn color="primary" type="submit" disabled={!this.state.editTitleInput || !this.state.editContentInput} >Create</MDBBtn>
+                        <MDBBtn color="primary" type="submit" disabled={!this.state.editTitleInput || !this.state.editContentInput} >Edit</MDBBtn>
                     </MDBModalFooter>
                 </form>
             </MDBModal>

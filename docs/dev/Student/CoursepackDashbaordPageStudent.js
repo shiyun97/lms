@@ -14,6 +14,7 @@ import CoursepackTopNav from "../CoursepackTopNav";
 
 const API_MOCK = "http://localhost:3001"
 const API = "http://localhost:8080/LMS-war/webresources/"
+const FILE_SERVER = "http://127.0.0.1:8887/";
 
 class CoursepackDashboardPageStudent extends Component {
   state = {
@@ -41,7 +42,7 @@ class CoursepackDashboardPageStudent extends Component {
       });
 
     //get all coursepack multimedia
-    axios.get(`${API}file/retrieveAllMultimediaForCoursepack?coursepackId=30`) //FIXME:
+    axios.get(`${API}file/retrieveAllMultimediaForCoursepacks`) //FIXME:
       .then(result => {
         this.setState({ filesList: result.data.files })
         console.log(result.data)
@@ -62,19 +63,21 @@ class CoursepackDashboardPageStudent extends Component {
         <MDBCarousel
           interval={1500}
           activeItem={1}
-          length={3}
+          length={5}
           showControls={true}
           showIndicators={true}
           style={{ height: 400, width: 700 }}
         >
           <MDBCarouselInner>
             {this.state.filesList && this.state.filesList.map((file, index) => {
+              let savedFileName = file && file.location.split('\\')[1];
+              let fullPath = FILE_SERVER + savedFileName;
               return (
                 <MDBCarouselItem itemId={index} onClick={this.handleClick}>
                   <MDBView >
                     <VideoThumbnail
-                      videoUrl={file.location}
-                      thumbnailHandler={(thumbnail) => (thumbnail)}
+                      videoUrl={fullPath}
+                      thumbnailHandler={(thumbnail) => thumbnail}
                       width={680}
                       height={500}
                     />

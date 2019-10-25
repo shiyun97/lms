@@ -38,7 +38,6 @@ class CoursepackDashboardPageTeacher extends Component {
     //TODO: not published
     showAllDrafts = () => {
 
-
         return (
             <MDBContainer>
                 <MDBRow>

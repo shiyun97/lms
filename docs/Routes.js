@@ -78,7 +78,8 @@ import ModuleQuizPage from './dev/ModuleQuizPage';
 import ModuleMultimediaPage, { ModuleMultimediaDetailsPageStyled } from './dev/ModuleMultimediaPage';
 import ModuleConsultationPage from './dev/ModuleConsultationPage';
 import ModuleAttendancePage from './dev/ModuleAttendancePage';
-import MarkAttendanceStudent from './dev/Student/MarkAttendanceStudent';
+import MarkAttendanceStudentLecture from './dev/Student/MarkAttendanceStudentLecture';
+import MarkAttendanceStudentTutorial from "./dev/Student/MarkAttendanceStudentTutorial";
 import ModuleFeedbackPage from './dev/ModuleFeedbackPage';
 import ModuleFeedbackEvaluationPage from './dev/ModuleFeedbackEvaluationPage';
 import DashboardPage from './dev/DashboardPage';
@@ -185,8 +186,8 @@ class Routes extends React.Component {
 
         {/* LMS PAGES - Student */}
         <Route exact path="/modules/:moduleId/quiz/:quizId" component={ModuleQuizPageAnswerQuiz} />
-        <Route exact path="/modules/:moduleId/markAttendanceStudent" component={MarkAttendanceStudent} />
-        <Route exact path="/student/markAttendance" component={MarkAttendanceStudent} />
+        <Route exact path="/student/markAttendance/lecture/:moduleId/:attendanceId/" component={MarkAttendanceStudentLecture} />
+        <Route exact path="/student/markAttendance/tutorial/:tutorialId/:attendanceId/" component={MarkAttendanceStudentTutorial} />
         <Route exact path="/student/mobileLogin/:classType/:classId/:attendanceId" component={MobileLogin} />
 
         {/* LMS PAGES - Public Student */}
