@@ -1,11 +1,21 @@
 import React, { Component } from 'react';
 import { MDBListGroup, MDBListGroupItem, MDBIcon } from 'mdbreact';
 import { NavLink } from 'react-router-dom';
+import { observer, inject } from 'mobx-react';
 
+@inject('dataStore')
+@observer
 class CoursepackSideNavigation extends Component {
 
+    componentDidMount() {
+        var pathname = location.pathname;
+        pathname = pathname.split("/");
+        // console.log(pathname[2])
+        this.props.dataStore.setCurrCoursepackId(pathname[2]);
+    }
+
     render() {
-        let courseId = this.props.courseId;
+        var courseId = this.props.dataStore.getCurrCoursepackId;
         return (
             <div className="sidebar-module-fixed position-fixed" style={{ paddingTop: 150 }}>
 
