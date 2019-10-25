@@ -160,13 +160,6 @@ class Routes extends React.Component {
         <Route exact path="/undermaintenance" component={UnderMaintenancePage} />
         <Route exact path="/account" component={UserProfilePage} />
 
-        {/* LMS PAGES - Public Student */}
-        <Route exact path="/coursepack/login" component={PublicLoginPage} />
-        <Route exact path="/coursepack/register" component={RegisterPage} />
-        <Route exact path="/coursepack/account" component={UserProfilePage} />
-        <Route exact path="/coursepack/:coursepackId/quiz/public" component={CoursepackQuizPageStudent} />
-        <Route exact path="/coursepack/:coursepackId/quiz/:quizId" component={CoursepackQuizPageAnswerQuiz} />
-
         {/* LMS PAGES - Admin */}
         <Route exact path="/admin" component={AdminLoginPage} />
         <Route exact path="/users" component={UsersManagementPage} />
@@ -191,6 +184,13 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/markAttendanceStudent" component={MarkAttendanceStudent} />
         <Route exact path="/student/markAttendance" component={MarkAttendanceStudent} />
         <Route exact path="/student/mobileLogin/:classType/:classId/:attendanceId" component={MobileLogin} />
+
+        {/* LMS PAGES - Public Student */}
+        <Route exact path="/coursepack/login" component={PublicLoginPage} />
+        <Route exact path="/coursepack/register" component={RegisterPage} />
+        <Route exact path="/coursepack/account" component={UserProfilePage} />
+        <Route exact path="/coursepack/:coursepackId/quiz/public" component={CoursepackQuizPageStudent} />
+        <Route exact path="/coursepack/:coursepackId/quiz/:quizId/answer" component={CoursepackQuizPageAnswerQuiz} />
 
         {/* LMS PAGES - Student/ Teacher */}
         <Route exact path="/" component={StudentLoginPage} />

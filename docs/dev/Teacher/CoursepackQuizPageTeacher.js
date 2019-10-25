@@ -61,16 +61,6 @@ class CoursepackQuizPageTeacher extends Component {
                 "label": "",
                 "field": "",
                 "width": 100
-            },
-            {
-                "label": "Review Students Answers",
-                "field": "view",
-                "width": 100
-            },
-            {
-                "label": "Publish Answers",
-                "field": "publish",
-                "width": 100
             }
         ],
         rows: [{ label: "Retrieving data..." }],
@@ -186,10 +176,6 @@ class CoursepackQuizPageTeacher extends Component {
                         <MDBCol md={6}><NavLink to={`/coursepack/${coursepackId}/quiz/${quiz[i].quizId}/edit`}><MDBIcon style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></NavLink></MDBCol>
                         <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(quiz[i].quizId)} style={{ paddingTop: 12, cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
                     </MDBRow>,
-                    viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/coursepack/${coursepackId}/quiz/${quiz[i].quizId}/review`}>Review</MDBBtn></center>,
-                    publishButton: <center>
-                        {quiz[i].publishAnswer ? "Published" : <MDBBtn color="primary" outline size="sm" onClick={() => this.publishAnswers(quiz[i].quizId)}>Publish</MDBBtn>}
-                    </center>
                 })
             }
         } else {

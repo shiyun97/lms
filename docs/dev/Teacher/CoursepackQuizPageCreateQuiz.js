@@ -3,7 +3,7 @@ import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBIcon, MDBInputGroup }
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import CoursepackSideNavigation from "../CoursepackSideNavigation";
-import { Stepper, Step, StepLabel, TextField, Typography, Switch, Snackbar } from '@material-ui/core';
+import { Stepper, Step, StepLabel, TextField, Typography, Snackbar, Checkbox } from '@material-ui/core';
 import axios from 'axios';
 
 @inject('dataStore')
@@ -68,24 +68,26 @@ class CoursepackQuizPageCreateQuiz extends Component {
         //     coursepackId: coursepackId,
         //     description: this.state.explanation,
         //     quizType: this.state.quizType,
-        //     questionsOrder: this.state.questionsOrder ? "random" : "initial",
+        //     questionsOrder: "initial",
         //     openingDate: this.state.openingDate + ":00",
         //     closingDate: this.state.closingDate + ":00",
-        //     publish: this.state.publish,
+        // publish: true,
+        // publishAnswer: true,
         //     noOfAttempts: this.state.noOfAttempts,
         //     maxTimeToFinish: this.state.maxTimeToFinish,
         //     questions: this.state.elements
         // })
         axios
-            .post(`http://localhost:8080/LMS-war/webresources/Assessment/createModuleQuiz?userId=${userId}`, {
+            .post(`http://localhost:8080/LMS-war/webresources/Assessment/createCoursepackQuiz?userId=${userId}`, {
                 title: this.state.title,
                 coursepackId: coursepackId,
                 description: this.state.explanation,
                 quizType: this.state.quizType,
-                questionsOrder: this.state.questionsOrder ? "random" : "initial",
+                questionsOrder: "initial",
                 openingDate: this.state.openingDate + ":00",
                 closingDate: this.state.closingDate + ":00",
-                publish: this.state.publish,
+                publish: true,
+                publishAnswer: true,
                 noOfAttempts: this.state.noOfAttempts,
                 maxTimeToFinish: this.state.maxTimeToFinish,
                 questions: this.state.elements
@@ -127,99 +129,62 @@ class CoursepackQuizPageCreateQuiz extends Component {
     }
 
     renderQuestion = (element) => {
-        // console.log(element.type)
-        if (element.type === "radiogroup") {
-            return (
-                <><MDBCol md="12" className="mt-4" key={element.number}>
-                    <h3>Question {element.number}</h3>
-                    <label className="grey-text mt-4">
-                        Question
+        return (
+            <><MDBCol md="12" className="mt-4" key={element.number}>
+                <h3>Question {element.number}</h3>
+                <label className="grey-text mt-4">
+                    Question
                     </label>
-                    <textarea rows="3" type="text" name="title" onChange={this.handleChange} className="form-control" />
+                <textarea rows="3" type="text" name="title" onChange={this.handleChange} className="form-control" />
+            </MDBCol>
+                <MDBCol md="12" className="mt-4">
+                    <label className="grey-text">
+                        Explanation
+                    </label>
+                    <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} className="form-control" />
                 </MDBCol>
-                    <MDBCol md="12" className="mt-4">
-                        <label className="grey-text">
-                            Explanation
+                <MDBCol md="8" className="mt-4" style={{ paddingTop: 28 }}>
+                    <MDBInputGroup
+                        containerClassName="mb-3"
+                        prepend="Correct Answer"
+                        required
+                        inputs={
+                            <select name="correctAnswer" onChange={this.handleChange} className="browser-default custom-select">
+                                <option value={-1}>Choose...</option>
+                                {element.choices.map((answer, index) => { return <option value={index}>Answer {index + 1}</option> })}
+                            </select>
+                        }
+                    />
+                </MDBCol>
+                <MDBCol md="4" className="mt-4">
+                    <label className="grey-text">
+                        Points
                     </label>
-                        <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} className="form-control" />
-                    </MDBCol>
-                    <MDBCol md="8" className="mt-4" style={{ paddingTop: 28 }}>
-                        <MDBInputGroup
-                            containerClassName="mb-3"
-                            prepend="Correct Answer"
-                            required
-                            inputs={
-                                <select name="correctAnswer" onChange={this.handleChange} className="browser-default custom-select">
-                                    <option value={-1}>Choose...</option>
-                                    {element.choices.map((answer, index) => { return <option value={index}>Answer {index + 1}</option> })}
-                                </select>
-                            }
-                        />
-                    </MDBCol>
-                    <MDBCol md="4" className="mt-4">
-                        <label className="grey-text">
-                            Points
-                    </label>
-                        <input type="number" className="form-control" name="points"
-                            value={this.state.points}
-                            onChange={this.handleChange}
-                            min={1}
-                            required />
-                    </MDBCol>
-                    <MDBCol md="12" className="mt-4" align="center">
-                        <MDBBtn onClick={() => this.addAnswerToQuestion(element.number)} size="small" color="grey">Add Answer</MDBBtn>
-                    </MDBCol>
-                    <MDBCol md="12" className="mt-4">
-                        {element.choices.map((answer) => { return this.renderAnswerInput(answer) })}
-                    </MDBCol>
-                    <MDBCol md="12" className="mt-4" align="center">
-                        {this.props.dataStore.getQuestions.length !== 0 && <MDBBtn onClick={() => this.saveQuestionsToList()} align="center" size="small" color="grey">Save</MDBBtn>}
-                        <hr />
-                    </MDBCol>
-                </>
-            )
-        } else {
-            return (
-                <>
-                    <MDBCol md="10" className="mt-4" key={element.number}>
-                        <h3>Question {element.number}</h3>
-                        <label className="grey-text mt-4">
-                            Question
-                                </label>
-                        <textarea rows="3" type="text" name="question" onChange={this.handleChange} className="form-control" />
-                    </MDBCol>
-                    <MDBCol md="4" className="mt-4">
-                        <br />
-                        <br />
-                        <label className="grey-text" style={{ paddingTop: 8 }}>
-                            Points
-                                    </label>
-                        <input type="number" className="form-control" name="points"
-                            value={this.state.points}
-                            onChange={this.handleChange}
-                            min={1}
-                            required />
-                    </MDBCol>
-                    <MDBCol md="12" className="mt-4">
-                        <label className="grey-text">
-                            Explanation
-                                    </label>
-                        <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} className="form-control" />
-                        <br />
-                        <center>
-                            {this.props.dataStore.getQuestions.length !== 0 && <MDBBtn onClick={() => this.saveQuestionsToList()} align="center" size="small" color="grey">Save</MDBBtn>}
-                        </center>
-                        <hr />
-                    </MDBCol>
-                </>)
-        }
+                    <input type="number" className="form-control" name="points"
+                        value={this.state.points}
+                        onChange={this.handleChange}
+                        min={1}
+                        required />
+                </MDBCol>
+                <MDBCol md="12" className="mt-4" align="center">
+                    <MDBBtn onClick={() => this.addAnswerToQuestion(element.number)} size="small" color="grey">Add Answer</MDBBtn>
+                </MDBCol>
+                <MDBCol md="12" className="mt-4">
+                    {element.choices.map((answer, index) => { return this.renderAnswerInput(index) })}
+                </MDBCol>
+                <MDBCol md="12" className="mt-4" align="center">
+                    {this.props.dataStore.getQuestions.length !== 0 && <MDBBtn onClick={() => this.saveQuestionsToList()} align="center" size="small" color="grey">Save</MDBBtn>}
+                    <hr />
+                </MDBCol>
+            </>
+        )
     }
 
-    renderAnswerInput = (answer) => {
+    renderAnswerInput = (index) => {
         return (
             <>
                 <label className="grey-text">
-                    Answer #
+                    Answer {index}
                 </label>
                 <input type="text" name="answer" onChange={this.handleChange} className="form-control" />
                 <br />
@@ -230,81 +195,45 @@ class CoursepackQuizPageCreateQuiz extends Component {
     saveQuestionsToList = () => {
         if (this.props.dataStore.getQuestions.length > 0) {
             var newQuestions = this.state.elements
-            if (this.state.questionType === "mcq") {
-                var answers = this.state.choices;
-                answers.push({ text: this.state.answer })
-                this.setState({ choices: answers })
-                newQuestions.push(
-                    {
-                        type: "radiogroup",
-                        // name: "MCQ",
-                        // number: number,
-                        title: this.state.title,
-                        isRequired: true,
-                        level: this.state.level, //only for adaptive,
-                        explanation: this.state.explanation,
-                        correctAnswer: this.state.choices[this.state.correctAnswer].text,
-                        points: this.state.points,
-                        choices: this.state.choices,
-                    })
-                this.setState({ elements: newQuestions, choices: [] })
-            } else if (this.state.questionType === "short-answer") {
-                newQuestions.push(
-                    {
-                        type: "text", //text
-                        // name: "Short Answer",
-                        // number: number,
-                        title: this.state.title,
-                        isRequired: true,
-                        level: this.state.level, //only for adaptive,
-                        explanation: this.state.explanation,
-                        // correctAnswer: this.state.correctAnswer,
-                        points: this.state.points,
-                    })
-                this.setState({ elements: newQuestions })
-            } else {
-                this.setState({ openSnackbar: true, message: "Invalid question field" })
-            }
+            var answers = this.state.choices;
+            answers.push({ text: this.state.answer })
+            this.setState({ choices: answers })
+            newQuestions.push(
+                {
+                    type: "radiogroup",
+                    // name: "MCQ",
+                    // number: number,
+                    title: this.state.title,
+                    isRequired: true,
+                    level: this.state.level, //only for adaptive,
+                    explanation: this.state.explanation,
+                    correctAnswer: this.state.choices[this.state.correctAnswer].text,
+                    points: this.state.points,
+                    choices: this.state.choices,
+                })
+            this.setState({ elements: newQuestions, choices: [] })
         }
     }
 
     addQuestionToList = () => {
         var number = this.props.dataStore.getQuestions.length + 1
-        if (this.state.questionType === "short-answer") {
-            this.props.dataStore.getQuestions.push(
-                {
-                    type: "text", //text
-                    name: "Short Answer",
-                    number: number,
-                    title: "",
-                    isRequired: true,
-                    level: 1, //only for adaptive
-                    explanation: "",
-                    correctAnswer: "",
-                    points: 0,
-                })
-        } else if (this.state.questionType === "mcq") {
-            this.props.dataStore.getQuestions.push(
-                {
-                    type: "radiogroup",
-                    name: "MCQ",
-                    number: number,
-                    title: "",
-                    isRequired: true,
-                    level: 1, //only for adaptive,
-                    explanation: "",
-                    correctAnswer: "",
-                    points: 0,
-                    choices: [
-                        {
-                            text: ""
-                        }
-                    ],
-                })
-            // console.log(this.props.dataStore.getQuestions)
-        } else {
-            this.setState({ openSnackbar: true, message: "No question type was selected" })
-        }
+        this.props.dataStore.getQuestions.push(
+            {
+                type: "radiogroup",
+                name: "MCQ",
+                number: number,
+                title: "",
+                isRequired: true,
+                level: 1, //only for adaptive,
+                explanation: "",
+                correctAnswer: "",
+                points: 0,
+                choices: [
+                    {
+                        text: ""
+                    }
+                ],
+            })
     }
 
     addAnswerToQuestion = (number) => {
@@ -345,32 +274,6 @@ class CoursepackQuizPageCreateQuiz extends Component {
                         </label>
                         <textarea type="text" rows="3" name="description" onChange={this.handleChange} className="form-control" />
                         <MDBRow>
-                            <MDBCol md="6" className="mt-4" style={{ paddingTop: 20 }}>
-                                <label>  Shuffle Questions </label>
-                                <Checkbox
-                                    checked={this.state.questionsOrder}
-                                    onChange={this.handleCheckBoxChange('questionsOrder')}
-                                    value="questionsOrder"
-                                    name="questionsOrder"
-                                    color="primary"
-                                    inputProps={{
-                                        'aria-label': 'secondary checkbox',
-                                    }}
-                                />
-                            </MDBCol>
-                            <MDBCol md="6" className="mt-4" style={{ paddingTop: 20 }}>
-                                <label> Publish</label>
-                                <Checkbox
-                                    checked={this.state.publish}
-                                    onChange={this.handleCheckBoxChange('publish')}
-                                    value="publish"
-                                    name="publish"
-                                    color="primary"
-                                    inputProps={{
-                                        'aria-label': 'secondary checkbox',
-                                    }}
-                                />
-                            </MDBCol>
                             <MDBCol md="6">
                                 <br />
                                 <TextField
@@ -436,21 +339,6 @@ class CoursepackQuizPageCreateQuiz extends Component {
                             {this.props.dataStore.getQuestions.map((element) => { return this.renderQuestion(element) })}
                         </MDBRow>
                         <center>
-                            <MDBCol md="12" className="mt-4" align="center">
-                                <MDBInputGroup
-                                    style={{ paddingTop: 22, width: 350 }}
-                                    containerClassName="mb-3"
-                                    prepend="Question Type"
-                                    required
-                                    inputs={
-                                        <select name="questionType" onChange={this.handleChange} className="browser-default custom-select">
-                                            <option value="0">Choose...</option>
-                                            <option value="mcq">MCQ</option>
-                                            <option value="short-answer">Short Answer</option>
-                                        </select>
-                                    }
-                                />
-                            </MDBCol>
                             <MDBBtn onClick={() => this.addQuestionToList()} align="center" size="small" color="blue">Add Question</MDBBtn>
                         </center>
                     </div>
