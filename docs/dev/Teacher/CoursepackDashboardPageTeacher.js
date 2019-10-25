@@ -18,7 +18,7 @@ class CoursepackDashboardPageTeacher extends Component {
     }
 
     componentDidMount() {
-        axios.get(`${API}Coursepack/getUserCoursepack/${localStorage.getItem('userId')}`)
+        axios.get(`${API}Coursepack/getAllCoursepack/`)
             .then(result => {
                 this.setState({ createdCoursepacks: result.data.coursepack, published: result.data.coursepack })
             })
@@ -35,8 +35,7 @@ class CoursepackDashboardPageTeacher extends Component {
         }
     }
 
-    //TODO: not published
-    showAllDrafts = () => {
+    showAll = () => {
 
 
         return (
@@ -44,13 +43,13 @@ class CoursepackDashboardPageTeacher extends Component {
                 <MDBRow>
                     {this.state.createdCoursepacks && this.state.createdCoursepacks.map((course) => {
                         return (
-                            <MDBCol size="3" key={course.id} style={{paddingBottom: 30}}>
+                            <MDBCol size="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
                                 <NavLink to={`/coursepack/${course.coursepackId}/`} activeClassName="activeClass">
-                                    <MDBCard>
+                                    <MDBCard style={{height: 150}}>
                                         <MDBCardBody>
                                             {/* <MDBMedia object src="https://mdbootstrap.com/img/Photos/Others/placeholder1.jpg" alt="" /> */}
                                             <MDBCardTitle>
-                                                <MDBCardText>{course.title}</MDBCardText>
+                                                <MDBCardText><b>{course.title}</b></MDBCardText>
                                                 <MDBCardText>{course.category}</MDBCardText>
                                                 <MDBCardText>SGD {course.price}</MDBCardText>
                                             </MDBCardTitle>
@@ -69,28 +68,9 @@ class CoursepackDashboardPageTeacher extends Component {
     displayCourses = () => {
         return (
             <MDBContainer>
-                <MDBNav className="nav-tabs mt-5">
-                    <MDBNavItem>
-                        <MDBNavLink to="#" active={this.state.activeItem === "1"} onClick={this.toggle("1")} role="tab" >Published</MDBNavLink>
-                    </MDBNavItem>
-                    <MDBNavItem>
-                        <MDBNavLink to="#" active={this.state.activeItem === "2"} onClick={this.toggle("2")} role="tab" >Drafts</MDBNavLink>
-                    </MDBNavItem>
-                    <MDBCol align="right">
-                        <NavLink to="/coursepack/create/" style={{ color: 'white' }}>
-                            <MDBBtn color="primary">Create</MDBBtn>
-                        </NavLink>
-                    </MDBCol>
-                </MDBNav>
-                <MDBTabContent activeItem={this.state.activeItem} >
-                    <br />
-                    <MDBTabPane tabId="1" role="tabpanel">
-                        {/* this.showAllPublishedCourses() */}
-                    </MDBTabPane>
-                    <MDBTabPane tabId="2" role="tabpanel">
-                        {this.showAllDrafts()}
-                    </MDBTabPane>
-                </MDBTabContent>
+
+                {this.showAll()}
+
             </MDBContainer>
         )
     }
@@ -98,18 +78,22 @@ class CoursepackDashboardPageTeacher extends Component {
     render() {
         return (
             <MDBContainer style={{ paddingBottom: 240 }}>
-                <MDBRow>
-                    <MDBCol md="8" className="mt-4">
+                <MDBRow size="12" >
+                    <MDBCol size="8">
                         <h2 className="font-weight-bold" style={{ paddingTop: 50 }}>
                             Coursepack
                         </h2>
-                        <hr/>
                     </MDBCol>
-                    <MDBContainer>
-                        {this.displayCourses()}
-                    </MDBContainer>
+                    <MDBCol size="4" align="right" style={{paddingTop:40, paddingRight: 30}}>
+                        <NavLink to="/coursepack/create/" style={{ color: 'white' }}>
+                            <MDBBtn color="primary">Create</MDBBtn>
+                        </NavLink>
+                    </MDBCol>
+
                 </MDBRow>
-            </MDBContainer>
+                <hr />
+                {this.displayCourses()}
+            </MDBContainer >
         )
     }
 }

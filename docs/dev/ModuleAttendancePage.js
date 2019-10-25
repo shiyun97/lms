@@ -36,8 +36,8 @@ class ModuleAttendancePage extends Component {
         <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
         <div className="module-navbar-small">
 
-          <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Attendance'}></ModuleSideNavigationDropdown>
-        </div>
+{/*           <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Attendance'}></ModuleSideNavigationDropdown>
+ */}        </div>
         <div className="module-content">
           <MDBContainer className="mt-3">
             {this.props.dataStore.accessRight === "Teacher" && <ModuleAttendancePageTeacher moduleId={this.props.match.params.moduleId} />}

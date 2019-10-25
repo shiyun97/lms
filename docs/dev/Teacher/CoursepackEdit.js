@@ -5,10 +5,13 @@ import axios from "axios";
 import CoursepackSideNavigation from '../CoursepackSideNavigation';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
 import { Snackbar } from '@material-ui/core';
+import { observer, inject } from 'mobx-react';
+import { NavLink } from 'react-router-dom';
 
-const API_MOCK = "http://localhost:3001"
+
 const API = "http://localhost:8080/LMS-war/webresources/"
-
+@inject('dataStore')
+@observer
 class CoursePackEdit extends Component {
 
     state = {
@@ -16,13 +19,12 @@ class CoursePackEdit extends Component {
         courseCode: "",
         courseTitle: "",
         courseDescription: "",
+        categories: ["Computer Science", "Information System", "Information Security", "Business Management", "Engineering"],
         category: "",
         price: "",
-        categories: "",
         disabled: true,
         editSave: "Edit",
         open: false,
-        publish: false,
         message: "",
         openSnackbar: false,
     }
@@ -33,18 +35,6 @@ class CoursePackEdit extends Component {
          */
         let coursepackId = this.props.match.params.coursepackId;
 
-        /*         this.setState({ coursepackId: coursepackId })
-         */
-
-        this.setState({ coursepackId: coursepackId })
-        axios.get(`${API_MOCK}/category`) //FIXME:
-            .then(result => {
-                this.setState({ categories: result.data })
-                console.log(this.state.categories)
-            })
-            .catch(error => {
-                console.error("error in axios " + error);
-            });
 
         // axios.get(`${API}Coursepack/getCoursepack/${coursepackId}`)
         axios.get(`${API}Coursepack/getCoursepack/${coursepackId}`)
@@ -53,9 +43,8 @@ class CoursePackEdit extends Component {
                     courseCode: result.data.code,
                     courseTitle: result.data.title,
                     courseDescription: result.data.description,
-                    /* category: result.data.category, */
+                    category: result.data.category,
                     price: result.data.price,
-                    publish: result.data.published
                 })
             })
             .catch(error => {
@@ -76,7 +65,7 @@ class CoursePackEdit extends Component {
         axios.delete(`${API}Coursepack/deleteCoursepack?coursepackId=${this.state.coursepackId}`)
             .then(result => {
                 this.setState({ message: "Coursepack deleted.", openSnackbar: true })
-                this.props.history.go(-1)//TODO:
+                window.history.go(-2)
                 console.log(this.state.categories)
             })
             .catch(error => {
@@ -113,31 +102,6 @@ class CoursePackEdit extends Component {
                     this.setState({ message: error.response, openSnackbar: true })
                     console.error("error in axios " + error);
                 });
-        }
-    }
-
-    publish = event => {
-        const { courseCode, courseTitle, courseDescription, category, price } = this.state
-
-        if (this.state.publish === true) {
-            this.setState({ message: "This coursepack has been published", openSnackbar: true })            
-        } else {
-            axios.post(`${API}Coursepack/updateCoursepack?coursepackId=${this.state.coursepackId}`, {
-                code: courseCode,
-                title: courseTitle,
-                description: courseDescription,
-                category: category,
-                price: price,
-                published: true,
-            })
-                .then(result => {
-                    this.setState({ message: "Coursepack published.", openSnackbar: true })
-                    window.location.reload()
-                })
-                .catch(error => {
-                    this.setState({ message: error.response, openSnackbar: true })
-                    console.error("error in axios " + error);
-                })
         }
     }
 
@@ -179,17 +143,18 @@ class CoursePackEdit extends Component {
                         <MDBCol sm="4">Course Description: </MDBCol>
                         {console.log(this.state.courseDescription)}
                         <MDBCol sm="8">
-                            <input
-                                defaultValue={this.state.courseDescription}
+                            <textarea
+                                value={this.state.courseDescription}
                                 name="courseDescription"
                                 type="text"
                                 className="form-control"
                                 placeholder="Course Description"
                                 onChange={this.handleOnChange}
-                                height='100px'
+                                row={8}
                                 disabled={this.state.disabled}
-                            //FIXME:
-                            />
+                            >
+                                {this.state.courseDescription}
+                            </textarea>
                         </MDBCol>
                     </MDBRow>
 
@@ -197,7 +162,11 @@ class CoursePackEdit extends Component {
                     <MDBRow style={{ paddingTop: "20px" }}>
                         <MDBCol sm="4">Category: </MDBCol>
                         <MDBCol sm="8">
-                            <select defaultValue={this.state.category} onChange={this.handleSelectCategory} className="browser-default custom-select" disabled={this.state.disabled}>
+                            <select value={this.state.category}
+                                onChange={this.handleSelectCategory}
+                                className="browser-default custom-select"
+                                disabled={this.state.disabled}
+                            >
                                 <option>Choose a category</option>
                                 {this.state.categories && this.state.categories.map(
                                     (category, index) => <option key={index} value={category}>{category}</option>)
@@ -266,7 +235,6 @@ class CoursePackEdit extends Component {
                     {this.form()}
 
                     <MDBCol align="right">
-                        <MDBBtn onClick={this.publish} color="primary" variant="contained" >Publish</MDBBtn>
                         <MDBBtn onClick={this.editSave} color="primary" variant="contained" >{this.state.editSave}</MDBBtn>
                         <MDBBtn color="danger" onClick={this.handleClickOpen}>Delete Course</MDBBtn>
                         <Dialog open={this.state.open} onClose={this.handleClickOpen}>

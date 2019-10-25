@@ -45,115 +45,107 @@ class CoursepackDashboardPageStudent extends Component {
 
   mediaCarousel = () => {
     return (
-      <MDBCol align="center">
-
-       {/*  <MDBCarousel
-          interval={1500}
+      <MDBContainer>
+        <MDBCarousel
           activeItem={1}
           length={3}
           showControls={true}
-          showIndicators={true}
-          style={{ height: 400, width: 700 }}
+          showIndicators={false}
+          className="z-depth-1"
+          slide
         >
-          {this.state.coursepackList && this.state.coursepackList.map((coursepack, index) => {
-            return (
-              <NavLink to={`/coursepack/${coursepack.coursepackId}`}>
-                <MDBCarouselInner item>
-                  <MDBCarouselItem itemId={index}>
-                    {this.showImage(index)}
-                  </MDBCarouselItem>
-                </MDBCarouselInner>
+          <MDBCarouselInner>
+            <NavLink to='/coursepack/42'>
+              <MDBCarouselItem itemId="1" >
+                <MDBView>
+                  <img
+                    className="d-block w-100"
+                    src={cprog}
+                    alt="First slide"
+                    style={{height:500, width:400}}
+                  />
+                </MDBView>
+              </MDBCarouselItem>
+            </NavLink>
+            <NavLink to='/coursepack/43'>
+              <MDBCarouselItem itemId="2">
+                <MDBView>
+                  <img
+                    className="d-block w-100"
+                    src={biz}
+                    alt="Second slide"
+                    style={{height:500, width:400}}
+                  />
+                </MDBView>
+              </MDBCarouselItem>
               </NavLink>
-
-            )
-          })}
-        </MDBCarousel> */}
-      </MDBCol >
-    );
-  };
-
-  showImage = (index) => {
-    if (index === 1) {
-      return (
-        <MDBView>
-          <img
-            className="d-block w-100"
-            src={biz}
-            alt="First slide"
-          />
-        </MDBView>
-      )
-    } else if (index === 2) {
-      return (
-        <MDBView>
-          <img
-            className="d-block w-100"
-            src={cprog}
-            alt="First slide"
-          />
-        </MDBView>
-      )
-    } else if (index === 3) {
-      return (
-        <MDBView>
-          <img
-            className="d-block w-100"
-            src={design}
-            alt="First slide"
-          />
-        </MDBView>
-      )
-    } else {
-      return null
-    }
-  }
-
+              <NavLink to="/coursepack/44">
+              <MDBCarouselItem itemId="3">
+                <MDBView>
+                  <img
+                    className="d-block w-100"
+                    src={design}
+                    alt="Third slide"
+                    style={{height:500, width:400}}
+                  />
+                </MDBView>
+              </MDBCarouselItem>
+              </NavLink>
+          </MDBCarouselInner>
+        </MDBCarousel>
+      </MDBContainer >
+        );
+      }
+    
   courseRecommendation = () => {
     return (
       <MDBContainer>
-        <h4><b>You might be interested</b></h4>
-        <hr />
-        <MDBRow>
-          {this.state.coursepackList && this.state.coursepackList.map((course) => {
-            return (
-              <MDBCol size="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
-                <NavLink to={`/coursepack/${course.coursepackId}/`} activeClassName="activeClass">
-                  <MDBCard >
-                    <MDBCardBody>
-                      <MDBMedia object src="https://mdbootstrap.com/img/Photos/Others/placeholder1.jpg" alt="" />
-                      <MDBCardTitle>
-                        <MDBCardText>{course.title}</MDBCardText>
-                        <MDBCardText>{course.category}</MDBCardText>
-                        <MDBCardText>{course.price}</MDBCardText>
-                      </MDBCardTitle>
-                    </MDBCardBody>
-                  </MDBCard>
-                </NavLink>
+          <h4><b>You might be interested</b></h4>
+          <hr />
+          <MDBRow>
+            {this.state.coursepackList && this.state.coursepackList.map((course, index) => {
+              return (
+                <MDBCol size="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
+                  <NavLink to={`/coursepack/${course.coursepackId}/`} activeClassName="activeClass">
+                    <MDBCard style={{height: 180}} >
+                      <MDBCardBody>
+                        <MDBMedia object src={this.getImage(index)} alt="" />
+                        <MDBCardTitle>
+                          <MDBCardText><h6><b>{course.title}</b></h6></MDBCardText>
+                          <MDBCardText>{course.category}</MDBCardText>
+                          <MDBCardText>{course.price}</MDBCardText>
+                        </MDBCardTitle>
+                      </MDBCardBody>
+                    </MDBCard>
+                  </NavLink>
 
-              </MDBCol>
-            )
-          })}
-        </MDBRow>
-      </MDBContainer>
-    )
-  };
+                </MDBCol>
+              )
+            })}
+          </MDBRow>
+        </MDBContainer>
+        )
+      };
 
-
+      getImage = (index) => {
+          return <div>cprog</div>
+        }
+      
   render() {
-    console.log("student")
+          console.log("student")
     return (
       <div>
-        <CoursepackTopNav />
+          <CoursepackTopNav />
 
-        <MDBContainer style={{ paddingTop: 100 }} >
-          {this.mediaCarousel()}
-          <br />
-          <br />
-          <br />
-          {this.courseRecommendation()}
-        </MDBContainer>
-      </div>
-    );
-  }
-}
-export default CoursepackDashboardPageStudent;
+          <MDBContainer style={{ paddingTop: 100 }} >
+            {this.mediaCarousel()}
+            <br />
+            <br />
+            <br />
+            {this.courseRecommendation()}
+          </MDBContainer>
+        </div>
+        );
+      }
+    }
+    export default CoursepackDashboardPageStudent;

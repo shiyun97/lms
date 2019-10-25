@@ -17,7 +17,7 @@ class CoursepackSideNavigation extends Component {
     render() {
         var courseId = this.props.dataStore.getCurrCoursepackId;
         return (
-            <div className="sidebar-module-fixed position-fixed" style={{ paddingTop: 150 }}>
+            <div className="sidebar-module-fixed position-fixed" style={{ paddingTop: 150, paddingRight:12 }}>
 
                 <MDBListGroup className="list-group-flush">
                     <NavLink exact={true} to={`/coursepack/${courseId}`} activeClassName="activeClass">

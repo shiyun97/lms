@@ -15,10 +15,10 @@ class CoursePackCreate extends Component {
         courseCode: "",
         courseTitle: "",
         courseDescription: "",
-        category: ["Computer Science", "Information System", "Information Security"],
+        categories: ["Computer Science", "Information System", "Information Security", "Business Management", "Engineering"],
         startDate: "",
         price: "",
-        categories: "",
+        category: "",
     }
 
     componentDidMount() {
@@ -127,12 +127,11 @@ class CoursePackCreate extends Component {
             price: price
         })
             .then(result => {
-                this.props.history.goBack()
-                window.location.reload()
+                this.props.history.go(-1)
             })
             .catch(error => {
                 console.error("error in axios " + error);
-            }); 
+            });
     }
 
     render() {
