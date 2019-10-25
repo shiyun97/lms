@@ -47,21 +47,21 @@ class CoursepackQuizPageTeacher extends Component {
                 "field": "closingDate",
                 "width": 100
             },
-            {
-                "label": "Status",
-                "field": "quizStatus",
-                "width": 100
-            },
+            // {
+            //     "label": "Status",
+            //     "field": "quizStatus",
+            //     "width": 100
+            // },
             {
                 "label": "Max Marks",
                 "field": "maxMarks",
                 "width": 100
-            },
-            {
-                "label": "",
-                "field": "",
-                "width": 100
             }
+            // {
+            //     "label": "",
+            //     "field": "",
+            //     "width": 100
+            // }
         ],
         rows: [{ label: "Retrieving data..." }],
         openSnackbar: false,
@@ -117,26 +117,6 @@ class CoursepackQuizPageTeacher extends Component {
             });
     }
 
-    publishAnswers = (quizId) => {
-        let userId = localStorage.getItem('userId');
-        axios
-            .post(`http://localhost:8080/LMS-war/webresources/Assessment/publishQuizAnswer?userId=${userId}&quizId=${quizId}`)
-            .then(result => {
-                this.setState({
-                    recallQuiz: true,
-                    message: "Quiz answers published successfully!",
-                    openSnackbar: true
-                });
-            })
-            .catch(error => {
-                this.setState({
-                    message: error.response.data.errorMessage,
-                    openSnackbar: true
-                });
-                console.error("error in axios " + error);
-            });
-    }
-
     deleteQuiz = (quizId) => {
         let userId = localStorage.getItem('userId');
         event.preventDefault();
@@ -170,12 +150,12 @@ class CoursepackQuizPageTeacher extends Component {
                     name: quiz[i].title,
                     openingDate: quiz[i].openingDate,
                     closingDate: quiz[i].closingDate,
-                    status: quiz[i].publish ? "Published" : "Unpublished",
+                    // status: quiz[i].publish ? "Published" : "Unpublished",
                     maxMarks: quiz[i].maxMarks,
-                    editButton: <MDBRow align="center">
-                        <MDBCol md={6}><NavLink to={`/coursepack/${coursepackId}/quiz/${quiz[i].quizId}/edit`}><MDBIcon style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></NavLink></MDBCol>
-                        <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(quiz[i].quizId)} style={{ paddingTop: 12, cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
-                    </MDBRow>,
+                    // editButton: <MDBRow align="center">
+                    //     <MDBCol md={6}><NavLink to={`/coursepack/${coursepackId}/quiz/${quiz[i].quizId}/edit`}><MDBIcon style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></NavLink></MDBCol>
+                    //     <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(quiz[i].quizId)} style={{ paddingTop: 12, cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
+                    // </MDBRow>,
                 })
             }
         } else {

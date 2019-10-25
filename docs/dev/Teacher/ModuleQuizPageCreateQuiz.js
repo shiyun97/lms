@@ -80,7 +80,7 @@ class ModuleQuizPageCreateQuiz extends Component {
             .post(`http://localhost:8080/LMS-war/webresources/Assessment/createModuleQuiz?userId=${userId}`, {
                 title: this.state.title,
                 moduleId: moduleId,
-                description: this.state.explanation,
+                description: this.state.description,
                 quizType: this.state.quizType,
                 questionsOrder: this.state.questionsOrder ? "random" : "initial",
                 openingDate: this.state.openingDate + ":00",

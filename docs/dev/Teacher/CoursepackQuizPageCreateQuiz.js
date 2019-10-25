@@ -66,13 +66,13 @@ class CoursepackQuizPageCreateQuiz extends Component {
         // console.log({
         //     title: this.state.title,
         //     coursepackId: coursepackId,
-        //     description: this.state.explanation,
+        //     description: this.state.description,
         //     quizType: this.state.quizType,
         //     questionsOrder: "initial",
         //     openingDate: this.state.openingDate + ":00",
         //     closingDate: this.state.closingDate + ":00",
-        // publish: true,
-        // publishAnswer: true,
+        //     publish: true,
+        //     publishAnswer: true,
         //     noOfAttempts: this.state.noOfAttempts,
         //     maxTimeToFinish: this.state.maxTimeToFinish,
         //     questions: this.state.elements
@@ -81,13 +81,12 @@ class CoursepackQuizPageCreateQuiz extends Component {
             .post(`http://localhost:8080/LMS-war/webresources/Assessment/createCoursepackQuiz?userId=${userId}`, {
                 title: this.state.title,
                 coursepackId: coursepackId,
-                description: this.state.explanation,
+                description: this.state.description,
                 quizType: this.state.quizType,
                 questionsOrder: "initial",
                 openingDate: this.state.openingDate + ":00",
                 closingDate: this.state.closingDate + ":00",
                 publish: true,
-                publishAnswer: true,
                 noOfAttempts: this.state.noOfAttempts,
                 maxTimeToFinish: this.state.maxTimeToFinish,
                 questions: this.state.elements
@@ -184,7 +183,7 @@ class CoursepackQuizPageCreateQuiz extends Component {
         return (
             <>
                 <label className="grey-text">
-                    Answer {index}
+                    Answer {index + 1}
                 </label>
                 <input type="text" name="answer" onChange={this.handleChange} className="form-control" />
                 <br />
