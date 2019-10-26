@@ -4,11 +4,11 @@ import axios from "axios";
 import { observer, inject } from 'mobx-react'
 import { Snackbar } from '@material-ui/core';
 
-const API = "http://localhost:8080/LMS-war/webresources/"
+const API = "http://172.17.42.98:8080/LMS-war/webresources/"
 
 @inject('dataStore')
 @observer
-class MarkAttendanceStudent extends Component {
+class MarkAttendanceStudentTutorial extends Component {
 
     state = {
         classId: "",
@@ -22,12 +22,16 @@ class MarkAttendanceStudent extends Component {
     }
 
     componentDidMount() {
-        this.setState({
-            classId: this.props.dataStore.getAttendanceClassId,
-            attendanceId: this.props.dataStore.getAttendanceId,
-            userId: localStorage.getItem("userId"),
-            classType: this.props.dataStore.getAttendanceClassType
-        })
+
+        var currentUrl = window.location.href
+        var split = currentUrl.split('/')
+        var userId = split[split.length - 1]
+        var attendanceId = split[split.length - 2]
+        var classId = split[split.length - 3]
+        var classType = split[split.length - 4]
+
+        this.setState({ attendanceId: attendanceId, userId: userId, classId: classId, classType: classType })
+
     }
 
     handleClose = (event, reason) => {
@@ -39,31 +43,18 @@ class MarkAttendanceStudent extends Component {
 
     markAttendance = event => {
         console.log("mark attendance")
-        if (this.state.classType === 'lecture') {
-            axios.post(`${API}Attendance/signAttendance?moduleId=${this.state.classId}&userId=${this.state.userId}&attendanceId=${this.state.attendanceId}`)
-                .then(result => {
-                    this.setState({ present: true })
+
+        axios.post(`${API}Attendance/signTutorialAttendance?tutorialId=${this.state.classId}&userId=${this.state.userId}&attendanceId=${this.state.attendanceId}`)
+            .then(result => {
+                this.setState({ present: true })
+            })
+            .catch(error => {
+                this.setState({
+                    message: error.response.data,
+                    openSnackbar: true,
                 })
-                .catch(error => {
-                    this.setState({
-                        message: error.response.data,
-                        openSnackbar: true,
-                    })
-                    console.error("error in axios " + error);
-                });
-        } else {
-            axios.post(`${API}Attendance/signTutorialAttendance?tutorialId=${this.state.classId}&userId=${this.state.userId}&attendanceId=${this.state.attendanceId}`)
-                .then(result => {
-                    this.setState({ present: true })
-                })
-                .catch(error => {
-                    this.setState({
-                        message: error.response.data,
-                        openSnackbar: true,
-                    })
-                    console.error("error in axios " + error);
-                });
-        }
+                console.error("error in axios " + error);
+            });
     }
 
     render() {
@@ -109,4 +100,4 @@ class MarkAttendanceStudent extends Component {
     }
 }
 
-export default MarkAttendanceStudent
+export default MarkAttendanceStudentTutorial

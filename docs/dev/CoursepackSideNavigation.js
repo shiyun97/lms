@@ -1,13 +1,23 @@
 import React, { Component } from 'react';
 import { MDBListGroup, MDBListGroupItem, MDBIcon } from 'mdbreact';
 import { NavLink } from 'react-router-dom';
+import { observer, inject } from 'mobx-react';
 
+@inject('dataStore')
+@observer
 class CoursepackSideNavigation extends Component {
 
+    componentDidMount() {
+        var pathname = location.pathname;
+        pathname = pathname.split("/");
+        // console.log(pathname[2])
+        this.props.dataStore.setCurrCoursepackId(pathname[2]);
+    }
+
     render() {
-        let courseId = this.props.courseId;
+        var courseId = this.props.dataStore.getCurrCoursepackId;
         return (
-            <div className="sidebar-module-fixed position-fixed" style={{ paddingTop: 150 }}>
+            <div className="sidebar-module-fixed position-fixed" style={{ paddingTop: 150, paddingRight:12 }}>
 
                 <MDBListGroup className="list-group-flush">
                     <NavLink exact={true} to={`/coursepack/${courseId}`} activeClassName="activeClass">
@@ -28,13 +38,13 @@ class CoursepackSideNavigation extends Component {
                             Multimedia
                         </MDBListGroupItem>
                     </NavLink>
-                    <NavLink /* to={`/modules/${moduleId}/announcements`} */ activeClassName="activeClass">
+                    <NavLink to={`/coursepack/${courseId}/quiz`} activeClassName="activeClass">
                         <MDBListGroupItem>
                             <MDBIcon icon="star" className="mr-3 fa-fw" />
                             Quizzes
                         </MDBListGroupItem>
                     </NavLink>
-                    <NavLink to={`/coursepack/${courseId}/arrangements`}  activeClassName="activeClass">
+                    <NavLink to={`/coursepack/${courseId}/arrangements`} activeClassName="activeClass">
                         <MDBListGroupItem>
                             <MDBIcon icon="layer-group" className="mr-3 fa-fw" />
                             Arrangements

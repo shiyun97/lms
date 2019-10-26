@@ -44,7 +44,7 @@ class MobileLogin extends Component {
                     this.props.dataStore.setAttendanceClassId(this.state.classId)
                     this.props.dataStore.setAttendanceId(this.state.attendanceId)
                     this.props.dataStore.setAttendanceClassType(this.state.classType)
-                    this.setState({ loggedInStatus: true })
+                    this.setState({ loggedInStatus: true, classType: "lecture" })
                 }
                 else {
                     this.setState({ message: "invalid access" })
@@ -57,8 +57,12 @@ class MobileLogin extends Component {
     }
 
     render() {
-        if (this.state.loggedInStatus === true) {
-            return <Redirect to={`/student/markAttendance`} />
+        
+        if ( this.state.loggedInStatus === true && this.state.classType==="lecture") {
+            return <Redirect to={`/student/markAttendance/lecture/${this.state.classId}/${this.state.attendanceId}`} />
+        } 
+        if ( this.state.loggedInStatus === true && this.state.classType==="tutorial") {
+            return <Redirect to={`/student/markAttendance/tutorial/${this.state.classId}/${this.state.attendanceId}`} />
         }
         return (
             <>

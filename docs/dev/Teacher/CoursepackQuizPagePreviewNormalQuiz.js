@@ -5,7 +5,7 @@ import { observer, inject } from 'mobx-react';
 import moment from 'moment';
 import styled from 'styled-components';
 import * as Survey from "survey-react";
-import ModuleSideNavigation from "../ModuleSideNavigation";
+import CoursepackSideNavigation from "../CoursepackSideNavigation";
 
 var pathname = location.pathname;
 pathname = pathname.split("/");
@@ -97,14 +97,14 @@ var json = {
 
 @inject('dataStore')
 @observer
-class ModuleQuizPageAnswerNormalQuiz extends Component {
+class CoursepackQuizPagePreviewNormalQuiz extends Component {
 
   state = {
     studentName: "",
     username: "",
     userId: "",
     email: "",
-    moduleId: 0,
+    coursepackId: 0,
     message: "",
     status: "retrieving",
     start: false
@@ -127,7 +127,7 @@ class ModuleQuizPageAnswerNormalQuiz extends Component {
     let userId = localStorage.getItem('userId');
     let quizId = this.props.dataStore.getCurrQuizId;
     axios
-      .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveModuleQuiz/${quizId}?userId=${userId}`)
+      .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveCoursepackQuiz/${quizId}?userId=${userId}`)
       .then(result => {
         // console.log(result.data)
         var newJson = result.data;
@@ -165,22 +165,22 @@ class ModuleQuizPageAnswerNormalQuiz extends Component {
 
   onComplete = (result) => {
     let userId = localStorage.getItem('userId');
-    console.log(quizId)
-    console.log(answers)
-    axios
-      .post(`http://localhost:8080/LMS-war/webresources/Assessment/createQuizAttempt?userId=${userId}`, {
-        quizId: quizId,
-        questionAttempts: answers
-      })
-      .then(result => {
-        console.log("success")
-        // this.setState({ status: "done", quizzes: result.data.quizzes })
-      })
-      .catch(error => {
-        // this.setState({ status: "error" })
-        console.log("error")
-        console.error("error in axios " + error);
-      });
+    // console.log(quizId)
+    // console.log(answers)
+    // axios
+    //   .post(`http://localhost:8080/LMS-war/webresources/Assessment/createQuizAttempt?userId=${userId}`, {
+    //     quizId: quizId,
+    //     questionAttempts: answers
+    //   })
+    //   .then(result => {
+    //     console.log("success")
+    //     // this.setState({ status: "done", quizzes: result.data.quizzes })
+    //   })
+    //   .catch(error => {
+    //     // this.setState({ status: "error" })
+    //     console.log("error")
+    //     console.error("error in axios " + error);
+    //   });
   }
 
   submitAnswers = () => {
@@ -191,54 +191,54 @@ class ModuleQuizPageAnswerNormalQuiz extends Component {
   render() {
     // console.log(json)
     var model = new Survey.Model(json);
-    var moduleId = this.props.dataStore.getCurrModId;
+    var coursepackId = this.props.dataStore.getCurrModId;
     if (this.state.start) {
       return (
-      <div className={this.props.className}>
-        <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
-        <div className="module-content">
-          <MDBContainer className="mt-3">
-            <MDBRow className="py-3">
-              <MDBCol md="12">
-                <MDBCard cascade className="my-3 grey lighten-4">
-                  {this.state.status === "done" &&
-                    <Survey.Survey
-                      model={model}
-                      onComplete={() => this.onComplete()}
-                      onValueChanged={this.onValueChanged}
-                    />
-                  }
-                  {this.state.status !== "done" && <h5 align="center" style={{ padding: 20 }}>Error in retrieving quiz. Please try again later.</h5>}
-                </MDBCard>
-              </MDBCol>
-            </MDBRow>
-          </MDBContainer>
+        <div className={this.props.className}>
+          <CoursepackSideNavigation courseId={coursepackId}></CoursepackSideNavigation>
+          <div className="module-content">
+            <MDBContainer className="mt-3">
+              <MDBRow className="py-3">
+                <MDBCol md="12">
+                  <MDBCard cascade className="my-3 grey lighten-4">
+                    {this.state.status === "done" &&
+                      <Survey.Survey
+                        model={model}
+                        onComplete={() => this.onComplete()}
+                        onValueChanged={this.onValueChanged}
+                      />
+                    }
+                    {this.state.status !== "done" && <h5 align="center" style={{ padding: 20 }}>Error in retrieving quiz. Please try again later.</h5>}
+                  </MDBCard>
+                </MDBCol>
+              </MDBRow>
+            </MDBContainer>
+          </div>
         </div>
-      </div>
-    );
-    
-  } else {
-    return (
-      <div className={this.props.className}>
-        <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
-        <div className="module-content">
-          <MDBContainer className="mt-3">
-            <MDBRow className="py-3">
-              <MDBCol md="12">
-                <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
-                  <MDBBtn color="blue" onClick={() => { this.setState({ start: true }) }}><h4>Start Quiz</h4></MDBBtn>
-                </MDBCard>
-              </MDBCol>
-            </MDBRow>
-          </MDBContainer>
+      );
+
+    } else {
+      return (
+        <div className={this.props.className}>
+          <CoursepackSideNavigation courseId={coursepackId}></CoursepackSideNavigation>
+          <div className="module-content">
+            <MDBContainer className="mt-3">
+              <MDBRow className="py-3">
+                <MDBCol md="12">
+                  <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
+                    <MDBBtn color="blue" onClick={() => { this.setState({ start: true }) }}><h4>Start Quiz</h4></MDBBtn>
+                  </MDBCard>
+                </MDBCol>
+              </MDBRow>
+            </MDBContainer>
+          </div>
         </div>
-      </div>
-    )
-  }
+      )
+    }
   }
 }
 
-export default styled(ModuleQuizPageAnswerNormalQuiz)`
+export default styled(CoursepackQuizPagePreviewNormalQuiz)`
 .module-content{
     margin-left: 270px;
     margin-top: 40px;

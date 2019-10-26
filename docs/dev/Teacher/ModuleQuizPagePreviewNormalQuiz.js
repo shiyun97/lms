@@ -97,7 +97,7 @@ var json = {
 
 @inject('dataStore')
 @observer
-class ModuleQuizPageAnswerNormalQuiz extends Component {
+class ModuleQuizPagePreviewNormalQuiz extends Component {
 
   state = {
     studentName: "",
@@ -165,22 +165,22 @@ class ModuleQuizPageAnswerNormalQuiz extends Component {
 
   onComplete = (result) => {
     let userId = localStorage.getItem('userId');
-    console.log(quizId)
-    console.log(answers)
-    axios
-      .post(`http://localhost:8080/LMS-war/webresources/Assessment/createQuizAttempt?userId=${userId}`, {
-        quizId: quizId,
-        questionAttempts: answers
-      })
-      .then(result => {
-        console.log("success")
-        // this.setState({ status: "done", quizzes: result.data.quizzes })
-      })
-      .catch(error => {
-        // this.setState({ status: "error" })
-        console.log("error")
-        console.error("error in axios " + error);
-      });
+    // console.log(quizId)
+    // console.log(answers)
+    // axios
+    //   .post(`http://localhost:8080/LMS-war/webresources/Assessment/createQuizAttempt?userId=${userId}`, {
+    //     quizId: quizId,
+    //     questionAttempts: answers
+    //   })
+    //   .then(result => {
+    //     console.log("success")
+    //     // this.setState({ status: "done", quizzes: result.data.quizzes })
+    //   })
+    //   .catch(error => {
+    //     // this.setState({ status: "error" })
+    //     console.log("error")
+    //     console.error("error in axios " + error);
+    //   });
   }
 
   submitAnswers = () => {
@@ -238,7 +238,7 @@ class ModuleQuizPageAnswerNormalQuiz extends Component {
   }
 }
 
-export default styled(ModuleQuizPageAnswerNormalQuiz)`
+export default styled(ModuleQuizPagePreviewNormalQuiz)`
 .module-content{
     margin-left: 270px;
     margin-top: 40px;

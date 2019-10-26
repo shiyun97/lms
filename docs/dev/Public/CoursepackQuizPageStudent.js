@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
 import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable } from "mdbreact";
-import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Snackbar } from '@material-ui/core';
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
-import moment from 'moment';
 
 @inject('dataStore')
 @observer
-class ModuleQuizPageStudent extends Component {
+class CoursepackQuizPageStudent extends Component {
 
     state = {
         modal1: false,
@@ -94,7 +92,7 @@ class ModuleQuizPageStudent extends Component {
             // this.updateQuizState(row);
         }
     };
-    
+
     handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -128,8 +126,8 @@ class ModuleQuizPageStudent extends Component {
                 tempQuizzes.push({
                     quizId: quiz[i].quizId,
                     name: quiz[i].title,
-                    openingDate: moment(quiz[i].openingDate).format("DD-MM-YYYY"),
-                    closingDate: moment(quiz[i].closingDate).format("DD-MM-YYYY"),
+                    openingDate: quiz[i].openingDate,
+                    closingDate: quiz[i].closingDate,
                     status: quiz[i].publish ? "Open" : "Closed",
                     // description: quiz[i].description,
                     // order: quiz[i].questionsOrder,
@@ -158,48 +156,43 @@ class ModuleQuizPageStudent extends Component {
         }
 
         return (
-            <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
-                <div className="module-content">
-                    <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }}>
-                            <MDBCol md="8">
-                                <h2 className="font-weight-bold">
-                                    Quiz
+            <MDBContainer className="mt-3">
+                <MDBRow style={{ paddingTop: 60 }}>
+                    <MDBCol md="8">
+                        <h2 className="font-weight-bold">
+                            Quiz
                 </h2>
-                            </MDBCol>
-                            <MDBCol md="4" align="right">
-                            </MDBCol>
-                        </MDBRow>
-                        {/* {this.renderEditQuizModalBox()} */}
-                        <MDBRow className="py-3">
-                            <MDBCol md="12">
-                                <MDBCard>
-                                    <MDBCardBody>
-                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={widerData} pagesAmount={4} />
-                                    </MDBCardBody>
-                                </MDBCard>
-                            </MDBCol>
-                        </MDBRow>
-                        <Snackbar
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            open={this.state.openSnackbar}
-                            autoHideDuration={6000}
-                            onClose={this.handleClose}
-                            ContentProps={{
-                                'aria-describedby': 'message-id',
-                            }}
-                            message={<span id="message-id">{this.state.message}</span>}
-                            action={[
-                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-                            ]}
-                        />
-                    </MDBContainer>
-                </div>
-            </div>
+                    </MDBCol>
+                    <MDBCol md="4" align="right">
+                    </MDBCol>
+                </MDBRow>
+                {/* {this.renderEditQuizModalBox()} */}
+                <MDBRow className="py-3">
+                    <MDBCol md="12">
+                        <MDBCard>
+                            <MDBCardBody>
+                                <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={widerData} pagesAmount={4} />
+                            </MDBCardBody>
+                        </MDBCard>
+                    </MDBCol>
+                </MDBRow>
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.openSnackbar}
+                    autoHideDuration={6000}
+                    onClose={this.handleClose}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">{this.state.message}</span>}
+                    action={[
+                        <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                    ]}
+                />
+            </MDBContainer>
         )
     }
 
@@ -214,52 +207,42 @@ class ModuleQuizPageStudent extends Component {
             })], rows: [...data().rows]
         }
         return (
-            <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
-                <div className="module-content">
-                    <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }}>
-                            <MDBCol md="8">
-                                <h2 className="font-weight-bold">
-                                    Quiz
+            <MDBContainer className="mt-3">
+                <MDBRow style={{ paddingTop: 60 }}>
+                    <MDBCol md="8">
+                        <h2 className="font-weight-bold">
+                            Quiz
                 </h2>
-                            </MDBCol>
-                            <MDBCol md="4" align="right">
-                            </MDBCol>
-                            {/* {this.renderEditQuizModalBox()} */}
-                        </MDBRow>
-                        <MDBRow className="py-3">
-                            <MDBCol md="12">
-                                <MDBCard>
-                                    <MDBCardBody>
-                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
-                                    </MDBCardBody>
-                                </MDBCard>
-                            </MDBCol>
-                        </MDBRow>
-                    </MDBContainer>
-                </div>
-            </div>
+                    </MDBCol>
+                    <MDBCol md="4" align="right">
+                    </MDBCol>
+                    {/* {this.renderEditQuizModalBox()} */}
+                </MDBRow>
+                <MDBRow className="py-3">
+                    <MDBCol md="12">
+                        <MDBCard>
+                            <MDBCardBody>
+                                <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
+                            </MDBCardBody>
+                        </MDBCard>
+                    </MDBCol>
+                </MDBRow>
+            </MDBContainer>
         )
     }
 
     renderAwaiting = () => {
         var moduleId = this.props.dataStore.getCurrModId;
         return (
-            <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
-                <div className="module-content">
-                    <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }} align="center">
-                            <MDBCol md="12">
-                                <div className="spinner-border text-primary" role="status">
-                                    <span className="sr-only">Loading...</span>
-                                </div>
-                            </MDBCol>
-                        </MDBRow>
-                    </MDBContainer>
-                </div>
-            </div>
+            <MDBContainer className="mt-3">
+                <MDBRow style={{ paddingTop: 60 }} align="center">
+                    <MDBCol md="12">
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </div>
+                    </MDBCol>
+                </MDBRow>
+            </MDBContainer>
         )
     }
 
@@ -282,9 +265,9 @@ class ModuleQuizPageStudent extends Component {
     }
 }
 
-export default styled(ModuleQuizPageStudent)`
+export default styled(CoursepackQuizPageStudent)`
 .module-content{
-    margin-left: 270px;
+    margin-left: 1200px;
     margin-top: 40px;
 }
 `;

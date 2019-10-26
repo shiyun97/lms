@@ -1,25 +1,28 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBTabPane, MDBNavItem, MDBNavLink, MDBTabContent, MDBRow, MDBCol, MDBNav, MDBFormInline, MDBIcon,
-   MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBCardBody, MDBCardText, MDBCardImage, MDBCard, MDBCardTitle, MDBCardGroup } from "mdbreact";
-   import axios from "axios";
+import {
+  MDBContainer, MDBTabPane, MDBNavItem, MDBNavLink, MDBTabContent, MDBRow, MDBCol, MDBNav, MDBFormInline, MDBIcon,
+  MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBCardBody, MDBCardText, MDBCardImage, MDBCard, MDBCardTitle, MDBCardGroup
+} from "mdbreact";
+import axios from "axios";
+import CoursepackDashboardPageTeacher from "./Teacher/CoursepackDashboardPageTeacher";
 
-   const API = "http://localhost:3001"
+const API = "http://localhost:3001"
 
 class CoursepackEnrolledCourses extends Component {
   state = {
     activeItem: "1",
-    searchItem: "", 
+    searchItem: "",
     enrolled: "",
   };
 
   componentDidMount() {
     axios.get(`${API}/coursepack`)
-    .then(result => {
+      .then(result => {
         this.setState({ userList: result.data.userList })
-    })
-    .catch(error => {
+      })
+      .catch(error => {
         console.error("error in axios " + error);
-    });
+      });
   }
 
   heading = () => {
@@ -42,7 +45,7 @@ class CoursepackEnrolledCourses extends Component {
   };
 
   handleChange = (event) => {
-    this.setState({searchItem: event.target.value})
+    this.setState({ searchItem: event.target.value })
   }
 
   getAllEnrolledCourses = () => {
@@ -58,20 +61,20 @@ class CoursepackEnrolledCourses extends Component {
             onChange={this.handleChange}
           />
 
-        <MDBDropdown>
-          <MDBDropdownToggle caret color="ins">
-            Recently Accessed
+          <MDBDropdown>
+            <MDBDropdownToggle caret color="ins">
+              Recently Accessed
           </MDBDropdownToggle>
-          <MDBDropdownMenu>
-            <MDBDropdownItem>Recently Enrolled</MDBDropdownItem>
-            <MDBDropdownItem>Alphebatical (A-Z)</MDBDropdownItem>
-          </MDBDropdownMenu>
-        </MDBDropdown>
+            <MDBDropdownMenu>
+              <MDBDropdownItem>Recently Enrolled</MDBDropdownItem>
+              <MDBDropdownItem>Alphebatical (A-Z)</MDBDropdownItem>
+            </MDBDropdownMenu>
+          </MDBDropdown>
         </MDBFormInline>
 
         {this.displayEnrolledCourses()}
 
-        </MDBContainer>
+      </MDBContainer>
     );
   };
 
@@ -146,7 +149,7 @@ class CoursepackEnrolledCourses extends Component {
           </MDBCardBody>
         </MDBCard>
       </MDBCardGroup>
-   
+
     )
   }
 
@@ -205,13 +208,21 @@ class CoursepackEnrolledCourses extends Component {
   };
 
   render() {
-    return (
-      <MDBContainer className="mt-5">
-        {this.heading()}
-        {this.tab()}
-        <br />
-      </MDBContainer>
-    );
+    if (localStorage.getItem("accessRight") === "Teacher") {
+      return (
+        <MDBContainer style={{ paddingBottom: 240 }}>
+          <CoursepackDashboardPageTeacher />
+        </MDBContainer>
+      )
+    } else {
+      return (
+        <MDBContainer className="mt-5">
+          {this.heading()}
+          {this.tab()}
+          <br />
+        </MDBContainer>
+      )
+    };
   }
 }
 

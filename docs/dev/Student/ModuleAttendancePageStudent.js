@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBModal, MDBModalHeader, MDBRow, MDBModalBody, MDBModalFooter, MDBCol, MDBBtn } from "mdbreact";
+import { MDBContainer, MDBModal, MDBModalHeader, MDBRow, MDBModalBody, MDBModalFooter, MDBCol, MDBBtn, MDBTable, MDBTableHead, MDBTableBody } from "mdbreact";
 import { Dialog, DialogTitle, DialogContent, DialogActions, AppBar, Tabs, Tab, Typography, Paper, InputLabel, Select } from '@material-ui/core';
 import axios from "axios";
 import SwipeableViews from 'react-swipeable-views';
-import { Table } from 'semantic-ui-react'
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 
@@ -12,8 +11,15 @@ class ModuleAttendancePageStudent extends Component {
 
     state = {
         value: 0,
-        lectureList: "",
-        tutorialList: ""
+        allLectures: "",
+        allTutorial: "",
+        allLecturesLength: "",
+        tutorialList: "",
+        attendanceList: "",
+        attendanceListLength: "",
+        attendedLecture: "",
+        attendedTutorial: "",
+        enrolledTutorialId: ""
     }
 
     componentDidMount() {
@@ -25,28 +31,80 @@ class ModuleAttendancePageStudent extends Component {
         this.setState({ moduleId: moduleId })
         console.log(moduleId)
 
-        //get all lectures
-        axios.get(`${API}ModuleMounting/getModule/${moduleId}`)
+        // get all attendance for lecture
+        axios.get(`${API}Attendance/getAllAttendance?moduleId=${moduleId}`)
             .then(result => {
-                this.setState({ lectureList: result.data.lectureDetails })
+                this.setState({ allLectures: result.data.attendanceList, allLecturesLength: result.data.attendanceList.length })
             })
             .catch(error => {
                 console.error("error in axios " + error);
             });
 
-        //get all tutorials
-        axios.get(`${API}ModuleMounting/getAllTutorialByModule?moduleId=${moduleId}`)
+
+        //get student's tutorials
+        axios.get(`${API}studentEnrollment/retrieveStudentTutorials/${localStorage.getItem('userId')}`)
             .then(result => {
-                this.setState({ tutorialList: result.data.tutorials })
+                this.setState({
+                    enrolledTutorialId: result.data.tutorials[0]
+                })
             })
             .catch(error => {
                 console.error("error in axios " + error);
             });
 
+        //get student's attendance
+        axios.get(`${API}Attendance/getStudentModuleAttandance?userId=${localStorage.getItem('userId')}&moduleId=${moduleId}`)
+            .then(result => {
+                this.setState({
+                    attendanceList: result.data.attendanceList,
+                    attendanceListLength: result.data.attendanceList.length,
+                    attendedLecture: this.getModuleAttendanceLecture(result.data.attendanceList),
+                    attendedTutorial: this.getModuleAttendanceTutorial(result.data.attendanceList)
+                })
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
+    }
+
+    getModuleAttendanceLecture = (attendanceList) => {
+        var attendedLecture = []
+
+        if (attendanceList.length !== 0) {
+            attendanceList && attendanceList.map((attended, index) => {
+                if (attended.module) {
+                    attendedLecture.push(attended)
+                }
+            })
+        }
+        return attendedLecture
+    }
+
+    getModuleAttendanceTutorial = (attendanceList) => {
+        var attendedTutorial = []
+
+        if (attendanceList.length !== 0) {
+            attendanceList && attendanceList.map((attended, index) => {
+                if (attended.tutorial) {
+                    attendedTutorial.push(attended)
+                }
+            })
+        }
+        return attendedTutorial
     }
 
     handleChange = (event, value) => {
         this.setState({ value });
+
+        axios.get(`${API}Attendance/getAllTutorialAttendance?tutorialId=${this.state.enrolledTutorialId.tutorialId}`)
+            .then(result => {
+                this.setState({
+                    allTutorial: result.data.attendanceList
+                })
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
     };
 
     handleChangeIndex = index => {
@@ -75,49 +133,113 @@ class ModuleAttendancePageStudent extends Component {
                         index={this.state.value}
                         onChangeIndex={this.handleChangeIndex}
                     >
-                        <Typography component="div">{/* this.displayLectureSlots() */}</Typography>
-                        <Typography component="div">{/* this.displayTutorialSlots() */}</Typography>
+                        <Typography component="div">{this.displayLecture()}</Typography>
+                        <Typography component="div">{this.displayTutorial()}</Typography>
                     </SwipeableViews>
                 </Paper>
             </div>
         )
     }
 
-    displayLectureSlots = () => {
-        //get all attendance dates for lecture
+    displayLecture = () => {
 
-        var lectureAttendanceDate = []
-        var allLectureAttendance = this.state.allLectureAttendance;
-        for (var i = -0; i < allLectureAttendance.length; i++) {
-            lectureAttendanceDate.push({
-                date: (allLectureAttendance[i].startTs).substring(0, 10),
-                id: allLectureAttendance[i].attendanceId
-            })
+        //get all attendance dates for lecture
+        var lectureAttendance = []
+        if (this.state.allLecturesLength !== 0) {
+            for (var i = 0; i < this.state.allLecturesLength; i++) {
+                lectureAttendance.push({
+                    date: (this.state.allLectures[i].startTs).substring(0, 10),
+                    id: this.state.allLectures[i].attendanceId
+                })
+            }
         }
 
         return (
-            <div>
-                <MDBRow>
-                    <MDBCol align="right">
-                        <select className="browser-default custom-select" style={{ maxWidth: 250 }}>
-                            <option>Group</option>
-                            <option value="1">Group 1</option>
-                        </select>
+            <MDBTable>
+                <MDBTableHead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Attendance</th>
+                    </tr>
+                </MDBTableHead>
+                <MDBTableBody>
+                    {lectureAttendance && lectureAttendance.map((lectureAttendance, index) => {
+                        return (
+                            <tr>
+                                <td>{lectureAttendance.date}</td>
+                                <td>{this.checkPresence(lectureAttendance.id)}</td>
+                            </tr>
+                        )
+                    })}
 
-                        <select className="browser-default custom-select" style={{ maxWidth: 250 }} onChange={this.handleLectureDate}>
-                            <option>Date</option>
-                            {lectureAttendanceDate && lectureAttendanceDate.map(
-                                (lecture) => <option key={lecture.id} value={lecture.id}>{lecture.date}</option>)
-                            }
-                        </select>
-                        <MDBBtn onClick={this.getLectureAttendance}>Get</MDBBtn>
-                    </MDBCol>
-                </MDBRow>
-                {this.displaySelectedLectureAttendance()}
-            </div>
+                </MDBTableBody>
+            </MDBTable>
         )
     }
 
+    displayTutorial = () => {
+        if (this.state.allTutorial !== "") {
+            var tutorialAttendance = []
+            if (this.state.allTutorial.length !== 0) {
+                for (var i = 0; i < this.state.allTutorial.length; i++) {
+                    tutorialAttendance.push({
+                        date: (this.state.allTutorial[i].startTs).substring(0, 10),
+                        id: this.state.allTutorial[i].attendanceId
+                    })
+                }
+            }
+
+        }
+
+        return (
+            <MDBTable>
+                <MDBTableHead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Attendance</th>
+                    </tr>
+                </MDBTableHead>
+                <MDBTableBody>
+                    {tutorialAttendance && tutorialAttendance.map((tutorialAttendance, index) => {
+                        return (
+                            <tr>
+                                <td>{tutorialAttendance.date}</td>
+                                <td>{this.checkPresenceTutorial(tutorialAttendance.id)}</td>
+                            </tr>
+                        )
+                    })}
+
+                </MDBTableBody>
+            </MDBTable>
+        )
+    }
+
+    checkPresence = (lectureAttendanceId) => {
+
+        var attendeesId = []
+        this.state.attendedLecture && this.state.attendedLecture.map((attended, index) => {
+            attendeesId.push(attended.attendanceId)
+        })
+
+        if (attendeesId.filter(e => e === lectureAttendanceId).length > 0) {
+            return <div style={{ color: "green" }}>Present</div>
+        } else {
+            return <div style={{ color: "red" }}>Absent</div>
+        }
+    }
+
+    checkPresenceTutorial = (tutorialAttendanceId) => {
+        var attendeesId = []
+        this.state.attendedTutorial && this.state.attendedTutorial.map((attended, index) => {
+            attendeesId.push(attended.attendanceId)
+        })
+
+        if (attendeesId.filter(e => e === tutorialAttendanceId).length > 0) {
+            return <div style={{ color: "green" }}>Present</div>
+        } else {
+            return <div style={{ color: "red" }}>Absent</div>
+        }
+    }
 
     render() {
         return (

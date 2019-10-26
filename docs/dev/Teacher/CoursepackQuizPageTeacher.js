@@ -1,28 +1,35 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable } from "mdbreact";
-import ModuleSideNavigation from "../ModuleSideNavigation";
+import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable, NavLink } from "mdbreact";
+import CoursepackSideNavigation from "../CoursepackSideNavigation";
 import { Snackbar } from '@material-ui/core';
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
-import moment from 'moment';
 
 @inject('dataStore')
 @observer
-class ModuleQuizPageViewStudents extends Component {
+class CoursepackQuizPageTeacher extends Component {
 
     state = {
-        modal1: false,
-        modal2: false,
-        moduleId: 0,
+        coursepackId: 0,
         quizId: 0,
         name: "",
         openingDate: "",
         closingDate: "",
         quizStatus: "",
+        quizzes: [],
         columns: [
             {
-                "label": "Attempt Id",
+                "label": "Quiz Id",
+                "field": "quizId",
+                "width": 50,
+                "attributes": {
+                    "aria-controls": "DataTable",
+                    "aria-label": "Name"
+                }
+            },
+            {
+                "label": "Name",
                 "field": "name",
                 "width": 150,
                 "attributes": {
@@ -30,34 +37,61 @@ class ModuleQuizPageViewStudents extends Component {
                     "aria-label": "Name"
                 }
             },
+            // {
+            //     "label": "Opening Date",
+            //     "field": "openingDate",
+            //     "width": 200
+            // },
+            // {
+            //     "label": "Closing Date",
+            //     "field": "closingDate",
+            //     "width": 100
+            // },
+            // {
+            //     "label": "Status",
+            //     "field": "quizStatus",
+            //     "width": 100
+            // },
             {
-                "label": "Score",
-                "field": "score",
+                "label": "Max Marks",
+                "field": "maxMarks",
                 "width": 100
             },
             {
-                "label": "View Answers",
-                "field": "view",
+                "label": "Preview Quiz",
+                "field": "preview",
                 "width": 100
             }
+            // {
+            //     "label": "",
+            //     "field": "",
+            //     "width": 100
+            // }
         ],
         rows: [{ label: "Retrieving data..." }],
-        status: "retrieving",
-        label: "",
         openSnackbar: false,
-        message: ""
+        message: "",
+        status: "retrieving",
+        recallQuiz: false,
+        label: ""
     }
 
     componentDidMount() {
         this.initPage();
-        this.getAllStudentsAttempts();
+        this.getAllCoursepackQuizzes();
+    }
+
+    componentDidUpdate() {
+        if (this.state.recallQuiz) {
+            this.getAllCoursepackQuizzes();
+        }
     }
 
     handleChange = event => {
         event.preventDefault();
         this.setState({ [event.target.name]: event.target.value });
     }
-    
+
     handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -66,59 +100,86 @@ class ModuleQuizPageViewStudents extends Component {
         this.setState({ openSnackbar: false });
     };
 
-    getAllStudentsAttempts = () => {
+    initPage() {
+        var pathname = location.pathname;
+        pathname = pathname.split("/");
+        // console.log(pathname[2])
+        this.props.dataStore.setCurrModId(pathname[2]);
+    }
+
+    getAllCoursepackQuizzes = () => {
         let userId = localStorage.getItem('userId');
-        var quizId = this.props.dataStore.getCurrQuizId
+        let coursepackId = this.props.dataStore.getCurrModId;
         axios
-            .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllQuizAttempts?userId=${userId}&quizId=${quizId}`)
+            .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllCoursepackQuiz/${coursepackId}?userId=${userId}`)
             .then(result => {
-                // console.log(result.data)
-                this.setState({
-                    status: "done",
-                    rows: result.data.quizAttempts
-                });
+                // console.log(result.data.quizzes)
+                this.setState({ status: "done", quizzes: result.data.quizzes, recallQuiz: false })
             })
             .catch(error => {
-                this.setState({
-                    status: "error",
-                    label: error.response.data.errorMessage
-                });
+                this.setState({ status: "error", label: error.response.data.errorMessage })
                 console.error("error in axios " + error);
             });
     }
-
-    toggle = (nr, row) => {
-        let modalNumber = "modal" + nr;
-        this.setState({
-            [modalNumber]: !this.state[modalNumber]
-        });
-
-        if (row !== undefined) {
-            // this.updateQuizState(row);
+    
+    renderQuizTable = () => {
+        var quiz = this.state.quizzes;
+        var coursepackId = this.props.dataStore.getCurrModId;
+        // console.log(quiz)
+        if (this.state.quizzes.length !== 0) {
+            var tempQuizzes = []
+            for (let i = 0; i < this.state.quizzes.length; i++) {
+                tempQuizzes.push({
+                    quizId: quiz[i].quizId,
+                    name: quiz[i].title,
+                    // openingDate: quiz[i].openingDate,
+                    // closingDate: quiz[i].closingDate,
+                    // status: quiz[i].publish ? "Published" : "Unpublished",
+                    maxMarks: quiz[i].maxMarks,
+                    // editButton: <MDBRow align="center">
+                    //     <MDBCol md={6}><NavLink to={`/coursepack/${coursepackId}/quiz/${quiz[i].quizId}/edit`}><MDBIcon style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></NavLink></MDBCol>
+                    //     <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(quiz[i].quizId)} style={{ paddingTop: 12, cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
+                    // </MDBRow>,
+                    previewButton: <center><MDBBtn color="primary" outline size="sm" href={`/coursepack/${coursepackId}/quiz/${quiz[i].quizId}/preview`}>Preview</MDBBtn></center>,
+                })
+            }
+        } else {
+            var tempQuizzes = [{ label: "No quizzes found." }];
         }
-    };
 
-    renderQuizStudentsTable = (tableData) => {
-        var moduleId = this.props.dataStore.getCurrModId;
-        var quizId = this.props.dataStore.getCurrQuizId;
+        const data = () => ({ columns: this.state.columns, rows: tempQuizzes })
+        // clickEvent: () => goToProfilePage(1)
+
+        const widerData = {
+            columns: [...data().columns.map(col => {
+                col.width = 150;
+                return col;
+            })], rows: [...data().rows.map(row => {
+                // row.clickEvent = () => goToProfilePage(1)
+                return row;
+            })]
+        }
+
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <CoursepackSideNavigation courseId={coursepackId}></CoursepackSideNavigation>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
-                            <MDBCol md="12">
+                            <MDBCol md="8">
                                 <h2 className="font-weight-bold">
-                                    <a href={`/modules/${moduleId}/quiz`}>Quiz</a>
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Quiz {quizId}
-                                </h2>
+                                    Quiz
+                </h2>
+                            </MDBCol>
+                            <MDBCol md="4" align="right">
+                                <MDBBtn href={`/coursepack/${coursepackId}/quiz/create`} color="primary">Create Quiz</MDBBtn>
                             </MDBCol>
                         </MDBRow>
                         <MDBRow className="py-3">
                             <MDBCol md="12">
                                 <MDBCard>
                                     <MDBCardBody>
-                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
+                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={widerData} pagesAmount={4} />
                                     </MDBCardBody>
                                 </MDBCard>
                             </MDBCol>
@@ -146,8 +207,7 @@ class ModuleQuizPageViewStudents extends Component {
     }
 
     renderTableWithMessage = () => {
-        var quizId = this.props.dataStore.getCurrQuizId;
-        var moduleId = this.props.dataStore.getCurrModId;
+        var coursepackId = this.props.dataStore.getCurrModId;
         const data = () => ({ columns: this.state.columns, rows: [{ label: this.state.label }] })
 
         const tableData = {
@@ -158,17 +218,15 @@ class ModuleQuizPageViewStudents extends Component {
         }
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <CoursepackSideNavigation courseId={coursepackId}></CoursepackSideNavigation>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
-                                    <a href={`/modules/${moduleId}/quiz`}>Quiz</a>
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Quiz {quizId}
+                                    Quiz
                                 </h2>
                             </MDBCol>
-                            {/* {this.renderEditQuizModalBox()} */}
                         </MDBRow>
                         <MDBRow className="py-3">
                             <MDBCol md="12">
@@ -186,10 +244,10 @@ class ModuleQuizPageViewStudents extends Component {
     }
 
     renderAwaiting = () => {
-        var moduleId = this.props.dataStore.getCurrModId;
+        var coursepackId = this.props.dataStore.getCurrModId;
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <CoursepackSideNavigation courseId={coursepackId}></CoursepackSideNavigation>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }} align="center">
@@ -205,58 +263,19 @@ class ModuleQuizPageViewStudents extends Component {
         )
     }
 
-    initPage() {
-        var moduleId = this.props.dataStore.getCurrModId;
-        if (moduleId) {
-            // console.log(moduleId);
-            // retrieve module & set state
-            this.setState({ moduleId: moduleId })
-        }
-        var pathname = location.pathname;
-        pathname = pathname.split("/");
-        this.setState({ quizId: pathname[4] })
-        this.props.dataStore.setCurrModId(pathname[2]);
-        this.props.dataStore.setCurrQuizId(pathname[4])
-    }
-
     render() {
-        var moduleId = this.props.dataStore.getCurrModId;
-        var quizId = this.props.dataStore.getCurrQuizId;
-        var newRows = []
-        const row = this.state.rows
-        for (let i = 0; i < row.length; i++) {
-            newRows.push({
-                name: row[i].quizAttemptId,
-                score: row[i].totalMarks,
-                //quizAttemptList
-                viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quizId}/review/${row[i].quizAttemptId}`}>Review</MDBBtn></center>
-            })
-        }
-        const data = () => ({ columns: this.state.columns, rows: newRows })
-        // clickEvent: () => goToProfilePage(1)
-
-        const widerData = {
-            columns: [...data().columns.map(col => {
-                col.width = 150;
-                return col;
-            })], rows: [...data().rows.map(row => {
-                // row.clickEvent = () => goToProfilePage(1)
-                return row;
-            })]
-        }
-
         if (this.state.status === "retrieving")
             return this.renderAwaiting();
         else if (this.state.status === "error")
-            return this.renderTableWithMessage("Error in retrieving students' attempts. Please try again later.");
+            return this.renderTableWithMessage();
         else if (this.state.status === "done")
-            return this.renderQuizStudentsTable(widerData);
+            return this.renderQuizTable();
         else
-            return this.renderTableWithMessage("No students' attempts found.");
+            return this.renderTableWithMessage();
     }
 }
 
-export default styled(ModuleQuizPageViewStudents)`
+export default styled(CoursepackQuizPageTeacher)`
 .module-content{
     margin-left: 270px;
     margin-top: 40px;

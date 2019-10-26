@@ -88,7 +88,7 @@ class RegisterPage extends Component {
                                 <MDBCol md="8" className="mt-3 mx-auto">
                                     <MDBJumbotron>
                                         {this.state.status === "done" && <h3 className="text-center" style={{ fontWeight: "bold" }}>YOUR ACCOUNT IS SUCCESSFULLY CREATED!</h3>}
-                                        {this.state.status === "done" && <center><a href="/public/login">Login Now!</a></center>}
+                                        {this.state.status === "done" && <center><a href="/coursepack/login">Login Now!</a></center>}
                                     </MDBJumbotron>
                                 </MDBCol>
                             </MDBRow>

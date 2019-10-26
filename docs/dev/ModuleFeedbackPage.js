@@ -17,6 +17,19 @@ import ModuleSideNavigation from "./ModuleSideNavigation";
 import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
 import axios from "axios";
 import Snackbar from '@material-ui/core/Snackbar';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Slide from '@material-ui/core/Slide';
+import { Dialog, Typography } from "@material-ui/core";
+import * as Survey from "survey-react";
+import "survey-react/survey.css";
+
+const API_URL = "http://localhost:8080/LMS-war/webresources";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
 @inject('dataStore')
 @observer
@@ -55,33 +68,34 @@ class ModuleFeedbackPage extends Component {
             ],
             rows: []
         },
-        submittedFeedbacksTable: {
+        surveyAttempts: {
             columns: [
-                {
+                /*{
                     label: "",
                     field: "index",
-                    sort: "asc"
-                },
+                    sort: "asc",
+                    width: 100
+                },*/
                 {
-                    label: "Submitted Date",
-                    field: "submittedDt",
-                    sort: "asc"
-                },
-                {
-                    label: "Title",
-                    field: "title",
-                    sort: "asc"
-                },
+                    label: "Name",
+                    field: "name",
+                    sort: "asc",
+                    width: 500
+                },/*
                 {
                     label: "",
-                    field: "viewButton",
+                    field: "viewSurvey",
                     sort: "asc"
-                }
+                }*/
             ],
             rows: []
         },
         message: "",
-        openSnackbar: ""
+        openSnackbar: "",
+        surveyAttemptToView: {
+            elements: []
+        },
+        showSurveyAttemptDialog: false
     }
 
     handleOpenSnackbar = () => {
@@ -100,7 +114,7 @@ class ModuleFeedbackPage extends Component {
         this.initPage();
     }
 
-    initPage() {
+    async initPage() {
         let accessRight = localStorage.getItem("accessRight");
         let moduleId = this.props.match.params.moduleId;
         if (moduleId && accessRight) {
@@ -110,20 +124,18 @@ class ModuleFeedbackPage extends Component {
                 moduleId: moduleId
             })
             // if admin or prof
-            axios
-                .get("http://localhost:8080/LMS-war/webresources/feedback/retrieveAllFeedbackForModule/" + moduleId)
+            await axios
+                .get(API_URL + "/feedback/retrieveAllFeedbackForModule/" + moduleId)
                 .then((result) => {
-                    console.log(result);
+                    console.log(result)
                     let data = result.data.feedbacks;
                     let arr = [];
                     let idx = 1;
                     const method = this.viewFeedback;
                     Object.keys(data).forEach(function (key) {
-                        let date = data[key].createTs.substring(0, 10);
-                        let time = data[key].createTs.substring(11, 16);
                         let temp = {
                             index: idx,
-                            createTs: date + " " + time,
+                            createTs: new Date(data[key].createTs).toLocaleString(),
                             viewButton: (<MDBBtn size="sm" color="primary" onClick={e => method(data[key].feedback)}>View</MDBBtn>)
                         }
                         arr.push(temp);
@@ -139,11 +151,45 @@ class ModuleFeedbackPage extends Component {
                 .catch(error => {
                     this.setState({
                         editMode: false,
-                        message: error.response.data.errorMessage,
-                        openSnackbar: true
+                        //message: error.response.data.errorMessage,
+                        //openSnackbar: true
                     })
                     console.error("error in axios " + error);
                 });
+
+            await axios
+                .get(`${API_URL}/feedback/retrieveSurveyAttempts?userId=${localStorage.getItem('userId')}&moduleId=${moduleId}`)
+                .then((result) => {
+                    console.log(result);
+                    let data = result.data.surveyAttempts;
+                    let arr = [];
+                    let idx = 1;
+                    const method = this.viewSurvey;
+                    Object.keys(data).forEach(function (key) {
+                        let temp = {
+                            name: data[key].surveyTaker.firstName + " " + data[key].surveyTaker.lastName,
+                            //viewSurvey: (<MDBBtn size="sm" color="primary" onClick={e => method(data[key])}>View</MDBBtn>)
+                            clickEvent: () => method(data[key])
+                        }
+                        arr.push(temp);
+                        idx++;
+                    });
+                    this.setState({
+                        surveyAttempts: {
+                            ...this.state.surveyAttempts,
+                            rows: arr
+                        }
+                    })
+                })
+                .catch(error => {
+                    this.setState({
+                        editMode: false,
+                        //message: error.response.data.errorMessage,
+                        //openSnackbar: true
+                    })
+                    console.error("error in axios " + error);
+                });
+
 
             /*axios
                 .get("http://localhost:3001/moduleAdhocFeedback")
@@ -191,6 +237,39 @@ class ModuleFeedbackPage extends Component {
                 content: content
             }
         });
+    }
+
+    viewSurvey = (survey) => {
+        let questionAttemptList = survey.questionAttemptList;
+        let surveyDisplayArr = []
+        let answerDict = {}
+        Object.keys(questionAttemptList).forEach(function (key) {
+            let question = {
+                answer: questionAttemptList[key].answer,
+                choices: questionAttemptList[key].question.choices,
+                number: questionAttemptList[key].question.number,
+                questionId: questionAttemptList[key].question.questionId,
+                title: questionAttemptList[key].question.title,
+                type: questionAttemptList[key].question.type,
+                name: JSON.stringify(questionAttemptList[key].question.title)
+            }
+            
+            surveyDisplayArr.push(question);
+            answerDict[JSON.stringify(questionAttemptList[key].question.title)] = questionAttemptList[key].answer
+        })
+        console.log()
+        this.setState({
+            surveyAttemptToView: {
+                pages: [
+                    {
+                        elements: surveyDisplayArr
+                    }
+                ],
+                mode: 'display',
+                data: answerDict
+            },
+            showSurveyAttemptDialog: true
+        })
     }
 
     newAdhocFeedback = () => {
@@ -267,6 +346,40 @@ class ModuleFeedbackPage extends Component {
     goToSemesterEvaluation = () => {
         this.props.dataStore.setPath(`/modules/${this.state.moduleId}/feedback/evaluation`);
         this.props.history.push(`/modules/${this.state.moduleId}/feedback/evaluation`);
+    }
+
+    handleCloseSurveyDialog = () => {
+        this.setState({
+            ...this.state,
+            showSurveyAttemptDialog: false
+        })
+    }
+
+    fullScreenSurveyDialog = () => {
+        let surveyAttemptToView = this.state.surveyAttemptToView;
+        console.log(surveyAttemptToView)
+        var model = new Survey.Model(surveyAttemptToView);
+        model.data = surveyAttemptToView.data;
+        return (
+            <div>
+                <Dialog fullScreen open={this.state.showSurveyAttemptDialog} onClose={e => this.handleCloseSurveyDialog()} TransitionComponent={Transition}>
+                    <AppBar style={{ position: 'relative' }}>
+                        <Toolbar>
+                            <IconButton edge="start" color="inherit" onClick={e => this.handleCloseSurveyDialog()} aria-label="close">
+                                <MDBIcon icon="times" />
+                            </IconButton>
+                            <Typography variant="h6" style={{ color: "white", marginLeft: "10px", flex: "1" }}>
+
+                            </Typography>
+                        </Toolbar>
+                    </AppBar>
+                    <Survey.Survey
+                        model={model}
+                    />
+                    <div className="mb-4" />
+                </Dialog>
+            </div>
+        )
     }
 
     render() {
@@ -369,7 +482,7 @@ class ModuleFeedbackPage extends Component {
                                     </form>
                                 </MDBModal>
                                 {
-                                    accessRight == "Student" &&
+                                    this.state.accessRight == "Student" &&
                                     <MDBRow>
                                         <MDBCol>
                                             <h5 className="mt-5">End-of-Semester Evaluation</h5>
@@ -378,8 +491,27 @@ class ModuleFeedbackPage extends Component {
                                         </MDBCol>
                                     </MDBRow>
                                 }
+                                {
+                                    this.state.accessRight == "Teacher" &&
+                                    <MDBRow>
+                                        <MDBCol>
+                                            <MDBRow>
+                                                <MDBCol>
+                                                    <h5 className="mt-5">End-of-Semester Evaluation</h5>
+                                                    <div className="mb-3"></div>
+                                                </MDBCol>
+                                            </MDBRow>
+                                            <MDBRow>
+                                                <MDBCol>
+                                                    <MDBDataTable data={this.state.surveyAttempts} bordered striped hover />
+                                                </MDBCol>
+                                            </MDBRow>
+                                        </MDBCol>
+                                    </MDBRow>
+                                }
                             </MDBCol>
                         </MDBRow>
+                        {this.fullScreenSurveyDialog()}
                         <Snackbar
                             anchorOrigin={{
                                 vertical: 'bottom',

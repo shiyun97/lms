@@ -4,12 +4,12 @@ import axios from 'axios';
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import ModuleSideNavigation from "../ModuleSideNavigation";
-import ModuleQuizPageAnswerAdaptiveQuiz from './ModuleQuizPageAnswerAdaptiveQuiz';
-import ModuleQuizPageAnswerNormalQuiz from './ModuleQuizPageAnswerNormalQuiz';
+import ModuleQuizPagePreviewAdaptiveQuiz from './ModuleQuizPagePreviewAdaptiveQuiz';
+import ModuleQuizPagePreviewNormalQuiz from './ModuleQuizPagePreviewNormalQuiz';
 
 @inject('dataStore')
 @observer
-class ModuleQuizPageAnswerQuiz extends Component {
+class ModuleQuizPagePreviewQuiz extends Component {
 
   state = {
     studentName: "",
@@ -45,7 +45,7 @@ class ModuleQuizPageAnswerQuiz extends Component {
         var newJson = result.data;
         newJson['completedHtml'] = "<p><h4>You have completed the quiz!</h4></p>";
         if (result.data.reachedMaxAttempt) {
-          this.setState({ status: "maximumAttempt", json: newJson })
+          this.setState({ json: newJson })
         } else
           this.setState({ status: "done", json: newJson })
       })
@@ -73,7 +73,6 @@ class ModuleQuizPageAnswerQuiz extends Component {
                     <br />
                     <h1>Quiz Answers</h1>
                     <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
-                      {/* {console.log(this.state.json.pages[0].elements)} */}
                       <p>{this.state.json.pages[0].elements.map((element) =>
                         <>
                           <b><h6>Question {element.number}</h6></b>
@@ -100,22 +99,20 @@ class ModuleQuizPageAnswerQuiz extends Component {
     var moduleId = this.props.dataStore.getCurrModId;
     if (this.state.status === "done") {
       if (this.state.json.quizType === "adaptive")
-        return <ModuleQuizPageAnswerAdaptiveQuiz />;
+        return <ModuleQuizPagePreviewAdaptiveQuiz />;
       else
-        return <ModuleQuizPageAnswerNormalQuiz />;
+        return <ModuleQuizPagePreviewNormalQuiz />;
     } else if (this.state.status === "retrieving") {
       return this.renderEmptyCardWithMessage("Retrieving Quiz Details...");
     } else if (this.state.status === "error") {
       return this.renderEmptyCardWithMessage("Unable to retrieve quiz details. Please try again later.")
-    } else if (this.state.status === "maximumAttempt") {
-      return this.renderEmptyCardWithMessage("Sorry, you have exhausted all your quiz attempts.")
     } else {
       return this.renderEmptyCardWithMessage("No such quiz exist.")
     }
   }
 }
 
-export default styled(ModuleQuizPageAnswerQuiz)`
+export default styled(ModuleQuizPagePreviewQuiz)`
 .module-content{
     margin-left: 270px;
     margin-top: 40px;

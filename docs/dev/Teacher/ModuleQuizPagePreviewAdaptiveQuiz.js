@@ -120,7 +120,7 @@ var page = 0
 
 @inject('dataStore')
 @observer
-class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
+class ModuleQuizPagePreviewAdaptiveQuiz extends Component {
 
   state = {
     studentName: "",
@@ -221,20 +221,20 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
     let userId = localStorage.getItem('userId');
     // console.log(quizId)
     // console.log(answers)
-    axios
-      .post(`http://localhost:8080/LMS-war/webresources/Assessment/createQuizAttempt?userId=${userId}`, {
-        quizId: quizId,
-        questionAttempts: answers
-      })
-      .then(result => {
-        console.log("success")
-        // this.setState({ status: "done", quizzes: result.data.quizzes })
-      })
-      .catch(error => {
-        // this.setState({ status: "error" })
-        console.log("error")
-        console.error("error in axios " + error);
-      });
+    // axios
+    //   .post(`http://localhost:8080/LMS-war/webresources/Assessment/createQuizAttempt?userId=${userId}`, {
+    //     quizId: quizId,
+    //     questionAttempts: answers
+    //   })
+    //   .then(result => {
+    //     console.log("success")
+    //     // this.setState({ status: "done", quizzes: result.data.quizzes })
+    //   })
+    //   .catch(error => {
+    //     // this.setState({ status: "error" })
+    //     console.log("error")
+    //     console.error("error in axios " + error);
+    //   });
   }
 
   submitAnswers = () => {
@@ -294,7 +294,7 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
   }
 }
 
-export default styled(ModuleQuizPageAnswerAdaptiveQuiz)`
+export default styled(ModuleQuizPagePreviewAdaptiveQuiz)`
 .module-content{
     margin-left: 270px;
     margin-top: 40px;

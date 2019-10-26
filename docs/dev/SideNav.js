@@ -15,6 +15,12 @@ class SideNav extends Component {
         this.props.dataStore.setPath(path);
     }
 
+    componentDidMount() {
+        var pathname = location.pathname;
+        console.log(pathname)
+        this.props.dataStore.setPath(pathname);
+    }
+
     renderCoursepackSideNav = () => {
         // Coursepack Dashboard
         // My Courses
@@ -45,7 +51,7 @@ class SideNav extends Component {
                                 </NavLink>
                             }
                             {this.props.dataStore.accessRight !== "Admin" &&
-                                <NavLink to="/coursepack/enrolledCourses" activeClassName="activeClass" onClick={() => this.updatePath("/coursepack/enrolledCourses")}>
+                                <NavLink to="/coursepack/myCourses" activeClassName="activeClass" onClick={() => this.updatePath("/coursepack/myCourses")}>
                                     <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
                                         <MDBIcon icon="book" />
                                         <br /> <p style={{ fontSize: "10px" }}>My Courses</p>

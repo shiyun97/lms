@@ -107,7 +107,7 @@ class DashboardPageTeacher extends Component {
             <h6 style={{ fontWeight: "bold" }}>{announcement.title}</h6>
           </MDBCol>
           <MDBCol md="6" align="right">
-            <h6 style={{ fontStyle: "italic", fontSize: "10px" }}> {announcement.startDate} </h6>
+            <h6 style={{ fontStyle: "italic", fontSize: "10px" }}> {moment(announcement.startDate).format('DD-MM-YYYY HH:mm:ss')} </h6>
           </MDBCol>
           <MDBCol md="12"> {announcement.content} </MDBCol>
         </MDBRow>
@@ -119,33 +119,27 @@ class DashboardPageTeacher extends Component {
   createAnnouncement = () => {
     // console.log(this.state)
     var createdDate = new Date;
-    createdDate = moment(createdDate).format("DD-MM-YYYYTHH:mm:ss")
+    createdDate = moment(createdDate).format("DD-MM-YYYY HH:mm:ss")
     var lastUpdateDate = createdDate
-    // console.log({
-    //   content: this.state.content,
-    //   emailNotification: this.state.emailNotification,
-    //   publish: this.state.publish,
-    //   createdDate: createdDate,
-    //   lastUpdatedDate: lastUpdateDate,
-    //   startDate: this.state.startDate + ":00",
-    //   endDate: this.state.endDate + ":00",
-    //   title: this.state.title
-    // })
-    this.toggle(1)
+    var startDate = this.state.startDate;
+    startDate = moment(startDate).format("DD-MM-YYYY HH:mm:ss")
+    var endDate = this.state.endDate;
+    endDate = moment(endDate).format("DD-MM-YYYY HH:mm:ss")
+    var userId = localStorage.getItem('userId');
     axios
-      .post(`http://localhost:8080/LMS-war/webresources/Annoucement/createAnnoucement/${this.state.moduleId}`, {
+      .post(`http://localhost:8080/LMS-war/webresources/Annoucement/createModuleAnnoucement/${this.state.moduleId}?userId=${userId}`, {
         content: this.state.content,
         emailNotification: this.state.emailNotification,
-        publish: this.state.publish,
+        // publish: this.state.publish,
         createdDate: createdDate,
         lastUpdatedDate: lastUpdateDate,
-        startDate: this.state.startDate + ":00",
-        endDate: this.state.endDate + ":00",
+        startDate: startDate + ":00",
+        endDate: endDate + ":00",
         title: this.state.title
       })
       .then(result => {
         // console.log(result.data.annoucementList)
-        this.setState({ openSnackbar: true, message: "Announcement successfully created", recall: "recallAnn" })
+        this.setState({ openSnackbar: true, message: "Announcement successfully created", recall: "recallAnn", modal1: false })
       })
       .catch(error => {
         this.setState({ message: error.response.data.errorMessage, openSnackbar: true })
@@ -221,7 +215,7 @@ class DashboardPageTeacher extends Component {
                 />
               </MDBCol>
               <MDBCol md="12" className="mt-4">
-                Publish
+                {/* Publish
                 <Checkbox
                   checked={this.state.publish}
                   onChange={this.handleCheckBoxChange('publish')}
@@ -231,7 +225,7 @@ class DashboardPageTeacher extends Component {
                   inputProps={{
                     'aria-label': 'secondary checkbox',
                   }}
-                />
+                /> */}
                 Email Notification
                 <Checkbox
                   checked={this.state.emailNotification}

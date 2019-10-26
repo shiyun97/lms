@@ -1,0 +1,58 @@
+{
+    "title": "Quiz",
+    "moduleId": 11,
+    "description": "Description",
+    "quizType": "normal",
+    "questionsOrder": "initial",
+    "openingDate": "2019-10-15T00:00:00",
+    "closingDate": "2019-12-22T00:00:00",
+    "publish": true,
+    "noOfAttempts": 1,
+    "maxTimeToFinish": 60,
+    "questions": [
+        {
+            "type": "radiogroup",
+            "title": "What is a MCQ question?",
+            "isRequired": true,
+            "points": 2,
+            "explanation": "This is an explanation",
+            "correctAnswer": "Answer Choice 2",
+            "choices": [
+                {
+                    "text": "Answer Choice 1"
+                },
+                {
+                    "text": "Answer Choice 2"
+                },
+                {
+                    "text": "Answer Choice 3"
+                },
+                {
+                    "text": "Answer Choice 4"
+                }
+            ]
+        },
+        {
+            "type": "radiogroup",
+            "title": "Do you ask questions?",
+            "isRequired": true,
+            "points": 2,
+            "explanation": "This is an explanation",
+            "correctAnswer": "Answer Choice 2",
+            "choices": [
+                {
+                    "text": "Answer Choice 1"
+                },
+                {
+                    "text": "Answer Choice 2"
+                },
+                {
+                    "text": "Answer Choice 3"
+                },
+                {
+                    "text": "Answer Choice 4"
+                }
+            ]
+        }
+    ]
+}

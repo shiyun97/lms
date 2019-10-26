@@ -78,7 +78,8 @@ import ModuleQuizPage from './dev/ModuleQuizPage';
 import ModuleMultimediaPage, { ModuleMultimediaDetailsPageStyled } from './dev/ModuleMultimediaPage';
 import ModuleConsultationPage from './dev/ModuleConsultationPage';
 import ModuleAttendancePage from './dev/ModuleAttendancePage';
-import MarkAttendanceStudent from './dev/Student/MarkAttendanceStudent';
+import MarkAttendanceStudentLecture from './dev/Student/MarkAttendanceStudentLecture';
+import MarkAttendanceStudentTutorial from "./dev/Student/MarkAttendanceStudentTutorial";
 import ModuleFeedbackPage from './dev/ModuleFeedbackPage';
 import ModuleFeedbackEvaluationPage from './dev/ModuleFeedbackEvaluationPage';
 import DashboardPage from './dev/DashboardPage';
@@ -95,6 +96,7 @@ import ModuleForumTopicsPage from "./dev/ModuleForumTopicsPage";
 import ModuleQuizPageViewStudents from "./dev/Teacher/ModuleQuizPageViewStudents";
 import ModuleQuizPageViewStudentAttempt from "./dev/Teacher/ModuleQuizPageViewStudentAttempt";
 import ModuleGradebookPageTeacherViewGrades from "./dev/Teacher/ModuleGradebookPageTeacherViewGrades";
+import ModuleQuizPageEditQuiz from "./dev/Teacher/ModuleQuizPageEditQuiz";
 import AccessDeniedPage from "./dev/AccessDeniedPage";
 import DashboardPageAdmin from "./dev/Admin/DashboardPageAdmin";
 
@@ -112,7 +114,12 @@ import CoursepackCategoryView from "./dev/CoursepackCategoryView";
 import CoursepackForumTopicsPage from "./dev/CoursepackForumTopicsPage";
 import CoursepackForumPage from "./dev/CoursepackForumPage";
 import CoursepackForumDetailsPage from "./dev/CoursepackForumDetailsPage";
-import ModuleQuizPageEditQuiz from "./dev/Teacher/ModuleQuizPageEditQuiz";
+import CoursepackQuizPage from './dev/CoursepackQuizPage';
+import CoursepackQuizPageCreateQuiz from "./dev/Teacher/CoursepackQuizPageCreateQuiz";
+import CoursepackQuizPageStudent from "./dev/Public/CoursepackQuizPageStudent";
+import CoursepackQuizPageAnswerQuiz from "./dev/Public/CoursepackQuizPageAnswerQuiz";
+import ModuleQuizPagePreviewQuiz from "./dev/Teacher/ModuleQuizPagePreviewQuiz";
+import CoursepackQuizPagePreviewQuiz from "./dev/Teacher/CoursepackQuizPagePreviewQuiz";
 
 @inject('dataStore')
 @observer
@@ -156,11 +163,6 @@ class Routes extends React.Component {
         <Route exact path="/undermaintenance" component={UnderMaintenancePage} />
         <Route exact path="/account" component={UserProfilePage} />
 
-        {/* LMS PAGES - Public Student */}
-        <Route exact path="/coursepack/login" component={PublicLoginPage} />
-        <Route exact path="/coursepack/register" component={RegisterPage} />
-        <Route exact path="/coursepack/account" component={UserProfilePage} />
-
         {/* LMS PAGES - Admin */}
         <Route exact path="/admin" component={AdminLoginPage} />
         <Route exact path="/users" component={UsersManagementPage} />
@@ -178,12 +180,22 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/quiz/:quizId/review" component={ModuleQuizPageViewStudents} />
         <Route exact path="/modules/:moduleId/quiz/:quizId/review/:studentId" component={ModuleQuizPageViewStudentAttempt} />
         <Route exact path="/modules/:moduleId/gradebook/:gradeItemId/viewGrades" component={ModuleGradebookPageTeacherViewGrades} />
+        <Route exact path="/coursepack/:coursepackId/quiz/create" component={CoursepackQuizPageCreateQuiz} />
+        <Route exact path="/modules/:moduleId/quiz/:quizId/preview" component={ModuleQuizPagePreviewQuiz} />
+        <Route exact path="/coursepack/:coursepackId/quiz/:quizId/preview" component={CoursepackQuizPagePreviewQuiz} />
 
         {/* LMS PAGES - Student */}
         <Route exact path="/modules/:moduleId/quiz/:quizId" component={ModuleQuizPageAnswerQuiz} />
-        <Route exact path="/modules/:moduleId/markAttendanceStudent" component={MarkAttendanceStudent} />
-        <Route exact path="/student/markAttendance" component={MarkAttendanceStudent} />
+        <Route exact path="/student/markAttendance/lecture/:moduleId/:attendanceId/" component={MarkAttendanceStudentLecture} />
+        <Route exact path="/student/markAttendance/tutorial/:tutorialId/:attendanceId/" component={MarkAttendanceStudentTutorial} />
         <Route exact path="/student/mobileLogin/:classType/:classId/:attendanceId" component={MobileLogin} />
+
+        {/* LMS PAGES - Public Student */}
+        <Route exact path="/coursepack/login" component={PublicLoginPage} />
+        <Route exact path="/coursepack/register" component={RegisterPage} />
+        <Route exact path="/coursepack/account" component={UserProfilePage} />
+        <Route exact path="/coursepack/:coursepackId/quiz/public" component={CoursepackQuizPageStudent} />
+        <Route exact path="/coursepack/:coursepackId/quiz/:quizId/answer" component={CoursepackQuizPageAnswerQuiz} />
 
         {/* LMS PAGES - Student/ Teacher */}
         <Route exact path="/" component={StudentLoginPage} />
@@ -217,7 +229,7 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/attendance" component={ModuleAttendancePage} />
         <Route exact path="/modules/:moduleId/feedback" component={ModuleFeedbackPage} />
         <Route exact path="/modules/:moduleId/feedback/evaluation" component={ModuleFeedbackEvaluationPage} />
-        <Route exact path="/coursepack/enrolledCourses" component={CoursepackEnrolledCourses} />
+        <Route exact path="/coursepack/myCourses" component={CoursepackEnrolledCourses} />
         <Route exact path="/coursepack/dashboard" component={CoursepackDashboard} />
         <Route exact path="/coursepack/:coursepackId/" component={CoursepackDetails} />
         <Route exact path="/coursepack/:category/list" component={CoursepackCategoryView} />
@@ -226,6 +238,7 @@ class Routes extends React.Component {
         <Route exact path="/coursepack/:coursepackId/forum/topics/:topicId" component={CoursepackForumPage} />
         <Route exact path="/coursepack/:coursepackId/forum/topics/:topicId/:forumId" component={CoursepackForumDetailsPage} />
         <Route exact path="/coursepack/:coursepackId/feedback" component={CoursepackFeedbackPage} />
+        <Route exact path="/coursepack/:coursepackId/quiz" component={CoursepackQuizPage} />
 
         {/* FREE Templates */}
         <Route exact path="/home" component={HomePage} />

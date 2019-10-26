@@ -15,6 +15,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 import * as Survey from "survey-react";
 import "survey-react/survey.css";
 
+const API_URL = "http://localhost:8080/LMS-war/webresources";
+
 @inject('dataStore')
 @observer
 class ModuleFeedbackEvaluationPage extends Component {
@@ -35,6 +37,7 @@ class ModuleFeedbackEvaluationPage extends Component {
     onCompleteComponent(s) {
         // values to send back
         console.log(s.valuesHash)
+        console.log(this.state.surveyId)
         let answers = s.valuesHash;
         let questions = this.state.evaluation.pages[0].elements;
         let request = {
@@ -99,16 +102,31 @@ class ModuleFeedbackEvaluationPage extends Component {
                 {
                     questionId: questions[16].questionId,
                     answer: answers['question17']
+                },
+                {
+                    questionId: questions[17].questionId,
+                    answer: answers['question18']
                 }
             ]
         }
         console.log(request)
-        this.setState({ isCompleted: true });
+        axios
+            .post(`${API_URL}/feedback/createSurveyAttempt?userId=${localStorage.getItem("userId")}`, request)
+            .then((result) => {
+                console.log(result)
+                this.setState({ isCompleted: true });
+            })
+            .catch(error => {
+                this.setState({
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                })
+                console.error("error in axios " + error);
+            });
     }
 
     onValueChanged(e) {
         console.log(e.valuesHash)
-        console.log(e.valuesHash['question2'])
     }
 
     handleOpenSnackbar = () => {
@@ -132,7 +150,8 @@ class ModuleFeedbackEvaluationPage extends Component {
         if (moduleId) {
             // retrieve questions
             await axios
-                .get("http://localhost:3002/feedbackEvaluation2")
+                //.get("http://localhost:3002/feedbackEvaluation2")
+                .get(`${API_URL}/feedback/retrieveSurvey?userId=${localStorage.getItem('userId')}&moduleId=${moduleId}`)
                 .then((result) => {
                     console.log(result);
                     if (result) {
@@ -143,7 +162,7 @@ class ModuleFeedbackEvaluationPage extends Component {
                                 evaluation: {
                                     pages: result.data.pages
                                 },
-                                surveyId: result.data.surveyId
+                                surveyId: result.data.quizId
                             });
                         }
                     }
@@ -151,6 +170,7 @@ class ModuleFeedbackEvaluationPage extends Component {
                 })
                 .catch(error => {
                     this.setState({
+                        moduleId: moduleId,
                         message: error.response.data.errorMessage,
                         openSnackbar: true
                     })

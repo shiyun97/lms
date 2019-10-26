@@ -5,7 +5,6 @@ import { observer, inject } from 'mobx-react';
 import moment from 'moment';
 import styled from 'styled-components';
 import * as Survey from "survey-react";
-import ModuleSideNavigation from "../ModuleSideNavigation";
 
 var pathname = location.pathname;
 pathname = pathname.split("/");
@@ -97,7 +96,7 @@ var json = {
 
 @inject('dataStore')
 @observer
-class ModuleQuizPageAnswerNormalQuiz extends Component {
+class CoursepackQuizPageAnswerNormalQuiz extends Component {
 
   state = {
     studentName: "",
@@ -132,8 +131,8 @@ class ModuleQuizPageAnswerNormalQuiz extends Component {
         // console.log(result.data)
         var newJson = result.data;
         newJson['completedHtml'] = "<p><h4>You have completed the quiz!</h4></p>";
-        json = newJson
         this.setState({ status: "done" })
+        json = newJson
       })
       .catch(error => {
         this.setState({ status: "error" })
@@ -194,51 +193,41 @@ class ModuleQuizPageAnswerNormalQuiz extends Component {
     var moduleId = this.props.dataStore.getCurrModId;
     if (this.state.start) {
       return (
-      <div className={this.props.className}>
-        <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
-        <div className="module-content">
-          <MDBContainer className="mt-3">
-            <MDBRow className="py-3">
-              <MDBCol md="12">
-                <MDBCard cascade className="my-3 grey lighten-4">
-                  {this.state.status === "done" &&
-                    <Survey.Survey
-                      model={model}
-                      onComplete={() => this.onComplete()}
-                      onValueChanged={this.onValueChanged}
-                    />
-                  }
-                  {this.state.status !== "done" && <h5 align="center" style={{ padding: 20 }}>Error in retrieving quiz. Please try again later.</h5>}
-                </MDBCard>
-              </MDBCol>
-            </MDBRow>
-          </MDBContainer>
-        </div>
-      </div>
-    );
-    
-  } else {
-    return (
-      <div className={this.props.className}>
-        <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
-        <div className="module-content">
-          <MDBContainer className="mt-3">
-            <MDBRow className="py-3">
-              <MDBCol md="12">
-                <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
-                  <MDBBtn color="blue" onClick={() => { this.setState({ start: true }) }}><h4>Start Quiz</h4></MDBBtn>
-                </MDBCard>
-              </MDBCol>
-            </MDBRow>
-          </MDBContainer>
-        </div>
-      </div>
-    )
-  }
+        <MDBContainer className="mt-3">
+          <MDBRow className="py-3">
+            <MDBCol md="12">
+              <MDBCard cascade className="my-3 grey lighten-4">
+                {this.state.status === "done" &&
+                  <Survey.Survey
+                    model={model}
+                    onComplete={() => this.onComplete()}
+                    onValueChanged={this.onValueChanged}
+                  />
+                }
+                {this.state.status !== "done" && <h5 align="center" style={{ padding: 20 }}>Error in retrieving quiz. Please try again later.</h5>}
+              </MDBCard>
+            </MDBCol>
+          </MDBRow>
+        </MDBContainer>
+      );
+
+    } else {
+      return (
+        <MDBContainer className="mt-3">
+          <MDBRow className="py-3">
+            <MDBCol md="12">
+              <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
+                <MDBBtn color="blue" onClick={() => { this.setState({ start: true }) }}><h4>Start Quiz</h4></MDBBtn>
+              </MDBCard>
+            </MDBCol>
+          </MDBRow>
+        </MDBContainer>
+      )
+    }
   }
 }
 
-export default styled(ModuleQuizPageAnswerNormalQuiz)`
+export default styled(CoursepackQuizPageAnswerNormalQuiz)`
 .module-content{
     margin-left: 270px;
     margin-top: 40px;

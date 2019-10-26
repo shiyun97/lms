@@ -3,6 +3,7 @@ import { MDBJumbotron, MDBCardBody, MDBCard, MDBCardTitle, MDBCardText, MDBRow, 
 import { NavLink } from 'react-router-dom';
 import axios from "axios";
 import { observer, inject } from 'mobx-react';
+import moment from 'moment';
 
 @inject('dataStore')
 @observer
@@ -54,7 +55,7 @@ class DashboardPageStudent extends Component {
             <h6 style={{ fontWeight: "bold" }}>{announcement.title}</h6>
           </MDBCol>
           <MDBCol md="6" align="right">
-            <h6 style={{ fontStyle: "italic", fontSize: "10px" }}> {announcement.startDate} </h6>
+            <h6 style={{ fontStyle: "italic", fontSize: "10px" }}> {moment(announcement.startDate).format('DD-MM-YYYY HH:mm:ss')} </h6>
           </MDBCol>
           <MDBCol md="12"> {announcement.content} </MDBCol>
         </MDBRow>

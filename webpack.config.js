@@ -51,6 +51,19 @@ const config = {
         test: /\.mp4$/,
         use: 'file-loader?name=videos/[name].[ext]',
       },
+      {
+        test: /\.(gif|png|jpe?g|svg)$/i,
+        use: [
+          'file-loader',
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              bypassOnDebug: true, // webpack@1.x
+              disable: true, // webpack@2.x and newer
+            },
+          },
+        ],
+      }
     ]
   },
   devServer: {
@@ -58,7 +71,7 @@ const config = {
     open: true,
     compress: true,
     port: 3100,
-    host: '127.0.0.1',
+    host: '0.0.0.0',
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "*",

@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBCardBody, MDBCard, MDBDataTable } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
-import { Snackbar } from '@material-ui/core';
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
-import moment from 'moment';
 
 @inject('dataStore')
 @observer
@@ -16,11 +14,7 @@ class ModuleGradebookPageStudent extends Component {
         modal2: false,
         moduleId: 0,
         quizId: 0,
-        name: "",
-        openingDate: "",
-        closingDate: "",
-        quizStatus: "",
-        quizzes: [],
+        gradeItems: [],
         columns: [
             {
                 "label": "Grade Item",
@@ -32,8 +26,8 @@ class ModuleGradebookPageStudent extends Component {
                 }
             },
             {
-                "label": "Grade Item ID",
-                "field": "gradeItemId",
+                "label": "Description",
+                "field": "description",
                 "width": 150,
                 "attributes": {
                     "aria-controls": "DataTable",
@@ -51,94 +45,58 @@ class ModuleGradebookPageStudent extends Component {
                 "width": 200
             },
             {
-                "label": "Comment",
-                "field": "comment",
-                "width": 100
-            },
-            {
-                "label": "Review Marks",
-                "field": "reviewMarks",
+                "label": "Remarks",
+                "field": "remarks",
                 "width": 100
             }
         ],
         rows: [{ label: "Retrieving data..." }],
         status: "retrieving",
-        openSnackbar: false,
-        message: "",
-        recallGradebook: false
     }
 
     componentDidMount() {
         this.initPage();
-        this.getAllModuleQuizzes();
+        this.getAllGrades();
     }
 
-    componentDidUpdate() {
-        if (this.state.recallGradebook) {
-            // this.getAllModuleQuizzes();
-        }
-    }
-
-    handleChange = event => {
-        event.preventDefault();
-        this.setState({ [event.target.name]: event.target.value });
-    }
-
-    toggle = (nr, row) => {
-        let modalNumber = "modal" + nr;
-        this.setState({
-            [modalNumber]: !this.state[modalNumber]
-        });
-
-        if (row !== undefined) {
-            // this.updateQuizState(row);
-        }
-    };
-    
-    handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        this.setState({ openSnackbar: false });
-    };
-
-    getAllModuleQuizzes = () => {
+    getAllGrades = () => {
         let userId = localStorage.getItem('userId');
         let moduleId = this.props.dataStore.getCurrModId;
         axios
-            .get(` http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllModuleQuiz/${moduleId}?userId=${userId}`)
+            .get(` http://localhost:8080/LMS-war/webresources/Assessment/retrieveStudentGrades?moduleId=${moduleId}&userId=${userId}`)
             .then(result => {
-                // console.log(result.data.quizzes)
-                this.setState({ status: "done", quizzes: result.data.quizzes })
+                // console.log(result.data.gradeItems)
+                this.setState({ status: "done", gradeItems: result.data.gradeItems })
             })
             .catch(error => {
-                this.setState({ status: "error" })
+                if (error.response.data.errorMessage === "No grade entries for the student")
+                    this.setState({ status: "error", label: "No grade entries found." })
+                else
+                    this.setState({ status: "error", label: error.response.data.errorMessage })
                 console.error("error in axios " + error);
             });
     }
 
     renderGradebookTable = () => {
-        var quiz = this.state.quizzes;
+        var gradeItem = this.state.gradeItems;
         var moduleId = this.props.dataStore.getCurrModId;
-        // console.log(quiz)
-        if (this.state.quizzes.length !== 0) {
-            var tempQuizzes = []
-            for (let i = 0; i < this.state.quizzes.length; i++) {
-                tempQuizzes.push({
-                    gradeItem: quiz[i].quizId,
-                    gradeItemId: quiz[i].title,
-                    score: quiz[i].openingDate,
-                    maxMarks: quiz[i].closingDate,
-                    comment: quiz[i].publish ? "Open" : "Closed",
-                    reviewMarks: <center><MDBBtn color="primary" outline size="sm" disabled>Reviewed</MDBBtn></center>
+        // console.log(gradeItem)
+        if (this.state.gradeItems.length !== 0) {
+            var tempGradeItems = []
+            for (let i = 0; i < this.state.gradeItems.length; i++) {
+                tempGradeItems.push({
+                    gradeItem: gradeItem[i].title,
+                    description: gradeItem[i].description,
+                    score: gradeItem[i].gradeEntries[0].marks === null ? "-" : gradeItem[i].gradeEntries[0].marks,
+                    maxMarks: gradeItem[i].maxMarks,
+                    remarks: gradeItem[i].gradeEntries[0].remarks === null ? "-" : gradeItem[i].gradeEntries[0].remarks
                 })
             }
         } else {
-            var tempQuizzes = [{ label: "No quizzes found." }];
+            var tempGradeItems = [{ label: "No grade items found." }];
         }
 
-        const data = () => ({ columns: this.state.columns, rows: tempQuizzes })
+        const data = () => ({ columns: this.state.columns, rows: tempGradeItems })
         // clickEvent: () => goToProfilePage(1)
 
         const widerData = {
@@ -175,31 +133,15 @@ class ModuleGradebookPageStudent extends Component {
                                 </MDBCard>
                             </MDBCol>
                         </MDBRow>
-                        <Snackbar
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            open={this.state.openSnackbar}
-                            autoHideDuration={6000}
-                            onClose={this.handleClose}
-                            ContentProps={{
-                                'aria-describedby': 'message-id',
-                            }}
-                            message={<span id="message-id">{this.state.message}</span>}
-                            action={[
-                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-                            ]}
-                        />
                     </MDBContainer>
                 </div>
             </div>
         )
     }
 
-    renderTableWithMessage = (message) => {
+    renderTableWithMessage = () => {
         var moduleId = this.props.dataStore.getCurrModId;
-        const data = () => ({ columns: this.state.columns, rows: [{ label: message }] })
+        const data = () => ({ columns: this.state.columns, rows: [{ label: this.state.label }] })
 
         const tableData = {
             columns: [...data().columns.map(col => {
@@ -268,11 +210,11 @@ class ModuleGradebookPageStudent extends Component {
         if (this.state.status === "retrieving")
             return this.renderAwaiting();
         else if (this.state.status === "error")
-            return this.renderTableWithMessage("Error in Retrieving Grade Item. Please try again later.");
+            return this.renderTableWithMessage();
         else if (this.state.status === "done")
             return this.renderGradebookTable();
         else
-            return this.renderTableWithMessage("No grade items found.");
+            return this.renderTableWithMessage();
     }
 }
 export default styled(ModuleGradebookPageStudent)`
