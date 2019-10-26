@@ -128,8 +128,8 @@ class ModuleQuizPageStudent extends Component {
                 tempQuizzes.push({
                     quizId: quiz[i].quizId,
                     name: quiz[i].title,
-                    openingDate: quiz[i].openingDate,
-                    closingDate: quiz[i].closingDate,
+                    openingDate: moment(quiz[i].openingDate).format("DD-MM-YYYY"),
+                    closingDate: moment(quiz[i].closingDate).format("DD-MM-YYYY"),
                     status: quiz[i].publish ? "Open" : "Closed",
                     // description: quiz[i].description,
                     // order: quiz[i].questionsOrder,

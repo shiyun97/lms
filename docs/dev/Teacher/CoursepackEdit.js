@@ -62,7 +62,11 @@ class CoursePackEdit extends Component {
 
     deleteCourse = event => {
         this.setState({ open: false })
-        axios.delete(`${API}Coursepack/deleteCoursepack?coursepackId=${this.state.coursepackId}`)
+        var pathname = location.pathname;
+        pathname = pathname.split('/');
+        let coursepackId = pathname[2];
+        console.log(coursepackId)
+        axios.delete(`${API}Coursepack/deleteCoursepack?coursepackId=${coursepackId}`)
             .then(result => {
                 this.setState({ message: "Coursepack deleted.", openSnackbar: true })
                 window.history.go(-2)
@@ -83,11 +87,16 @@ class CoursePackEdit extends Component {
     }
 
     editSave = event => {
+        this.setState({ open: false })
+        var pathname = location.pathname;
+        pathname = pathname.split('/');
+        let coursepackId = pathname[2];
+        console.log(coursepackId)
         this.setState({ disabled: false, editSave: "Save" })
         if (this.state.editSave === "Save") {
             this.setState({ disabled: true })
             const { courseCode, courseTitle, courseDescription, category, price } = this.state
-            axios.post(`${API}Coursepack/updateCoursepack?coursepackId=${this.state.coursepackId}`, {
+            axios.post(`${API}Coursepack/updateCoursepack?coursepackId=${coursepackId}`, {
                 code: courseCode,
                 title: courseTitle,
                 description: courseDescription,

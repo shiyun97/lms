@@ -28,7 +28,7 @@ class CoursepackDetailsTeacher extends Component {
         openSnackbar: false,
         coursepackId: "",
         ratings: [
-            {
+            /*{
                 ratingId: 2,
                 comment: "This is a good course. yay",
                 rating: 5,
@@ -45,11 +45,11 @@ class CoursepackDetailsTeacher extends Component {
                     firstName: "Tom",
                     lastName: "Doe"
                 }
-            }
+            }*/
         ],
-        averageRating: 4.6,
-        ratingSpread: [64, 29, 6, 1, 0],
-        ratingValues: [5, 4, 3, 2, 1],
+        averageRating: "",
+        ratingSpread: [],
+        ratingValues: [],
         modalAddRating: false,
         ratingCommentInput: "",
         ratingStarsInput: 5,

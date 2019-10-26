@@ -5,6 +5,7 @@ import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Snackbar } from '@material-ui/core';
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
+import moment from 'moment';
 
 @inject('dataStore')
 @observer
@@ -182,8 +183,8 @@ class ModuleQuizPageTeacher extends Component {
                 tempQuizzes.push({
                     quizId: quiz[i].quizId,
                     name: quiz[i].title,
-                    openingDate: quiz[i].openingDate,
-                    closingDate: quiz[i].closingDate,
+                    openingDate: moment(quiz[i].openingDate).format("DD-MM-YYYY"),
+                    closingDate: moment(quiz[i].closingDate).format("DD-MM-YYYY"),
                     status: quiz[i].publish ? "Published" : "Unpublished",
                     maxMarks: quiz[i].maxMarks,
                     editButton: <MDBRow align="center">
