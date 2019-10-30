@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import { observer, inject } from 'mobx-react';
 // import TableSection from './sections/TableSection';
-// import BreadcrumSection from './sections/BreadcrumSection';
 // import ChartSection1 from './sections/ChartSection1';
 // import ChartSection2 from './sections/ChartSection2';
 // import MapSection from './sections/MapSection';
@@ -112,7 +111,7 @@ class ModuleAnalyticsPage extends Component {
     )
   }
 
-  renderAdminCardSection2 = () => {
+  renderNumberCardSection2 = () => {
     return (
       <MDBRow className="mb-4">
           <MDBCol xl="3" md="6" className="mb-3">
@@ -192,13 +191,9 @@ class ModuleAnalyticsPage extends Component {
       <MDBCard className="mb-5">
           <MDBCardBody id="breadcrumb" className="d-flex align-items-center justify-content-between">
               <MDBBreadcrumb>
-                  <MDBBreadcrumbItem>Home</MDBBreadcrumbItem>
+                  <MDBBreadcrumbItem>Module</MDBBreadcrumbItem>
                   <MDBBreadcrumbItem active>Analytics</MDBBreadcrumbItem>
               </MDBBreadcrumb>
-              <MDBFormInline className="md-form m-0">
-                  <input className="form-control form-control-sm" type="search" placeholder="Type your query" aria-label="Search"/>
-                  <MDBBtn size="sm" color="primary" className="my-0" type="submit"><MDBIcon icon="search" /></MDBBtn>
-              </MDBFormInline>
           </MDBCardBody>
       </MDBCard>
     )
@@ -213,7 +208,7 @@ class ModuleAnalyticsPage extends Component {
           <MDBContainer>
             {this.renderBreadcrumbSection()}
             {this.renderCardSection1()}
-            {this.renderAdminCardSection2()}
+            {this.renderNumberCardSection2()}
             {/* <ChartSection1 />
         <TableSection />
         <ChartSection2 /> */}

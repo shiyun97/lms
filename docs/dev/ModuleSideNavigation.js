@@ -97,6 +97,12 @@ class ModuleSideNavigation extends Component {
                             Feedback
                         </MDBListGroupItem>
                     </NavLink>
+                    <NavLink to={`/modules/${moduleId}/analytics`} activeClassName="activeClass" onClick={() => this.updatePath(`/modules/${moduleId}/analytics`)}>
+                        <MDBListGroupItem>
+                            <MDBIcon icon="chart-line" className="mr-3 fa-fw"/>
+                            Analytics
+                        </MDBListGroupItem>
+                    </NavLink>
                 </MDBListGroup>
                 
             </div>

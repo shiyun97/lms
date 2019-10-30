@@ -182,8 +182,9 @@ class ModuleQuizPagePreviewAdaptiveQuiz extends Component {
         // console.log(result.data)
         var newJson = result.data;
         newJson['completedHtml'] = "<p><h4>You have completed the quiz!</h4></p>";
-        newJson['goNextPageAutomatic'] = true
-        newJson['showNavigationButtons'] = false
+        newJson['showPrevButton'] = false
+        newJson['maxTimeToFinish'] = 0
+        newJson['showTimerPanel'] = false
         json = newJson
         this.rearrangePages();
         this.setState({ status: "done" })
@@ -215,6 +216,11 @@ class ModuleQuizPagePreviewAdaptiveQuiz extends Component {
       }
     }
     // console.log(answers)
+  }
+
+  doOnCurrentPageChanged = (result) => {
+    console.log(page)
+    page = 2
   }
 
   onComplete = (result) => {
@@ -261,6 +267,7 @@ class ModuleQuizPagePreviewAdaptiveQuiz extends Component {
                       <Survey.Survey
                         model={model}
                         onComplete={() => this.onComplete()}
+                        doOnCurrentPageChanged={this.doOnCurrentPageChanged}
                         currentPageNo={page}
                         onValueChanged={this.onValueChanged}
                       />
