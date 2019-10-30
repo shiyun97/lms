@@ -22,7 +22,7 @@ class CoursePackCreate extends Component {
     }
 
     componentDidMount() {
-        let userId = localStorage.getItem("userId")
+        let userId = sessionStorage.getItem("userId")
         this.setState({ userId: userId })
     }
 

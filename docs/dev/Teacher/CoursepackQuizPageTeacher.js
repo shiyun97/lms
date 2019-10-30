@@ -108,7 +108,7 @@ class CoursepackQuizPageTeacher extends Component {
     }
 
     getAllCoursepackQuizzes = () => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         let coursepackId = this.props.dataStore.getCurrModId;
         axios
             .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllCoursepackQuiz/${coursepackId}?userId=${userId}`)

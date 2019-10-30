@@ -23,7 +23,7 @@ class CoursepackQuizPage extends Component {
     }
 
     render() {
-        let accessRight = localStorage.getItem("accessRight")
+        let accessRight = sessionStorage.getItem("accessRight")
         if (accessRight === "Teacher")
             return <CoursepackQuizPageTeacher moduleId={this.props.moduleId} /> //NEED TO CHANGE TO COURSEPACK
         else

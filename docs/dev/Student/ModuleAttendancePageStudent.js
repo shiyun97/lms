@@ -42,7 +42,7 @@ class ModuleAttendancePageStudent extends Component {
 
 
         //get student's tutorials
-        axios.get(`${API}studentEnrollment/retrieveStudentTutorials/${localStorage.getItem('userId')}`)
+        axios.get(`${API}studentEnrollment/retrieveStudentTutorials/${sessionStorage.getItem('userId')}`)
             .then(result => {
                 this.setState({
                     enrolledTutorialId: result.data.tutorials[0]
@@ -53,7 +53,7 @@ class ModuleAttendancePageStudent extends Component {
             });
 
         //get student's attendance
-        axios.get(`${API}Attendance/getStudentModuleAttandance?userId=${localStorage.getItem('userId')}&moduleId=${moduleId}`)
+        axios.get(`${API}Attendance/getStudentModuleAttandance?userId=${sessionStorage.getItem('userId')}&moduleId=${moduleId}`)
             .then(result => {
                 this.setState({
                     attendanceList: result.data.attendanceList,

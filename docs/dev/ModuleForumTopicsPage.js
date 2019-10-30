@@ -189,7 +189,7 @@ class ModuleForumTopicsPage extends Component {
 
         // api to create new topic
         axios
-            .post(`${API_URL}/Forum/createTopic?moduleId=${this.state.moduleId}&userId=${localStorage.getItem('userId')}`,
+            .post(`${API_URL}/Forum/createTopic?moduleId=${this.state.moduleId}&userId=${sessionStorage.getItem('userId')}`,
             request)
             .then((result) => {
                 console.log(result);
@@ -232,7 +232,7 @@ class ModuleForumTopicsPage extends Component {
         console.log(this.state.forumTopicToDelete)
         // call api to delete
         axios
-            .delete(`${API_URL}/Forum/deleteTopic?forumTopicId=${this.state.forumTopicToDelete}&userId=${localStorage.getItem('userId')}`)
+            .delete(`${API_URL}/Forum/deleteTopic?forumTopicId=${this.state.forumTopicToDelete}&userId=${sessionStorage.getItem('userId')}`)
             .then((result) => {
                 console.log(result);
                 if (result) {
@@ -284,7 +284,7 @@ class ModuleForumTopicsPage extends Component {
 
         // api to edit topic
         axios
-            .put(`${API_URL}/Forum/editTopic?forumTopicId=${this.state.forumTopicIdToEdit}&userId=${localStorage.getItem('userId')}`,
+            .put(`${API_URL}/Forum/editTopic?forumTopicId=${this.state.forumTopicIdToEdit}&userId=${sessionStorage.getItem('userId')}`,
             request)
             .then((result) => {
                 console.log(result);
@@ -411,7 +411,7 @@ class ModuleForumTopicsPage extends Component {
                         <MDBRow>
                             <MDBCol>
                                 {
-                                    localStorage.getItem('accessRight') == 'Teacher' &&
+                                    sessionStorage.getItem('accessRight') == 'Teacher' &&
                                     <MDBBtn className="ml-0 mb-4" color="primary" block onClick={e => {this.newTopic()}}>Add New Discussion Category</MDBBtn>
                                 }
                                 
@@ -495,7 +495,7 @@ class TopicListItem extends Component {
                             textDecoration: "underline", overflow: "hidden" }}>
                             <span onClick={this.props.enterTopic}>{topic.title}</span>
                             {
-                                this.props.ownerId == localStorage.getItem('userId') &&
+                                this.props.ownerId == sessionStorage.getItem('userId') &&
                                 <span>
                                     <MDBIcon icon="edit" className="indigo-text mt-2 ml-3" size="md" onClick={this.props.edit} />
                                     <MDBIcon icon="trash-alt" className="indigo-text mt-2 ml-2" size="md" onClick={this.props.delete} />

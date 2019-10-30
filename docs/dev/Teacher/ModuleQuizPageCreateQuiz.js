@@ -63,7 +63,7 @@ class ModuleQuizPageCreateQuiz extends Component {
 
     handleSubmit = () => {
         // call api to submit quiz
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         var moduleId = this.props.dataStore.getCurrModId;
         // console.log({
         //     title: this.state.title,

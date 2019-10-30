@@ -118,7 +118,7 @@ class ModuleQuizPageTeacher extends Component {
     }
 
     getAllModuleQuizzes = () => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         let moduleId = this.props.dataStore.getCurrModId;
         axios
             .get(` http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllModuleQuiz/${moduleId}?userId=${userId}`)
@@ -133,7 +133,7 @@ class ModuleQuizPageTeacher extends Component {
     }
 
     publishAnswers = (quizId) => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         axios
             .post(`http://localhost:8080/LMS-war/webresources/Assessment/publishQuizAnswer?userId=${userId}&quizId=${quizId}`)
             .then(result => {
@@ -153,7 +153,7 @@ class ModuleQuizPageTeacher extends Component {
     }
 
     deleteQuiz = (quizId) => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         event.preventDefault();
         axios
             .delete(`http://localhost:8080/LMS-war/webresources/Assessment/deleteModuleQuiz?userId=${userId}&quizId=${quizId}`)

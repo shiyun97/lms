@@ -119,7 +119,7 @@ class AnnouncementListItem extends Component {
                 {
                     !this.props.expired &&
                     <div className="h6">{announcement.title}
-                        {localStorage.getItem("accessRight") === "Teacher" &&
+                        {sessionStorage.getItem("accessRight") === "Teacher" &&
                             <>
                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                             <MDBIcon icon="edit" className="mr-1" onClick={this.props.edit} style={{ cursor: "pointer", textShadow: "1px 0px 1px #777777" }} />
@@ -132,7 +132,7 @@ class AnnouncementListItem extends Component {
                 {
                     this.props.expired &&
                     <div className="h6">{announcement.title}
-                        {localStorage.getItem("accessRight") === "Teacher" &&
+                        {sessionStorage.getItem("accessRight") === "Teacher" &&
                             <>
                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                         <MDBIcon icon="trash-alt" className="mr-1" onClick={this.props.delete} style={{ cursor: "pointer", textShadow: "1px 0px 1px #777777" }} />

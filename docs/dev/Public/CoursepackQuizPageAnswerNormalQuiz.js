@@ -123,7 +123,7 @@ class CoursepackQuizPageAnswerNormalQuiz extends Component {
   }
 
   getModuleQuiz = () => {
-    let userId = localStorage.getItem('userId');
+    let userId = sessionStorage.getItem('userId');
     let quizId = this.props.dataStore.getCurrQuizId;
     axios
       .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveModuleQuiz/${quizId}?userId=${userId}`)
@@ -163,7 +163,7 @@ class CoursepackQuizPageAnswerNormalQuiz extends Component {
   }
 
   onComplete = (result) => {
-    let userId = localStorage.getItem('userId');
+    let userId = sessionStorage.getItem('userId');
     console.log(quizId)
     console.log(answers)
     axios

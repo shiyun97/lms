@@ -278,7 +278,7 @@ class CoursepackDetailsPageStudent extends Component {
         let ratingStarsInput = this.state.ratingStarsInput;
         if (ratingCommentInput && ratingStarsInput) {
             let request = {
-                userId: localStorage.getItem('userId'),
+                userId: sessionStorage.getItem('userId'),
                 coursepackId: this.state.ratingCoursepackId,
                 rating: ratingStarsInput,
                 comment: ratingCommentInput
@@ -363,11 +363,11 @@ class CoursepackDetailsPageStudent extends Component {
         let ratings = this.state.ratings;
         return (
             <div className={this.props.className}>
-                {localStorage.getItem('accessRight') === 'Teacher' ? <CoursepackSideNavigation courseId={this.props.coursepackId} /> : null}
+                {sessionStorage.getItem('accessRight') === 'Teacher' ? <CoursepackSideNavigation courseId={this.props.coursepackId} /> : null}
                 {/*                 <CoursepackSideNavigation courseId={this.props.coursepackId} />
  */}
                 <MDBContainer style={{ paddingTop: 20 }}>
-                    {localStorage.getItem('accessRight') !== 'Teacher' ? (
+                    {sessionStorage.getItem('accessRight') !== 'Teacher' ? (
                         <MDBRow>
                             <MDBCol>
                                 <div style={{ float: "right" }}>

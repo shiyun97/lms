@@ -80,7 +80,7 @@ class ModuleQuizPageEditQuiz extends Component {
     };
 
     getModuleQuiz = () => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         let quizId = this.props.dataStore.getCurrQuizId;
         axios
             .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveModuleQuiz/${quizId}?userId=${userId}`)
@@ -123,7 +123,7 @@ class ModuleQuizPageEditQuiz extends Component {
 
     handleFormSubmit = () => {
         // call api to submit quiz
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         let moduleId = this.props.dataStore.getCurrModId;
         let quizId = this.props.dataStore.getCurrQuizId;
         var openingDate = this.state.openingDate

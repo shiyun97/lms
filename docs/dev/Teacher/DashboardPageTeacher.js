@@ -125,7 +125,7 @@ class DashboardPageTeacher extends Component {
     startDate = moment(startDate).format("DD-MM-YYYY HH:mm:ss")
     var endDate = this.state.endDate;
     endDate = moment(endDate).format("DD-MM-YYYY HH:mm:ss")
-    var userId = localStorage.getItem('userId');
+    var userId = sessionStorage.getItem('userId');
     axios
       .post(`http://localhost:8080/LMS-war/webresources/Annoucement/createModuleAnnoucement/${this.state.moduleId}?userId=${userId}`, {
         content: this.state.content,

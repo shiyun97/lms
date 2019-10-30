@@ -23,7 +23,7 @@ class ModuleQuizPage extends Component {
     }
 
     render() {
-        let accessRight = localStorage.getItem("accessRight")
+        let accessRight = sessionStorage.getItem("accessRight")
         if (accessRight === "Student")
             return <ModuleQuizPageStudent moduleId={this.props.moduleId}/>
         else if (accessRight === "Teacher")

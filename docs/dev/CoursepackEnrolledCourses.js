@@ -208,7 +208,7 @@ class CoursepackEnrolledCourses extends Component {
   };
 
   render() {
-    if (localStorage.getItem("accessRight") === "Teacher") {
+    if (sessionStorage.getItem("accessRight") === "Teacher") {
       return (
         <MDBContainer style={{ paddingBottom: 240 }}>
           <CoursepackDashboardPageTeacher />

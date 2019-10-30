@@ -163,7 +163,7 @@ class ModuleFilesPage extends Component {
     async initPage() {
         let moduleId = this.props.match.params.moduleId;
         let folderId = this.props.match.params.folderId;
-        let accessRight = localStorage.getItem("accessRight");
+        let accessRight = sessionStorage.getItem("accessRight");
         let queryString;
         if (this.props.match.params.folderId) {
             queryString = "moduleId=" + moduleId + "&folderId=" + folderId;
@@ -268,7 +268,7 @@ class ModuleFilesPage extends Component {
                                     Download
                                 </MDBBtn>
                                 {
-                                    files[key].uploader.userId == localStorage.getItem("userId") &&
+                                    files[key].uploader.userId == sessionStorage.getItem("userId") &&
                                     <MDBBtn color="danger" size="sm" onClick={e => deleteFileMethod(files[key].fileId)}>
                                         Delete
                                     </MDBBtn>
@@ -507,13 +507,13 @@ class ModuleFilesPage extends Component {
         event.preventDefault();
 
         var files = this.state.uploadedFiles;
-        if (files.length > 0 && this.state.moduleId && this.state.folderId && localStorage.getItem("userId")) {
+        if (files.length > 0 && this.state.moduleId && this.state.folderId && sessionStorage.getItem("userId")) {
             const formData = new FormData();
             for (let i = 0; i < files.length; i++) {
                 formData.append('file', files[i]);
             }
             
-            fetch(`${API_URL}/file/uploadMultiple?moduleId=${this.state.moduleId}&folderId=${this.state.folderId}&type=document&userId=${localStorage.getItem("userId")}`, {
+            fetch(`${API_URL}/file/uploadMultiple?moduleId=${this.state.moduleId}&folderId=${this.state.folderId}&type=document&userId=${sessionStorage.getItem("userId")}`, {
                 method: 'post',
                 body: formData
             })
@@ -627,13 +627,13 @@ class ModuleFilesPage extends Component {
 
     uploadFileOnChange = () => {
         var files = this.fileUpload.files;
-        if (files.length > 0 && this.state.moduleId && this.state.folderId && localStorage.getItem("userId")) {
+        if (files.length > 0 && this.state.moduleId && this.state.folderId && sessionStorage.getItem("userId")) {
             const formData = new FormData();
             for (let i = 0; i < files.length; i++) {
                 formData.append('file', files[i]);
             }
             
-            fetch(`${API_URL}/file/uploadMultiple?moduleId=${this.state.moduleId}&folderId=${this.state.folderId}&type=document&userId=${localStorage.getItem("userId")}`, {
+            fetch(`${API_URL}/file/uploadMultiple?moduleId=${this.state.moduleId}&folderId=${this.state.folderId}&type=document&userId=${sessionStorage.getItem("userId")}`, {
                 method: 'post',
                 body: formData
             })
@@ -663,11 +663,11 @@ class ModuleFilesPage extends Component {
         /*
         var file = this.fileUpload.files[0];
         
-        if (file != null && this.state.moduleId && this.state.folderId && localStorage.getItem("userId")) {
+        if (file != null && this.state.moduleId && this.state.folderId && sessionStorage.getItem("userId")) {
             const formData = new FormData();
             formData.append('file', file);
 
-            fetch(`${API_URL}/file/upload?moduleId=${this.state.moduleId}&folderId=${this.state.folderId}&type=document&userId=${localStorage.getItem("userId")}`, {
+            fetch(`${API_URL}/file/upload?moduleId=${this.state.moduleId}&folderId=${this.state.folderId}&type=document&userId=${sessionStorage.getItem("userId")}`, {
                 method: 'post',
                 body: formData
             })

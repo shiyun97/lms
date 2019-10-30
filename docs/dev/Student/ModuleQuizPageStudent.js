@@ -104,7 +104,7 @@ class ModuleQuizPageStudent extends Component {
     };
 
     getAllModuleQuizzes = () => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         let moduleId = this.props.dataStore.getCurrModId;
         axios
             .get(` http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllModuleQuiz/${moduleId}?userId=${userId}`)

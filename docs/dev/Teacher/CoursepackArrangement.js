@@ -62,7 +62,7 @@ class CoursepackArrangements extends Component {
             });
 
         //get created coursepack quiz 
-        axios.get(`${API}Assessment/retrieveAllCoursepackQuiz/${coursepackId}?userId=${localStorage.getItem('userId')}`)
+        axios.get(`${API}Assessment/retrieveAllCoursepackQuiz/${coursepackId}?userId=${sessionStorage.getItem('userId')}`)
         .then(result => {
             this.setState({ quizzes: result.data.quizzes })
             console.log(result.data.quizzes)

@@ -41,9 +41,9 @@ class DataStore {
     this.email = email;
     this.password = password;
     this.accessRight = accessRight;
-    localStorage.setItem("email", this.email)
-    localStorage.setItem("password", this.password)
-    localStorage.setItem("accessRight", this.accessRight)
+    sessionStorage.setItem("email", this.email)
+    sessionStorage.setItem("password", this.password)
+    sessionStorage.setItem("accessRight", this.accessRight)
     if (this.accessRight === "Public")
       this.path = "/coursepack/dashboard"
     else
@@ -55,9 +55,9 @@ class DataStore {
     this.email = email;
     this.password = password;
     this.accessRight = accessRight;
-    localStorage.setItem("email", this.email)
-    localStorage.setItem("password", this.password)
-    localStorage.setItem("accessRight", this.accessRight)
+    sessionStorage.setItem("email", this.email)
+    sessionStorage.setItem("password", this.password)
+    sessionStorage.setItem("accessRight", this.accessRight)
       this.mobilePath = "/student/markAttendance"
   }
 
@@ -76,7 +76,7 @@ class DataStore {
     this.gender = "";
     this.firstName = "";
     this.lastName = "";
-    localStorage.clear();
+    sessionStorage.clear();
   }
 
   @action setPath(path) {
@@ -165,11 +165,11 @@ class DataStore {
     this.firstName = firstName;
     this.lastName = lastName;
     this.username = username;
-    localStorage.setItem("userId", this.userId)
-    localStorage.setItem("gender", this.gender)
-    localStorage.setItem("firstName", this.firstName)
-    localStorage.setItem("lastName", this.lastName)
-    localStorage.setItem("username", this.username)
+    sessionStorage.setItem("userId", this.userId)
+    sessionStorage.setItem("gender", this.gender)
+    sessionStorage.setItem("firstName", this.firstName)
+    sessionStorage.setItem("lastName", this.lastName)
+    sessionStorage.setItem("username", this.username)
   }
 
   @computed get getSignInStatus() {

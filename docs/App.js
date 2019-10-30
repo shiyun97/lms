@@ -22,16 +22,16 @@ class App extends Component {
   };
 
   componentDidMount() {
-    if (localStorage.getItem("email") !== null) {
-      let email = localStorage.getItem("email")
-      let password = localStorage.getItem("password")
-      let accessRight = localStorage.getItem("accessRight")
-      let userId = localStorage.getItem("userId")
-      let gender = localStorage.getItem("gender")
-      let firstName = localStorage.getItem("firstName")
-      let lastName = localStorage.getItem("lastName")
-      let username = localStorage.getItem("username")
-      let path = localStorage.getItem("path")
+    if (sessionStorage.getItem("email") !== null) {
+      let email = sessionStorage.getItem("email")
+      let password = sessionStorage.getItem("password")
+      let accessRight = sessionStorage.getItem("accessRight")
+      let userId = sessionStorage.getItem("userId")
+      let gender = sessionStorage.getItem("gender")
+      let firstName = sessionStorage.getItem("firstName")
+      let lastName = sessionStorage.getItem("lastName")
+      let username = sessionStorage.getItem("username")
+      let path = sessionStorage.getItem("path")
       path !== null && this.props.dataStore.setPath(path)
       this.props.dataStore.setSignInStatus(true, email, password, accessRight)
       this.props.dataStore.setUserDetails(userId, gender, firstName, lastName, username)

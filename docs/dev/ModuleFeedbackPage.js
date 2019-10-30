@@ -115,7 +115,7 @@ class ModuleFeedbackPage extends Component {
     }
 
     async initPage() {
-        let accessRight = localStorage.getItem("accessRight");
+        let accessRight = sessionStorage.getItem("accessRight");
         let moduleId = this.props.match.params.moduleId;
         if (moduleId && accessRight) {
             console.log(moduleId);
@@ -158,7 +158,7 @@ class ModuleFeedbackPage extends Component {
                 });
 
             await axios
-                .get(`${API_URL}/feedback/retrieveSurveyAttempts?userId=${localStorage.getItem('userId')}&moduleId=${moduleId}`)
+                .get(`${API_URL}/feedback/retrieveSurveyAttempts?userId=${sessionStorage.getItem('userId')}&moduleId=${moduleId}`)
                 .then((result) => {
                     console.log(result);
                     let data = result.data.surveyAttempts;

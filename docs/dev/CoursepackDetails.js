@@ -6,7 +6,7 @@ import CoursepackDetailsPageStudent from "./Student/CoursepackDetailsPageStudent
 class CoursepackDetails extends Component {
 
     render() {
-        let accessRight = localStorage.getItem("accessRight")
+        let accessRight = sessionStorage.getItem("accessRight")
         return (
             <div>
                 {accessRight === "Student" && <CoursepackDetailsPageStudent coursepackId={this.props.match.params.coursepackId} />}

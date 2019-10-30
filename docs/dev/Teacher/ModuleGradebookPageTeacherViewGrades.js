@@ -97,7 +97,7 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
     };
 
     getGradeItemEntries = () => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         let gradeItemId = this.props.dataStore.getCurrGradeItemId;
         axios
             .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveGradeEntries?userId=${userId}&gradeItemId=${gradeItemId}`)
@@ -112,7 +112,7 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
     }
 
     updateGrades = () => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         // console.log({gradeEntryId: this.state.gradeEntryId,
         //     marks: this.state.marks,
         //     remarks: this.state.remarks})

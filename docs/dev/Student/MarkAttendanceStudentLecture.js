@@ -25,7 +25,7 @@ class MarkAttendanceStudentLecture extends Component {
 
         var currentUrl = window.location.href
         var split = currentUrl.split('/')
-        var userId = localStorage.getItem('userId')
+        var userId = sessionStorage.getItem('userId')
         var attendanceId = split[split.length - 1]
         var classId = split[split.length - 2]
         var classType = split[split.length - 3]

@@ -7,7 +7,7 @@ import CoursepackDashboardPageStudent from "./Student/CoursepackDashbaordPageStu
 class CoursepackDashboard extends Component {
 
   render() {
-    let accessRight = localStorage.getItem("accessRight")
+    let accessRight = sessionStorage.getItem("accessRight")
     return (
       <MDBContainer style={{ paddingBottom: 240 }}>
         <CoursepackDashboardPageStudent />

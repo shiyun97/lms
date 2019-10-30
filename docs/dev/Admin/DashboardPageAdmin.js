@@ -129,7 +129,7 @@ class DashboardPageAdmin extends Component {
         var endDate = this.state.endDate;
         endDate = moment(endDate).format("DD-MM-YYYY HH:mm:ss")
         axios
-            .post(`http://localhost:8080/LMS-war/webresources/Annoucement/createSystemAnnoucement?userId=${localStorage.getItem('userId')}`, {
+            .post(`http://localhost:8080/LMS-war/webresources/Annoucement/createSystemAnnoucement?userId=${sessionStorage.getItem('userId')}`, {
                 content: this.state.content,
                 emailNotification: this.state.emailNotification,
                 // publish: this.state.publish,
@@ -175,7 +175,7 @@ class DashboardPageAdmin extends Component {
         var endDate = this.state.endDate;
         endDate = moment(endDate).format("DD-MM-YYYY HH:mm:ss")
         axios
-            .put(`http://localhost:8080/LMS-war/webresources/Annoucement/updateSystemAnnoucement?annoucementId=${this.state.currAnnouncementId}&userId=${localStorage.getItem('userId')}`, {
+            .put(`http://localhost:8080/LMS-war/webresources/Annoucement/updateSystemAnnoucement?annoucementId=${this.state.currAnnouncementId}&userId=${sessionStorage.getItem('userId')}`, {
                 content: this.state.content,
                 emailNotification: this.state.emailNotification,
                 // publish: this.state.publish,

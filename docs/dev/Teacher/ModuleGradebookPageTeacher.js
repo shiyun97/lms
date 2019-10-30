@@ -115,7 +115,7 @@ class ModuleGradebookPageTeacher extends Component {
     };
 
     getUngradedModuleQuiz = () => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         let moduleId = this.props.dataStore.getCurrModId;
         axios
             .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveModuleQuizNotInGradebook/${moduleId}?userId=${userId}`)
@@ -128,7 +128,7 @@ class ModuleGradebookPageTeacher extends Component {
     }
 
     createGradeItem = () => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         let moduleId = this.props.dataStore.getCurrModId;
         axios
             .post(`http://localhost:8080/LMS-war/webresources/Assessment/createGradeItem?userId=${userId}`, {
@@ -155,7 +155,7 @@ class ModuleGradebookPageTeacher extends Component {
     }
 
     createQuizGradeItem = () => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         let moduleId = this.props.dataStore.getCurrModId;
         var title = ""
         var description = ""
@@ -191,7 +191,7 @@ class ModuleGradebookPageTeacher extends Component {
     }
 
     updateGradeItem = () => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         axios
             .post(`http://localhost:8080/LMS-war/webresources/Assessment/updateGradeItem?userId=${userId}`, {
                 gradeItemId: this.state.gradeItemId,
@@ -217,7 +217,7 @@ class ModuleGradebookPageTeacher extends Component {
     }
 
     unpublishGrade = (gradeItemId) => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         axios
             .post(`http://localhost:8080/LMS-war/webresources/Assessment/unpublishGrade?userId=${userId}&gradeItemId=${gradeItemId}`, {})
             .then(result => {
@@ -237,7 +237,7 @@ class ModuleGradebookPageTeacher extends Component {
     }
 
     publishGrade = (gradeItemId) => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         axios
             .post(`http://localhost:8080/LMS-war/webresources/Assessment/publishGrade?userId=${userId}&gradeItemId=${gradeItemId}`, {})
             .then(result => {
@@ -420,7 +420,7 @@ class ModuleGradebookPageTeacher extends Component {
     }
 
     getAllGradeItem = () => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         let moduleId = this.props.dataStore.getCurrModId;
         axios
             .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveGradeItems/${moduleId}?userId=${userId}`)
@@ -438,7 +438,7 @@ class ModuleGradebookPageTeacher extends Component {
     }
 
     deleteGradeItem = (gradeItemId) => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         event.preventDefault();
         axios
             .delete(`http://localhost:8080/LMS-war/webresources/Assessment/deleteGradeItem?gradeItemId=${gradeItemId}&userId=${userId}`)

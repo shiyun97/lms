@@ -78,7 +78,7 @@ class CoursepackFeedbackPage extends Component {
         pathname = pathname.split('/');
         let coursepackId = pathname[2];
         console.log(coursepackId)
-        let accessRight = localStorage.getItem("accessRight");
+        let accessRight = sessionStorage.getItem("accessRight");
 
         if (coursepackId) {
             this.setState({
@@ -150,7 +150,7 @@ class CoursepackFeedbackPage extends Component {
         let ratingStarsInput = this.state.ratingStarsInput;
         if (ratingCommentInput && ratingStarsInput) {
             let request = {
-                userId: localStorage.getItem('userId'),
+                userId: sessionStorage.getItem('userId'),
                 coursepackId: this.state.coursepackId,
                 rating: ratingStarsInput,
                 comment: ratingCommentInput
@@ -235,11 +235,11 @@ class CoursepackFeedbackPage extends Component {
         let ratings = this.state.ratings;
         return (
             <div className="module-content">
-                {localStorage.getItem('accessRight') === 'Teacher' ? <CoursepackSideNavigation courseId={this.props.coursepackId} /> : null}
+                {sessionStorage.getItem('accessRight') === 'Teacher' ? <CoursepackSideNavigation courseId={this.props.coursepackId} /> : null}
                 {/*                 <CoursepackSideNavigation courseId={this.props.coursepackId} />
  */}
                 <MDBContainer style={{ paddingTop: 50 }}>
-                    {localStorage.getItem('accessRight') !== 'Teacher' ? (
+                    {sessionStorage.getItem('accessRight') !== 'Teacher' ? (
                         <div>
                             <MDBBtn onClick={e => this.addRating()} color="primary">Rate</MDBBtn>
                             {this.showAddRatingDialog()}
