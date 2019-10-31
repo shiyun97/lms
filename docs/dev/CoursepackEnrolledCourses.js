@@ -4,7 +4,7 @@ import {
   MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBCardBody, MDBCardText, MDBCardImage, MDBCard, MDBCardTitle, MDBCardGroup
 } from "mdbreact";
 import axios from "axios";
-import CoursepackDashboardPageTeacher from "./Teacher/CoursepackDashboardPageTeacher";
+import CoursepackCoursesTeacher from "./Teacher/CoursepackCoursesTeacher";
 
 const API = "http://localhost:3001"
 
@@ -211,7 +211,7 @@ class CoursepackEnrolledCourses extends Component {
     if (sessionStorage.getItem("accessRight") === "Teacher") {
       return (
         <MDBContainer style={{ paddingBottom: 240 }}>
-          <CoursepackDashboardPageTeacher />
+          <CoursepackCoursesTeacher />
         </MDBContainer>
       )
     } else {
