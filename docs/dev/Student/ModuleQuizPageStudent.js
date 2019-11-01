@@ -131,12 +131,6 @@ class ModuleQuizPageStudent extends Component {
                     openingDate: moment(quiz[i].openingDate).format("DD-MM-YYYY"),
                     closingDate: moment(quiz[i].closingDate).format("DD-MM-YYYY"),
                     status: quiz[i].publish ? "Open" : "Closed",
-                    // description: quiz[i].description,
-                    // order: quiz[i].questionsOrder,
-                    // publishAnswer: quiz[i].publishAnswer,
-                    // numOfAttempts: quiz[i].noOfAttempts,
-                    // maxTimeToFinish: quiz[i].maxTimeToFinish,
-                    // quizType: quiz[i].quizType,
                     viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quiz[i].quizId}`}>Attempt</MDBBtn></center>
                 })
             }
@@ -145,14 +139,12 @@ class ModuleQuizPageStudent extends Component {
         }
 
         const data = () => ({ columns: this.state.columns, rows: tempQuizzes })
-        // clickEvent: () => goToProfilePage(1)
 
         const widerData = {
             columns: [...data().columns.map(col => {
                 col.width = 150;
                 return col;
             })], rows: [...data().rows.map(row => {
-                // row.clickEvent = () => goToProfilePage(1)
                 return row;
             })]
         }

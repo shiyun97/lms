@@ -97,14 +97,12 @@ class ModuleGradebookPageStudent extends Component {
         }
 
         const data = () => ({ columns: this.state.columns, rows: tempGradeItems })
-        // clickEvent: () => goToProfilePage(1)
 
         const widerData = {
             columns: [...data().columns.map(col => {
                 col.width = 150;
                 return col;
             })], rows: [...data().rows.map(row => {
-                // row.clickEvent = () => goToProfilePage(1)
                 return row;
             })]
         }

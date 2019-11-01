@@ -37,21 +37,6 @@ class CoursepackQuizPageTeacher extends Component {
                     "aria-label": "Name"
                 }
             },
-            // {
-            //     "label": "Opening Date",
-            //     "field": "openingDate",
-            //     "width": 200
-            // },
-            // {
-            //     "label": "Closing Date",
-            //     "field": "closingDate",
-            //     "width": 100
-            // },
-            // {
-            //     "label": "Status",
-            //     "field": "quizStatus",
-            //     "width": 100
-            // },
             {
                 "label": "Max Marks",
                 "field": "maxMarks",
@@ -132,9 +117,6 @@ class CoursepackQuizPageTeacher extends Component {
                 tempQuizzes.push({
                     quizId: quiz[i].quizId,
                     name: quiz[i].title,
-                    // openingDate: quiz[i].openingDate,
-                    // closingDate: quiz[i].closingDate,
-                    // status: quiz[i].publish ? "Published" : "Unpublished",
                     maxMarks: quiz[i].maxMarks,
                     // editButton: <MDBRow align="center">
                     //     <MDBCol md={6}><NavLink to={`/coursepack/${coursepackId}/quiz/${quiz[i].quizId}/edit`}><MDBIcon style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></NavLink></MDBCol>
@@ -148,14 +130,12 @@ class CoursepackQuizPageTeacher extends Component {
         }
 
         const data = () => ({ columns: this.state.columns, rows: tempQuizzes })
-        // clickEvent: () => goToProfilePage(1)
 
         const widerData = {
             columns: [...data().columns.map(col => {
                 col.width = 150;
                 return col;
             })], rows: [...data().rows.map(row => {
-                // row.clickEvent = () => goToProfilePage(1)
                 return row;
             })]
         }

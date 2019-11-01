@@ -212,13 +212,6 @@ class UsersManagementPage extends Component {
     handleChange = event => {
         event.preventDefault();
         this.setState({ [event.target.name]: event.target.value });
-        // console.log(this.state.accessRight) 
-        // console.log(this.state.gender)
-        // console.log(this.state.password)
-        // console.log(this.state.email)
-        // console.log(this.state.username)
-        // console.log(this.state.firstName)
-        // console.log(this.state.lastName)
     }
 
     toggle = (nr, row) => {
@@ -422,14 +415,12 @@ class UsersManagementPage extends Component {
             })
         }
         const data = () => ({ columns: this.state.columns, rows: newRows })
-        // clickEvent: () => goToProfilePage(1)
 
         const widerData = {
             columns: [...data().columns.map(col => {
                 col.width = 150;
                 return col;
             })], rows: [...data().rows.map(row => {
-                // row.clickEvent = () => goToProfilePage(1)
                 return row;
             })]
         }
