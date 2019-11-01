@@ -17,47 +17,47 @@ class CoursepackSideNavigation extends Component {
     render() {
         var courseId = this.props.dataStore.getCurrCoursepackId;
         return (
-            <div className="sidebar-module-fixed position-fixed" style={{ paddingTop: 150, paddingRight:12 }}>
+            <div className="sidebar-module-fixed position-fixed" style={{ paddingTop: 150, backgroundColor: "#F5F5F5" }}>
 
                 <MDBListGroup className="list-group-flush">
                     <NavLink exact={true} to={`/coursepack/${courseId}`} activeClassName="activeClass">
-                        <MDBListGroupItem>
+                        <MDBListGroupItem style={{ backgroundColor: "#F5F5F5" }}>
                             <MDBIcon far icon="eye" className="mr-3 fa-fw" />
                             Preview
                         </MDBListGroupItem>
                     </NavLink>
                     <NavLink to={`/coursepack/${courseId}/edit`} activeClassName="activeClass">
-                        <MDBListGroupItem>
+                        <MDBListGroupItem style={{ backgroundColor: "#F5F5F5" }}>
                             <MDBIcon icon="edit" className="mr-3 fa-fw" />
                             Manage Course
                         </MDBListGroupItem>
                     </NavLink>
                     <NavLink to={`/coursepack/${courseId}/multimedia`} activeClassName="activeClass">
-                        <MDBListGroupItem>
+                        <MDBListGroupItem style={{ backgroundColor: "#F5F5F5" }}>
                             <MDBIcon icon="video" className="mr-3 fa-fw" />
                             Multimedia
                         </MDBListGroupItem>
                     </NavLink>
                     <NavLink to={`/coursepack/${courseId}/quiz`} activeClassName="activeClass">
-                        <MDBListGroupItem>
+                        <MDBListGroupItem style={{ backgroundColor: "#F5F5F5" }}>
                             <MDBIcon icon="star" className="mr-3 fa-fw" />
                             Quizzes
                         </MDBListGroupItem>
                     </NavLink>
                     <NavLink to={`/coursepack/${courseId}/arrangements`} activeClassName="activeClass">
-                        <MDBListGroupItem>
+                        <MDBListGroupItem style={{ backgroundColor: "#F5F5F5" }}>
                             <MDBIcon icon="layer-group" className="mr-3 fa-fw" />
                             Arrangements
                         </MDBListGroupItem>
                     </NavLink>
                     <NavLink to={`/coursepack/${courseId}/feedback`} activeClassName="activeClass">
-                        <MDBListGroupItem>
+                        <MDBListGroupItem style={{ backgroundColor: "#F5F5F5" }}>
                             <MDBIcon icon="comment-alt" className="mr-3 fa-fw" />
                             Feedbacks
                         </MDBListGroupItem>
                     </NavLink>
                     <NavLink to={`/coursepack/${courseId}/forum/topics`} activeClassName="activeClass">
-                        <MDBListGroupItem>
+                        <MDBListGroupItem style={{ backgroundColor: "#F5F5F5" }}>
                             <MDBIcon icon="comment-alt" className="mr-3 fa-fw" />
                             Forum
                         </MDBListGroupItem>
