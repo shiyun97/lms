@@ -57,11 +57,11 @@ class UsersManagementPage extends Component {
                 "field": "email",
                 "width": 270
             },
-            {
-                "label": "Password",
-                "field": "password",
-                "width": 200
-            },
+            // {
+            //     "label": "Password",
+            //     "field": "password",
+            //     "width": 200
+            // },
             {
                 "label": "Access Right",
                 "field": "accessRight",
@@ -412,7 +412,7 @@ class UsersManagementPage extends Component {
                 lastName: row[i].lastName,
                 gender: row[i].gender,
                 email: row[i].email,
-                password: "********",
+                // password: "********",
                 accessRight: row[i].accessRight,
                 username: row[i].username,
                 editButton: <MDBRow align="center">

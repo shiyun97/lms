@@ -270,17 +270,6 @@ class DashboardPageAdmin extends Component {
                                 />
                             </MDBCol>
                             <MDBCol md="12" className="mt-4">
-                                {/* Publish
-                  <Checkbox
-                                    checked={this.state.publish}
-                                    onChange={this.handleCheckBoxChange('publish')}
-                                    value="publish"
-                                    name="publish"
-                                    color="primary"
-                                    inputProps={{
-                                        'aria-label': 'secondary checkbox',
-                                    }}
-                                /> */}
                                 Email Notification
                   <Checkbox
                                     checked={this.state.emailNotification}
@@ -365,17 +354,6 @@ class DashboardPageAdmin extends Component {
                                 />
                             </MDBCol>
                             <MDBCol md="12" className="mt-4">
-                                {/* Publish
-                  <Checkbox
-                                    checked={this.state.publish}
-                                    onChange={this.handleCheckBoxChange('publish')}
-                                    value="publish"
-                                    name="publish"
-                                    color="primary"
-                                    inputProps={{
-                                        'aria-label': 'secondary checkbox',
-                                    }}
-                                /> */}
                                 Email Notification
                   <Checkbox
                                     checked={this.state.emailNotification}
@@ -581,7 +559,6 @@ class AnnouncementListItem extends Component {
                         </>
                     </div>
                 }
-
                 <MDBIcon icon="calendar-alt" className="mr-2 fa-fw" />
                 on {moment(announcement.startDate).format('DD-MM-YYYY HH:mm:ss')}
                 <div className="mb-2"></div>

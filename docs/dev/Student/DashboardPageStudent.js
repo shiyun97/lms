@@ -37,7 +37,7 @@ class DashboardPageStudent extends Component {
 
   getActiveAnnouncementDetails = () => {
     axios
-      .get(`http://localhost:8080/LMS-war/webresources/Annoucement/getAllActiveSystemAnnoucement`)
+      .get(`http://localhost:8080/LMS-war/webresources/Annoucement/getAllAnnoucement`)
       .then(result => {
         // console.log(result.data.annoucementList)
         this.setState({ annoucementList: result.data.annoucementList })
@@ -57,6 +57,15 @@ class DashboardPageStudent extends Component {
           <MDBCol md="6" align="right">
             <h6 style={{ fontStyle: "italic", fontSize: "10px" }}> {moment(announcement.startDate).format('DD-MM-YYYY HH:mm:ss')} </h6>
           </MDBCol>
+          {announcement.module !== null &&
+            // {announcement.module !== undefined &&  
+            <>
+              <MDBCol md="12">
+                <h6 style={{ fontSize: "12px" }}>{announcement.module.code} {announcement.module.title}</h6>
+                <h6 style={{ fontSize: "12px" }}>Posted by: {announcement.owner}</h6>
+              </MDBCol>
+            </>
+          }
           <MDBCol md="12"> {announcement.content} </MDBCol>
         </MDBRow>
         <hr />

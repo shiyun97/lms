@@ -162,7 +162,7 @@ class RegisterPage extends Component {
                                                     <label className="grey-text">
                                                         Password
                                                     </label>
-                                                    <input type="text" className="form-control" onChange={this.handleChange} placeholder="********" name="password" defaultValue={this.state.password} required />
+                                                    <input type="text" className="form-control" onChange={this.handleChange} name="password" defaultValue={this.state.password} required />
                                                 </MDBCol>
                                                 <MDBCol md="12" className="mt-4">
                                                     <div className="text-center mt-4">

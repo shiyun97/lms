@@ -188,7 +188,7 @@ class ModuleAnnouncementsPageTeacher extends Component {
     }
 
     updateAnnouncement = () => {
-        console.log(this.state)
+        // console.log(this.state)
         var lastUpdateDate = new Date;
         lastUpdateDate = moment(lastUpdateDate).format("DD-MM-YYYY HH:mm:ss")
         var startDate = this.state.startDate;
@@ -615,7 +615,7 @@ class AnnouncementListItem extends Component {
                 {/* <MDBIcon icon="user" className="mr-2 fa-fw" /> */}
                 {/* by {announcement.createdBy}<br /> */}
                 <MDBIcon icon="calendar-alt" className="mr-2 fa-fw" />
-                on {new Date(announcement.startDate).toLocaleString()}
+                on {moment(announcement.startDate).format('DD-MM-YYYY HH:mm:ss')}
                 <div className="mb-2"></div>
                 {announcement.content}
             </div>

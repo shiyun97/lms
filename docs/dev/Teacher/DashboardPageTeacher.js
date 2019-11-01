@@ -89,7 +89,7 @@ class DashboardPageTeacher extends Component {
 
   getActiveAnnouncementDetails = () => {
     axios
-      .get(`http://localhost:8080/LMS-war/webresources/Annoucement/getAllActiveSystemAnnoucement`)
+      .get(`http://localhost:8080/LMS-war/webresources/Annoucement/getAllAnnoucement`)
       .then(result => {
         // console.log(result.data.annoucementList)
         this.setState({ annoucementList: result.data.annoucementList, recall: "" })
@@ -109,6 +109,15 @@ class DashboardPageTeacher extends Component {
           <MDBCol md="6" align="right">
             <h6 style={{ fontStyle: "italic", fontSize: "10px" }}> {moment(announcement.startDate).format('DD-MM-YYYY HH:mm:ss')} </h6>
           </MDBCol>
+          {announcement.module !== null &&
+            // {announcement.module !== undefined &&  
+            <>
+              <MDBCol md="12">
+                <h6 style={{ fontSize: "12px" }}>{announcement.module.code} {announcement.module.title}</h6>
+                <h6 style={{ fontSize: "12px" }}>Posted by: {announcement.owner}</h6>
+              </MDBCol>
+            </>
+          }
           <MDBCol md="12"> {announcement.content} </MDBCol>
         </MDBRow>
         <hr />
@@ -185,7 +194,6 @@ class DashboardPageTeacher extends Component {
                   }
                 />
               </MDBCol>
-              {/* module input select modules value = mod.id , show module name this.props.dataStore.getModules */}
               <MDBCol md="6" className="mt-4">
                 <TextField
                   id="startDate"
@@ -215,17 +223,6 @@ class DashboardPageTeacher extends Component {
                 />
               </MDBCol>
               <MDBCol md="12" className="mt-4">
-                {/* Publish
-                <Checkbox
-                  checked={this.state.publish}
-                  onChange={this.handleCheckBoxChange('publish')}
-                  value="publish"
-                  name="publish"
-                  color="primary"
-                  inputProps={{
-                    'aria-label': 'secondary checkbox',
-                  }}
-                /> */}
                 Email Notification
                 <Checkbox
                   checked={this.state.emailNotification}
