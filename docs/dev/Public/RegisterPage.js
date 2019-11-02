@@ -109,7 +109,7 @@ class RegisterPage extends Component {
                                         FLIPIT
                                     </h1>
                                     <h3 className="text-center">
-                                        Learning Management Platform
+                                        Create New Account
                                     </h3>
                                     <ul className="list-unstyled example-components-list">
                                         <form className="needs-validation" onSubmit={this.submitHandler}>
