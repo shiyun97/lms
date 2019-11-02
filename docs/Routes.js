@@ -121,6 +121,7 @@ import ModuleQuizPagePreviewQuiz from "./dev/Teacher/ModuleQuizPagePreviewQuiz";
 import CoursepackQuizPagePreviewQuiz from "./dev/Teacher/CoursepackQuizPagePreviewQuiz";
 import ModuleAnalyticsPage from "./dev/Teacher/ModuleAnalyticsPage";
 import CoursepackCartPage from "./dev/CoursepackCartPage";
+import CoursepackCheckoutPage from "./dev/CoursepackCheckoutPage";
 
 @inject('dataStore')
 @observer
@@ -199,6 +200,7 @@ class Routes extends React.Component {
         <Route exact path="/coursepack/:coursepackId/quiz/public" component={CoursepackQuizPageStudent} />
         <Route exact path="/coursepack/:coursepackId/quiz/:quizId/answer" component={CoursepackQuizPageAnswerQuiz} />
         <Route exact path="/coursepack/cart" component={CoursepackCartPage} />
+        <Route exact path="/coursepack/cart/checkout" component={CoursepackCheckoutPage} />
 
         {/* LMS PAGES - Student/ Teacher */}
         <Route exact path="/" component={StudentLoginPage} />

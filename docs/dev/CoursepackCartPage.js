@@ -2,19 +2,17 @@ import React, { Component } from "react";
 import {
   MDBContainer, 
   MDBJumbotron,
-  MDBCarouselInner, 
-  MDBView, 
-  MDBCarouselItem, 
   MDBBtn, 
   MDBCol, 
   MDBRow,
   MDBCardTitle,
   MDBIcon
 } from "mdbreact";
-import Button from '@material-ui/core/Button';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Link from '@material-ui/core/Link';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 import CoursepackTopNav from "./CoursepackTopNav";
-import coursepackBanner from './Coursepack-dashboard-banner.jpg';
-import SectionContainer from "../components/sectionContainer";
 import cprog from './cprog.jpg';
 
 class CoursepackCartPage extends Component {
@@ -114,9 +112,26 @@ class CoursepackCartPage extends Component {
                     </MDBRow>
                     <div className="mb-4" />
                     <MDBRow>
-                        <MDBBtn size="lg" className="ml-0" style={{width: "100%"}} color="pink accent-3">Checkout</MDBBtn>
+                        <Link href="/coursepack/cart/checkout">
+                            <MDBBtn size="lg" className="ml-0" style={{width: "100%"}} color="pink accent-3">Checkout</MDBBtn>
+                        </Link>
                     </MDBRow>
                 </MDBCol>
+            </MDBRow>
+        )
+    }
+
+    showBreadcrumb = () => {
+        return (
+            <MDBRow>
+                <Paper elevation={0} style={{ backgroundColor: "#505763" }}>
+                    <Breadcrumbs aria-label="breadcrumb">
+                        <Link href="/coursepack/dashboard" color="inherit" >
+                            <MDBIcon icon="home" style={{ color: "#a1a7b3" }} />
+                        </Link>
+                        <Typography style={{ color: "#fff" }}>Shopping Cart</Typography>
+                    </Breadcrumbs>
+                </Paper>
             </MDBRow>
         )
     }
@@ -129,7 +144,10 @@ class CoursepackCartPage extends Component {
                 <MDBJumbotron style={{ padding: 0, backgroundColor: "#505763", width: "100%" }}>
                     <MDBCol className="text-white">
                         <MDBCol className="py-3">
-                            <MDBCardTitle className="h1-responsive pt-3 m-3 ml-5 px-5">Shopping Cart</MDBCardTitle>
+                            <MDBCardTitle className="h1-responsive pt-3 m-3 ml-5 px-5">
+                                { this.showBreadcrumb()}
+                                <MDBRow>Shopping Cart</MDBRow>
+                            </MDBCardTitle>
                         </MDBCol>
                     </MDBCol>
                 </MDBJumbotron>
