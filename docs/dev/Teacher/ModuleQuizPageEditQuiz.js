@@ -50,6 +50,7 @@ class ModuleQuizPageEditQuiz extends Component {
         quizId: 0,
         questionId: 0,
         redirect: false,
+        currQuizQuestions: []
     }
 
     initPage() {
@@ -114,7 +115,7 @@ class ModuleQuizPageEditQuiz extends Component {
                     publish: result.data.publish,
                     publishAnswer: result.data.publishAnswer,
                     quizType: result.data.quizType,
-                    elements: result.data.pages[0].elements
+                    currQuizQuestions: result.data.pages[0].elements
                 })
             })
             .catch(error => {
@@ -143,7 +144,7 @@ class ModuleQuizPageEditQuiz extends Component {
             publish: this.state.publish,
             // publishAnswer: this.state.publishAnswer,
             maxTimeToFinish: this.state.maxTimeToFinish,
-            // questions: this.state.elements
+            // elements: this.state.elements
         })
         axios
             .post(`http://localhost:8080/LMS-war/webresources/Assessment/updateModuleQuiz?userId=${userId}`, {
@@ -190,12 +191,10 @@ class ModuleQuizPageEditQuiz extends Component {
     handleChange = event => {
         event.preventDefault();
         this.setState({ [event.target.name]: event.target.value });
-        // console.log(event.target.name)
     }
 
     handleCheckBoxChange = name => event => {
         this.setState({ [name]: event.target.checked });
-        // console.log(this.state.emailNotification, this.state.publish)
     };
 
     handleOpenSnackbar = () => {
@@ -209,6 +208,130 @@ class ModuleQuizPageEditQuiz extends Component {
 
         this.setState({ openSnackbar: false });
     };
+
+    renderExistingQuestion = (element) => {
+        // console.log(element.type)
+        if (element.type === "radiogroup") {
+            return (
+                <><MDBCol md="12" className="mt-4" key={element.number}>
+                    <h3>Question {element.number}</h3>
+                    <label className="grey-text mt-4">
+                        Question
+                    </label>
+                    <textarea rows="3" type="text" name="questionTitle" onChange={this.handleChange} defaultValue={element.title} className="form-control" />
+                </MDBCol>
+                    <MDBCol md="12" className="mt-4">
+                        <label className="grey-text">
+                            Explanation
+                    </label>
+                        <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} value={element.explanation} className="form-control" />
+                    </MDBCol>
+                    <MDBCol md="8" className="mt-4" style={{ paddingTop: 28 }}>
+                        <MDBInputGroup
+                            containerClassName="mb-3"
+                            prepend="Correct Answer"
+                            required
+                            inputs={
+                                <select name="correctAnswer" onChange={this.handleChange} className="browser-default custom-select">
+                                    <option value={-1}>Choose...</option>
+                                    {element.choices.map((answer, index) => { return <option value={index}>Answer {index + 1}</option> })}
+                                </select>
+                            }
+                        />
+                    </MDBCol>
+                    <MDBCol md="2" className="mt-4">
+                        {this.state.quizType === "adaptive" &&
+                            <>
+                                <label className="grey-text">
+                                    Level
+                    </label>
+                                <input type="number" className="form-control" name="level"
+                                    value={element.level}
+                                    onChange={this.handleChange}
+                                    min={1}
+                                    required />
+                            </>
+                        }
+                    </MDBCol>
+                    <MDBCol md="2" className="mt-4">
+                        <label className="grey-text">
+                            Points
+                    </label>
+                        <input type="number" className="form-control" name="points"
+                            value={element.points}
+                            onChange={this.handleChange}
+                            min={1}
+                            required />
+                    </MDBCol>
+                    <MDBCol md="12" className="mt-4">
+                        {element.choices.map((answer, index) => { return this.renderExistingAnswerInput(answer, index) })}
+                    </MDBCol>
+                    <MDBCol md="12" className="mt-4" align="center">
+                        {this.props.dataStore.getQuestions.length !== 0 && <MDBBtn onClick={() => this.saveQuestionsToList("mcq")} align="center" size="small" color="grey">Save</MDBBtn>}
+                        <hr />
+                    </MDBCol>
+                </>
+            )
+        } else {
+            return (
+                <>
+                    <MDBCol md="10" className="mt-4" key={element.number}>
+                        <h3>Question {element.number}</h3>
+                        <label className="grey-text mt-4">
+                            Question
+                                </label>
+                        <textarea rows="3" type="text" name="question" onChange={this.handleChange} className="form-control" />
+                    </MDBCol>
+                    <MDBCol md="2" className="mt-4">
+                        {this.state.quizType === "adaptive" &&
+                            <>
+                                <label className="grey-text">
+                                    Level
+                                    </label>
+                                <input type="number" className="form-control" name="level"
+                                    value={this.state.level}
+                                    onChange={this.handleChange}
+                                    min={1}
+                                    required />
+                            </>
+                        }
+                        <br />
+                        <br />
+                        <label className="grey-text" style={{ paddingTop: 8 }}>
+                            Points
+                                    </label>
+                        <input type="number" className="form-control" name="points"
+                            value={this.state.points}
+                            onChange={this.handleChange}
+                            min={1}
+                            required />
+                    </MDBCol>
+                    <MDBCol md="12" className="mt-4">
+                        <label className="grey-text">
+                            Explanation
+                                    </label>
+                        <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} className="form-control" />
+                        <br />
+                        <center>
+                            {this.props.dataStore.getQuestions.length !== 0 && <MDBBtn onClick={() => this.saveQuestionsToList("short-answer")} align="center" size="small" color="grey">Save</MDBBtn>}
+                        </center>
+                        <hr />
+                    </MDBCol>
+                </>)
+        }
+    }
+
+    renderExistingAnswerInput = (answer, index) => {
+        return (
+            <>
+                <label className="grey-text">
+                    Answer {index + 1}
+                </label>
+                <input type="text" name="answer" onChange={this.handleChange} className="form-control" />
+                <br />
+            </>
+        )
+    }
 
     renderQuestion = (element) => {
         // console.log(element.type)
@@ -517,6 +640,7 @@ class ModuleQuizPageEditQuiz extends Component {
                         <hr />
                         <MDBRow>
                             {/* Add Questions List here */}
+                            {this.state.currQuizQuestions.map((element) => { return this.renderExistingQuestion(element) })}
                             {this.props.dataStore.getQuestions.map((element) => { return this.renderQuestion(element) })}
                         </MDBRow>
                         <center>

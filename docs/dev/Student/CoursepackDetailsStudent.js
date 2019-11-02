@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBCol, MDBBtn, MDBRow, MDBMedia, MDBCard, MDBIcon, MDBProgress } from "mdbreact";
+import { MDBContainer, MDBCol, MDBBtn, MDBRow, MDBIcon, MDBProgress } from "mdbreact";
 import axios from "axios";
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
 import { NavLink } from 'react-router-dom';
@@ -71,7 +71,7 @@ class CoursepackDetailsStudent extends Component {
             .catch(error => {
                 console.error("error in axios " + error);
             });
-        
+
         this.initPage();
     }
 
@@ -128,7 +128,9 @@ class CoursepackDetailsStudent extends Component {
                         <h6> SGD {this.state.courseDetails.price}</h6>
 
                         <MDBCol align="right">
-                            <MDBBtn color="primary" onClick={this.viewCourse} >View Course</MDBBtn>
+                            <NavLink to={`/coursepack/${this.state.coursepackId}/assessments`}>
+                                <MDBBtn color="primary" >View Course</MDBBtn>
+                            </NavLink>
                         </MDBCol>
                     </MDBCol>
                     <MDBCol size="4">
