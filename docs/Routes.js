@@ -121,6 +121,9 @@ import ModuleQuizPagePreviewQuiz from "./dev/Teacher/ModuleQuizPagePreviewQuiz";
 import CoursepackQuizPagePreviewQuiz from "./dev/Teacher/CoursepackQuizPagePreviewQuiz";
 import ModuleAnalyticsPage from "./dev/Teacher/ModuleAnalyticsPage";
 import CoursepackCartPage from "./dev/CoursepackCartPage";
+import CoursepackAchievementsPage from "./dev/CoursepackAchievementsPage";
+import CoursepackCertificatesDetailsPage from "./dev/CoursepackCertificatesDetailsPage";
+import CoursepackDashboardAdmin from "./dev/Admin/CoursepackDashboardAdmin";
 
 @inject('dataStore')
 @observer
@@ -176,8 +179,7 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/quiz/:quizId/edit" component={ModuleQuizPageEditQuiz} />
         <Route exact path="/coursepack/:coursepackId/arrangements" component={CoursepackArrangementPage} />
         <Route exact path="/coursepack/:coursepackId/edit" component={CoursePackEditPage} />
-        <Route exact path="/coursepack/:coursepackId/view/" component={CoursepackAssessmentPage} />
-        <Route exact path="/coursepack/create/" component={CoursepackCreatePage} />
+        <Route exact path="/coursepack/:coursepackId/assessments/" component={CoursepackAssessmentPage} />        <Route exact path="/coursepack/create/" component={CoursepackCreatePage} />
         <Route exact path="/modules/:moduleId/quiz/:quizId/review" component={ModuleQuizPageViewStudents} />
         <Route exact path="/modules/:moduleId/quiz/:quizId/review/:studentId" component={ModuleQuizPageViewStudentAttempt} />
         <Route exact path="/modules/:moduleId/gradebook/:gradeItemId/viewGrades" component={ModuleGradebookPageTeacherViewGrades} />
@@ -241,6 +243,10 @@ class Routes extends React.Component {
         <Route exact path="/coursepack/:coursepackId/forum/topics/:topicId/:forumId" component={CoursepackForumDetailsPage} />
         <Route exact path="/coursepack/:coursepackId/feedback" component={CoursepackFeedbackPage} />
         <Route exact path="/coursepack/:coursepackId/quiz" component={CoursepackQuizPage} />
+        <Route exact path="/coursepack/achievements/certificates" component={CoursepackAchievementsPage} />
+        <Route exact path="/coursepack/achievements/certificates/:certId" component={CoursepackCertificatesDetailsPage} />
+        <Route exact path="/coursepack/dashboard/admin/" component={CoursepackDashboardAdmin} />
+
 
         {/* FREE Templates */}
         <Route exact path="/home" component={HomePage} />
