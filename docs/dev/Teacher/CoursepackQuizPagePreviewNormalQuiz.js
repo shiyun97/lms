@@ -10,77 +10,7 @@ var pathname = location.pathname;
 pathname = pathname.split("/");
 var quizId = pathname[4]
 var answers = []
-var json = {
-  title: "Quiz 1",
-  showProgressBar: "top",
-  description: "This is to test your knowledge on [topic].", //instructions
-  quizType: "normal",
-  questionsOrder: "random", // normal => "initial"
-  openingDate: "", //datetime
-  closingDate: "", //datetime
-  noOfAttempts: 1,
-  completedHtml: "<p><h4>You have completed the quiz!</h4></p>",
-  startSurveyText: "Start",
-  completeText: "Submit",
-  showTimerPanel: "top",
-  maxTimeToFinish: 60, // in seconds
-  pages: [
-    {
-      "name": "page1",
-      "elements": [
-        {
-          "type": "radiogroup", //mcq
-          "name": "question1",
-          "number": 1,
-          "title": "What is a MCQ question?",
-          "isRequired": true,
-          "choices": [
-            {
-              "text": "Answer Choice 1"
-            },
-            {
-              "text": "Answer Choice 2"
-            },
-            {
-              "text": "Answer Choice 3"
-            },
-            {
-              "text": "Answer Choice 4"
-            }
-          ],
-        },
-        {
-          "type": "radiogroup",
-          "name": "question2",
-          "number": 2,
-          "title": "Do you ask questions?",
-          "isRequired": true,
-          "choices": [
-            {
-              "text": "Answer Choice 1"
-            },
-            {
-              "text": "Answer Choice 2"
-            },
-            {
-              "text": "Answer Choice 3"
-            },
-            {
-              "text": "Answer Choice 4"
-            }
-          ]
-        },
-        {
-          "type": "text", //text
-          "name": "question3",
-          "number": 3,
-          "title": "What is a multiple choice question?",
-          "isRequired": true,
-        }
-      ]
-    }
-  ]
-}
+var json = {}
 
 @inject('dataStore')
 @observer
@@ -119,6 +49,7 @@ class CoursepackQuizPagePreviewNormalQuiz extends Component {
         // console.log(result.data)
         var newJson = result.data;
         newJson['completedHtml'] = "<p><h4>You have completed the quiz!</h4></p>";
+        newJson['showTimerPanel'] = "none";
         json = newJson
         this.setState({ status: "done" })
       })

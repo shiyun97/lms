@@ -37,6 +37,11 @@ class DataStore {
   @observable elements = []
   @observable currAnswers = [{ text: "" }]
 
+  // coursepack quiz score
+  @observable currScore = 0
+  @observable maxMarks = 0
+  @observable attempted = false
+
   @action setSignInStatus(status, email, password, accessRight) {
     this.signInStatus = status;
     this.email = email;
@@ -249,6 +254,26 @@ class DataStore {
   @action resetQuestions() {
     this.elements = []
     this.currAnswers = [{ text: "" }]
+  }
+
+  @computed get getCurrScore() {
+    return this.currScore;
+  }
+
+  @computed get getMaxMarks() {
+    return this.maxMarks;
+  }
+
+  @action setCurrScore(score) {
+    this.currScore = score
+  }
+
+  @action setMaxMarks(score) {
+    this.maxMarks = score
+  }
+
+  @computed get getCoursepackQuizAttempt() {
+    return this.attempted;
   }
 }
 

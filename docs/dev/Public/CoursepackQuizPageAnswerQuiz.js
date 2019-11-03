@@ -7,79 +7,8 @@ import * as Survey from "survey-react";
 
 var pathname = location.pathname;
 pathname = pathname.split("/");
-var quizId = pathname[4]
-var answers = []
-var json = {
-  title: "Quiz 1",
-  showProgressBar: "top",
-  description: "This is to test your knowledge on [topic].", //instructions
-  quizType: "normal",
-  questionsOrder: "random", // normal => "initial"
-  openingDate: "", //datetime
-  closingDate: "", //datetime
-  noOfAttempts: 1,
-  completedHtml: "<p><h4>You have completed the quiz!</h4></p>",
-  startSurveyText: "Start",
-  completeText: "Submit",
-  showTimerPanel: "top",
-  maxTimeToFinish: 60, // in seconds
-  pages: [
-    {
-      "name": "page1",
-      "elements": [
-        {
-          "type": "radiogroup", //mcq
-          "name": "question1",
-          "number": 1,
-          "title": "What is a MCQ question?",
-          "isRequired": true,
-          "choices": [
-            {
-              "text": "Answer Choice 1"
-            },
-            {
-              "text": "Answer Choice 2"
-            },
-            {
-              "text": "Answer Choice 3"
-            },
-            {
-              "text": "Answer Choice 4"
-            }
-          ],
-        },
-        {
-          "type": "radiogroup",
-          "name": "question2",
-          "number": 2,
-          "title": "Do you ask questions?",
-          "isRequired": true,
-          "choices": [
-            {
-              "text": "Answer Choice 1"
-            },
-            {
-              "text": "Answer Choice 2"
-            },
-            {
-              "text": "Answer Choice 3"
-            },
-            {
-              "text": "Answer Choice 4"
-            }
-          ]
-        },
-        {
-          "type": "text", //text
-          "name": "question3",
-          "number": 3,
-          "title": "What is a multiple choice question?",
-          "isRequired": true,
-        }
-      ]
-    }
-  ]
-}
+var answers = [];
+var json = {}
 
 @inject('dataStore')
 @observer
@@ -92,14 +21,11 @@ class CoursepackQuizPageAnswerQuiz extends Component {
     email: "",
     moduleId: 0,
     message: "",
-    status: "retrieving",
-    start: false
+    status: "retrieving"
   }
 
   initPage() {
-    var pathname = location.pathname;
-    pathname = pathname.split("/");
-    this.props.dataStore.setCurrQuizId(142);
+    this.props.dataStore.setCurrQuizId(354); // NEED TO UPDATE THE QUIZ ID
   }
 
   componentDidMount() {
@@ -116,8 +42,11 @@ class CoursepackQuizPageAnswerQuiz extends Component {
         // console.log(result.data)
         var newJson = result.data;
         newJson['completedHtml'] = "<p><h4>You have completed the quiz!</h4></p>";
+        newJson['showTimerPanel'] = "none";
         json = newJson
         this.setState({ status: "done" })
+        this.props.dataStore.setMaxMarks(result.data.maxMarks)
+        // this.props.dataStore.setCurrScore(result.data.currScore) // NEED TO CHECK FOR PREVIOUS ATTEMPT SCORE
       })
       .catch(error => {
         this.setState({ status: "error" })
@@ -136,9 +65,19 @@ class CoursepackQuizPageAnswerQuiz extends Component {
       for (var j = 0; j < questions.length; j++) {
         if (questionNumber == questions[j].number) {
           if (tempResult[questionAttempts[i]].text === undefined)
-            answers[questionNumber - 1] = { questionId: questions[j].questionId, answer: tempResult[questionAttempts[i]] }
+            answers[questionNumber - 1] = {
+              questionId: questions[j].questionId,
+              answer: tempResult[questionAttempts[i]],
+              correctAnswer: questions[j].correctAnswer,
+              question: questions[j].title
+            }
           else {
-            answers[questionNumber - 1] = { questionId: questions[j].questionId, answer: tempResult[questionAttempts[i]].text } //, quizId: 1
+            answers[questionNumber - 1] = {
+              questionId: questions[j].questionId, answer:
+                tempResult[questionAttempts[i]].text,
+              correctAnswer: questions[j].correctAnswer,
+              question: questions[j].title
+            } //, quizId: 1
           }
         }
       }
@@ -147,49 +86,78 @@ class CoursepackQuizPageAnswerQuiz extends Component {
   }
 
   onComplete = (result) => {
-    // let userId = sessionStorage.getItem('userId');
-    // console.log(answers)
+    var score = 0
+    for (var i = 0; i < answers.length; i++) {
+      if (answers[i].answer == answers[i].correctAnswer) {
+        score++;
+      }
+    }
+    this.props.dataStore.setCurrScore(score);
+    this.props.dataStore.attempted = true;
+    if (this.props.dataStore.getCurrScore === this.props.dataStore.getMaxMarks) {
+      // call api to unlock quiz
+    }
+  }
+
+  renderQuiz = () => {
+    var model = new Survey.Model(json);
+    return (
+      <MDBContainer className="mt-3" align="left">
+        <MDBRow className="py-3">
+          <MDBCol md="12">
+            <MDBCard cascade className="my-3 grey lighten-4">
+              {this.state.status === "done" &&
+                <Survey.Survey
+                  model={model}
+                  onComplete={() => this.onComplete()}
+                  onValueChanged={this.onValueChanged}
+                />
+              }
+              {this.state.status !== "done" && <h5 align="center" style={{ padding: 20 }}>Error in retrieving quiz. Please try again later.</h5>}
+            </MDBCard>
+          </MDBCol>
+        </MDBRow>
+      </MDBContainer>
+    );
+  }
+
+  renderQuizResults = () => {
+    return (
+      <MDBContainer className="mt-3" align="left">
+        <MDBRow className="py-3">
+          <MDBCol md="12">
+            <h2>Quiz Results</h2>
+            <h3>Score: {this.props.dataStore.getCurrScore} / {this.props.dataStore.getMaxMarks}</h3>
+            <br />
+            {answers.map((answer) => {
+              return (
+                <>
+                  <p>
+                    Question: {answer.question} <br />
+                    Your Answer: {answer.answer} <br />
+                  </p>
+                  {answer.answer != answer.correctAnswer && <MDBBtn color="red" disabled>WRONG</MDBBtn>}
+                  {answer.answer == answer.correctAnswer && <MDBBtn color="green" disabled>RIGHT</MDBBtn>}
+                  <hr />
+                </>
+              )
+            })}
+            {
+              this.props.dataStore.getCurrScore !== this.props.dataStore.getMaxMarks &&
+              <center><MDBBtn onClick={() => { this.props.dataStore.attempted = false }}>Reattempt</MDBBtn></center>
+            }
+          </MDBCol>
+        </MDBRow>
+      </MDBContainer>
+    )
   }
 
   render() {
-    var model = new Survey.Model(json);
-    var moduleId = this.props.dataStore.getCurrModId;
-    if (this.state.start) {
-      return (
-        <div className={this.props.className} align="left">
-          <MDBContainer className="mt-3">
-            <MDBRow className="py-3">
-              <MDBCol md="12">
-                <MDBCard cascade className="my-3 grey lighten-4">
-                  {this.state.status === "done" &&
-                    <Survey.Survey
-                      model={model}
-                      onComplete={() => this.onComplete()}
-                      onValueChanged={this.onValueChanged}
-                    />
-                  }
-                  {this.state.status !== "done" && <h5 align="center" style={{ padding: 20 }}>Error in retrieving quiz. Please try again later.</h5>}
-                </MDBCard>
-              </MDBCol>
-            </MDBRow>
-          </MDBContainer>
-        </div>
-      );
-    } else {
-      return (
-        <div className={this.props.className} align="left">
-          <MDBContainer className="mt-3">
-            <MDBRow className="py-3">
-              <MDBCol md="12">
-                <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
-                  <MDBBtn color="blue" onClick={() => { this.setState({ start: true }) }}><h4>Start Quiz</h4></MDBBtn>
-                </MDBCard>
-              </MDBCol>
-            </MDBRow>
-          </MDBContainer>
-        </div>
-      )
-    }
+    // if already attempted quiz or got full marks, render quiz results
+    if (this.props.dataStore.getCurrScore === this.props.dataStore.getMaxMarks || this.props.dataStore.getCoursepackQuizAttempt)
+      return this.renderQuizResults();
+    else
+      return this.renderQuiz();
   }
 }
 
