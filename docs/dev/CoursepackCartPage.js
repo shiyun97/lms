@@ -13,7 +13,7 @@ import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import CoursepackTopNav from "./CoursepackTopNav";
-import cprog from './cprog.jpg';
+import cprog from './img/cprog.jpg';
 
 class CoursepackCartPage extends Component {
 

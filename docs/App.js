@@ -95,7 +95,7 @@ class App extends Component {
           </main>
           <MDBFooter color="indigo">
             <p className="footer-copyright mb-0 py-3 text-center">
-              &copy; {new Date().getFullYear()} Copyright Learning Management Platform
+              &copy; {new Date().getFullYear()} Copyright FlipIt Learning Management Platform
             </p>
           </MDBFooter>
         </div>

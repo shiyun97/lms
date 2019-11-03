@@ -13,8 +13,8 @@ import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import CoursepackTopNav from "./CoursepackTopNav";
-import cprog from './cprog.jpg';
-import paypalLogo from './paypalLogo.jpg';
+import cprog from './img/cprog.jpg';
+import paypalLogo from './img/paypalLogo.jpg';
 
 class CoursepackCheckoutPage extends Component {
 
