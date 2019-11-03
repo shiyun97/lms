@@ -167,7 +167,6 @@ class ModuleQuizPageEditQuiz extends Component {
                 publish: this.state.publish,
                 noOfAttempts: this.state.noOfAttempts,
                 maxTimeToFinish: this.state.maxTimeToFinish,
-                questions: this.state.elements
             })
             .then(result => {
                 // console.log("success")
@@ -221,10 +220,10 @@ class ModuleQuizPageEditQuiz extends Component {
     deleteQuestion = (questionId) => {
         let userId = sessionStorage.getItem('userId');
         let quizId = this.props.dataStore.getCurrQuizId;
-        console.log({
-            quizId: quizId,
-            questionId: questionId,
-        })
+        // console.log({
+        //     quizId: quizId,
+        //     questionId: questionId,
+        // })
         axios
                 .delete(`${API_URL()}/LMS-war/webresources/Assessment/deleteQuestion?userId=${userId}&quizId=${quizId}&questionId=${questionId}`)
                 .then(result => {

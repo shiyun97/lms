@@ -145,7 +145,7 @@ class CoursepackQuizPageCreateQuiz extends Component {
                     </label>
                     <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} className="form-control" />
                 </MDBCol>
-                <MDBCol md="8" className="mt-4" style={{ paddingTop: 28 }}>
+                <MDBCol md="12" className="mt-4" style={{ paddingTop: 28 }}>
                     <MDBInputGroup
                         containerClassName="mb-3"
                         prepend="Correct Answer"
@@ -157,16 +157,6 @@ class CoursepackQuizPageCreateQuiz extends Component {
                             </select>
                         }
                     />
-                </MDBCol>
-                <MDBCol md="4" className="mt-4">
-                    <label className="grey-text">
-                        Points
-                    </label>
-                    <input type="number" className="form-control" name="points"
-                        value={this.state.points}
-                        onChange={this.handleChange}
-                        min={1}
-                        required />
                 </MDBCol>
                 <MDBCol md="12" className="mt-4" align="center">
                     <MDBBtn onClick={() => this.addAnswerToQuestion(element.number)} size="small" color="grey">Add Answer</MDBBtn>
@@ -229,7 +219,7 @@ class CoursepackQuizPageCreateQuiz extends Component {
                 level: 1, //only for adaptive,
                 explanation: "",
                 correctAnswer: "",
-                points: 0,
+                points: 1,
                 choices: [
                     {
                         text: ""

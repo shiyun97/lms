@@ -46,12 +46,12 @@ class CoursepackQuizPageTeacher extends Component {
                 "label": "Preview Quiz",
                 "field": "preview",
                 "width": 100
+            },
+            {
+                "label": "",
+                "field": "",
+                "width": 100
             }
-            // {
-            //     "label": "",
-            //     "field": "",
-            //     "width": 100
-            // }
         ],
         rows: [{ label: "Retrieving data..." }],
         openSnackbar: false,
@@ -89,12 +89,33 @@ class CoursepackQuizPageTeacher extends Component {
         var pathname = location.pathname;
         pathname = pathname.split("/");
         // console.log(pathname[2])
-        this.props.dataStore.setCurrModId(pathname[2]);
+        this.props.dataStore.setCurrCoursepackId(pathname[2]);
+    }
+
+    deleteCoursepackQuiz = (quizId) => {
+        // let userId = sessionStorage.getItem('userId');
+        // event.preventDefault();
+        // axios
+        //     .delete(`http://localhost:8080/LMS-war/webresources/Assessment/deleteCoursepackQuiz?userId=${userId}&quizId=${quizId}`)
+        //     .then(result => {
+        //         this.setState({
+        //             recallQuiz: true,
+        //             message: "Quiz deleted successfully!",
+        //             openSnackbar: true
+        //         });
+        //     })
+        //     .catch(error => {
+        //         this.setState({
+        //             message: error.response.data.errorMessage,
+        //             openSnackbar: true
+        //         });
+        //         console.error("error in axios " + error);
+        //     });
     }
 
     getAllCoursepackQuizzes = () => {
         let userId = sessionStorage.getItem('userId');
-        let coursepackId = this.props.dataStore.getCurrModId;
+        let coursepackId = this.props.dataStore.getCurrCoursepackId;
         axios
             .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllCoursepackQuiz/${coursepackId}?userId=${userId}`)
             .then(result => {
@@ -109,7 +130,7 @@ class CoursepackQuizPageTeacher extends Component {
     
     renderQuizTable = () => {
         var quiz = this.state.quizzes;
-        var coursepackId = this.props.dataStore.getCurrModId;
+        var coursepackId = this.props.dataStore.getCurrCoursepackId;
         // console.log(quiz)
         if (this.state.quizzes.length !== 0) {
             var tempQuizzes = []
@@ -118,11 +139,11 @@ class CoursepackQuizPageTeacher extends Component {
                     quizId: quiz[i].quizId,
                     name: quiz[i].title,
                     maxMarks: quiz[i].maxMarks,
-                    // editButton: <MDBRow align="center">
-                    //     <MDBCol md={6}><NavLink to={`/coursepack/${coursepackId}/quiz/${quiz[i].quizId}/edit`}><MDBIcon style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></NavLink></MDBCol>
-                    //     <MDBCol md={6}><MDBIcon onClick={() => this.deleteQuiz(quiz[i].quizId)} style={{ paddingTop: 12, cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
-                    // </MDBRow>,
                     previewButton: <center><MDBBtn color="primary" outline size="sm" href={`/coursepack/${coursepackId}/quiz/${quiz[i].quizId}/preview`}>Preview</MDBBtn></center>,
+                    editButton: <MDBRow align="center">
+                        <MDBCol md={6}><NavLink to={`/coursepack/${coursepackId}/quiz/${quiz[i].quizId}/edit`}><MDBIcon style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></NavLink></MDBCol>
+                        <MDBCol md={6}><MDBIcon onClick={() => this.deleteCoursepackQuiz(quiz[i].quizId)} style={{ paddingTop: 12, cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
+                    </MDBRow>,
                 })
             }
         } else {
@@ -187,7 +208,7 @@ class CoursepackQuizPageTeacher extends Component {
     }
 
     renderTableWithMessage = () => {
-        var coursepackId = this.props.dataStore.getCurrModId;
+        var coursepackId = this.props.dataStore.getCurrCoursepackId;
         const data = () => ({ columns: this.state.columns, rows: [{ label: this.state.label }] })
 
         const tableData = {
@@ -224,7 +245,7 @@ class CoursepackQuizPageTeacher extends Component {
     }
 
     renderAwaiting = () => {
-        var coursepackId = this.props.dataStore.getCurrModId;
+        var coursepackId = this.props.dataStore.getCurrCoursepackId;
         return (
             <div className={this.props.className}>
                 <CoursepackSideNavigation courseId={coursepackId}></CoursepackSideNavigation>
