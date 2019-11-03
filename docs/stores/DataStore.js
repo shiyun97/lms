@@ -35,6 +35,7 @@ class DataStore {
 
   //questionsList
   @observable elements = []
+  @observable currAnswers = [{ text: "" }]
 
   @action setSignInStatus(status, email, password, accessRight) {
     this.signInStatus = status;
@@ -58,7 +59,7 @@ class DataStore {
     sessionStorage.setItem("email", this.email)
     sessionStorage.setItem("password", this.password)
     sessionStorage.setItem("accessRight", this.accessRight)
-      this.mobilePath = "/student/markAttendance"
+    this.mobilePath = "/student/markAttendance"
   }
 
   @action setSignOutStatus() {
@@ -230,8 +231,24 @@ class DataStore {
   }
 
   @action addAnswerToQuestion(number, answer) {
-    this.elements[number-1].choices.push(answer)
+    this.elements[number - 1].choices.push(answer)
     // console.log(this.elements[number-1].level)
+  }
+
+  @computed get getCurrAnswers() {
+    return this.currAnswers;
+  }
+
+  @action addAnswerToList(answer, index) {
+    if (index === undefined)
+      this.currAnswers.push(answer)
+    else
+      this.currAnswers[0] = answer
+  }
+
+  @action resetQuestions() {
+    this.elements = []
+    this.currAnswers = [{ text: "" }]
   }
 }
 

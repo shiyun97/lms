@@ -111,6 +111,7 @@ class ModuleQuizPageCreateQuiz extends Component {
 
         //to reset
         this.setState({ activeStep: 0 });
+        this.props.dataStore.resetQuestions();
     }
 
     handleNext = () => {
