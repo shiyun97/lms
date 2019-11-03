@@ -6,6 +6,7 @@ import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Stepper, Step, StepLabel, TextField, Typography, Snackbar, Checkbox } from '@material-ui/core';
 import axios from 'axios';
 import { Redirect } from "react-router-dom";
+import { API_URL } from '../utils/GetApiUrl';
 
 @inject('dataStore')
 @observer
@@ -53,7 +54,6 @@ class ModuleQuizPageEditQuiz extends Component {
         questionId: 0,
         redirect: false,
         currQuizQuestions: [],
-        currElement: {},
     }
 
     initPage() {
@@ -97,7 +97,7 @@ class ModuleQuizPageEditQuiz extends Component {
         axios
             .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveModuleQuiz/${quizId}?userId=${userId}`)
             .then(result => {
-                console.log(result.data)
+                // console.log(result.data)
                 var elements = result.data.pages[0].elements
                 var choices = []
                 for (var i = 0; i < elements.length; i++) {
@@ -218,6 +218,105 @@ class ModuleQuizPageEditQuiz extends Component {
         this.setState({ openSnackbar: false });
     };
 
+    deleteQuestion = (questionId) => {
+        let userId = sessionStorage.getItem('userId');
+        let quizId = this.props.dataStore.getCurrQuizId;
+        console.log({
+            quizId: quizId,
+            questionId: questionId,
+        })
+        axios
+                .delete(`${API_URL()}/LMS-war/webresources/Assessment/deleteQuestion?userId=${userId}&quizId=${quizId}&questionId=${questionId}`)
+                .then(result => {
+                    this.setState({
+                        message: "Deleted question successfully!",
+                        openSnackbar: true,
+                        recallQuiz: true
+                    });
+                })
+                .catch(error => {
+                    this.setState({
+                        message: "Error has occured in deleting question. Please try again later.",
+                        openSnackbar: true
+                    });
+                    console.error("error in axios " + error);
+                });
+    }
+
+    updateQuestion = () => {
+        let userId = sessionStorage.getItem('userId');
+        let quizId = this.props.dataStore.getCurrQuizId;
+        // console.log({
+        //     quizId: quizId,
+        //     questionId: this.state.questionId,
+        //     type: this.state.questionType,
+        //     title: this.state.questionTitle,
+        //     isRequired: true,
+        //     points: this.state.points,
+        //     level: this.state.level, //only for adaptive,
+        //     explanation: this.state.explanation,
+        //     // correctAnswer: this.state.choices[this.state.correctAnswer].text,
+        //     choices: this.state.choices
+        // })
+        if (this.state.questionType == "radiogroup") {
+            axios
+                .post(`http://localhost:8080/LMS-war/webresources/Assessment/updateQuestion?userId=${userId}`, {
+                    quizId: quizId,
+                    questionId: this.state.questionId,
+                    type: this.state.questionType,
+                    title: this.state.questionTitle,
+                    isRequired: true,
+                    points: this.state.points,
+                    level: this.state.level, //only for adaptive,
+                    explanation: this.state.explanation,
+                    correctAnswer: this.state.correctAnswer,
+                    choices: this.state.choices
+                })
+                .then(result => {
+                    this.setState({
+                        message: "Updated question successfully!",
+                        openSnackbar: true,
+                        recallQuiz: true
+                    });
+                })
+                .catch(error => {
+                    this.setState({
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    });
+                    console.error("error in axios " + error);
+                });
+        } else {
+            axios
+                .post(`http://localhost:8080/LMS-war/webresources/Assessment/updateQuestion?userId=${userId}`, {
+                    quizId: quizId,
+                    questionId: this.state.questionId,
+                    type: this.state.questionType,
+                    title: this.state.questionTitle,
+                    isRequired: true,
+                    points: this.state.points,
+                    level: this.state.level, //only for adaptive,
+                    explanation: this.state.explanation,
+                })
+                .then(result => {
+                    this.setState({
+                        message: "Updated question successfully!",
+                        openSnackbar: true,
+                        recallQuiz: true
+                    });
+                })
+                .catch(error => {
+                    this.setState({
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    });
+                    console.error("error in axios " + error);
+                });
+        }
+        this.toggle(1);
+        this.props.dataStore.resetQuestions();
+    }
+
     addQuestion = () => {
         let userId = sessionStorage.getItem('userId');
         let quizId = this.props.dataStore.getCurrQuizId;
@@ -291,12 +390,21 @@ class ModuleQuizPageEditQuiz extends Component {
     }
 
     openEditModalBox = (element) => {
-        this.setState({ currElement: element })
-        this.toggle(1);
+        this.setState({
+            questionType: element.type,
+            questionTitle: element.title,
+            explanation: element.explanation,
+            correctAnswer: element.correctAnswer,
+            quizType: element.quizType,
+            level: element.level,
+            points: element.points,
+            choices: element.choices
+        })
+        this.toggle(1, element.questionId);
     }
 
     renderEditQuestionModalBox = () => {
-        if (this.state.currElement.type === "radiogroup") {
+        if (this.state.questionType === "radiogroup") {
             return (
                 <MDBModal isOpen={this.state.modal1} toggle={() => this.toggle(1)}>
                     <MDBModalHeader
@@ -311,13 +419,13 @@ class ModuleQuizPageEditQuiz extends Component {
                             <label className="grey-text mt-4">
                                 Question
                     </label>
-                            <textarea rows="3" type="text" name="questionTitle" onChange={this.handleChange} defaultValue={this.state.currElement.title} className="form-control" />
+                            <textarea rows="3" type="text" name="questionTitle" onChange={this.handleChange} defaultValue={this.state.questionTitle} className="form-control" />
                         </MDBCol>
                         <MDBCol md="12" className="mt-4">
                             <label className="grey-text">
                                 Explanation
                     </label>
-                            <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} value={this.state.currElement.explanation} className="form-control" />
+                            <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} value={this.state.explanation} className="form-control" />
                         </MDBCol>
                         <MDBCol md="8" className="mt-4" style={{ paddingTop: 28 }}>
                             <MDBInputGroup
@@ -326,20 +434,20 @@ class ModuleQuizPageEditQuiz extends Component {
                                 required
                                 inputs={
                                     <select name="correctAnswer" onChange={this.handleChange} disabled className="browser-default custom-select">
-                                        <option value={this.state.currElement.correctAnswer}>{this.state.currElement.correctAnswer}</option>
+                                        <option value={this.state.correctAnswer}>{this.state.correctAnswer}</option>
                                         {/* {element.choices.map((answer, index) => { return <option value={answer.text}>Answer {index + 1}</option> })} */}
                                     </select>
                                 }
                             />
                         </MDBCol>
                         <MDBCol md="2" className="mt-4">
-                            {this.state.currElement.quizType === "adaptive" &&
+                            {this.state.quizType === "adaptive" &&
                                 <>
                                     <label className="grey-text">
                                         Level
                     </label>
                                     <input type="number" className="form-control" name="level"
-                                        value={this.state.currElement.level}
+                                        value={this.state.level}
                                         onChange={this.handleChange}
                                         min={1}
                                         required />
@@ -351,13 +459,13 @@ class ModuleQuizPageEditQuiz extends Component {
                                 Points
                     </label>
                             <input type="number" className="form-control" name="points"
-                                value={this.state.currElement.points}
+                                value={this.state.points}
                                 onChange={this.handleChange}
                                 min={1}
                                 required />
                         </MDBCol>
                         <MDBCol md="12" className="mt-4">
-                            {this.state.currElement.choices.map((answer, index) => { return this.renderExistingAnswerInput(answer, index) })}
+                            {this.state.choices.map((answer, index) => { return this.renderExistingAnswerInput(answer, index) })}
                         </MDBCol>
                     </MDBModalBody>
                     <MDBModalFooter className="justify-content-center">
@@ -387,16 +495,16 @@ class ModuleQuizPageEditQuiz extends Component {
                             <label className="grey-text mt-4">
                                 Question
                                 </label>
-                            <textarea rows="3" type="text" name="questionTitle" onChange={this.handleChange} defaultValue={this.state.currElement.title} className="form-control" />
+                            <textarea rows="3" type="text" name="questionTitle" onChange={this.handleChange} defaultValue={this.state.questionTitle} className="form-control" />
                         </MDBCol>
                         <MDBCol md="12" className="mt-4">
-                            {this.state.currElement.quizType === "adaptive" &&
+                            {this.state.quizType === "adaptive" &&
                                 <>
                                     <label className="grey-text">
                                         Level
                                     </label>
                                     <input type="number" className="form-control" name="level"
-                                        value={this.state.currElement.level}
+                                        value={this.state.level}
                                         onChange={this.handleChange}
                                         min={1}
                                         required />
@@ -406,7 +514,7 @@ class ModuleQuizPageEditQuiz extends Component {
                                 Points
                                     </label>
                             <input type="number" className="form-control" name="points"
-                                value={this.state.currElement.points}
+                                value={this.state.points}
                                 onChange={this.handleChange}
                                 min={1}
                                 required />
@@ -415,7 +523,7 @@ class ModuleQuizPageEditQuiz extends Component {
                             <label className="grey-text">
                                 Explanation
                                     </label>
-                            <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} value={this.state.currElement.explanation} className="form-control" />
+                            <textarea rows="3" type="text" name="explanation" onChange={this.handleChange} value={this.state.explanation} className="form-control" />
                         </MDBCol>
                     </MDBModalBody>
                     <MDBModalFooter className="justify-content-center">
@@ -442,7 +550,7 @@ class ModuleQuizPageEditQuiz extends Component {
                     </MDBCol>
                     <MDBCol md="4" className="mt-4" align="right">
                         <MDBBtn onClick={() => this.openEditModalBox(element)} color="blue">Edit</MDBBtn>
-                        <MDBBtn color="blue">Delete</MDBBtn>
+                        <MDBBtn onClick={() => this.deleteQuestion(element.questionId)} color="blue">Delete</MDBBtn>
                     </MDBCol>
                     <MDBCol md="12">
                         <label className="grey-text">
@@ -462,7 +570,7 @@ class ModuleQuizPageEditQuiz extends Component {
                     </MDBCol>
                     <MDBCol md="4" className="mt-4" align="right">
                         <MDBBtn onClick={() => this.openEditModalBox(element)} color="blue">Edit</MDBBtn>
-                        <MDBBtn color="blue">Delete</MDBBtn>
+                        <MDBBtn onClick={() => this.deleteQuestion(element.questionId)} color="blue">Delete</MDBBtn>
                     </MDBCol>
                     <MDBCol md="12" key={element.number}>
                         <label className="grey-text">
@@ -654,108 +762,108 @@ class ModuleQuizPageEditQuiz extends Component {
     getStepContent = (stepIndex) => {
         switch (stepIndex) {
             case 0:
-                //     return (
-                //         <div style={{ padding: 60 }}>
-                //             <h2 className="text-center"> Quiz Configuration </h2>
-                //             <br />
-                //             <label className="grey-text">  Quiz Title </label>
-                //             <input type="text" name="title" onChange={this.handleChange} defaultValue={this.state.title} className="form-control" />
-                //             <br />
-                //             <label className="grey-text"> Instructions </label>
-                //             <textarea type="text" rows="3" name="description" value={this.state.description} onChange={this.handleChange} className="form-control" />
-                //             <MDBRow>
-                //                 <MDBCol md="7" className="mt-4">
-                //                     <MDBInputGroup
-                //                         style={{ paddingTop: 22 }}
-                //                         containerClassName="mb-3"
-                //                         prepend="Quiz Type"
-                //                         required
-                //                         inputs={
-                //                             <select name="quizType" onChange={this.handleChange} defaultValue={this.state.quizType} className="browser-default custom-select">
-                //                                 <option value="normal">Normal</option>
-                //                                 <option value="adaptive">Adaptive</option>
-                //                             </select>
-                //                         }
-                //                     />
-                //                 </MDBCol>
-                //                 <MDBCol md="3" className="mt-4" style={{ paddingTop: 20 }}>
-                //                     <label>  Shuffle Questions </label>
-                //                     <Checkbox
-                //                         checked={this.state.questionsOrder}
-                //                         onChange={this.handleCheckBoxChange('questionsOrder')}
-                //                         value="questionsOrder"
-                //                         name="questionsOrder"
-                //                         color="primary"
-                //                         inputProps={{
-                //                             'aria-label': 'secondary checkbox',
-                //                         }}
-                //                     />
-                //                 </MDBCol>
-                //                 <MDBCol md="2" className="mt-4" style={{ paddingTop: 20 }}>
-                //                     <label> Publish</label>
-                //                     <Checkbox
-                //                         checked={this.state.publish}
-                //                         onChange={this.handleCheckBoxChange('publish')}
-                //                         value="publish"
-                //                         name="publish"
-                //                         color="primary"
-                //                         inputProps={{
-                //                             'aria-label': 'secondary checkbox',
-                //                         }}
-                //                     />
-                //                 </MDBCol>
-                //                 <MDBCol md="6">
-                //                     <br />
-                //                     <TextField
-                //                         id="datetime-local"
-                //                         label="Opening Date"
-                //                         type="datetime-local"
-                //                         name="openingDate"
-                //                         value={this.state.openingDate}
-                //                         onChange={this.handleChange}
-                //                         fullWidth
-                //                         InputLabelProps={{
-                //                             shrink: true,
-                //                         }}
-                //                     />
-                //                 </MDBCol>
-                //                 <MDBCol md="6">
-                //                     <br />
-                //                     <TextField
-                //                         id="datetime-local"
-                //                         label="Closing Date"
-                //                         type="datetime-local"
-                //                         name="closingDate"
-                //                         value={this.state.closingDate}
-                //                         onChange={this.handleChange}
-                //                         fullWidth
-                //                         InputLabelProps={{
-                //                             shrink: true,
-                //                         }}
-                //                     />
-                //                 </MDBCol>
-                //                 <MDBCol md="6" className="mt-4">
-                //                     <label className="grey-text"> Time Limit (in minutes) </label>
-                //                     <input type="number" className="form-control" name="maxTimeToFinish"
-                //                         value={this.state.maxTimeToFinish}
-                //                         onChange={this.handleChange}
-                //                         min={30}
-                //                         required />
-                //                 </MDBCol>
-                //                 <MDBCol md="6" className="mt-4">
-                //                     <label className="grey-text">
-                //                         Number of Attempts
-                //                 </label>
-                //                     <input type="number" className="form-control" name="noOfAttempts" onChange={this.handleChange}
-                //                         value={this.state.noOfAttempts}
-                //                         onChange={this.handleChange}
-                //                         min={1}
-                //                         required />
-                //                 </MDBCol>
-                //             </MDBRow>
-                //         </div>
-                //     );
-                // case 1:
+                return (
+                    <div style={{ padding: 60 }}>
+                        <h2 className="text-center"> Quiz Configuration </h2>
+                        <br />
+                        <label className="grey-text">  Quiz Title </label>
+                        <input type="text" name="title" onChange={this.handleChange} defaultValue={this.state.title} className="form-control" />
+                        <br />
+                        <label className="grey-text"> Instructions </label>
+                        <textarea type="text" rows="3" name="description" value={this.state.description} onChange={this.handleChange} className="form-control" />
+                        <MDBRow>
+                            <MDBCol md="7" className="mt-4">
+                                <MDBInputGroup
+                                    style={{ paddingTop: 22 }}
+                                    containerClassName="mb-3"
+                                    prepend="Quiz Type"
+                                    required
+                                    inputs={
+                                        <select name="quizType" onChange={this.handleChange} disabled defaultValue={this.state.quizType} className="browser-default custom-select">
+                                            <option value="normal">Normal</option>
+                                            <option value="adaptive">Adaptive</option>
+                                        </select>
+                                    }
+                                />
+                            </MDBCol>
+                            <MDBCol md="3" className="mt-4" style={{ paddingTop: 20 }}>
+                                <label>  Shuffle Questions </label>
+                                <Checkbox
+                                    checked={this.state.questionsOrder}
+                                    onChange={this.handleCheckBoxChange('questionsOrder')}
+                                    value="questionsOrder"
+                                    name="questionsOrder"
+                                    color="primary"
+                                    inputProps={{
+                                        'aria-label': 'secondary checkbox',
+                                    }}
+                                />
+                            </MDBCol>
+                            <MDBCol md="2" className="mt-4" style={{ paddingTop: 20 }}>
+                                <label> Publish</label>
+                                <Checkbox
+                                    checked={this.state.publish}
+                                    onChange={this.handleCheckBoxChange('publish')}
+                                    value="publish"
+                                    name="publish"
+                                    color="primary"
+                                    inputProps={{
+                                        'aria-label': 'secondary checkbox',
+                                    }}
+                                />
+                            </MDBCol>
+                            <MDBCol md="6">
+                                <br />
+                                <TextField
+                                    id="datetime-local"
+                                    label="Opening Date"
+                                    type="datetime-local"
+                                    name="openingDate"
+                                    value={this.state.openingDate}
+                                    onChange={this.handleChange}
+                                    fullWidth
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                />
+                            </MDBCol>
+                            <MDBCol md="6">
+                                <br />
+                                <TextField
+                                    id="datetime-local"
+                                    label="Closing Date"
+                                    type="datetime-local"
+                                    name="closingDate"
+                                    value={this.state.closingDate}
+                                    onChange={this.handleChange}
+                                    fullWidth
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                />
+                            </MDBCol>
+                            <MDBCol md="6" className="mt-4">
+                                <label className="grey-text"> Time Limit (in minutes) </label>
+                                <input type="number" className="form-control" name="maxTimeToFinish"
+                                    value={this.state.maxTimeToFinish}
+                                    onChange={this.handleChange}
+                                    min={30}
+                                    required />
+                            </MDBCol>
+                            <MDBCol md="6" className="mt-4">
+                                <label className="grey-text">
+                                    Number of Attempts
+                                </label>
+                                <input type="number" className="form-control" name="noOfAttempts" onChange={this.handleChange}
+                                    value={this.state.noOfAttempts}
+                                    onChange={this.handleChange}
+                                    min={1}
+                                    required />
+                            </MDBCol>
+                        </MDBRow>
+                    </div>
+                );
+            case 1:
                 return (
                     <div style={{ padding: 60 }}>
                         <h4 className="text-center">
