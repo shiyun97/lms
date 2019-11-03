@@ -97,12 +97,14 @@ class ModuleSideNavigation extends Component {
                             Feedback
                         </MDBListGroupItem>
                     </NavLink>
-                    <NavLink to={`/modules/${moduleId}/analytics`} activeClassName="activeClass" onClick={() => this.updatePath(`/modules/${moduleId}/analytics`)}>
-                        <MDBListGroupItem style={{ backgroundColor: "#F5F5F5" }}>
-                            <MDBIcon icon="chart-line" className="mr-3 fa-fw" />
-                            Analytics
+                    {this.props.dataStore.getAccessRight === "Teacher" &&
+                        <NavLink to={`/modules/${moduleId}/analytics`} activeClassName="activeClass" onClick={() => this.updatePath(`/modules/${moduleId}/analytics`)}>
+                            <MDBListGroupItem style={{ backgroundColor: "#F5F5F5" }}>
+                                <MDBIcon icon="chart-line" className="mr-3 fa-fw" />
+                                Analytics
                         </MDBListGroupItem>
-                    </NavLink>
+                        </NavLink>
+                    }
                 </MDBListGroup>
 
             </div>

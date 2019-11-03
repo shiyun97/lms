@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { MDBJumbotron, MDBCardBody, MDBCard, MDBCardTitle, MDBInputGroup, MDBCardText, MDBIcon, MDBRow, MDBBtn, MDBCol, MDBAnimation, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
+import { MDBJumbotron, MDBCardBody, MDBCard, MDBCardTitle, MDBInputGroup, MDBCardText, MDBBreadcrumb, MDBBreadcrumbItem, MDBIcon, MDBRow, MDBBtn, MDBCol, MDBAnimation, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
 import { NavLink } from 'react-router-dom';
 import { Fab } from '@material-ui/core';
 import axios from "axios";
@@ -252,6 +252,105 @@ class DashboardPageTeacher extends Component {
     )
   }
 
+  renderBreadcrumbSection = (module) => {
+    return (
+      <MDBCard className="mb-5">
+        <MDBCardBody id="breadcrumb" className="d-flex align-items-center justify-content-between">
+          <MDBRow className="mb-4">
+            <MDBCol md="12">
+              <MDBBreadcrumb>
+                <MDBBreadcrumbItem>{module}</MDBBreadcrumbItem>
+                <MDBBreadcrumbItem active>Analytics</MDBBreadcrumbItem>
+              </MDBBreadcrumb>
+              <br />
+              <br />
+            </MDBCol>
+            <MDBCol xl="3" md="6" className="mb-r">
+              <MDBCard className="cascading-admin-card">
+                <div className="admin-up">
+                  <MDBIcon icon="calendar-check" className="primary-color" />
+                  <div className="data">
+                    <p>STUDENTS</p>
+                    <h4>
+                      <strong>75/200</strong>
+                    </h4>
+                  </div>
+                </div>
+                <MDBCardBody>
+                  <div className="progress">
+                    <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" className="progress-bar bg-primary" role="progressbar"
+                      style={{ width: '25%' }}></div>
+                  </div>
+                  <MDBCardText>Attendance of Latest Lecture</MDBCardText>
+                </MDBCardBody>
+              </MDBCard>
+            </MDBCol>
+            <MDBCol xl="3" md="6" className="mb-r">
+              <MDBCard className="cascading-admin-card">
+                <div className="admin-up">
+                  <MDBIcon icon="calendar-alt" className="warning-color" />
+                  <div className="data">
+                    <p>CONSULTATIONS</p>
+                    <h4>
+                      <strong>5/30</strong>
+                    </h4>
+                  </div>
+                </div>
+                <MDBCardBody>
+                  <div className="progress">
+                    <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" className="progress-bar bg grey" role="progressbar"
+                      style={{ width: '25%' }}></div>
+                  </div>
+                  <MDBCardText>Booked Consultations</MDBCardText>
+                </MDBCardBody>
+              </MDBCard>
+            </MDBCol>
+            <MDBCol xl="3" md="6" className="mb-r">
+              <MDBCard className="cascading-admin-card">
+                <div className="admin-up">
+                  <MDBIcon icon="star" className="light-blue lighten-1" />
+                  <div className="data">
+                    <p>QUIZ</p>
+                    <h4>
+                      <strong>180/200</strong>
+                    </h4>
+                  </div>
+                </div>
+                <MDBCardBody>
+                  <div className="progress">
+                    <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" className="progress-bar grey darken-2" role="progressbar"
+                      style={{ width: '75%' }}></div>
+                  </div>
+                  <MDBCardText>Attempts for Latest Quiz</MDBCardText>
+                </MDBCardBody>
+              </MDBCard>
+            </MDBCol>
+            <MDBCol xl="3" md="6" className="mb-r">
+              <MDBCard className="cascading-admin-card">
+                <div className="admin-up">
+                  <MDBIcon icon="comments" className="red accent-2" />
+                  <div className="data">
+                    <p>FORUM</p>
+                    <h4>
+                      <strong>20/200</strong>
+                    </h4>
+                  </div>
+                </div>
+                <MDBCardBody>
+                  <div className="progress">
+                    <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" className="progress-bar bg-primary" role="progressbar"
+                      style={{ width: '25%' }}></div>
+                  </div>
+                  <MDBCardText>Students Contributed</MDBCardText>
+                </MDBCardBody>
+              </MDBCard>
+            </MDBCol>
+          </MDBRow>
+        </MDBCardBody>
+      </MDBCard>
+    )
+  }
+
   setCurrModuleId = (moduleId) => { this.props.dataStore.setCurrModId(moduleId) }
 
   render() {
@@ -291,7 +390,7 @@ class DashboardPageTeacher extends Component {
               </MDBCol>
               <MDBCol md="4" className="mt-4">
                 <MDBAnimation reveal type="fadeInUp">
-                  <MDBCard cascade className="my-3 white scrollbar scrollbar-primary m-auto" style={{ maxHeight: "600px" }}>
+                  <MDBCard cascade className="my-3 white scrollbar scrollbar-primary m-auto" style={{ maxHeight: "400px" }}>
                     <MDBCardBody cascade>
                       <MDBRow>
                         <MDBCol md="9">
@@ -309,6 +408,26 @@ class DashboardPageTeacher extends Component {
                     </MDBCardBody>
                   </MDBCard>
                 </MDBAnimation>
+              </MDBCol>
+            </MDBRow>
+          </MDBJumbotron>
+          <MDBJumbotron>
+            <h2 className="font-weight-bold">
+              Quick Module Overview
+            </h2>
+            <MDBRow>
+              <MDBCol md="12" className="mt-4">
+                {this.props.dataStore.getModules.length === 0 && <h5>No modules available.</h5>}
+                {this.props.dataStore.getModules.map((mod) => {
+                  // only display analytics for modules within the year and semester
+                  if (this.props.dataStore.getYear == mod.yearOffered && this.props.dataStore.getSem == mod.semesterOffered)
+                    return (
+                      <>
+                        {this.renderBreadcrumbSection(mod.title)}
+                      </>
+                    );
+                }
+                )}
               </MDBCol>
             </MDBRow>
           </MDBJumbotron>
