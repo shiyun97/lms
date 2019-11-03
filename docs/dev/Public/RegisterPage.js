@@ -3,6 +3,7 @@ import { MDBEdgeHeader, MDBContainer, MDBRow, MDBCol, MDBJumbotron, MDBAnimation
 import { observer, inject } from 'mobx-react';
 import axios from "axios";
 import Snackbar from '@material-ui/core/Snackbar';
+import logo from '../img/coursepack-logo.jpg';
 
 @inject('dataStore')
 @observer
@@ -105,12 +106,10 @@ class RegisterPage extends Component {
                         <MDBRow>
                             <MDBCol md="8" className="mt-3 mx-auto">
                                 <MDBJumbotron>
-                                    <h1 className="text-center" style={{ fontWeight: "bold" }}>
-                                        FLIPIT
-                                    </h1>
-                                    <h3 className="text-center">
+                                    <center><img src={logo}/></center>
+                                    <h5 className="text-center">
                                         Create New Account
-                                    </h3>
+                                    </h5>
                                     <ul className="list-unstyled example-components-list">
                                         <form className="needs-validation" onSubmit={this.submitHandler}>
                                             <MDBRow>

@@ -40,7 +40,7 @@ class DashboardPage extends Component {
     else
       return (
         <>
-          <MDBEdgeHeader color="indigo darken-3" className="loginPage" />
+          <MDBEdgeHeader color="indigo darken-3" className="dashboardPage" />
           <MDBContainer style={{ paddingBottom: 240 }}>
             {this.props.dataStore.accessRight === "Student" && <DashboardPageStudent />}
             {this.props.dataStore.accessRight === "Teacher" && <DashboardPageTeacher />}
