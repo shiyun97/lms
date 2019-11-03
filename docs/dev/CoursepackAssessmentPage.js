@@ -4,7 +4,7 @@ import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
 import { List, ListItem, ListItemText, ListSubheader } from '@material-ui/core/';
 import ReactPlayer from 'react-player'
-import CoursepackQuizPageAnswerQuiz from './Student/CoursepackQuizPageAnswerQuiz'
+import CoursepackQuizPageAnswerQuiz from './Public/CoursepackQuizPageAnswerQuiz'
 import Fullscreen from "react-full-screen";
 
 const API = "http://localhost:8080/LMS-war/webresources/"

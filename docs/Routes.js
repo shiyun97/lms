@@ -115,8 +115,6 @@ import CoursepackForumPage from "./dev/CoursepackForumPage";
 import CoursepackForumDetailsPage from "./dev/CoursepackForumDetailsPage";
 import CoursepackQuizPage from './dev/CoursepackQuizPage';
 import CoursepackQuizPageCreateQuiz from "./dev/Teacher/CoursepackQuizPageCreateQuiz";
-import CoursepackQuizPageStudent from "./dev/Public/CoursepackQuizPageStudent";
-import CoursepackQuizPageAnswerQuiz from "./dev/Public/CoursepackQuizPageAnswerQuiz";
 import ModuleQuizPagePreviewQuiz from "./dev/Teacher/ModuleQuizPagePreviewQuiz";
 import CoursepackQuizPagePreviewQuiz from "./dev/Teacher/CoursepackQuizPagePreviewQuiz";
 import ModuleAnalyticsPage from "./dev/Teacher/ModuleAnalyticsPage";
@@ -131,9 +129,6 @@ import CoursepackDashboardAdmin from "./dev/Admin/CoursepackDashboardAdmin";
 class Routes extends React.Component {
 
   render() {
-
-    // print login status
-    // console.log(this.props.dataStore.getSignInStatus)
 
     const PrivateRoute = ({ path: Path, component: Component, ...rest }) => (
       <Route {...rest} render={(props) => (
@@ -199,8 +194,6 @@ class Routes extends React.Component {
         <Route exact path="/coursepack/login" component={PublicLoginPage} />
         <Route exact path="/coursepack/register" component={RegisterPage} />
         <Route exact path="/coursepack/account" component={UserProfilePage} />
-        <Route exact path="/coursepack/:coursepackId/quiz/public" component={CoursepackQuizPageStudent} />
-        <Route exact path="/coursepack/:coursepackId/quiz/:quizId/answer" component={CoursepackQuizPageAnswerQuiz} />
         <Route exact path="/coursepack/cart" component={CoursepackCartPage} />
         <Route exact path="/coursepack/cart/checkout" component={CoursepackCheckoutPage} />
 
