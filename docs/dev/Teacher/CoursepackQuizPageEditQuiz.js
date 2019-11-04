@@ -210,7 +210,7 @@ class CoursepackQuizPageEditQuiz extends Component {
         //     questionId: questionId,
         // })
         axios
-            .delete(`${API_URL()}/LMS-war/webresources/Assessment/deleteQuestion?userId=${userId}&quizId=${quizId}&questionId=${questionId}`)
+            .delete(`${API_URL()}/LMS-war/webresources/Assessment/deleteQuestionCoursepack?userId=${userId}&quizId=${quizId}&questionId=${questionId}`)
             .then(result => {
                 this.setState({
                     message: "Deleted question successfully!",
@@ -241,7 +241,7 @@ class CoursepackQuizPageEditQuiz extends Component {
         //     choices: this.state.choices
         // })
         axios
-            .post(`http://localhost:8080/LMS-war/webresources/Assessment/updateQuestion?userId=${userId}`, {
+            .post(`http://localhost:8080/LMS-war/webresources/Assessment/updateQuestionCoursepack?userId=${userId}`, {
                 quizId: quizId,
                 questionId: this.state.questionId,
                 type: "radiogroup",
@@ -286,7 +286,7 @@ class CoursepackQuizPageEditQuiz extends Component {
         // })
         this.state.choices.push({ text: this.state.answer });
         axios
-            .post(`http://localhost:8080/LMS-war/webresources/Assessment/createQuestion?userId=${userId}`, {
+            .post(`http://localhost:8080/LMS-war/webresources/Assessment/createQuestionCoursepack?userId=${userId}`, {
                 quizId: quizId,
                 type: "radiogroup",
                 title: this.state.questionTitle,
