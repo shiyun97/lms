@@ -57,7 +57,7 @@ class DashboardPageStudent extends Component {
           <MDBCol md="6" align="right">
             <h6 style={{ fontStyle: "italic", fontSize: "10px" }}> {moment(announcement.startDate).format('DD-MM-YYYY HH:mm:ss')} </h6>
           </MDBCol>
-          {(announcement.module !== null || announcement.module !== undefined) &&  
+          {announcement.module !== null && announcement.module !== undefined &&  
             <>
               <MDBCol md="12">
                 <h6 style={{ fontSize: "12px" }}>{announcement.module.code} {announcement.module.title}</h6>
