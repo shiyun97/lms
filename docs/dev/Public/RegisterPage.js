@@ -20,6 +20,7 @@ class RegisterPage extends Component {
         username: "",
         status: "",
         message: "",
+        hidden: true,
         openSnackbar: false
     }
 
@@ -106,7 +107,7 @@ class RegisterPage extends Component {
                         <MDBRow>
                             <MDBCol md="8" className="mt-3 mx-auto">
                                 <MDBJumbotron>
-                                    <center><img src={logo}/></center>
+                                    <center><img src={logo} /></center>
                                     <h5 className="text-center">
                                         Create New Account
                                     </h5>
@@ -161,7 +162,14 @@ class RegisterPage extends Component {
                                                     <label className="grey-text">
                                                         Password
                                                     </label>
-                                                    <input type="text" className="form-control" onChange={this.handleChange} name="password" defaultValue={this.state.password} required />
+                                                    <MDBRow>
+                                                        <MDBCol md="10">
+                                                            <input type={this.state.hidden ? "password" : "text"} className="form-control" onChange={this.handleChange} name="password" defaultValue={this.state.password} required />
+                                                        </MDBCol>
+                                                        <MDBCol md="2" align="left">
+                                                            <span onClick={() => this.setState({ hidden: !this.state.hidden })} class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                                                        </MDBCol>
+                                                    </MDBRow>
                                                 </MDBCol>
                                                 <MDBCol md="12" className="mt-4">
                                                     <div className="text-center mt-4">

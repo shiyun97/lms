@@ -112,8 +112,7 @@ class DashboardPageTeacher extends Component {
           {announcement.module !== null && announcement.module !== undefined &&  
             <>
               <MDBCol md="12">
-                <h6 style={{ fontSize: "12px" }}>{announcement.module.code} {announcement.module.title}</h6>
-                <h6 style={{ fontSize: "12px" }}>Posted by: {announcement.owner}</h6>
+                <h6 style={{ fontSize: "12px", fontWeight: "bold" }}>{announcement.module.code} {announcement.module.title}</h6>
               </MDBCol>
             </>
           }
