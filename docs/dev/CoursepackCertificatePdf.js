@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { MDBContainer, MDBRow, MDBCol, MDBBtn } from "mdbreact";
-import CoursepackAchievementsAdmin from "./Admin/CoursepackAchievementsAdmin";
 import styled from '@react-pdf/styled-components';
 import { BlobProvider, Page, Text, View, Document, StyleSheet, Font, Image } from '@react-pdf/renderer';
+import axios from "axios";
+
+const API = "http://localhost:8080/LMS-war/webresources/"
 
 const styles = StyleSheet.create({
     page: {
@@ -26,7 +28,8 @@ const styles = StyleSheet.create({
 const Heading = styled.Text`
   font-size: 53px;
   font-family: 'Playball';
-  padding: 25px;
+  padding-top: 100px;
+  padding-bottom: 55px;
   text-align: center;
 `;
 const Content = styled.Text`
@@ -35,14 +38,6 @@ const Content = styled.Text`
   text-align: center;
   padding-right: 50px,
   padding-left: 50px,
-  padding-bottom: 30px
-`;
-const Teacher = styled.Text`
-  font-size: 23px;
-  font-family: 'HindSiliguri';
-  text-align: center;
-  text-decoration-line: underline;
-  padding-top: 52px,
 `;
 
 Font.register(
@@ -64,24 +59,26 @@ Font.register(
     }
 );
 
-class CoursepackAchievementsPage extends Component {
+class CoursepackCertificatePdf extends Component {
 
+    state = {
+        id: ""
+    }
 
     render() {
+        console.log(this.state.id)
         return (
             <MDBContainer className="mt-5">
-                {/* <CoursepackAchievementsAdmin/> */}
-                
-            <BlobProvider document={<Docs />}>
-                {({ blod, url }) => (
-                    <div>
-                        <MDBBtn ><a href={url} target="_blank">View Certificate</a></MDBBtn>
-                    </div>
-                )}
+                <BlobProvider document={<Docs />}>
+                    {({ blob, url }) => (
+                        <div>
+                            <MDBBtn><a href={url} target="_blank"><div style={{color: "white"}}>View Certificate</div></a></MDBBtn>
+                        </div>
+                    )}
 
-            </BlobProvider>
-                
-            </MDBContainer>
+                </BlobProvider>
+
+            </MDBContainer >
         )
     }
 }
@@ -89,12 +86,9 @@ class CoursepackAchievementsPage extends Component {
 class Docs extends Component {
     state = {
         name: 'John Tan',
-        prof: 'Alice Tan',
-        designation: 'IS Prof',
         coursepackName: "Introduction to CSS",
         date: '11-11-2019'
     }
-
     render() {
         return (
             <Document>
@@ -102,10 +96,9 @@ class Docs extends Component {
                     <Image style={styles.pageBackground} src='https://www.pptgrounds.com/wp-content/uploads/2019/08/Certificate-Border-Image-1000x750.jpg' />
 
                     <View>
-                        <Image style={styles.nusLogo} src='https://logos-download.com/wp-content/uploads/2016/12/National_University_of_Singapore_logo_NUS.png' />
                         <Heading>Certificate of Completion</Heading>
-                        <Content>This is to certify that {this.state.name} has successfully completed {this.state.coursepackName} on {this.state.date}.</Content>
-                        <Teacher>Given by: {this.state.prof}, {this.state.designation}</Teacher>
+                        <Content>This is to certify that {this.state.name} has attained Level 3 in {this.state.coursepackName} on {this.state.date}.</Content>
+                        <Image style={styles.nusLogo} src='https://logos-download.com/wp-content/uploads/2016/12/National_University_of_Singapore_logo_NUS.png' />
                     </View>
 
                 </Page>
@@ -114,4 +107,4 @@ class Docs extends Component {
     }
 }
 
-export default CoursepackAchievementsPage; 
+export default CoursepackCertificatePdf; 

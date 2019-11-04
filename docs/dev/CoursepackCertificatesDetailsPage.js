@@ -11,6 +11,7 @@ class CoursepackCertificatesDetailsPage extends Component {
         message: "",
         openSnackbar: false, //TODO:
         modal: false,
+        modalDelete: false
 
     }
 
@@ -34,8 +35,15 @@ class CoursepackCertificatesDetailsPage extends Component {
     }
 
     toggleModal = event => {
-        console.log("open")
         this.setState({ modal: !this.state.modal })
+    }
+
+    toggleDelete = event => {
+        this.setState({ modalDelete: !this.state.modal })
+    }
+
+    cancel = event => {
+        this.setState({modalDelete: false})
     }
 
     showTable = () => {
@@ -109,21 +117,21 @@ class CoursepackCertificatesDetailsPage extends Component {
     }
 
     handleDeleteCoursepack = coursepackId => {
-/*         axios.delete(`${API}Coursepack/deleteLessonOrder?lessonOrderId=${lessonOrderId}`)
-        .then(result => {
-            this.setState({
-                message: "Coursepack removed",
-                openSnackbar: true
-            })
-            this.initPage()
-        })
-        .catch(error => {
-            this.setState({
-                message: error.response,
-                openSnackbar: true
-            })
-            console.error("error in axios " + error);
-        }); */
+        /*         axios.delete(`${API}Coursepack/deleteLessonOrder?lessonOrderId=${lessonOrderId}`)
+                .then(result => {
+                    this.setState({
+                        message: "Coursepack removed",
+                        openSnackbar: true
+                    })
+                    this.initPage()
+                })
+                .catch(error => {
+                    this.setState({
+                        message: error.response,
+                        openSnackbar: true
+                    })
+                    console.error("error in axios " + error);
+                }); */
     }
 
     addCoursepack = event => {
@@ -138,6 +146,10 @@ class CoursepackCertificatesDetailsPage extends Component {
                         this.setState({ message: error.response, openSnackbar: true })
                         console.error("error in axios " + error);
                     }); */
+    }
+
+    removeCert = event => {
+
     }
 
     render() {
@@ -173,9 +185,22 @@ class CoursepackCertificatesDetailsPage extends Component {
                     </MDBCol>
                 </MDBRow>
                 <hr />
-
                 {this.showTable()}
-
+                <MDBCol align="right">
+                    <MDBBtn color="danger" onClick={this.toggleDelete}>Delete Certificate</MDBBtn>
+                    <MDBModal isOpen={this.state.modalDelete} toggle={this.toggleDelete}>
+                        <MDBModalHeader toggle={this.toggleDelete}>Add Coursepack</MDBModalHeader>
+                        <MDBModalBody>
+                            <MDBCol align="center">
+                                <b>Confirm deletion? This action cannot be reverted.</b>
+                            </MDBCol>
+                        </MDBModalBody>
+                        <MDBModalFooter>
+                            <MDBBtn color="primary" onClick={this.cancel}>Cancel</MDBBtn>
+                            <MDBBtn color="danger" onClick={this.removeCert}>Remove</MDBBtn>
+                        </MDBModalFooter>
+                    </MDBModal>
+                </MDBCol>
             </div>
         )
     }

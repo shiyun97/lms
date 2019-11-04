@@ -120,7 +120,6 @@ import CoursepackQuizPagePreviewQuiz from "./dev/Teacher/CoursepackQuizPagePrevi
 import ModuleAnalyticsPage from "./dev/Teacher/ModuleAnalyticsPage";
 import CoursepackCartPage from "./dev/CoursepackCartPage";
 import CoursepackCheckoutPage from "./dev/CoursepackCheckoutPage";
-import CoursepackAchievementsPage from "./dev/CoursepackAchievementsPage";
 import CoursepackCertificatesDetailsPage from "./dev/CoursepackCertificatesDetailsPage";
 import CoursepackDashboardAdmin from "./dev/Admin/CoursepackDashboardAdmin";
 import CoursepackQuizPageEditQuiz from "./dev/Teacher/CoursepackQuizPageEditQuiz";
@@ -240,7 +239,6 @@ class Routes extends React.Component {
         <Route exact path="/coursepack/:coursepackId/forum/topics/:topicId/:forumId" component={CoursepackForumDetailsPage} />
         <Route exact path="/coursepack/:coursepackId/feedback" component={CoursepackFeedbackPage} />
         <Route exact path="/coursepack/:coursepackId/quiz" component={CoursepackQuizPage} />
-        <Route exact path="/coursepack/achievements/certificates" component={CoursepackAchievementsPage} />
         <Route exact path="/coursepack/achievements/certificates/:certId" component={CoursepackCertificatesDetailsPage} />
         <Route exact path="/coursepack/dashboard/admin/" component={CoursepackDashboardAdmin} />
 
