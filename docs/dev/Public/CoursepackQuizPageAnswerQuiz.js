@@ -25,7 +25,8 @@ class CoursepackQuizPageAnswerQuiz extends Component {
   }
 
   initPage() {
-    this.props.dataStore.setCurrQuizId(157); // NEED TO UPDATE THE QUIZ ID
+    console.log(this.props.currentQuiz)
+    this.props.dataStore.setCurrQuizId(this.props.currentQuiz);
   }
 
   componentDidMount() {
@@ -76,7 +77,7 @@ class CoursepackQuizPageAnswerQuiz extends Component {
                 tempResult[questionAttempts[i]].text,
               correctAnswer: questions[j].correctAnswer,
               question: questions[j].title
-            } 
+            }
           }
         }
       }
@@ -109,8 +110,8 @@ class CoursepackQuizPageAnswerQuiz extends Component {
   renderQuiz = () => {
     var model = new Survey.Model(json);
     return (
-      <MDBContainer className="mt-3" align="left">
-        <MDBRow className="py-3">
+      <MDBContainer align="left">
+        <MDBRow >
           <MDBCol md="12">
             <MDBCard cascade className="my-3 grey lighten-4">
               {this.state.status === "done" &&

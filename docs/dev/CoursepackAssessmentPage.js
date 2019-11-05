@@ -2,13 +2,20 @@ import React, { Component } from 'react';
 import { MDBContainer, MDBRow, MDBCol, MDBBtn } from "mdbreact";
 import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
-import { List, ListItem, ListItemText, ListSubheader } from '@material-ui/core/';
+import { List, ListItem, ListItemText, Toolbar, ListSubheader, useScrollTrigger, CssBaseline, AppBar, Typography, Container, Box, Slide } from '@material-ui/core/';
 import ReactPlayer from 'react-player'
 import CoursepackQuizPageAnswerQuiz from './Public/CoursepackQuizPageAnswerQuiz'
 import Fullscreen from "react-full-screen";
+import Scroll from 'react-scroll';
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 const FILE_SERVER = "http://127.0.0.1:8887/";
+
+
+var Element = Scroll.Element;
+var Events = Scroll.Events;
+var scroll = Scroll.animateScroll;
+var scrollSpy = Scroll.scrollSpy;
 
 class CoursepackAssessmentPage extends Component {
 
@@ -49,6 +56,23 @@ class CoursepackAssessmentPage extends Component {
             .catch(error => {
                 console.error("error in axios " + error);
             });
+
+        Events.scrollEvent.register('begin', function () {
+            console.log("begin", arguments);
+        });
+
+        Events.scrollEvent.register('end', function () {
+            console.log("end", arguments);
+        });
+
+        scrollSpy.update();
+    }
+    scrollToTop() {
+        scroll.scrollToTop();
+    }
+    componentWillUnmount() {
+        Events.scrollEvent.remove('begin');
+        Events.scrollEvent.remove('end');
     }
 
     getLessonIds = outlineList => {
@@ -63,11 +87,13 @@ class CoursepackAssessmentPage extends Component {
 
     showVideoQuiz = () => {
         var location = ""
-        var current = this.state.currentLessonOrder && this.state.currentLessonOrder.file ? this.state.currentLessonOrder.file.fileId : null
-        if (current) { //video 
+        var currentFile = this.state.currentLessonOrder && this.state.currentLessonOrder.file ? this.state.currentLessonOrder.file.fileId : null
+        var currentQuiz = this.state.currentLessonOrder && this.state.currentLessonOrder.quiz ? this.state.currentLessonOrder.quiz.quizId : null
+
+        if (currentFile) { //video 
             return (
                 this.state.allMultimedia && this.state.allMultimedia.map((eachMultimedia, index) => {
-                    if (eachMultimedia.fileId === current) {
+                    if (eachMultimedia.fileId === currentFile) {
                         location = eachMultimedia.location
                         let savedFileName = location.split('/')[5]; //FIXME:
                         let fullPath = FILE_SERVER + savedFileName;
@@ -78,17 +104,31 @@ class CoursepackAssessmentPage extends Component {
                     }
                 }))
         } else { //quiz
+            console.log(currentQuiz)
             return (
                 <div>
-                    <Fullscreen
-                        enabled={this.state.isFull}
-                        onChange={isFull => this.setState({ isFull })}
-                        style={{ backgroundColor: 'white' }}
-                    >
-                        <CoursepackQuizPageAnswerQuiz />
-                    </Fullscreen>
-                    <MDBCol align="right">
-                        <MDBBtn onClick={this.goFull}>Full Screen</MDBBtn>
+                    <Element name="test7" className="element" id="containerElement" style={{
+                        position: 'relative',
+                        height: '310px',
+                        overflow: 'scroll',
+                    }}>
+                        <Fullscreen className="fullscreen-enabled"
+                            enabled={this.state.isFull}
+                            onChange={isFull => this.setState({ isFull })}
+                        >
+                            <Element name="test7" className="element" id="containerElement" style={{
+                                position: 'relative',
+                                height: window.screen.height,
+                                overflow: 'scroll',
+                            }}>
+                                <CoursepackQuizPageAnswerQuiz currentQuiz={currentQuiz} />
+                            </Element>
+
+                        </Fullscreen>
+
+                    </Element>
+                    <MDBCol style={{ paddingTop: 10 }} align="right">
+                        <MDBBtn color="primary" onClick={this.goFull}>Full Screen</MDBBtn>
                     </MDBCol>
                 </div>
             )
@@ -139,6 +179,7 @@ class CoursepackAssessmentPage extends Component {
         )
     }
 
+
     render() {
         return (
             <div >
@@ -147,9 +188,10 @@ class CoursepackAssessmentPage extends Component {
                     <hr />
                 </div>
                 <div style={{ paddingLeft: 100, paddingRight: 50 }}>
-                    <SectionContainer style={{ height: 400, }}>
+                    <SectionContainer style={{ height: 400 }}>
                         <MDBRow>
                             <MDBCol size="8" align="center">
+
                                 {this.showVideoQuiz()}
                             </MDBCol>
                             <MDBCol size="4">
@@ -172,5 +214,7 @@ class CoursepackAssessmentPage extends Component {
         )
     }
 }
+
+
 
 export default CoursepackAssessmentPage;

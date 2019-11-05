@@ -32,6 +32,7 @@ class DashboardPage extends Component {
         });
         console.error("error in axios " + error);
       });
+      window.scrollTo(0, 0)
   }
 
   render() {
