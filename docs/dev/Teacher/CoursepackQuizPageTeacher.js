@@ -139,7 +139,7 @@ class CoursepackQuizPageTeacher extends Component {
                     quizId: quiz[i].quizId,
                     name: quiz[i].title,
                     maxMarks: quiz[i].maxMarks,
-                    previewButton: <center><MDBBtn color="primary" outline size="sm" href={`/coursepack/${coursepackId}/quiz/${quiz[i].quizId}/preview`}>Preview</MDBBtn></center>,
+                    previewButton: <center><MDBBtn color="deep-orange" outline size="sm" href={`/coursepack/${coursepackId}/quiz/${quiz[i].quizId}/preview`}>Preview</MDBBtn></center>,
                     editButton: <MDBRow align="center">
                         <MDBCol md={6}><NavLink to={`/coursepack/${coursepackId}/quiz/${quiz[i].quizId}/edit`}><MDBIcon style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></NavLink></MDBCol>
                         <MDBCol md={6}><MDBIcon onClick={() => this.deleteCoursepackQuiz(quiz[i].quizId)} style={{ paddingTop: 12, cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
@@ -173,14 +173,14 @@ class CoursepackQuizPageTeacher extends Component {
                 </h2>
                             </MDBCol>
                             <MDBCol md="4" align="right">
-                                <MDBBtn href={`/coursepack/${coursepackId}/quiz/create`} color="primary">Create Quiz</MDBBtn>
+                                <MDBBtn href={`/coursepack/${coursepackId}/quiz/create`} color="deep-orange">Create Quiz</MDBBtn>
                             </MDBCol>
                         </MDBRow>
                         <MDBRow className="py-3">
                             <MDBCol md="12">
                                 <MDBCard>
                                     <MDBCardBody>
-                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={widerData} pagesAmount={4} />
+                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={widerData} pagesAmount={4}/>
                                     </MDBCardBody>
                                 </MDBCard>
                             </MDBCol>
@@ -233,7 +233,7 @@ class CoursepackQuizPageTeacher extends Component {
                             <MDBCol md="12">
                                 <MDBCard>
                                     <MDBCardBody>
-                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
+                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4}/>
                                     </MDBCardBody>
                                 </MDBCard>
                             </MDBCol>
