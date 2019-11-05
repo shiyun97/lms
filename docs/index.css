@@ -201,6 +201,15 @@
   background-color: #007bff !important;
 }
 
+.activeClass-coursepack .list-group-item {
+  z-index: 5;
+  color: #fff;
+  border-color: #fb6d63;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  border-radius: 5px !important;
+  background-color: #fb6d63 !important;
+}
+
 .page-footer {
   margin-left: 0px;
 }

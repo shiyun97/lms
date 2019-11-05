@@ -37,7 +37,7 @@ class SideNav extends Component {
                     <>
                         <MDBListGroup className="list-group-flush">
                             {this.props.dataStore.accessRight !== "Admin" &&
-                                <NavLink to="/coursepack/dashboard" activeClassName="activeClass" onClick={() => this.updatePath("/coursepack/dashboard")}>
+                                <NavLink to="/coursepack/dashboard" activeClassName="activeClass-coursepack" onClick={() => this.updatePath("/coursepack/dashboard")} style={{ color: "#fb6d63" }}>
                                     <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
                                         <MDBIcon icon="chart-pie" />
                                         <br /> <p style={{ fontSize: "10px" }}>Dashboard</p>
@@ -45,7 +45,7 @@ class SideNav extends Component {
                                 </NavLink>
                             }
                             {(this.props.dataStore.accessRight !== "Admin" && this.props.dataStore.accessRight !== "Public") &&
-                                <NavLink to="/modules" activeClassName="activeClass" onClick={() => this.updatePath("/modules")}>
+                                <NavLink to="/modules" activeClassName="activeClass-coursepack" onClick={() => this.updatePath("/modules")} style={{ color: "#fb6d63" }}>
                                     <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
                                         <MDBIcon icon="table" />
                                         <br /> <p style={{ fontSize: "10px" }}>Modules</p>
@@ -53,7 +53,7 @@ class SideNav extends Component {
                                 </NavLink>
                             }
                             {this.props.dataStore.accessRight !== "Admin" &&
-                                <NavLink to="/coursepack/myCourses" activeClassName="activeClass" onClick={() => this.updatePath("/coursepack/myCourses")}>
+                                <NavLink to="/coursepack/myCourses" activeClassName="activeClass-coursepack" onClick={() => this.updatePath("/coursepack/myCourses")} style={{ color: "#fb6d63" }}>
                                     <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
                                         <MDBIcon icon="book" />
                                         <br /> <p style={{ fontSize: "10px" }}>My Courses</p>
@@ -61,7 +61,7 @@ class SideNav extends Component {
                                 </NavLink>
                             }
                             {this.props.dataStore.accessRight === "Admin" &&
-                                <NavLink to="/coursepack/dashboard/admin" activeClassName="activeClass" onClick={() => this.updatePath("/coursepack/dashboard/admin")}>
+                                <NavLink to="/coursepack/dashboard/admin" activeClassName="activeClass-coursepack" onClick={() => this.updatePath("/coursepack/dashboard/admin")} style={{ color: "#fb6d63" }}>
                                     <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
                                         <MDBIcon icon="book" />
                                         <br /> <p style={{ fontSize: "10px" }}>Courses</p>
@@ -69,20 +69,20 @@ class SideNav extends Component {
                                 </NavLink>
                             }
                             {(this.props.dataStore.accessRight === "Admin" &&
-                                <NavLink to="/dashboard" activeClassName="activeClass" onClick={() => this.updatePath("/dashboard")}>
+                                <NavLink to="/dashboard" activeClassName="activeClass-coursepack" onClick={() => this.updatePath("/dashboard")} style={{ color: "#fb6d63" }}>
                                     <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
                                         <MDBIcon icon="chart-pie" />
                                         <br /> <p style={{ fontSize: "10px" }}>Modules</p>
                                     </MDBListGroupItem>
                                 </NavLink>
                             )}
-                            <NavLink to="/coursepack/account" activeClassName="activeClass" onClick={() => this.updatePath("/coursepack/account")}>
+                            <NavLink to="/coursepack/account" activeClassName="activeClass-coursepack" onClick={() => this.updatePath("/coursepack/account")} style={{ color: "#fb6d63" }}>
                                 <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
                                     <MDBIcon icon="user" />
                                     <br /> <p style={{ fontSize: "10px" }}>Account</p>
                                 </MDBListGroupItem>
                             </NavLink>
-                            <NavLink onClick={() => this.logOutUser()} to="/coursepack/login" activeClassName="activeClass">
+                            <NavLink onClick={() => this.logOutUser()} to="/coursepack/login" activeClassName="activeClass-coursepack" style={{ color: "#fb6d63" }}>
                                 <MDBListGroupItem style={{ backgroundColor: "#000", position: "absolute", bottom: "0px", paddingBottom: "2px", textAlign: "center" }}>
                                     <MDBIcon icon="sign-out-alt" />
                                     <br /> <p style={{ fontSize: "10px" }}>Logout</p>
@@ -91,7 +91,7 @@ class SideNav extends Component {
                         </MDBListGroup>
                     </> :
                     <MDBListGroup className="list-group-flush">
-                        <NavLink to="/coursepack/login" onClick={() => this.updatePath("/coursepack/login")} activeClassName="activeClass">
+                        <NavLink to="/coursepack/login" onClick={() => this.updatePath("/coursepack/login")} activeClassName="activeClass-coursepack" style={{ color: "#fb6d63" }}>
                             <MDBListGroupItem style={{ backgroundColor: "#000", position: "absolute", bottom: "0px", paddingBottom: "2px", textAlign: "center" }}>
                                 <MDBIcon icon="sign-out-alt" />
                                 <br /> <p style={{ fontSize: "10px" }}>Login</p>
