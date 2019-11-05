@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { MDBTabContent, MDBTabPane, MDBNavLink, MDBNavItem, MDBNav, MDBIcon, MDBRow, MDBCol, MDBBtn, MDBModal, MDBModalHeader, MDBModalFooter, MDBModalBody } from "mdbreact";
+import { MDBJumbotron, MDBEdgeHeader, MDBContainer, MDBTabContent, MDBTabPane, MDBNavLink, MDBNavItem, MDBNav, MDBIcon, MDBRow, MDBCol, MDBBtn, MDBModal, MDBModalHeader, MDBModalFooter, MDBModalBody } from "mdbreact";
 import { Snackbar, TextField, Checkbox } from '@material-ui/core';
 import axios from "axios";
 import { observer, inject } from 'mobx-react';
@@ -388,7 +388,12 @@ class DashboardPageAdmin extends Component {
         let upcomingAnnouncements = this.state.upcomingAnnouncements;
         let expiredAnnouncements = this.state.expiredAnnouncements;
         return (
-            <div style={{ padding: 100, paddingLeft: 150 }}>
+            <>
+              <MDBEdgeHeader color="indigo darken-3" className="dashboardPage" />
+              <MDBContainer style={{ paddingBottom: 240 }}>
+            <MDBRow>
+              <MDBCol md="12" className="mt-3 mx-auto">
+                <MDBJumbotron>
                 <h2 className="font-weight-bold">
                     Dashboard
       </h2>
@@ -528,7 +533,11 @@ class DashboardPageAdmin extends Component {
                 />
                 {this.renderCreateAnnouncementModalBox()}
                 {this.renderEditAnnouncementModalBox()}
-            </div>
+          </MDBJumbotron>
+        </MDBCol>
+      </MDBRow>
+          </MDBContainer>
+        </>
         );
     }
 }
