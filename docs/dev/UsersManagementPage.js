@@ -62,11 +62,11 @@ class UsersManagementPage extends Component {
             //     "field": "password",
             //     "width": 200
             // },
-            {
-                "label": "Access Right",
-                "field": "accessRight",
-                "width": 100
-            },
+            // {
+            //     "label": "Access Right",
+            //     "field": "accessRight",
+            //     "width": 100
+            // },
             {
                 "label": "Username",
                 "field": "username",
@@ -312,7 +312,7 @@ class UsersManagementPage extends Component {
                 <MDBRow style={{ paddingTop: 60 }}>
                     <MDBCol md="12">
                         <h2 className="font-weight-bold">
-                            Users Management
+                            Public Users Management
                 </h2>
                     </MDBCol>
                     {/* <MDBCol md="1">
@@ -406,7 +406,7 @@ class UsersManagementPage extends Component {
                 gender: row[i].gender,
                 email: row[i].email,
                 // password: "********",
-                accessRight: row[i].accessRight,
+                // accessRight: row[i].accessRight,
                 username: row[i].username,
                 editButton: <MDBRow align="center">
                     <MDBCol md={6}><MDBIcon onClick={() => this.toggle(1, row[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
