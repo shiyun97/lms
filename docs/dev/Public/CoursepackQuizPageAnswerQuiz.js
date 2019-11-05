@@ -25,7 +25,7 @@ class CoursepackQuizPageAnswerQuiz extends Component {
   }
 
   initPage() {
-    this.props.dataStore.setCurrQuizId(354); // NEED TO UPDATE THE QUIZ ID
+    this.props.dataStore.setCurrQuizId(157); // NEED TO UPDATE THE QUIZ ID
   }
 
   componentDidMount() {
@@ -46,7 +46,6 @@ class CoursepackQuizPageAnswerQuiz extends Component {
         json = newJson
         this.setState({ status: "done" })
         this.props.dataStore.setMaxMarks(result.data.maxMarks)
-        // this.props.dataStore.setCurrScore(result.data.currScore) // NEED TO CHECK FOR PREVIOUS ATTEMPT SCORE
       })
       .catch(error => {
         this.setState({ status: "error" })
@@ -77,7 +76,7 @@ class CoursepackQuizPageAnswerQuiz extends Component {
                 tempResult[questionAttempts[i]].text,
               correctAnswer: questions[j].correctAnswer,
               question: questions[j].title
-            } //, quizId: 1
+            } 
           }
         }
       }
@@ -86,6 +85,7 @@ class CoursepackQuizPageAnswerQuiz extends Component {
   }
 
   onComplete = (result) => {
+    let userId = sessionStorage.getItem('userId');
     var score = 0
     for (var i = 0; i < answers.length; i++) {
       if (answers[i].answer == answers[i].correctAnswer) {
@@ -95,7 +95,14 @@ class CoursepackQuizPageAnswerQuiz extends Component {
     this.props.dataStore.setCurrScore(score);
     this.props.dataStore.attempted = true;
     if (this.props.dataStore.getCurrScore === this.props.dataStore.getMaxMarks) {
-      // call api to unlock quiz
+      axios
+        .post(`http://localhost:8080/LMS-war/webresources/Assessment/completeCoursepackQuiz?quizId=157&userId=${userId}`, {})
+        .then(result => {
+          console.log("Unlocked next quiz!")
+        })
+        .catch(error => {
+          console.log("Error in unlocking next quiz.")
+        });
     }
   }
 
@@ -145,6 +152,10 @@ class CoursepackQuizPageAnswerQuiz extends Component {
             {
               this.props.dataStore.getCurrScore !== this.props.dataStore.getMaxMarks &&
               <center><MDBBtn onClick={() => { this.props.dataStore.attempted = false }}>Reattempt</MDBBtn></center>
+            }
+            {
+              this.props.dataStore.getCurrScore === this.props.dataStore.getMaxMarks &&
+              <center>You have unlocked the next quiz!</center>
             }
           </MDBCol>
         </MDBRow>
