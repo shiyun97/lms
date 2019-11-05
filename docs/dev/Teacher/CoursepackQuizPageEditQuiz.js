@@ -145,29 +145,31 @@ class CoursepackQuizPageEditQuiz extends Component {
         //     coursepackId: coursepackId,
         //     description: this.state.description,
         // })
-        // axios
-        //     .post(`http://localhost:8080/LMS-war/webresources/Assessment/updateCoursepackQuiz?userId=${userId}`, {
-        //         title: this.state.title,
-        //         coursepackId: coursepackId,
-        //         quizId: quizId,
-        //         description: this.state.description,
-        //         publish: true,
-        //     })
-        //     .then(result => {
-        //         // console.log("success")
-        //         this.setState({
-        //             message: "Quiz updated successfully!",
-        //             openSnackbar: true,
-        //             redirect: true
-        //         });
-        //     })
-        //     .catch(error => {
-        //         this.setState({
-        //             message: error.response.data.errorMessage,
-        //             openSnackbar: true
-        //         });
-        //         console.error("error in axios " + error);
-        //     });
+        axios
+            .post(`http://localhost:8080/LMS-war/webresources/Assessment/updateCoursepackQuiz?userId=${userId}`, {
+                title: this.state.title,
+                coursepackId: coursepackId,
+                quizId: quizId,
+                quizType: "normal",
+                description: this.state.description,
+                publish: true,
+                questionsOrder: "initial"
+            })
+            .then(result => {
+                // console.log("success")
+                this.setState({
+                    message: "Quiz updated successfully!",
+                    openSnackbar: true,
+                    redirect: true
+                });
+            })
+            .catch(error => {
+                this.setState({
+                    message: error.response.data.errorMessage,
+                    redirect: true
+                });
+                console.error("error in axios " + error);
+            });
         this.props.dataStore.resetQuestions();
     }
 
@@ -248,7 +250,6 @@ class CoursepackQuizPageEditQuiz extends Component {
                 title: this.state.questionTitle,
                 isRequired: true,
                 points: this.state.points,
-                level: this.state.level,
                 explanation: this.state.explanation,
                 correctAnswer: this.state.correctAnswer,
                 choices: this.state.choices

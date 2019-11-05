@@ -312,14 +312,14 @@ class ModuleAnalyticsPage extends Component {
       data: [{
         type: "boxAndWhisker",
         whiskerColor: "#C0504E",
-        toolTipContent: "<span style=\"color:#6D78AD\">{label}:</span> <br><b>Maximum:</b> {y[3]},<br><b>Q3:</b> {y[2]},<br><b>Median:</b> {y[4]}<br><b>Q1:</b> {y[1]}<br><b>Minimum:</b> {y[0]}",
+        toolTipContent: "<span style=\"color:#6D78AD\">{label}:</span> <br><b>Maximum:</b> {y[3]},<br><b>Q3:</b> {y[2]},<br><b>Median:</b> {y[4]}<br><b>Q1:</b> {y[1]}<br><b>Minimum:</b> {y[0]}<br>Click to view quiz details.",
         yValueFormatString: "#####.0",
         dataPoints: [
-          { label: "Quiz 1", y: [54, 85, 98, 99, 95] },
-          { label: "Quiz 2", y: [56, 80, 89, 96, 84] },
-          { label: "Quiz 3", y: [54, 84, 88, 91, 86] },
-          { label: "Quiz 4", y: [52, 76, 87, 92, 81] },
-          { label: "Quiz 5", y: [54, 80, 87, 95, 81] }
+          { label: "Quiz 1", y: [54, 85, 98, 99, 95], click: () => console.log(1) },
+          { label: "Quiz 2", y: [56, 80, 89, 96, 84], click: () => console.log(1) },
+          { label: "Quiz 3", y: [54, 84, 88, 91, 86], click: () => console.log(1) },
+          { label: "Quiz 4", y: [52, 76, 87, 92, 81], click: () => console.log(1) },
+          { label: "Quiz 5", y: [54, 80, 87, 95, 81], click: () => console.log(1) }
         ]
       },
       {

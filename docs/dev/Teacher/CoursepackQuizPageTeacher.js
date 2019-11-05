@@ -93,24 +93,24 @@ class CoursepackQuizPageTeacher extends Component {
     }
 
     deleteCoursepackQuiz = (quizId) => {
-        // let userId = sessionStorage.getItem('userId');
-        // event.preventDefault();
-        // axios
-        //     .delete(`http://localhost:8080/LMS-war/webresources/Assessment/deleteCoursepackQuiz?userId=${userId}&quizId=${quizId}`)
-        //     .then(result => {
-        //         this.setState({
-        //             recallQuiz: true,
-        //             message: "Quiz deleted successfully!",
-        //             openSnackbar: true
-        //         });
-        //     })
-        //     .catch(error => {
-        //         this.setState({
-        //             message: error.response.data.errorMessage,
-        //             openSnackbar: true
-        //         });
-        //         console.error("error in axios " + error);
-        //     });
+        let userId = sessionStorage.getItem('userId');
+        event.preventDefault();
+        axios
+            .delete(`http://localhost:8080/LMS-war/webresources/Assessment/deleteCoursepackQuiz?userId=${userId}&quizId=${quizId}`)
+            .then(result => {
+                this.setState({
+                    recallQuiz: true,
+                    message: "Quiz deleted successfully!",
+                    openSnackbar: true
+                });
+            })
+            .catch(error => {
+                this.setState({
+                    message: error.response.data.errorMessage,
+                    openSnackbar: true
+                });
+                console.error("error in axios " + error);
+            });
     }
 
     getAllCoursepackQuizzes = () => {
