@@ -17,7 +17,7 @@ class SideNav extends Component {
 
     componentDidMount() {
         var pathname = location.pathname;
-        console.log(pathname)
+        // console.log(pathname)
         this.props.dataStore.setPath(pathname);
     }
 

@@ -18,7 +18,6 @@ class ModuleAnalyticsPage extends Component {
   initPage() {
     var pathname = location.pathname;
     pathname = pathname.split("/");
-    // console.log(pathname[2])
     this.props.dataStore.setCurrModId(pathname[2]);
   }
 
@@ -123,7 +122,6 @@ class ModuleAnalyticsPage extends Component {
   }
 
   renderChartSection1 = () => {
-
     const dataBar = {
       labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7'],
       datasets: [

@@ -36,6 +36,8 @@ class App extends Component {
       this.props.dataStore.setSignInStatus(true, email, password, accessRight)
       this.props.dataStore.setUserDetails(userId, gender, firstName, lastName, username)
     }
+    var pathname = location.pathname;
+    this.props.dataStore.setPath(pathname);
   }
 
   toggleCollapse = collapseID => () =>
@@ -93,11 +95,19 @@ class App extends Component {
           <main>
             <Routes />
           </main>
+          {this.props.dataStore.getPath.includes("/coursepack") ?
+          <MDBFooter style={{ background: '#fb6d63' }}>
+            <p className="footer-copyright mb-0 py-3 text-center">
+              &copy; {new Date().getFullYear()} Copyright FlipIt Coursepack
+            </p>
+          </MDBFooter>
+          :
           <MDBFooter color="indigo">
             <p className="footer-copyright mb-0 py-3 text-center">
               &copy; {new Date().getFullYear()} Copyright FlipIt Learning Management Platform
             </p>
           </MDBFooter>
+          }
         </div>
       </Router>
     );
