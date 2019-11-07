@@ -31,6 +31,13 @@ class ModuleAnalyticsPage extends Component {
     forumData: [],
     forumStatus: "retrieving",
     forumMessage: "Forum Analytics is not available at the moment.",
+    weekLabels: [], 
+    presentLecture: [],
+    presentTutorial: [],
+    absentLecture: [],
+    absentTutorial: [],
+    attendanceStatus: "retrieving",
+    attendanceMessage: "Attendance Analytics is not available at the moment.",
   }
 
   componentDidMount() {
@@ -38,6 +45,7 @@ class ModuleAnalyticsPage extends Component {
     this.getBarAnalytics();
     this.getGradeItemAnalytics();
     this.getForumAnalytics();
+    this.getAttendanceAnalytics();
   }
 
   initPage() {
@@ -162,6 +170,42 @@ class ModuleAnalyticsPage extends Component {
       });
   }
 
+  getAttendanceAnalytics = () => {
+    var moduleId = this.props.dataStore.getCurrModId;
+    axios
+      .get(`http://localhost:8080/LMS-war/webresources/analytics/retrieveAttendanceAnalytics?moduleId=${moduleId}`)
+      .then(result => {
+        var presentLecture = []
+        var presentTutorial = []
+        var absentLecture = []
+        var absentTutorial = []
+        var labels = []
+        result.data.items.map((item, index) => {
+          if (item.startDate !== null && item.startDate !== undefined) {
+            labels[index] = "Week " + (index+1)
+            presentLecture[index] = item.presentLecture
+            presentTutorial[index] = item.presentTutorial
+            absentLecture[index] = item.absentLecture
+            absentTutorial[index] = item.absentTutorial
+          }
+        })
+        this.setState({
+          weekLabels: labels,
+          presentLecture: presentLecture,
+          presentTutorial: presentTutorial,
+          absentLecture: absentLecture,
+          absentTutorial: absentTutorial,
+          attendanceStatus: "done"
+        })
+      })
+      .catch(error => {
+        this.setState({
+          attendanceStatus: "error",
+        });
+        console.error("error in axios " + error);
+      });
+  }
+
   renderNoCardSection = (stats) => {
     return (
       <MDBRow className="mb-4">
@@ -171,6 +215,7 @@ class ModuleAnalyticsPage extends Component {
             {stats === "gradeItem" && <h5 style={{ padding: 20 }}>{this.state.gradeItemMessage}</h5>}
             {stats === "quiz" && <h5 style={{ padding: 20 }}>{this.state.quizMessage}</h5>}
             {stats === "forum" && <h5 style={{ padding: 20 }}>{this.state.forumMessage}</h5>}
+            {stats === "attendance" && <h5 style={{ padding: 20 }}>{this.state.attendanceMessage}</h5>}
           </MDBCard>
         </MDBCol>
       </MDBRow>
@@ -284,27 +329,27 @@ class ModuleAnalyticsPage extends Component {
 
   renderAttendanceBarChart = () => {
     const dataBar = {
-      labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7'],
+      labels: this.state.weekLabels,
       datasets: [
         {
           label: 'Lecture - Present',
-          data: [12, 39, 3, 50, 2, 32, 84],
+          data: this.state.presentLecture,
+          backgroundColor: 'rgba(245, 192, 50, 0.5)',
+          borderWidth: 1
+        }, {
+          label: 'Lecture - Absent',
+          data: this.state.absentLecture,
           backgroundColor: 'rgba(245, 74, 85, 0.5)',
           borderWidth: 1
         }, {
           label: 'Tutorial - Present',
-          data: [56, 24, 5, 16, 45, 24, 8],
-          backgroundColor: 'rgba(90, 173, 246, 0.5)',
-          borderWidth: 1
-        }, {
-          label: 'Lecture - Absent',
-          data: [12, 25, 54, 3, 15, 44, 3],
-          backgroundColor: 'rgba(245, 192, 50, 0.5)',
+          data: this.state.presentTutorial,
+          backgroundColor: 'rgba(90, 192, 50, 0.5)',
           borderWidth: 1
         }, {
           label: 'Tutorial - Absent',
-          data: [12, 25, 54, 3, 15, 44, 3],
-          backgroundColor: 'rgba(90, 192, 50, 0.5)',
+          data: this.state.absentTutorial,
+          backgroundColor: 'rgba(90, 173, 246, 0.5)',
           borderWidth: 1
         }
       ]
@@ -345,7 +390,6 @@ class ModuleAnalyticsPage extends Component {
   }
 
   renderForumPieChart = () => {
-    // console.log(this.state.forumLabels, this.state.forumData)
     const dataPie = {
       labels: this.state.forumLabels,
       datasets: [
@@ -472,7 +516,7 @@ class ModuleAnalyticsPage extends Component {
             {this.renderBreadcrumbSection()}
             {this.state.barStatus === "done" ? this.renderCardSection() : this.renderNoCardSection("bar")}
             <MDBRow className="mb-4">
-              {this.renderAttendanceBarChart()}
+              {this.state.attendanceStatus === "done" ? this.renderAttendanceBarChart(): this.renderNoCardSection("attendance")}
               {this.state.forumStatus === "done" ? this.renderForumPieChart() : this.renderNoCardSection("forum")}
             </MDBRow>
             {this.state.quizStatus === "done" ? this.renderBoxPlot(optionsQuiz) : this.renderNoCardSection("quiz")}
