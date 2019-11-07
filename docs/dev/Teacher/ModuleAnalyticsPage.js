@@ -31,11 +31,8 @@ class ModuleAnalyticsPage extends Component {
     forumData: [],
     forumStatus: "retrieving",
     forumMessage: "Forum Analytics is not available at the moment.",
-    weekLabels: [], 
-    presentLecture: [],
-    presentTutorial: [],
-    absentLecture: [],
-    absentTutorial: [],
+    presentData: [],
+    absentData: [],
     attendanceStatus: "retrieving",
     attendanceMessage: "Attendance Analytics is not available at the moment.",
   }
@@ -175,26 +172,31 @@ class ModuleAnalyticsPage extends Component {
     axios
       .get(`http://localhost:8080/LMS-war/webresources/analytics/retrieveAttendanceAnalytics?moduleId=${moduleId}`)
       .then(result => {
-        var presentLecture = []
-        var presentTutorial = []
-        var absentLecture = []
-        var absentTutorial = []
-        var labels = []
+        var present = this.state.presentData
+        var absent = []
         result.data.items.map((item, index) => {
           if (item.startDate !== null && item.startDate !== undefined) {
-            labels[index] = "Week " + (index+1)
-            presentLecture[index] = item.presentLecture
-            presentTutorial[index] = item.presentTutorial
-            absentLecture[index] = item.absentLecture
-            absentTutorial[index] = item.absentTutorial
+            present.push({
+              label: "Week " + (index+1) + " - Lecture",
+              y: item.presentLecture
+            })
+            present.push({
+              label: "Week " + (index+1) + " - Tutorial",
+              y: item.presentTutorial
+            })
+            absent.push({
+              label: "Week " + (index+1) + " - Lecture",
+              y: item.absentLecture
+            })
+            absent.push({
+              label: "Week " + (index+1) + " - Tutorial",
+              y: item.absentTutorial
+            })
           }
         })
         this.setState({
-          weekLabels: labels,
-          presentLecture: presentLecture,
-          presentTutorial: presentTutorial,
-          absentLecture: absentLecture,
-          absentTutorial: absentTutorial,
+          presentData: present,
+          absentData: absent,
           attendanceStatus: "done"
         })
       })
@@ -328,61 +330,51 @@ class ModuleAnalyticsPage extends Component {
   }
 
   renderAttendanceBarChart = () => {
-    const dataBar = {
-      labels: this.state.weekLabels,
-      datasets: [
-        {
-          label: 'Lecture - Present',
-          data: this.state.presentLecture,
-          backgroundColor: 'rgba(245, 192, 50, 0.5)',
-          borderWidth: 1
-        }, {
-          label: 'Lecture - Absent',
-          data: this.state.absentLecture,
-          backgroundColor: 'rgba(245, 74, 85, 0.5)',
-          borderWidth: 1
-        }, {
-          label: 'Tutorial - Present',
-          data: this.state.presentTutorial,
-          backgroundColor: 'rgba(90, 192, 50, 0.5)',
-          borderWidth: 1
-        }, {
-          label: 'Tutorial - Absent',
-          data: this.state.absentTutorial,
-          backgroundColor: 'rgba(90, 173, 246, 0.5)',
-          borderWidth: 1
-        }
-      ]
-    };
-
-    const barChartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        xAxes: [{
-          barPercentage: 1,
-          gridLines: {
-            display: true,
-            color: 'rgba(0, 0, 0, 0.1)'
-          }
-        }],
-        yAxes: [{
-          gridLines: {
-            display: true,
-            color: 'rgba(0, 0, 0, 0.1)'
-          },
-          ticks: {
-            beginAtZero: true
-          }
-        }]
-      }
-    }
+		const options = {
+			animationEnabled: true,
+			exportEnabled: true,
+			title: {
+				text: "",
+				fontFamily: "verdana"
+			},
+			axisY: {
+				title: "Number of Students",
+			},
+			toolTip: {
+				shared: true,
+				reversed: true
+			},
+			legend: {
+				verticalAlign: "center",
+				horizontalAlign: "right",
+				reversed: true,
+				cursor: "pointer",
+				itemclick: this.toggleDataSeries
+			},
+			data: [
+			{
+				type: "stackedColumn",
+				name: "Present",
+				showInLegend: true,
+				yValueFormatString: "#",
+				dataPoints: this.state.presentData
+			},
+			{
+				type: "stackedColumn",
+				name: "Absent",
+				showInLegend: true,
+				yValueFormatString: "#",
+				dataPoints: this.state.absentData
+			}]
+		}
     return (
       <MDBCol md="8" className="mb-4">
         <MDBCard className="mb-4">
           <MDBCardHeader>Attendance</MDBCardHeader>
           <MDBCardBody>
-            <Bar data={dataBar} height={500} options={barChartOptions} />
+			<CanvasJSChart options = {options}
+				 onRef={ref => this.chart = ref}
+			/>
           </MDBCardBody>
         </MDBCard>
       </MDBCol>
@@ -429,6 +421,7 @@ class ModuleAnalyticsPage extends Component {
   render() {
     const optionsQuiz = {
       animationEnabled: true,
+			exportEnabled: true,
       theme: "light2", // "light1", "light2", "dark1", "dark2"
       title: {
         text: "Quiz Scores"
@@ -472,6 +465,7 @@ class ModuleAnalyticsPage extends Component {
     }
     const optionsGradebook = {
       animationEnabled: true,
+			exportEnabled: true,
       theme: "light2", // "light1", "light2", "dark1", "dark2"
       title: {
         text: "Grade Item Scores"
