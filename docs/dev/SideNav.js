@@ -36,7 +36,7 @@ class SideNav extends Component {
                 {this.props.dataStore.getSignInStatus ?
                     <>
                         <MDBListGroup className="list-group-flush">
-                            {this.props.dataStore.accessRight !== "Admin" &&
+                            {(this.props.dataStore.accessRight !== "Admin" && this.props.dataStore.accessRight !== "Teacher") &&
                                 <NavLink to="/coursepack/dashboard" activeClassName="activeClass-coursepack" onClick={() => this.updatePath("/coursepack/dashboard")} style={{ color: "#fb6d63" }}>
                                     <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
                                         <MDBIcon icon="chart-pie" />

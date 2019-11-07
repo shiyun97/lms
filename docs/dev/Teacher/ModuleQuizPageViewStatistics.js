@@ -12,6 +12,10 @@ class ModuleQuizPageViewStatistics extends Component {
   state = {
     moduleId: 0,
     status: "retrieving",
+    title: "",
+    description: "", 
+    attempts: 0,
+    questions: []
   }
 
   initPage() {
@@ -48,7 +52,7 @@ class ModuleQuizPageViewStatistics extends Component {
             <MDBRow className="py-3">
               <MDBCol md="12">
                 <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
-                  Quiz Statistics
+                  <h4>Quiz Statistics</h4>
                 </MDBCard>
               </MDBCol>
             </MDBRow>
