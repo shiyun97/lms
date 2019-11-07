@@ -78,6 +78,11 @@ class ModuleQuizPageTeacher extends Component {
                 "label": "Publish Answers",
                 "field": "publish",
                 "width": 100
+            },
+            {
+                "label": "View Statistics",
+                "field": "statistics",
+                "width": 100
             }
         ],
         rows: [{ label: "Retrieving data..." }],
@@ -194,9 +199,14 @@ class ModuleQuizPageTeacher extends Component {
                     </MDBRow>,
                     previewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quiz[i].quizId}/preview`}>Preview</MDBBtn></center>,
                     viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quiz[i].quizId}/review`}>Review</MDBBtn></center>,
-                    publishButton: <center>
-                        {quiz[i].publishAnswer ? "Published" : <MDBBtn color="primary" outline size="sm" onClick={() => this.publishAnswers(quiz[i].quizId)}>Publish</MDBBtn>}
-                    </center>
+                    publishButton:
+                        <center>
+                            {quiz[i].publishAnswer ? "Published" : <MDBBtn color="primary" outline size="sm" onClick={() => this.publishAnswers(quiz[i].quizId)}>Publish</MDBBtn>}
+                        </center>,
+                    analyticsButton:
+                        <center>
+                            <MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quiz[i].quizId}/analytics`}>View</MDBBtn>
+                        </center>
                 })
             }
         } else {
@@ -216,10 +226,10 @@ class ModuleQuizPageTeacher extends Component {
 
         return (
             <div className={this.props.className}>
-            <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
-            <div className="module-navbar-small">
-                <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
-            </div>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
@@ -275,10 +285,10 @@ class ModuleQuizPageTeacher extends Component {
         }
         return (
             <div className={this.props.className}>
-            <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
-            <div className="module-navbar-small">
-                <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
-            </div>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
@@ -307,10 +317,10 @@ class ModuleQuizPageTeacher extends Component {
         var moduleId = this.props.dataStore.getCurrModId;
         return (
             <div className={this.props.className}>
-            <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
-            <div className="module-navbar-small">
-                <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
-            </div>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }} align="center">

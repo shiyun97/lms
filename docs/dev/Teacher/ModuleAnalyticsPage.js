@@ -35,14 +35,17 @@ class ModuleAnalyticsPage extends Component {
     absentData: [],
     attendanceStatus: "retrieving",
     attendanceMessage: "Attendance Analytics is not available at the moment.",
+    allAnalyticsLoaded: false,
   }
 
   componentDidMount() {
     this.initPage();
     this.getBarAnalytics();
     this.getGradeItemAnalytics();
+    this.getQuizAnalytics();
     this.getForumAnalytics();
     this.getAttendanceAnalytics();
+    this.setState({ allAnalyticsLoaded: true })
   }
 
   initPage() {
@@ -94,6 +97,7 @@ class ModuleAnalyticsPage extends Component {
             y: tempY,
             click: () => console.log(1)
           })
+          tempY = []
         })
         this.setState({
           gradeItems: temp,
@@ -128,11 +132,13 @@ class ModuleAnalyticsPage extends Component {
             y: tempY,
             click: () => console.log(1)
           })
+          tempY = []
         })
         this.setState({
           quizItems: temp,
           quizStatus: "done"
         });
+        console.log(temp)
       })
       .catch(error => {
         this.setState({
@@ -509,7 +515,7 @@ class ModuleAnalyticsPage extends Component {
           <MDBContainer>
             {this.renderBreadcrumbSection()}
             {this.state.barStatus === "done" ? this.renderCardSection() : this.renderNoCardSection("bar")}
-            <MDBRow className="mb-4">
+            <MDBRow>
               {this.state.attendanceStatus === "done" ? this.renderAttendanceBarChart(): this.renderNoCardSection("attendance")}
               {this.state.forumStatus === "done" ? this.renderForumPieChart() : this.renderNoCardSection("forum")}
             </MDBRow>

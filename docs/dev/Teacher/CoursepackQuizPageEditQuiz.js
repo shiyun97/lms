@@ -212,7 +212,7 @@ class CoursepackQuizPageEditQuiz extends Component {
         //     questionId: questionId,
         // })
         axios
-            .delete(`${API_URL()}/LMS-war/webresources/Assessment/deleteQuestionCoursepack?userId=${userId}&quizId=${quizId}&questionId=${questionId}`)
+            .delete(`http://localhost:8080/LMS-war/webresources/Assessment/deleteQuestionCoursepack?userId=${userId}&quizId=${quizId}&questionId=${questionId}`)
             .then(result => {
                 this.setState({
                     message: "Deleted question successfully!",

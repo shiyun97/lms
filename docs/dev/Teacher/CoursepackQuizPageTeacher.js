@@ -92,26 +92,26 @@ class CoursepackQuizPageTeacher extends Component {
         this.props.dataStore.setCurrCoursepackId(pathname[2]);
     }
 
-    deleteCoursepackQuiz = (quizId) => {
-        let userId = sessionStorage.getItem('userId');
-        event.preventDefault();
-        axios
-            .delete(`http://localhost:8080/LMS-war/webresources/Assessment/deleteCoursepackQuiz?userId=${userId}&quizId=${quizId}`)
-            .then(result => {
-                this.setState({
-                    recallQuiz: true,
-                    message: "Quiz deleted successfully!",
-                    openSnackbar: true
-                });
-            })
-            .catch(error => {
-                this.setState({
-                    message: error.response.data.errorMessage,
-                    openSnackbar: true
-                });
-                console.error("error in axios " + error);
-            });
-    }
+    // deleteCoursepackQuiz = (quizId) => {
+    //     let userId = sessionStorage.getItem('userId');
+    //     event.preventDefault();
+    //     axios
+    //         .delete(`http://localhost:8080/LMS-war/webresources/Assessment/deleteCoursepackQuiz?userId=${userId}&quizId=${quizId}`)
+    //         .then(result => {
+    //             this.setState({
+    //                 recallQuiz: true,
+    //                 message: "Quiz deleted successfully!",
+    //                 openSnackbar: true
+    //             });
+    //         })
+    //         .catch(error => {
+    //             this.setState({
+    //                 message: error.response.data.errorMessage,
+    //                 openSnackbar: true
+    //             });
+    //             console.error("error in axios " + error);
+    //         });
+    // }
 
     getAllCoursepackQuizzes = () => {
         let userId = sessionStorage.getItem('userId');
@@ -127,7 +127,7 @@ class CoursepackQuizPageTeacher extends Component {
                 console.error("error in axios " + error);
             });
     }
-    
+
     renderQuizTable = () => {
         var quiz = this.state.quizzes;
         var coursepackId = this.props.dataStore.getCurrCoursepackId;
@@ -142,7 +142,7 @@ class CoursepackQuizPageTeacher extends Component {
                     previewButton: <center><MDBBtn color="deep-orange" outline size="sm" href={`/coursepack/${coursepackId}/quiz/${quiz[i].quizId}/preview`}>Preview</MDBBtn></center>,
                     editButton: <MDBRow align="center">
                         <MDBCol md={6}><NavLink to={`/coursepack/${coursepackId}/quiz/${quiz[i].quizId}/edit`}><MDBIcon style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></NavLink></MDBCol>
-                        <MDBCol md={6}><MDBIcon onClick={() => this.deleteCoursepackQuiz(quiz[i].quizId)} style={{ paddingTop: 12, cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
+                        {/* <MDBCol md={6}><MDBIcon onClick={() => this.deleteCoursepackQuiz(quiz[i].quizId)} style={{ paddingTop: 12, cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol> */}
                     </MDBRow>,
                 })
             }
@@ -180,7 +180,7 @@ class CoursepackQuizPageTeacher extends Component {
                             <MDBCol md="12">
                                 <MDBCard>
                                     <MDBCardBody>
-                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={widerData} pagesAmount={4}/>
+                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={widerData} pagesAmount={4} />
                                     </MDBCardBody>
                                 </MDBCard>
                             </MDBCol>
@@ -233,7 +233,7 @@ class CoursepackQuizPageTeacher extends Component {
                             <MDBCol md="12">
                                 <MDBCard>
                                     <MDBCardBody>
-                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4}/>
+                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
                                     </MDBCardBody>
                                 </MDBCard>
                             </MDBCol>
