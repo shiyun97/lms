@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { observer, inject } from 'mobx-react'
 import {
   MDBContainer, 
   MDBCarouselInner, 
@@ -7,7 +8,11 @@ import {
   MDBCarousel, 
   MDBCol, 
   MDBRow,
-  MDBIcon
+  MDBIcon,
+  MDBJumbotron,
+  MDBNav,
+  MDBNavItem,
+  MDBNavLink
 } from "mdbreact";
 import axios from "axios";
 import { NavLink } from 'react-router-dom';
@@ -31,8 +36,11 @@ import Snackbar from '@material-ui/core/Snackbar';
 const API = "http://localhost:8080/LMS-war/webresources/"
 const FILE_SERVER = "http://127.0.0.1:8887/";
 
+@inject('dataStore')
+@observer
 class CoursepackDashboardPage extends Component {
   state = {
+    categories: [],
     coursepackList: "",
     category: ["Computer Science", "Business Management", "Engineering"],
     filesList: "",
@@ -42,6 +50,16 @@ class CoursepackDashboardPage extends Component {
   }
 
   componentDidMount() {
+    // get all categories
+    axios.get(`${API}Coursepack/getAllCategories`)
+    .then(result => {
+        this.setState({ categories: result.data.categories })
+        console.log(result.data)
+    })
+    .catch(error => {
+        console.error("error in axios " + error);
+    });
+
     axios.get(`${API}Coursepack/getAllCoursepack`)
       .then(result => {
         console.log(result.data)
@@ -206,14 +224,36 @@ class CoursepackDashboardPage extends Component {
     )
   };*/
 
+  viewAllCoursepacks = () => {
+    this.props.dataStore.setPath(`/coursepacks`);
+    this.props.history.push(`/coursepacks`);
+  }
+
   // get courses to discover (all)
   discoverCoursepacks = () => {
+    let coursepackList = this.state.coursepackList;
+    let firstCoursepackList = coursepackList;
+    if (coursepackList.length > 4) {
+      firstCoursepackList = coursepackList.slice(0,4);
+    }
+    let secondCoursepackList = coursepackList.slice(4);
+    if (coursepackList.length > 8) {
+      secondCoursepackList = coursepackList.slice(4, 8);
+    }
+    
     return (
       <div className={this.props.className}>
-        <h4><b>Discover courses</b></h4>
+        <h4><b>Discover coursepacks</b></h4>
         <hr />
         <MDBRow>
-          {this.state.coursepackList && this.state.coursepackList.map((course, index) => {
+          <MDBCol>
+            <span style={{float: "right", textDecorationLine:"underline", cursor: "pointer"}} className="mb-2" onClick={e => this.viewAllCoursepacks()}>
+              View all coursepacks >
+            </span>
+          </MDBCol>
+        </MDBRow>
+        <MDBRow>
+          {firstCoursepackList && firstCoursepackList.map((course, index) => {
             return (
               <MDBCol size="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
                 {/*<MDBCard style={{ width: "15rem", height: "18rem" }} className="mr-2">
@@ -224,6 +264,49 @@ class CoursepackDashboardPage extends Component {
                           <MDBCardText>{course.price}</MDBCardText>
                       </MDBCardBody>
                     </MDBCard>*/}
+                <Card style={{ height: "25rem" }}>
+                  <CardActionArea>
+                    <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>
+                      <CardMedia
+                        style={{ height: 140 }}
+                        image={cprog}
+                        title={course.title}
+                      />
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="h2" style={{ color: "#000000" }}>
+                          {course.title}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" component="p">
+                          {course.assignedTeacher.firstName + " " + course.assignedTeacher.lastName}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" component="p">
+                          <div style={{ width: 200, display: "flex", marginTop: 10 }}>
+                            <Rating name="hover-side" value={course.rating} readOnly size="small" />
+                            <Box ml={2}>{course.rating.toFixed(1) + " (" + course.ratingList.length + ")"}</Box>
+                          </div>
+                        </Typography>
+                        <Typography gutterBottom variant="h6" component="h2" style={{ color: "#000000", marginTop: 10 }}>
+                          {"S$" + course.price.toFixed(2)}
+                        </Typography>
+                      </CardContent>
+                    </NavLink>
+                  </CardActionArea>
+
+                  <CardActions>
+                    <Button variant="contained" color="secondary"  onClick={e => this.addToCart(course)}>
+                      Add To Cart
+                    </Button>
+                  </CardActions>
+                </Card>
+              </MDBCol>
+            )
+          })}
+        </MDBRow>
+
+        <MDBRow>
+          {secondCoursepackList && secondCoursepackList.map((course, index) => {
+            return (
+              <MDBCol size="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
                 <Card style={{ height: "25rem" }}>
                   <CardActionArea>
                     <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>
@@ -351,11 +434,34 @@ class CoursepackDashboardPage extends Component {
     return <div>cprog</div>
   }
 
+  showCategory = (categoryId) => {
+    this.props.dataStore.setPath('/coursepacks/' + categoryId);
+    this.props.history.push('/coursepacks/' + categoryId);
+  }
+  
   render() {
-    console.log("student")
+    let categories = this.state.categories;
     return (
       <div>
         <CoursepackTopNav cartNum={this.state.cartNum} />
+        <MDBJumbotron style={{ paddingLeft: 260, paddingBottom: 40, height: 10, marginBottom: 0, float: "center" }}>
+          <div>
+            <MDBNav>
+              {
+                categories.length > 0 && categories.map((category, index) => {
+                  return (
+                    <MDBNavItem>
+                      <MDBNavLink active={false} to={`/coursepacks/${category.categoryId}`} onClick={e => this.showCategory(category.categoryId)}
+                        style={{ color: "black" }}>
+                        {category.name}
+                      </MDBNavLink>
+                    </MDBNavItem>
+                  )
+                })
+              }
+            </MDBNav>
+          </div>
+        </MDBJumbotron>
         <MDBContainer style={{ paddingBottom: 240 }}>
 
 

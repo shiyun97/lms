@@ -24,7 +24,7 @@ class CoursepackCheckoutPage extends Component {
     }
 
     componentDidMount() {
-        const script = document.createElement("script");
+        /*const script = document.createElement("script");
         script.src = "https://js.stripe.com/v3/";
         script.async = true;
         script.addEventListener('load', () => {
@@ -42,7 +42,7 @@ class CoursepackCheckoutPage extends Component {
             }, 500)
         }
 
-        document.body && document.body.appendChild(script);
+        document.body && document.body.appendChild(script);*/
 
         this.initPage();
     }
@@ -98,7 +98,7 @@ class CoursepackCheckoutPage extends Component {
                 <MDBJumbotron style={{ padding: 0, backgroundColor: "#505763", width: "100%" }}>
                     <MDBCol className="text-white">
                         <MDBCol className="py-3">
-                            <MDBCardTitle className="h1-responsive pt-3 m-3 ml-5 px-5">
+                            <MDBCardTitle className="h1-responsive pt-5 m-3 ml-5 px-5">
                                 { this.showBreadcrumb()}
                                 <MDBRow>Checkout</MDBRow>
                             </MDBCardTitle>
@@ -239,6 +239,7 @@ function PaypalButtonComponent() {
         console.log("completed payment")
         sessionStorage.setItem("cart", JSON.stringify([]))
         setPaidFor(false)
+        setLoaded(false)
         document.getElementById("goToDashboard").click();
     }
 
