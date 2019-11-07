@@ -11,7 +11,6 @@ import Scroll from 'react-scroll';
 const API = "http://localhost:8080/LMS-war/webresources/"
 const FILE_SERVER = "http://127.0.0.1:8887/";
 
-
 var Element = Scroll.Element;
 var Events = Scroll.Events;
 var scroll = Scroll.animateScroll;
@@ -85,6 +84,10 @@ class CoursepackAssessmentPage extends Component {
         return list;
     }
 
+    nextItem = currentId => {
+        
+    }
+
     showVideoQuiz = () => {
         var location = ""
         var currentFile = this.state.currentLessonOrder && this.state.currentLessonOrder.file ? this.state.currentLessonOrder.file.fileId : null
@@ -107,7 +110,7 @@ class CoursepackAssessmentPage extends Component {
             console.log(currentQuiz)
             return (
                 <div>
-                    <Element name="test7" className="element" id="containerElement" style={{
+                    <Element className="element" id="containerElement" style={{
                         position: 'relative',
                         height: '310px',
                         overflow: 'scroll',
@@ -116,12 +119,12 @@ class CoursepackAssessmentPage extends Component {
                             enabled={this.state.isFull}
                             onChange={isFull => this.setState({ isFull })}
                         >
-                            <Element name="test7" className="element" id="containerElement" style={{
+                            <Element className="element" id="containerElement" style={{
                                 position: 'relative',
                                 height: window.screen.height,
                                 overflow: 'scroll',
                             }}>
-                                <CoursepackQuizPageAnswerQuiz currentQuiz={currentQuiz} />
+                                <CoursepackQuizPageAnswerQuiz onClick={()=>this.nextItem(currentQuiz)} currentQuiz={currentQuiz} />
                             </Element>
 
                         </Fullscreen>

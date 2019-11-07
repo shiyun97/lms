@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import { MDBContainer, MDBIcon, MDBRow, MDBCol, MDBDataTable, MDBBtn, MDBModal, MDBModalHeader, MDBModalBody, MDBModalFooter } from "mdbreact";
 import axios from "axios";
-
+import { observer, inject } from 'mobx-react'
+import CoursepackCertificatePdf from './CoursepackCertificatePdf'
 const API = "http://localhost:8080/LMS-war/webresources/";
 
+@inject('dataStore')
+@observer
 class CoursepackCertificatesDetailsPage extends Component {
 
     state = {
@@ -11,8 +14,8 @@ class CoursepackCertificatesDetailsPage extends Component {
         message: "",
         openSnackbar: false, //TODO:
         modal: false,
-        modalDelete: false
-
+        modalDelete: false,
+        heading: "HTML Certificate Coursepacks"
     }
 
     componentDidMount() {
@@ -21,17 +24,16 @@ class CoursepackCertificatesDetailsPage extends Component {
 
     initPage() {
         /* let certId = this.props.params.match.certId */ //FIXME:
-        let certId = 1
 
-        //get created coursepack quiz 
-        axios.get(`${API}Coursepack/getAllCoursepack`) //FIXME:
+        //get created coursepack  
+/*         axios.get(`${API}Coursepack/getAllCoursepack`) //FIXME:
             .then(result => {
                 this.setState({ listOfCoursepacks: result.data.coursepack })
             })
             .catch(error => {
                 this.setState({ message: error.response, openSnackbar: true })
                 console.error("error in axios " + error);
-            });
+            }); */
     }
 
     toggleModal = event => {
@@ -96,7 +98,9 @@ class CoursepackCertificatesDetailsPage extends Component {
 
     tableRows = () => {
         let coursepacks = []
-        this.state.listOfCoursepacks && this.state.listOfCoursepacks.map((coursepack, index) => {
+        let allCoursepacks = this.props.dataStore.getListOfCoursepacks
+         console.log(allCoursepacks)
+         allCoursepacks && allCoursepacks.map((coursepack, index) => {
             coursepacks.push({
                 coursepackTitle: coursepack.title,
                 code: coursepack.code,
@@ -158,7 +162,7 @@ class CoursepackCertificatesDetailsPage extends Component {
                 <MDBRow size="12" >
                     <MDBCol size="8">
                         <h2 className="font-weight-bold" style={{ paddingTop: 50 }}>
-                            HTML Certificate Coursepacks
+                            {this.state.heading}
                         </h2>
                     </MDBCol>
                     <MDBCol size="4" align="right" style={{ paddingTop: 40, paddingRight: 30 }}>
@@ -201,6 +205,12 @@ class CoursepackCertificatesDetailsPage extends Component {
                         </MDBModalFooter>
                     </MDBModal>
                 </MDBCol>
+                <CoursepackCertificatePdf 
+                heading={this.state.heading} 
+                firstName={sessionStorage.getItem("firstName")}
+                lastName = {sessionStorage.getItem("lastName")}
+                />
+
             </div>
         )
     }

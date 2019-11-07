@@ -124,6 +124,7 @@ import CoursepackCertificatesDetailsPage from "./dev/CoursepackCertificatesDetai
 import CoursepackDashboardAdmin from "./dev/Admin/CoursepackDashboardAdmin";
 import CoursepackQuizPageEditQuiz from "./dev/Teacher/CoursepackQuizPageEditQuiz";
 import CoursepackViewAllPage from "./dev/CoursepackViewAllPage";
+import CoursepackAchievementsPage from "./dev/CoursepackAchievementsPage";
 
 @inject('dataStore')
 @observer
@@ -244,7 +245,7 @@ class Routes extends React.Component {
         <Route exact path="/coursepack/dashboard/admin/" component={CoursepackDashboardAdmin} />
         <Route exact path="/coursepacks" component={CoursepackViewAllPage} />
         <Route exact path="/coursepacks/:categoryId" component={CoursepackViewAllPage} />
-
+        <Route exact path="/coursepack/achievements/view" component={CoursepackAchievementsPage} />
 
         {/* FREE Templates */}
         <Route exact path="/home" component={HomePage} />

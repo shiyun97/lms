@@ -156,7 +156,10 @@ class CoursepackQuizPageAnswerQuiz extends Component {
             }
             {
               this.props.dataStore.getCurrScore === this.props.dataStore.getMaxMarks &&
-              <center>You have unlocked the next quiz!</center>
+              <div>
+                <center>You have unlocked the next quiz!</center>
+                <center><MDBBtn>Proceed</MDBBtn></center>
+              </div>
             }
           </MDBCol>
         </MDBRow>

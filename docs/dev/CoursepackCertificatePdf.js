@@ -3,7 +3,7 @@ import { MDBContainer, MDBRow, MDBCol, MDBBtn } from "mdbreact";
 import styled from '@react-pdf/styled-components';
 import { BlobProvider, Page, Text, View, Document, StyleSheet, Font, Image } from '@react-pdf/renderer';
 import axios from "axios";
-
+import certbackground from './img/certBackground.jpg'
 const API = "http://localhost:8080/LMS-war/webresources/"
 
 const styles = StyleSheet.create({
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     nusLogo: {
-        paddingTop: 70,
+        paddingTop: 40,
         maxHeight: 180,
         maxWidth: 200,
         left: '40%'
@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
 const Heading = styled.Text`
   font-size: 53px;
   font-family: 'Playball';
-  padding-top: 100px;
-  padding-bottom: 55px;
+  padding-top: 85px;
+  padding-bottom: 35px;
   text-align: center;
 `;
 const Content = styled.Text`
@@ -38,6 +38,14 @@ const Content = styled.Text`
   text-align: center;
   padding-right: 50px,
   padding-left: 50px,
+`;
+const Name = styled.Text`
+  font-size: 50px;
+  font-family: 'OleoSript';
+  text-align: center;
+  padding-right: 50px,
+  padding-left: 50px,
+  color: #b08f26
 `;
 
 Font.register(
@@ -69,7 +77,7 @@ class CoursepackCertificatePdf extends Component {
         console.log(this.state.id)
         return (
             <MDBContainer className="mt-5">
-                <BlobProvider document={<Docs />}>
+                <BlobProvider document={<Docs heading={this.props.heading} firstName={this.props.firstName} lastName={this.props.lastName} />}>
                     {({ blob, url }) => (
                         <div>
                             <MDBBtn><a href={url} target="_blank"><div style={{color: "white"}}>View Certificate</div></a></MDBBtn>
@@ -85,20 +93,20 @@ class CoursepackCertificatePdf extends Component {
 
 class Docs extends Component {
     state = {
-        name: 'John Tan',
-        coursepackName: "Introduction to CSS",
-        date: '11-11-2019'
+        date: '11-11-2019' //TODO:
     }
     render() {
         return (
             <Document>
                 <Page orientation='landscape' size="A4" style={styles.page}>
-                    <Image style={styles.pageBackground} src='https://www.pptgrounds.com/wp-content/uploads/2019/08/Certificate-Border-Image-1000x750.jpg' />
+                    <Image style={styles.pageBackground} src={certbackground} />
 
                     <View>
                         <Heading>Certificate of Completion</Heading>
-                        <Content>This is to certify that {this.state.name} has attained Level 3 in {this.state.coursepackName} on {this.state.date}.</Content>
-                        <Image style={styles.nusLogo} src='https://logos-download.com/wp-content/uploads/2016/12/National_University_of_Singapore_logo_NUS.png' />
+                        <Content>This is to certify that</Content>
+                        <Name> {this.props.firstName} {this.props.lastName} </Name>
+                        <Content> has attained Level 3 in {this.props.heading} on {this.state.date}.</Content>
+                        <Image style={styles.nusLogo} src={'https://logos-download.com/wp-content/uploads/2016/12/National_University_of_Singapore_logo_NUS.png'} />
                     </View>
 
                 </Page>

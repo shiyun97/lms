@@ -6,10 +6,12 @@ import Dropzone from 'react-dropzone';
 import SectionContainer from "../../components/sectionContainer";
 import { Slide, Card, Dialog, DialogTitle, DialogContent, DialogContentText, ListItem, ListItemText, DialogActions, Button, List } from "@material-ui/core";
 import IconButton from '@material-ui/core/IconButton';
+import axios from "axios";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
+const API = "http://localhost:8080/LMS-war/webresources/";
 
 @inject('dataStore')
 class CoursepackDashboardAdmin extends Component {
@@ -21,6 +23,7 @@ class CoursepackDashboardAdmin extends Component {
         uploadedMultimedia: [],
         badgeName: "",
         toggleCertModal: false,
+        toggleEditBadgeModal: false,
         certificates: ["HTML", "CSS", "JAVA"], //TODO:
         badges: [{ title: 'Complete 5 courses', achieved: true }, { title: 'Complete 10 courses', achieved: false }, { title: 'Complete first course', achieved: false }]
     }
@@ -66,27 +69,54 @@ class CoursepackDashboardAdmin extends Component {
         this.setState({ toggleCertModal: !this.state.toggleCertModal })
     }
 
+    toggleEditBadgeModal = event => {
+        this.setState({ toggleEditBadgeModal: !this.state.toggleEditBadgeModal })
+    }
+
     disabled = (achieved) => {
         if (!achieved) {
             return "grey"
         }
     }
 
+    editBadgeName = badgeId => { //TODO:
+
+    }
+
+    deleteBadge = badgeId => { //TODO:
+
+    }
+
     showBadges = () => {
         return (
 
             <MDBRow style={{ paddingTop: 30 }}>
-                {this.state.badges && this.state.badges.map((badge) => {
+                {this.state.badges && this.state.badges.map((badge, index) => {
                     return (
                         <MDBCol size="3">
                             <MDBCol align="center" size="12">
                                 <Card style={{ height: 120, color: this.disabled(badge.achieved) }} >
                                     <div align="right">
-                                        <MDBIcon icon="edit" />
-                                        <MDBIcon style={{ paddingLeft: 10, paddingRight: 5 }} icon="trash-alt" />
+                                        <MDBIcon onClick={this.toggleEditBadgeModal} icon="edit" />
+                                        <MDBModal isOpen={this.state.toggleEditBadgeModal} toggle={this.toggleEditBadgeModal}>
+                                            <MDBModalHeader toggle={this.toggleEditBadgeModal}>Edit Badge Criteria</MDBModalHeader>
+                                            <MDBModalBody>
+                                                <input
+                                                    defaultValue={badge.title}
+                                                    name="badgeName"
+                                                    type="text"
+                                                    className="form-control"
+                                                    onChange={this.handleChangeBadgeName}
+                                                />
+                                            </MDBModalBody>
+                                            <MDBModalFooter>
+                                                <MDBBtn color="primary" onClick={() => this.editBadgeName(index)}>Save</MDBBtn>
+                                                <MDBBtn color="secondary" onClick={() => this.cancel(index)}>Cancel</MDBBtn>
+                                            </MDBModalFooter>
+                                        </MDBModal>
+                                        <MDBIcon onClick={this.deleteBadge} style={{ paddingLeft: 10, paddingRight: 5 }} icon="trash-alt" />
                                     </div>
                                     {badge.title}
-
                                 </Card>
                             </MDBCol>
                         </MDBCol>
@@ -148,7 +178,19 @@ class CoursepackDashboardAdmin extends Component {
     }
 
     handleRowClick = certIndex => {
-         this.props.history.push(`/coursepack/achievements/certificates/${certIndex}`)
+        //TODO: do a axios get function to get the list of coursepack and store in the datastore
+
+        //get created coursepack  
+        axios.get(`${API}Coursepack/getAllCoursepack`) //FIXME: [cert index]
+            .then(result => {
+                
+            })
+            .catch(error => {
+                this.setState({ message: error.response, openSnackbar: true })
+                console.error("error in axios " + error);
+            });
+
+        this.props.history.push(`/coursepack/achievements/certificates/${certIndex}`)
         this.props.dataStore.setPath(`/coursepack/achievements/certificates/${certIndex}`);
         console.log(this.props.dataStore.getPath)
     }
@@ -159,7 +201,7 @@ class CoursepackDashboardAdmin extends Component {
 
 
     cancel = event => { //TODO: clear the state of all selected/ init
-        this.setState({ toggleCertModal: false })
+        this.setState({ toggleCertModal: false, toggleEditBadgeModal: false })
     }
 
     uploadMultimedia = (e) => {
@@ -201,7 +243,7 @@ class CoursepackDashboardAdmin extends Component {
                                 name="badgeName"
                                 type="text"
                                 className="form-control"
-                                placeholder="Badge Criteria"
+                                placeholder="Eg. Complete 10 courses"
                                 onChange={this.handleChangeBadgeName}
                             />
                             {this.state.uploadedMultimedia.length === 0 &&

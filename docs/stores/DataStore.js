@@ -1,4 +1,4 @@
-import { action, computed, observable } from "mobx"
+import { action, computed, observable, toJS } from "mobx"
 
 class DataStore {
   @observable signInStatus = false
@@ -41,6 +41,9 @@ class DataStore {
   @observable currScore = 0
   @observable maxMarks = 0
   @observable attempted = false
+
+  // coursepack certification
+  @observable listOfCoursepacks = []
 
   @action setSignInStatus(status, email, password, accessRight) {
     this.signInStatus = status;
@@ -275,6 +278,16 @@ class DataStore {
   @computed get getCoursepackQuizAttempt() {
     return this.attempted;
   }
+
+  @action setListOfCoursepacks(coursepacks) {
+    this.listOfCoursepacks = coursepacks
+  }
+
+  @computed get getListOfCoursepacks() {
+    return toJS(this.listOfCoursepacks);
+  }
+
+
 }
 
 export default DataStore;
