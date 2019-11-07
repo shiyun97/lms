@@ -144,7 +144,7 @@ class CoursepackCartPage extends Component {
                 <MDBJumbotron style={{ padding: 0, backgroundColor: "#505763", width: "100%" }}>
                     <MDBCol className="text-white">
                         <MDBCol className="py-3">
-                            <MDBCardTitle className="h1-responsive pt-3 m-3 ml-5 px-5">
+                            <MDBCardTitle className="h1-responsive pt-5 m-3 ml-5 px-5">
                                 { this.showBreadcrumb()}
                                 <MDBRow>Shopping Cart</MDBRow>
                             </MDBCardTitle>
