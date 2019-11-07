@@ -15,11 +15,16 @@ class DashboardPageStudent extends Component {
   };
 
   componentDidMount() {
-    const { userId } = this.props.dataStore
+    this.getStudentModules();
+    this.getActiveAnnouncementDetails();
+  }
+
+  getStudentModules = () => {
+    const { userId } = this.props.dataStore;
     axios
       .get(`http://localhost:8080/LMS-war/webresources/studentEnrollment/retrieveStudentModules/${userId}`)
       .then(result => {
-        console.log(result.data.modules)
+        // console.log(result.data.modules)
         this.props.dataStore.updateModules(result.data.modules);
         this.setState({
           status: "done"
@@ -31,8 +36,6 @@ class DashboardPageStudent extends Component {
         });
         console.error("error in axios " + error);
       });
-
-    this.getActiveAnnouncementDetails();
   }
 
   getActiveAnnouncementDetails = () => {
@@ -57,7 +60,7 @@ class DashboardPageStudent extends Component {
           <MDBCol md="6" align="right">
             <h6 style={{ fontStyle: "italic", fontSize: "10px" }}> {moment(announcement.startDate).format('DD-MM-YYYY HH:mm:ss')} </h6>
           </MDBCol>
-          {announcement.module !== null && announcement.module !== undefined &&  
+          {announcement.module !== null && announcement.module !== undefined &&
             <>
               <MDBCol md="12">
                 <h6 style={{ fontSize: "12px", fontWeight: "bold" }}>{announcement.module.code} {announcement.module.title}</h6>
@@ -74,7 +77,6 @@ class DashboardPageStudent extends Component {
   setCurrModuleId = (moduleId) => { this.props.dataStore.setCurrModId(moduleId) }
 
   render() {
-    console.log("test")
     return (
       <MDBRow>
         <MDBCol md="12" className="mt-3 mx-auto">

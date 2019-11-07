@@ -49,7 +49,7 @@ class ModuleQuizPageViewStatistics extends Component {
               <MDBCol md="12">
                 <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
                   Quiz Statistics
-                    </MDBCard>
+                </MDBCard>
               </MDBCol>
             </MDBRow>
           </MDBContainer>

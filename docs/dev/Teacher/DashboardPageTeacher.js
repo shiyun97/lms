@@ -18,6 +18,8 @@ class DashboardPageTeacher extends Component {
     openSnackbar: false,
     message: "",
     recall: "",
+    analyticsList: [],
+    analyticsMessage: "Analytics is not available at the moment.",
 
     //announcement fields
     content: "",
@@ -32,7 +34,13 @@ class DashboardPageTeacher extends Component {
   };
 
   componentDidMount() {
-    const { userId } = this.props.dataStore
+    this.getTeacherModules();
+    this.getActiveAnnouncementDetails();
+    this.getListModuleAnalytics();
+  }
+
+  getTeacherModules = () => {
+    const { userId } = this.props.dataStore;
     axios
       .get(`http://localhost:8080/LMS-war/webresources/module/retrieveTeacherModules/${userId}`)
       .then(result => {
@@ -48,8 +56,21 @@ class DashboardPageTeacher extends Component {
         });
         console.error("error in axios " + error);
       });
+  }
 
-    this.getActiveAnnouncementDetails();
+  getListModuleAnalytics = () => {
+    const { userId } = this.props.dataStore;
+    axios
+      .get(`http://localhost:8080/LMS-war/webresources/analytics/retrieveListBarAnalytics?userId=${userId}`)
+      .then(result => {
+        this.setState({
+          analyticsList: result.data.bars
+        });
+        // console.log(this.state.analyticsList)
+      })
+      .catch(error => {
+        console.error("error in axios " + error);
+      });
   }
 
   componentDidUpdate() {
@@ -109,7 +130,7 @@ class DashboardPageTeacher extends Component {
           <MDBCol md="6" align="right">
             <h6 style={{ fontStyle: "italic", fontSize: "10px" }}> {moment(announcement.startDate).format('DD-MM-YYYY HH:mm:ss')} </h6>
           </MDBCol>
-          {announcement.module !== null && announcement.module !== undefined &&  
+          {announcement.module !== null && announcement.module !== undefined &&
             <>
               <MDBCol md="12">
                 <h6 style={{ fontSize: "12px", fontWeight: "bold" }}>{announcement.module.code} {announcement.module.title}</h6>
@@ -250,14 +271,19 @@ class DashboardPageTeacher extends Component {
     )
   }
 
-  renderBreadcrumbSection = (module) => {
+  renderModuleAnalyticSection = (module) => {
+    const { classSize, lectureAttendance, bookedConsultations, totalConsultations, quizAttempts, forumContributions } = module;
+    var attendancePercentage = lectureAttendance / classSize * 100 + "%"
+    var consultationsPercentage = bookedConsultations / totalConsultations * 100 + "%"
+    var quizPercentage = quizAttempts / classSize * 100 + "%"
+    var forumPercentage = forumContributions / classSize * 100 + "%"
     return (
       <MDBCard className="mb-5">
         <MDBCardBody id="breadcrumb" className="d-flex align-items-center justify-content-between">
           <MDBRow className="mb-4">
             <MDBCol md="12">
               <MDBBreadcrumb>
-                <MDBBreadcrumbItem>{module}</MDBBreadcrumbItem>
+                <MDBBreadcrumbItem>{module.moduleCode + " " + module.moduleTitle}</MDBBreadcrumbItem>
                 <MDBBreadcrumbItem active>Analytics</MDBBreadcrumbItem>
               </MDBBreadcrumb>
               <br />
@@ -266,18 +292,18 @@ class DashboardPageTeacher extends Component {
             <MDBCol xl="3" md="6" className="mb-r">
               <MDBCard className="cascading-admin-card">
                 <div className="admin-up">
-                  <MDBIcon icon="calendar-check" className="primary-color" />
+                  <a href={`/modules/${module.moduleId}/attendance`}><MDBIcon icon="calendar-check" className="primary-color" /></a>
                   <div className="data">
-                    <p>STUDENTS</p>
+                    <p>ATTENDANCE</p>
                     <h4>
-                      <strong>75/200</strong>
+                      <strong>{lectureAttendance}/{classSize}</strong>
                     </h4>
                   </div>
                 </div>
                 <MDBCardBody>
                   <div className="progress">
                     <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" className="progress-bar bg-primary" role="progressbar"
-                      style={{ width: '25%' }}></div>
+                      style={{ width: attendancePercentage }}></div>
                   </div>
                   <MDBCardText>Attendance of Latest Lecture</MDBCardText>
                 </MDBCardBody>
@@ -286,18 +312,18 @@ class DashboardPageTeacher extends Component {
             <MDBCol xl="3" md="6" className="mb-r">
               <MDBCard className="cascading-admin-card">
                 <div className="admin-up">
-                  <MDBIcon icon="calendar-alt" className="warning-color" />
+                  <a href={`/modules/${module.moduleId}/consultation`}><MDBIcon icon="calendar-alt" className="warning-color" /></a>
                   <div className="data">
                     <p>CONSULTATIONS</p>
                     <h4>
-                      <strong>5/30</strong>
+                      <strong>{bookedConsultations}/{totalConsultations}</strong>
                     </h4>
                   </div>
                 </div>
                 <MDBCardBody>
                   <div className="progress">
                     <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" className="progress-bar bg grey" role="progressbar"
-                      style={{ width: '25%' }}></div>
+                      style={{ width: consultationsPercentage }}></div>
                   </div>
                   <MDBCardText>Booked Consultations</MDBCardText>
                 </MDBCardBody>
@@ -306,18 +332,18 @@ class DashboardPageTeacher extends Component {
             <MDBCol xl="3" md="6" className="mb-r">
               <MDBCard className="cascading-admin-card">
                 <div className="admin-up">
-                  <MDBIcon icon="star" className="light-blue lighten-1" />
+                  <a href={`/modules/${module.moduleId}/quiz`}><MDBIcon icon="star" className="light-blue lighten-1" /></a>
                   <div className="data">
                     <p>QUIZ</p>
                     <h4>
-                      <strong>180/200</strong>
+                      <strong>{quizAttempts}/{classSize}</strong>
                     </h4>
                   </div>
                 </div>
                 <MDBCardBody>
                   <div className="progress">
                     <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" className="progress-bar grey darken-2" role="progressbar"
-                      style={{ width: '75%' }}></div>
+                      style={{ width: quizPercentage }}></div>
                   </div>
                   <MDBCardText>Attempts for Latest Quiz</MDBCardText>
                 </MDBCardBody>
@@ -326,22 +352,26 @@ class DashboardPageTeacher extends Component {
             <MDBCol xl="3" md="6" className="mb-r">
               <MDBCard className="cascading-admin-card">
                 <div className="admin-up">
-                  <MDBIcon icon="comments" className="red accent-2" />
+                  <a href={`/modules/${module.moduleId}/forum/topics`}><MDBIcon icon="comments" className="red accent-2" /></a>
                   <div className="data">
                     <p>FORUM</p>
                     <h4>
-                      <strong>20/200</strong>
+                      <strong>{forumContributions}/{classSize}</strong>
                     </h4>
                   </div>
                 </div>
                 <MDBCardBody>
                   <div className="progress">
                     <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" className="progress-bar bg-primary" role="progressbar"
-                      style={{ width: '25%' }}></div>
+                      style={{ width: forumPercentage }}></div>
                   </div>
                   <MDBCardText>Students Contributed</MDBCardText>
                 </MDBCardBody>
               </MDBCard>
+            </MDBCol>
+            <MDBCol md="12" className="mb-r" align="center">
+              <br />
+              <MDBBtn color="grey" href={`/modules/${module.moduleId}/analytics`}>View Detailed Analytics</MDBBtn>
             </MDBCol>
           </MDBRow>
         </MDBCardBody>
@@ -416,16 +446,7 @@ class DashboardPageTeacher extends Component {
             <MDBRow>
               <MDBCol md="12" className="mt-4">
                 {this.props.dataStore.getModules.length === 0 && <h5>No modules available.</h5>}
-                {this.props.dataStore.getModules.map((mod) => {
-                  // only display analytics for modules within the year and semester
-                  if (this.props.dataStore.getYear == mod.yearOffered && this.props.dataStore.getSem == mod.semesterOffered)
-                    return (
-                      <>
-                        {this.renderBreadcrumbSection(mod.title)}
-                      </>
-                    );
-                }
-                )}
+                {this.state.analyticsList.map((mod) => { return this.renderModuleAnalyticSection(mod) })}
               </MDBCol>
             </MDBRow>
           </MDBJumbotron>
