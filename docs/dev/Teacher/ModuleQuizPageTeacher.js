@@ -282,20 +282,7 @@ class ModuleQuizPageTeacher extends Component {
                 toolTipContent: "<span style=\"color:#6D78AD\">{label}:</span> <br><b>Maximum:</b> {y[3]},<br><b>Q3:</b> {y[2]},<br><b>Median:</b> {y[4]}<br><b>Q1:</b> {y[1]}<br><b>Minimum:</b> {y[0]}<br>Click to view quiz statistics.",
                 yValueFormatString: "0.0",
                 dataPoints: this.state.quizItems
-            },
-                // {
-                //   type: "scatter",
-                //   name: "Your Score",
-                //   toolTipContent: "<span style=\"color:#C0504E\">{name}</span>: {y}",
-                //   showInLegend: true,
-                //   dataPoints: [
-                //     { label: "Quiz 1", y: 65 },
-                //     { label: "Quiz 2", y: 62 },
-                //     { label: "Quiz 3", y: 72 },
-                //     { label: "Quiz 4", y: 72 },
-                //     { label: "Quiz 5", y: 97 }
-            ]
-            // }]
+            }]
         }
         var quiz = this.state.quizzes;
         var moduleId = this.props.dataStore.getCurrModId;
