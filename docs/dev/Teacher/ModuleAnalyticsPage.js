@@ -21,16 +21,19 @@ class ModuleAnalyticsPage extends Component {
     totalConsultations: 0,
     quizAttempts: 0,
     forumContributions: 0,
+
     gradeItems: [],
     gradeItemStatus: "retrieving",
     gradeItemMessage: "Grade Item Analytics is not available at the moment.",
     quizItems: [],
     quizStatus: "retrieving",
     quizMessage: "Quiz Analytics is not available at the moment.",
+
     forumLabels: [],
     forumData: [],
     forumStatus: "retrieving",
     forumMessage: "Forum Analytics is not available at the moment.",
+
     presentData: [],
     absentData: [],
     attendanceStatus: "retrieving",
@@ -50,6 +53,10 @@ class ModuleAnalyticsPage extends Component {
     var pathname = location.pathname;
     pathname = pathname.split("/");
     this.props.dataStore.setCurrModId(pathname[2]);
+  }
+
+  routeChange = (path) => {
+    this.props.history.push(path);
   }
 
   getBarAnalytics = () => {
@@ -94,9 +101,9 @@ class ModuleAnalyticsPage extends Component {
             tempY[4] = item.median;
 
             temp.push({
-              label: "Grade Item",
+              label: item.title,
               y: tempY,
-              click: () => console.log(1)
+              click: () => this.routeChange(`/modules/${moduleId}/gradebook/${item.gradeItemId}/viewGrades`)
             })
             tempY = []
           })
@@ -133,9 +140,9 @@ class ModuleAnalyticsPage extends Component {
             tempY[4] = item.median;
 
             temp.push({
-              label: "Quiz",
+              label: item.title,
               y: tempY,
-              click: () => console.log(1)
+              click: () => this.routeChange(`/modules/${moduleId}/quiz/${item.quizId}/statistics`)
             })
             tempY = []
           })
@@ -160,15 +167,19 @@ class ModuleAnalyticsPage extends Component {
       .then(result => {
         var data = []
         var labels = []
-        result.data.items.map((item, index) => {
-          labels[index] = item.title
-          data[index] = item.threads + item.comments + item.replies
-        })
-        this.setState({
-          forumData: data,
-          forumLabels: labels,
-          forumStatus: "done"
-        })
+        if (result.data.items.length === 0) {
+          this.setState({ forumStatus: "Empty Data" })
+        } else {
+          result.data.items.map((item, index) => {
+            labels[index] = item.title
+            data[index] = item.threads + item.comments + item.replies
+          })
+          this.setState({
+            forumData: data,
+            forumLabels: labels,
+            forumStatus: "done"
+          })
+        }
       })
       .catch(error => {
         this.setState({
@@ -185,31 +196,35 @@ class ModuleAnalyticsPage extends Component {
       .then(result => {
         var present = this.state.presentData
         var absent = []
-        result.data.items.map((item, index) => {
-          if (item.startDate !== null && item.startDate !== undefined) {
-            present.push({
-              label: "Week " + (index + 1) + " - Lecture",
-              y: item.presentLecture
-            })
-            present.push({
-              label: "Week " + (index + 1) + " - Tutorial",
-              y: item.presentTutorial
-            })
-            absent.push({
-              label: "Week " + (index + 1) + " - Lecture",
-              y: item.absentLecture
-            })
-            absent.push({
-              label: "Week " + (index + 1) + " - Tutorial",
-              y: item.absentTutorial
-            })
-          }
-        })
-        this.setState({
-          presentData: present,
-          absentData: absent,
-          attendanceStatus: "done"
-        })
+        if (result.data.items.length === 0) {
+          this.setState({ attendanceStatus: "Empty Data" })
+        } else {
+          result.data.items.map((item, index) => {
+            if (item.startDate !== null && item.startDate !== undefined) {
+              present.push({
+                label: "Week " + (index + 1) + " - Lecture",
+                y: item.presentLecture
+              })
+              present.push({
+                label: "Week " + (index + 1) + " - Tutorial",
+                y: item.presentTutorial
+              })
+              absent.push({
+                label: "Week " + (index + 1) + " - Lecture",
+                y: item.absentLecture
+              })
+              absent.push({
+                label: "Week " + (index + 1) + " - Tutorial",
+                y: item.absentTutorial
+              })
+            }
+          })
+          this.setState({
+            presentData: present,
+            absentData: absent,
+            attendanceStatus: "done"
+          })
+        }
       })
       .catch(error => {
         this.setState({
@@ -224,11 +239,46 @@ class ModuleAnalyticsPage extends Component {
       <MDBRow className="mb-4">
         <MDBCol md="12" className="mb-r" align="center">
           <MDBCard>
-            {stats === "bar" && <h5 style={{ padding: 20 }}>{this.state.barMessage}</h5>}
-            {stats === "gradeItem" && <h5 style={{ padding: 20 }}>{this.state.gradeItemMessage}</h5>}
-            {stats === "quiz" && <h5 style={{ padding: 20 }}>{this.state.quizMessage}</h5>}
-            {stats === "forum" && <h5 style={{ padding: 20 }}>{this.state.forumMessage}</h5>}
-            {stats === "attendance" && <h5 style={{ padding: 20 }}>{this.state.attendanceMessage}</h5>}
+            {stats === "bar" &&
+              <>
+                <MDBCardHeader>Overall Module Analytics</MDBCardHeader>
+                <MDBCardBody>
+                  {this.state.barMessage}
+                </MDBCardBody>
+              </>
+            }
+            {stats === "gradeItem" &&
+              <>
+                <MDBCardHeader>Grade Item</MDBCardHeader>
+                <MDBCardBody>
+                  {this.state.gradeItemMessage}
+                </MDBCardBody>
+              </>
+            }
+            {stats === "quiz" &&
+              <>
+                <MDBCardHeader>Quiz</MDBCardHeader>
+                <MDBCardBody>
+                  {this.state.quizMessage}
+                </MDBCardBody>
+              </>
+            }
+            {stats === "forum" &&
+              <>
+                <MDBCardHeader>Forum</MDBCardHeader>
+                <MDBCardBody>
+                  {this.state.forumMessage}
+                </MDBCardBody>
+              </>
+            }
+            {stats === "attendance" &&
+              <>
+                <MDBCardHeader>Attendance</MDBCardHeader>
+                <MDBCardBody>
+                  {this.state.attendanceMessage}
+                </MDBCardBody>
+              </>
+            }
           </MDBCard>
         </MDBCol>
       </MDBRow>
@@ -418,12 +468,17 @@ class ModuleAnalyticsPage extends Component {
   }
 
   render() {
+    if (this.state.redirect) {
+      return <Redirect to={this.state.redirectLink} />
+    }
+
     const optionsQuiz = {
       animationEnabled: true,
       exportEnabled: true,
       theme: "light2", // "light1", "light2", "dark1", "dark2"
       title: {
-        text: "Quiz Scores"
+        text: "Quiz",
+        fontSize: 25
       },
       subtitles: [{
         text: "Overall Scores",
@@ -467,7 +522,8 @@ class ModuleAnalyticsPage extends Component {
       exportEnabled: true,
       theme: "light2", // "light1", "light2", "dark1", "dark2"
       title: {
-        text: "Grade Item Scores"
+        text: "Grade Item",
+        fontSize: 25
       },
       subtitles: [{
         text: "Overall Scores",
@@ -481,7 +537,7 @@ class ModuleAnalyticsPage extends Component {
       data: [{
         type: "boxAndWhisker",
         whiskerColor: "#C0504E",
-        toolTipContent: "<span style=\"color:#6D78AD\">{label}:</span> <br><b>Maximum:</b> {y[3]},<br><b>Q3:</b> {y[2]},<br><b>Median:</b> {y[4]}<br><b>Q1:</b> {y[1]}<br><b>Minimum:</b> {y[0]}<br>Click to view grade item details.",
+        toolTipContent: "<span style=\"color:#6D78AD\">{label}:</span> <br><b>Maximum:</b> {y[3]},<br><b>Q3:</b> {y[2]},<br><b>Median:</b> {y[4]}<br><b>Q1:</b> {y[1]}<br><b>Minimum:</b> {y[0]}<br>Click to review grade entries for grade item.",
         yValueFormatString: "0.0",
         dataPoints: this.state.gradeItems
       },
@@ -505,7 +561,6 @@ class ModuleAnalyticsPage extends Component {
       <div className={this.props.className}>
         <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
         <div className="module-content">
-          {this.state.gradeItemStatus === "done" || this.state.quizStatus === "done" || this.state.forumStatus === "done" || this.state.attendanceStatus === "done" ?
             <MDBContainer>
               {this.renderBreadcrumbSection()}
               {this.state.barStatus === "done" ? this.renderCardSection() : this.renderNoCardSection("bar")}
@@ -513,16 +568,9 @@ class ModuleAnalyticsPage extends Component {
                 {this.state.attendanceStatus === "done" ? this.renderAttendanceBarChart() : this.renderNoCardSection("attendance")}
                 {this.state.forumStatus === "done" ? this.renderForumPieChart() : this.renderNoCardSection("forum")}
               </MDBRow>
-              {this.state.quizStatus === "done" ? this.renderBoxPlot(optionsQuiz) : this.renderNoCardSection("quiz")}
               {this.state.gradeItemStatus === "done" ? this.renderBoxPlot(optionsGradebook) : this.renderNoCardSection("gradeItem")}
+              {this.state.quizStatus === "done" ? this.renderBoxPlot(optionsQuiz) : this.renderNoCardSection("quiz")}
             </MDBContainer>
-            :
-            <MDBContainer align="center">
-              <div className="spinner-border text-primary" role="status">
-                <span className="sr-only">Loading...</span>
-              </div>
-            </MDBContainer>
-          }
         </div>
       </div>
     );
