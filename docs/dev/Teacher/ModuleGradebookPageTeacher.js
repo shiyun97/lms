@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader, MDBInputGroup } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable, MDBCardHeader, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader, MDBInputGroup } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Snackbar } from '@material-ui/core';
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
+import CanvasJSReact from '../../assets/canvasjs.react';
+var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 @inject('dataStore')
 @observer
@@ -69,12 +71,17 @@ class ModuleGradebookPageTeacher extends Component {
         recallGradebook: false,
         ungradedQuizzes: [],
         type: "",
+
+        gradeItemsAnalytics: [],
+        gradeItemStatus: "retrieving",
+        gradeItemMessage: "Gradebook Analytics is not available at the moment.",
     }
 
     componentDidMount() {
         this.initPage();
         this.getAllGradeItem();
         this.getUngradedModuleQuiz();
+        this.getGradeItemAnalytics();
     }
 
     componentDidUpdate() {
@@ -82,6 +89,10 @@ class ModuleGradebookPageTeacher extends Component {
             this.getAllGradeItem();
             this.getUngradedModuleQuiz();
         }
+    }
+
+    routeChange = (path) => {
+      this.props.history.push(path);
     }
 
     handleChange = event => {
@@ -113,6 +124,45 @@ class ModuleGradebookPageTeacher extends Component {
 
         this.setState({ openSnackbar: false });
     };
+
+    getGradeItemAnalytics = () => {
+        let userId = sessionStorage.getItem('userId');
+        var moduleId = this.props.dataStore.getCurrModId;
+        axios
+            .get(`http://localhost:8080/LMS-war/webresources/analytics/retrieveGradeItemAnalytics?userId=${userId}&moduleId=${moduleId}`)
+            .then(result => {
+                var temp = []
+                var tempY = []
+                if (result.data.items.length === 0) {
+                    this.setState({ gradeItemStatus: "Empty Data" })
+                } else {
+                    result.data.items.map((item) => {
+                        tempY[0] = item.min;
+                        tempY[1] = item.twentyfifth;
+                        tempY[2] = item.seventyfifth;
+                        tempY[3] = item.max;
+                        tempY[4] = item.median;
+
+                        temp.push({
+                            label: item.title,
+                            y: tempY,
+                            click: () => this.routeChange(`/modules/${moduleId}/gradebook/${item.gradeItemId}/viewGrades`)
+                        })
+                        tempY = []
+                    })
+                    this.setState({
+                        gradeItemsAnalytics: temp,
+                        gradeItemStatus: "done"
+                    });
+                }
+            })
+            .catch(error => {
+                this.setState({
+                    gradeItemStatus: "error",
+                });
+                console.error("error in axios " + error);
+            });
+    }
 
     getUngradedModuleQuiz = () => {
         let userId = sessionStorage.getItem('userId');
@@ -254,6 +304,35 @@ class ModuleGradebookPageTeacher extends Component {
                 });
                 console.error("error in axios " + error);
             });
+    }
+
+    renderNoCardSection = () => {
+        return (
+            <MDBRow className="mb-4">
+                <MDBCol md="12" className="mb-r" align="center">
+                    <MDBCard>
+                        <MDBCardHeader>Gradebook Analytics</MDBCardHeader>
+                        <MDBCardBody>
+                            {this.state.gradeItemMessage}
+                        </MDBCardBody>
+                    </MDBCard>
+                </MDBCol>
+            </MDBRow>
+        )
+    }
+
+    renderBoxPlot = (data) => {
+        return (
+            <MDBRow className="mb-4">
+                <MDBCol md="12">
+                    <MDBCard>
+                        <MDBCardBody>
+                            <CanvasJSChart options={data} />
+                        </MDBCardBody>
+                    </MDBCard>
+                </MDBCol>
+            </MDBRow>
+        )
     }
 
     renderCreateGradeItemModalBox = () => {
@@ -459,6 +538,44 @@ class ModuleGradebookPageTeacher extends Component {
     }
 
     renderGradebookTable = () => {
+        const optionsGradebook = {
+            animationEnabled: true,
+            exportEnabled: true,
+            theme: "light2", // "light1", "light2", "dark1", "dark2"
+            title: {
+                text: "Gradebook Analytics",
+                fontSize: 25
+            },
+            subtitles: [{
+                text: "Overall Scores",
+                fontSize: 15
+            }],
+            axisY: {
+                title: "Scores",
+                includeZero: true,
+                tickLength: 0,
+            },
+            data: [{
+                type: "boxAndWhisker",
+                whiskerColor: "#C0504E",
+                toolTipContent: "<span style=\"color:#6D78AD\">{label}:</span> <br><b>Maximum:</b> {y[3]},<br><b>Q3:</b> {y[2]},<br><b>Median:</b> {y[4]}<br><b>Q1:</b> {y[1]}<br><b>Minimum:</b> {y[0]}<br>Click to review grade entries for grade item.",
+                yValueFormatString: "0.0",
+                dataPoints: this.state.gradeItemsAnalytics
+            },
+                // {
+                //   type: "scatter",
+                //   name: "Your Score",
+                //   toolTipContent: "<span style=\"color:#C0504E\">{name}</span>: {y}",
+                //   showInLegend: true,
+                //   dataPoints: [
+                //     { label: "Grade Item 1", y: 65 },
+                //     { label: "Grade Item 2", y: 62 },
+                //     { label: "Grade Item 3", y: 72 },
+                //     { label: "Grade Item 4", y: 72 },
+                //     { label: "Grade Item 5", y: 97 }
+            ]
+            // }]
+        }
         var item = this.state.gradeItems;
         var moduleId = this.props.dataStore.getCurrModId;
         // console.log(quiz)
@@ -524,6 +641,9 @@ class ModuleGradebookPageTeacher extends Component {
                                     </MDBCardBody>
                                 </MDBCard>
                             </MDBCol>
+                            <MDBCol md="12" className="mt-3">
+                                {this.state.gradeItemStatus === "done" ? this.renderBoxPlot(optionsGradebook) : this.renderNoCardSection()}
+                            </MDBCol>
                         </MDBRow>
                         <Snackbar
                             anchorOrigin={{
@@ -583,6 +703,9 @@ class ModuleGradebookPageTeacher extends Component {
                                         <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
                                     </MDBCardBody>
                                 </MDBCard>
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-3">
+                                {this.renderNoCardSection()}
                             </MDBCol>
                         </MDBRow>
                     </MDBContainer>

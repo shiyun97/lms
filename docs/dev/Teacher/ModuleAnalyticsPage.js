@@ -204,19 +204,23 @@ class ModuleAnalyticsPage extends Component {
             if (item.startDate !== null && item.startDate !== undefined) {
               present.push({
                 label: "Week " + (index + 1) + " - Lecture",
-                y: item.presentLecture
+                y: item.presentLecture,
+                click: () => this.routeChange(`/modules/${moduleId}/attendance`)
               })
               present.push({
                 label: "Week " + (index + 1) + " - Tutorial",
-                y: item.presentTutorial
+                y: item.presentTutorial,
+                click: () => this.routeChange(`/modules/${moduleId}/attendance`)
               })
               absent.push({
                 label: "Week " + (index + 1) + " - Lecture",
-                y: item.absentLecture
+                y: item.absentLecture,
+                click: () => this.routeChange(`/modules/${moduleId}/attendance`)
               })
               absent.push({
                 label: "Week " + (index + 1) + " - Tutorial",
-                y: item.absentTutorial
+                y: item.absentTutorial,
+                click: () => this.routeChange(`/modules/${moduleId}/attendance`)
               })
             }
           })
@@ -517,20 +521,7 @@ class ModuleAnalyticsPage extends Component {
         toolTipContent: "<span style=\"color:#6D78AD\">{label}:</span> <br><b>Maximum:</b> {y[3]},<br><b>Q3:</b> {y[2]},<br><b>Median:</b> {y[4]}<br><b>Q1:</b> {y[1]}<br><b>Minimum:</b> {y[0]}<br>Click to review grade entries for grade item.",
         yValueFormatString: "0.0",
         dataPoints: this.state.gradeItems
-      },
-        // {
-        //   type: "scatter",
-        //   name: "Your Score",
-        //   toolTipContent: "<span style=\"color:#C0504E\">{name}</span>: {y}",
-        //   showInLegend: true,
-        //   dataPoints: [
-        //     { label: "Grade Item 1", y: 65 },
-        //     { label: "Grade Item 2", y: 62 },
-        //     { label: "Grade Item 3", y: 72 },
-        //     { label: "Grade Item 4", y: 72 },
-        //     { label: "Grade Item 5", y: 97 }
-      ]
-      // }]
+      }]
     }
 
     var moduleId = this.props.dataStore.getCurrModId;
