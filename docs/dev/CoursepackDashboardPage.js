@@ -41,8 +41,10 @@ const FILE_SERVER = "http://127.0.0.1:8887/";
 class CoursepackDashboardPage extends Component {
   state = {
     categories: [],
-    coursepackList: "",
-    category: ["Computer Science", "Business Management", "Engineering"],
+    coursepackList: [],
+    recommendedCoursepackList: [],
+    userCoursepackList: [],
+    category: [],
     filesList: "",
     cartNum: 0,
     message: "",
@@ -60,10 +62,31 @@ class CoursepackDashboardPage extends Component {
         console.error("error in axios " + error);
     });
 
+    // get all coursepacks
     axios.get(`${API}Coursepack/getAllCoursepack`)
       .then(result => {
         console.log(result.data)
         this.setState({ coursepackList: result.data.coursepack })
+      })
+      .catch(error => {
+        console.error("error in axios " + error);
+      });
+
+    // get recommended coursepacks
+    axios.get(`${API}Coursepack/getRecommendedCoursepack?userId=${sessionStorage.getItem("userId")}`)
+      .then(result => {
+        console.log(result.data)
+        this.setState({ recommendedCoursepackList: result.data.coursepack })
+      })
+      .catch(error => {
+        console.error("error in axios " + error);
+      });
+
+    // get all coursepacks of student / public user
+    axios.get(`${API}Coursepack/getUserCoursepack/${sessionStorage.getItem("userId")}`)
+      .then(result => {
+        console.log(result.data)
+        this.setState({ userCoursepackList: result.data.coursepack })
       })
       .catch(error => {
         console.error("error in axios " + error);
@@ -174,6 +197,21 @@ class CoursepackDashboardPage extends Component {
           })
         }
       }
+
+      let userCoursepackList = this.state.userCoursepackList;
+      for (idx=0; (idx < userCoursepackList.length) && found == false; idx++) {
+        let obj = userCoursepackList[idx];
+        if (obj.coursepackId == course.coursepackId) {
+          found = true
+          // do not add to cart again, send alert
+          console.log("found in cart alr");
+          this.setState({
+            openSnackbar: true,
+            message: "You have bought this item already!"
+          })
+        }
+      }
+
       if (found == false) {
         // add to cart
         cartObjs.push(course);
@@ -232,13 +270,9 @@ class CoursepackDashboardPage extends Component {
   // get courses to discover (all)
   discoverCoursepacks = () => {
     let coursepackList = this.state.coursepackList;
-    let firstCoursepackList = coursepackList;
-    if (coursepackList.length > 4) {
-      firstCoursepackList = coursepackList.slice(0,4);
-    }
-    let secondCoursepackList = coursepackList.slice(4);
-    if (coursepackList.length > 8) {
-      secondCoursepackList = coursepackList.slice(4, 8);
+    let displayCoursepackList = coursepackList;
+    if (displayCoursepackList.length > 8) {
+      displayCoursepackList = displayCoursepackList.slice(0,8);
     }
     
     return (
@@ -253,7 +287,7 @@ class CoursepackDashboardPage extends Component {
           </MDBCol>
         </MDBRow>
         <MDBRow>
-          {firstCoursepackList && firstCoursepackList.map((course, index) => {
+          {displayCoursepackList && displayCoursepackList.map((course, index) => {
             return (
               <MDBCol size="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
                 {/*<MDBCard style={{ width: "15rem", height: "18rem" }} className="mr-2">
@@ -269,50 +303,7 @@ class CoursepackDashboardPage extends Component {
                     <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>
                       <CardMedia
                         style={{ height: 140 }}
-                        image={cprog}
-                        title={course.title}
-                      />
-                      <CardContent>
-                        <Typography gutterBottom variant="h5" component="h2" style={{ color: "#000000" }}>
-                          {course.title}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary" component="p">
-                          {course.assignedTeacher.firstName + " " + course.assignedTeacher.lastName}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary" component="p">
-                          <div style={{ width: 200, display: "flex", marginTop: 10 }}>
-                            <Rating name="hover-side" value={course.rating} readOnly size="small" />
-                            <Box ml={2}>{course.rating.toFixed(1) + " (" + course.ratingList.length + ")"}</Box>
-                          </div>
-                        </Typography>
-                        <Typography gutterBottom variant="h6" component="h2" style={{ color: "#000000", marginTop: 10 }}>
-                          {"S$" + course.price.toFixed(2)}
-                        </Typography>
-                      </CardContent>
-                    </NavLink>
-                  </CardActionArea>
-
-                  <CardActions>
-                    <Button variant="contained" color="secondary"  onClick={e => this.addToCart(course)}>
-                      Add To Cart
-                    </Button>
-                  </CardActions>
-                </Card>
-              </MDBCol>
-            )
-          })}
-        </MDBRow>
-
-        <MDBRow>
-          {secondCoursepackList && secondCoursepackList.map((course, index) => {
-            return (
-              <MDBCol size="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
-                <Card style={{ height: "25rem" }}>
-                  <CardActionArea>
-                    <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>
-                      <CardMedia
-                        style={{ height: 140 }}
-                        image={cprog}
+                        image={course.imageLocation}
                         title={course.title}
                       />
                       <CardContent>
@@ -351,12 +342,17 @@ class CoursepackDashboardPage extends Component {
 
   // get courses student not enrolled in
   courseRecommendation = () => {
+    let coursepackList = this.state.recommendedCoursepackList;
+    let displayCoursepackList = coursepackList;
+    if (displayCoursepackList.length > 4) {
+      displayCoursepackList = displayCoursepackList.slice(0,4);
+    }
     return (
       <div className={this.props.className}>
         <h4 className="mt-5"><b>You might be interested</b></h4>
         <hr />
         <MDBRow>
-          {this.state.coursepackList && this.state.coursepackList.map((course, index) => {
+          {coursepackList && coursepackList.map((course, index) => {
             return (
               <MDBCol size="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
                 {/*<MDBCard style={{ width: "15rem", height: "18rem" }} className="mr-2">
@@ -372,7 +368,7 @@ class CoursepackDashboardPage extends Component {
                     <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>
                       <CardMedia
                         style={{ height: 140 }}
-                        image={cprog}
+                        image={course.imageLocation}
                         title={course.title}
                       />
                       <CardContent>
@@ -444,7 +440,7 @@ class CoursepackDashboardPage extends Component {
     return (
       <div>
         <CoursepackTopNav cartNum={this.state.cartNum} />
-        <MDBJumbotron style={{ paddingLeft: 260, paddingBottom: 40, height: 10, marginBottom: 0, float: "center" }}>
+        <MDBJumbotron style={{ paddingLeft: 260, paddingBottom: 40, height: 10, marginBottom: 0, float: "center", backgroundColor: "#f0f0f0" }}>
           <div>
             <MDBNav>
               {
@@ -465,7 +461,7 @@ class CoursepackDashboardPage extends Component {
         <MDBContainer style={{ paddingBottom: 240 }}>
 
 
-          <MDBContainer style={{ paddingTop: 16 }} >
+          <MDBContainer style={{ paddingTop: 0 }} >
             {/*this.mediaCarousel()*/}
             <img
               src={coursepackBanner}

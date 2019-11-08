@@ -78,7 +78,7 @@ class CoursepackCartPage extends Component {
                             <MDBRow>
                                 <div className="container-fluid section border py-3 px-0 justify-content d-flex mr-5">
                                     <MDBCol md="3" lg="3">
-                                        <img src={cprog} className="img-fluid"/>
+                                        <img src={cartObj.imageLocation} className="img-fluid"/>
                                     </MDBCol>
                                     <MDBCol md="5" lg="5">
                                         <MDBRow>
@@ -129,7 +129,7 @@ class CoursepackCartPage extends Component {
                         <Link href="/coursepack/dashboard" color="inherit" >
                             <MDBIcon icon="home" style={{ color: "#a1a7b3" }} />
                         </Link>
-                        <Typography style={{ color: "#fff" }}>Shopping Cart</Typography>
+                        <Typography style={{ color: "#fff" }}>Cart</Typography>
                     </Breadcrumbs>
                 </Paper>
             </MDBRow>

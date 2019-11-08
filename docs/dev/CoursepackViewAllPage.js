@@ -46,17 +46,6 @@ class CoursepackViewAllPage extends Component {
         this.initPage()
     }
 
-    /*shouldComponentUpdate() {
-        var pathname = location.pathname;
-        pathname = pathname.split('/');
-        let categoryId = pathname[2];
-        if (categoryId == this.state.categoryId) {
-            return false;
-        }
-        this.initPage();
-        return true;
-    }*/
-
     initPage() {
         // get cart items if any
         let cart = sessionStorage.getItem("cart");
@@ -126,39 +115,54 @@ class CoursepackViewAllPage extends Component {
     addToCart = (course) => {
         let cart = sessionStorage.cart;
         if (cart != null && cart != undefined) {
-          let cartObjs = JSON.parse(cart);
-          let found = false
-          let idx=0;
-          for (idx=0; (idx < cartObjs.length) && found == false; idx++) {
-            let obj = cartObjs[idx];
-            if (obj.coursepackId == course.coursepackId) {
-              found = true
-              // do not add to cart again, send alert
-              console.log("found in cart alr");
-              this.setState({
-                openSnackbar: true,
-                message: "Item has been added into cart already!"
-              })
+            let cartObjs = JSON.parse(cart);
+            let found = false
+            let idx = 0;
+            for (idx = 0; (idx < cartObjs.length) && found == false; idx++) {
+                let obj = cartObjs[idx];
+                if (obj.coursepackId == course.coursepackId) {
+                    found = true
+                    // do not add to cart again, send alert
+                    console.log("found in cart alr");
+                    this.setState({
+                        openSnackbar: true,
+                        message: "Item has been added into cart already!"
+                    })
+                }
             }
-          }
-          if (found == false) {
-            // add to cart
-            cartObjs.push(course);
-            sessionStorage.setItem("cart", JSON.stringify(cartObjs));
-            this.setState({
-              cartNum: cartObjs.length
-            })
-          }
+
+            let userCoursepackList = this.state.userCoursepackList;
+            for (idx = 0; (idx < userCoursepackList.length) && found == false; idx++) {
+                let obj = userCoursepackList[idx];
+                if (obj.coursepackId == course.coursepackId) {
+                    found = true
+                    // do not add to cart again, send alert
+                    console.log("found in cart alr");
+                    this.setState({
+                        openSnackbar: true,
+                        message: "You have bought this item already!"
+                    })
+                }
+            }
+
+            if (found == false) {
+                // add to cart
+                cartObjs.push(course);
+                sessionStorage.setItem("cart", JSON.stringify(cartObjs));
+                this.setState({
+                    cartNum: cartObjs.length
+                })
+            }
         }
         else {
-          let cartObjs = [course]
-          sessionStorage.setItem("cart", JSON.stringify(cartObjs));
-          this.setState({
-            cartNum: cartObjs.length
-          })
+            let cartObjs = [course]
+            sessionStorage.setItem("cart", JSON.stringify(cartObjs));
+            this.setState({
+                cartNum: cartObjs.length
+            })
         }
         console.log(sessionStorage.getItem("cart"))
-      }
+    }
 
     showCategory = (categoryId) => {
         axios.get(`${API}Coursepack/getCategoryById?categoryId=${categoryId}`)
@@ -205,18 +209,20 @@ class CoursepackViewAllPage extends Component {
                             <MDBRow>
                                 <div className="container-fluid section py-3 px-0 justify-content d-flex mr-5">
                                     <MDBCol md="3" lg="3">
-                                        <img src={cprog} className="img-fluid" />
+                                        <img src={coursepack.imageLocation} className="img-fluid" />
                                     </MDBCol>
                                     <MDBCol md="5" lg="5">
                                         <MDBRow>
-                                            <h4><b>{coursepack.title}</b></h4>
+                                            <NavLink to={`/coursepack/${coursepack.coursepackId}/`} style={{ marginBottom: 0 }}>
+                                                <h4 style={{ color: "#000000" }}><b>{coursepack.title}</b></h4>
+                                            </NavLink>
                                         </MDBRow>
                                         <MDBRow>
-                                            {"By " + coursepack.assignedTeacher.firstName + " " + coursepack.assignedTeacher.lastName}
+                                            <Typography variant="body2" color="textSecondary" component="p">{"By " + coursepack.assignedTeacher.firstName + " " + coursepack.assignedTeacher.lastName}</Typography>
                                         </MDBRow>
                                         <div className="mb-1" />
                                         <MDBRow>
-                                            {coursepack.description}
+                                            <Typography variant="body2" color="textSecondary" component="p">{coursepack.description}</Typography>
                                         </MDBRow>
                                     </MDBCol>
                                     <MDBCol md="2" lg="2">
@@ -231,13 +237,13 @@ class CoursepackViewAllPage extends Component {
                                             <Box ml={2} style={{ fontSize: "14px" }}>{coursepack.rating.toFixed(1)}</Box>
                                         </MDBRow>
                                         <MDBRow>
-                                            {" (" + coursepack.ratingList.length + " ratings)"}
+                                            <Typography variant="body2" color="textSecondary">{" (" + coursepack.ratingList.length + " ratings)"}</Typography>
                                         </MDBRow>
                                         <div className="mb-2" />
                                         <MDBRow>
                                             <Button variant="contained" color="secondary" onClick={e => this.addToCart(coursepack)}>
                                                 Add To Cart
-                                            </Button>
+                                                </Button>
                                         </MDBRow>
                                     </MDBCol>
                                 </div>

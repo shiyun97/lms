@@ -1,4 +1,5 @@
 import React, { Component, useState, useRef, useEffect } from "react";
+import axios from "axios";
 import {
     MDBContainer,
     MDBJumbotron,
@@ -16,6 +17,8 @@ import CoursepackTopNav from "./CoursepackTopNav";
 import cprog from './img/cprog.jpg';
 import paypalLogo from './img/paypalLogo.jpg';
 
+const API = "http://localhost:8080/LMS-war/webresources/"
+
 class CoursepackCheckoutPage extends Component {
 
     state = {
@@ -24,26 +27,6 @@ class CoursepackCheckoutPage extends Component {
     }
 
     componentDidMount() {
-        /*const script = document.createElement("script");
-        script.src = "https://js.stripe.com/v3/";
-        script.async = true;
-        script.addEventListener('load', () => {
-            this.setState({
-                stripe: window.Stripe("pk_test_uQ7YQLQRVCFVe4EPG99ojmiX00MKN3YcMC", {
-                    betas: ["payment_intent_beta_3"]
-                  })
-            })
-        })
-        script.onload = () => {
-            setTimeout(() => {
-                this.setState({
-                    stripe: window.Stripe("pk_test_uQ7YQLQRVCFVe4EPG99ojmiX00MKN3YcMC")
-                });
-            }, 500)
-        }
-
-        document.body && document.body.appendChild(script);*/
-
         this.initPage();
     }
 
@@ -83,15 +66,6 @@ class CoursepackCheckoutPage extends Component {
         }
         let currency = 'SGD';
         let total = totalPrice;
-        const onSuccess = (payment) => {
-            console.log("success")
-        }
-        const onCancel = (data) => {
-            console.log(data)
-        }
-        const onError = (err) => {
-            console.log(err)
-        }
         return (
             <div>
                 <CoursepackTopNav cartNum={cartObjs.length} />
@@ -120,7 +94,7 @@ class CoursepackCheckoutPage extends Component {
                                         <MDBRow>
                                             <div className="container-fluid section py-3 px-0 justify-content d-flex mr-2">
                                                 <MDBCol md="5" lg="5">
-                                                    <img src={cprog} className="img-fluid" />
+                                                    <img src={cartObj.imageLocation} className="img-fluid" />
                                                 </MDBCol>
                                                 <MDBCol md="7" lg="7">
                                                     <MDBRow>
@@ -237,10 +211,21 @@ function PaypalButtonComponent() {
 
     const goToDashboard = () => {
         console.log("completed payment")
-        sessionStorage.setItem("cart", JSON.stringify([]))
-        setPaidFor(false)
-        setLoaded(false)
-        document.getElementById("goToDashboard").click();
+        let boughtItems = JSON.parse(sessionStorage.getItem("cart"))
+        for (var i=0; i<boughtItems.length; i++) {
+            axios
+                .put(`${API}CoursepackEnrollment/enrollCoursepack?userId=${sessionStorage.getItem("userId")}&coursepackId=${boughtItems[i].coursepackId}`)
+                .then(result => {
+                    console.log(result)
+                    sessionStorage.setItem("cart", JSON.stringify([]))
+                    setPaidFor(false)
+                    setLoaded(false)
+                    document.getElementById("goToDashboard").click();
+                })
+                .catch(error => {
+                    console.error("error in axios " + error);
+                });
+        }
     }
 
     let cartObjs = JSON.parse(sessionStorage.getItem("cart"))

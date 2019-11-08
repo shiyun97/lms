@@ -25,28 +25,9 @@ class CoursepackDetailsStudent extends Component {
         coursepackId: "",
         courseOutline: "",
         listOfOutlineId: "",
-        ratings: [
-            {
-                ratingId: 2,
-                comment: "This is a good course. yay",
-                rating: 5,
-                user: {
-                    firstName: "John",
-                    lastName: "Doe"
-                }
-            },
-            {
-                ratingId: 3,
-                comment: "This is a good course. yay",
-                rating: 4.5,
-                user: {
-                    firstName: "Tom",
-                    lastName: "Doe"
-                }
-            }
-        ],
-        averageRating: 4.6,
-        ratingSpread: [64, 29, 6, 1, 0],
+        ratings: [],
+        averageRating: 0,
+        ratingSpread: [0,0,0,0,0],
         ratingValues: [5, 4, 3, 2, 1],
         modalAddRating: false,
         ratingCommentInput: "",
