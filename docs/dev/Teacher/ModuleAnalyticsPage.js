@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MDBRow, MDBContainer, MDBCard, MDBCardBody, MDBCardHeader, MDBIcon, MDBCol, MDBCardText, MDBBreadcrumb, MDBBreadcrumbItem } from 'mdbreact';
+import { MDBRow, MDBContainer, MDBCard, MDBCardBody, MDBCardHeader, MDBIcon, MDBCol, MDBCardText, MDBBreadcrumb, MDBBreadcrumbItem, MDBProgress } from 'mdbreact';
 import styled from 'styled-components';
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Bar, Pie } from 'react-chartjs-2';
@@ -238,10 +238,10 @@ class ModuleAnalyticsPage extends Component {
   renderCardSection = () => {
     var moduleId = this.props.dataStore.getCurrModId;
     const { classSize, lectureAttendance, bookedConsultations, totalConsultations, quizAttempts, forumContributions } = this.state;
-    var attendancePercentage = lectureAttendance / classSize * 100 + "%"
-    var consultationsPercentage = bookedConsultations / totalConsultations * 100 + "%"
-    var quizPercentage = quizAttempts / classSize * 100 + "%"
-    var forumPercentage = forumContributions / classSize * 100 + "%"
+    var attendancePercentage = lectureAttendance / classSize * 100
+    var consultationsPercentage = bookedConsultations / totalConsultations * 100
+    var quizPercentage = quizAttempts / classSize * 100
+    var forumPercentage = forumContributions / classSize * 100
     return (
       <MDBRow className="mb-4">
         <MDBCol xl="3" md="6" className="mb-r">
@@ -256,10 +256,7 @@ class ModuleAnalyticsPage extends Component {
               </div>
             </div>
             <MDBCardBody>
-              <div className="progress">
-                <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" className="progress-bar bg-primary" role="progressbar"
-                  style={{ width: attendancePercentage }}></div>
-              </div>
+              <MDBProgress value={attendancePercentage} color="blue" />
               <MDBCardText>Attendance of Latest Lecture</MDBCardText>
             </MDBCardBody>
           </MDBCard>
@@ -276,10 +273,7 @@ class ModuleAnalyticsPage extends Component {
               </div>
             </div>
             <MDBCardBody>
-              <div className="progress">
-                <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" className="progress-bar bg grey" role="progressbar"
-                  style={{ width: consultationsPercentage }}></div>
-              </div>
+              <MDBProgress value={consultationsPercentage} color="warning" />
               <MDBCardText>Booked Consultations</MDBCardText>
             </MDBCardBody>
           </MDBCard>
@@ -287,7 +281,7 @@ class ModuleAnalyticsPage extends Component {
         <MDBCol xl="3" md="6" className="mb-r">
           <MDBCard className="cascading-admin-card">
             <div className="admin-up">
-              <a href={`/modules/${moduleId}/quiz`}><MDBIcon icon="star" className="light-blue lighten-1" /></a>
+              <a href={`/modules/${moduleId}/quiz`}><MDBIcon icon="star" className="green lighten-1" /></a>
               <div className="data">
                 <p>QUIZ</p>
                 <h4>
@@ -296,10 +290,7 @@ class ModuleAnalyticsPage extends Component {
               </div>
             </div>
             <MDBCardBody>
-              <div className="progress">
-                <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" className="progress-bar grey darken-2" role="progressbar"
-                  style={{ width: quizPercentage }}></div>
-              </div>
+              <MDBProgress value={quizPercentage} color="success" />
               <MDBCardText>Attempts for Latest Quiz</MDBCardText>
             </MDBCardBody>
           </MDBCard>
@@ -316,10 +307,7 @@ class ModuleAnalyticsPage extends Component {
               </div>
             </div>
             <MDBCardBody>
-              <div className="progress">
-                <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="25" className="progress-bar bg-primary" role="progressbar"
-                  style={{ width: forumPercentage }}></div>
-              </div>
+              <MDBProgress value={forumPercentage} color="danger" />
               <MDBCardText>Students Contributed</MDBCardText>
             </MDBCardBody>
           </MDBCard>
