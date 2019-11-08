@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBBtn } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBProgress, MDBBreadcrumb, MDBBreadcrumbItem, MDBCardBody } from "mdbreact";
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
@@ -13,7 +13,7 @@ class ModuleQuizPageViewStatistics extends Component {
     moduleId: 0,
     status: "retrieving",
     title: "",
-    description: "", 
+    description: "",
     attempts: 0,
     questions: []
   }
@@ -35,11 +35,71 @@ class ModuleQuizPageViewStatistics extends Component {
     axios
       .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveQuizStatistics?quizId=${quizId}`)
       .then(result => {
-        this.setState({ status: "done" })
+        this.setState({
+          status: "done",
+          title: result.data.title,
+          description: result.data.description,
+          attempts: result.data.attempts,
+          questions: result.data.questions
+        })
       })
       .catch(error => {
         this.setState({ status: "error" })
       });
+  }
+
+  renderQuestionStatistics = (question, index) => {
+    return (
+      <>
+        <b>Question {index}</b>
+        {question.question}
+        <br />
+        <br />
+        {question.answers && question.answers.map((answer) => {
+          const count = answer.count;
+          var answerPercentage = (count / this.state.attempts * 100).toFixed(2)
+          return (
+            <>
+              <p>{answer.answer}</p>
+              <MDBRow>
+                <MDBCol md="5">
+                  <MDBProgress value={answerPercentage} color="blue" />
+                </MDBCol>
+                <MDBCol md="2">
+                  {answerPercentage}%
+              </MDBCol>
+                <MDBCol md="5"></MDBCol>
+              </MDBRow>
+            </>
+          )
+        })}
+        <hr />
+      </>
+    )
+  }
+
+  renderResults = () => {
+    if (this.state.status === "done") {
+      return (
+        <MDBCard cascade className="my-3" style={{ padding: 20 }}>
+          <h4>Quiz Statistics</h4>
+          <h6>
+            Quiz Title: {this.state.title} <br />
+            Description: {this.state.description} <br />
+            No. of Attempts: {this.state.attempts}
+          </h6>
+          <hr />
+          <br />
+          {this.state.questions.map((question, index) => { return this.renderQuestionStatistics(question, index + 1) })}
+        </MDBCard>
+      )
+    } else if (this.state.status === "error") {
+      return (
+        <MDBCard cascade className="my-3" style={{ padding: 20 }}>
+          <h5>Quiz Statistics is not available at the moment.</h5>
+        </MDBCard>
+      )
+    }
   }
 
   render() {
@@ -51,9 +111,17 @@ class ModuleQuizPageViewStatistics extends Component {
           <MDBContainer className="mt-3">
             <MDBRow className="py-3">
               <MDBCol md="12">
-                <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
-                  <h4>Quiz Statistics</h4>
+                <MDBCard>
+                  <MDBCardBody id="breadcrumb" className="d-flex align-items-center justify-content-between">
+                    <MDBBreadcrumb>
+                      <MDBBreadcrumbItem><a href={`/modules/${moduleId}/quiz`}>Quiz</a></MDBBreadcrumbItem>
+                      <MDBBreadcrumbItem active>Statistics</MDBBreadcrumbItem>
+                    </MDBBreadcrumb>
+                  </MDBCardBody>
                 </MDBCard>
+              </MDBCol>
+              <MDBCol md="12">
+                {this.renderResults()}
               </MDBCol>
             </MDBRow>
           </MDBContainer>

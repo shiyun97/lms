@@ -126,6 +126,7 @@ import CoursepackQuizPageEditQuiz from "./dev/Teacher/CoursepackQuizPageEditQuiz
 import CoursepackViewAllPage from "./dev/CoursepackViewAllPage";
 import CoursepackAchievementsPage from "./dev/CoursepackAchievementsPage";
 import ModuleQuizPageViewStatistics from "./dev/Teacher/ModuleQuizPageViewStatistics";
+import ModuleFeedbackPageViewStatistics from "./dev/Teacher/ModuleFeedbackPageViewStatistics";
 
 @inject('dataStore')
 @observer
@@ -181,7 +182,8 @@ class Routes extends React.Component {
         <Route exact path="/coursepack/:coursepackId/assessments/" component={CoursepackAssessmentPage} />        
         <Route exact path="/coursepack/create/" component={CoursepackCreatePage} />
         <Route exact path="/modules/:moduleId/quiz/:quizId/review" component={ModuleQuizPageViewStudents} />
-        <Route exact path="/modules/:moduleId/quiz/:quizId/analytics" component={ModuleQuizPageViewStatistics} />
+        <Route exact path="/modules/:moduleId/quiz/:quizId/statistics" component={ModuleQuizPageViewStatistics} />
+        <Route exact path="/modules/:moduleId/feedback/statistics" component={ModuleFeedbackPageViewStatistics} />
         <Route exact path="/modules/:moduleId/quiz/:quizId/review/:studentId" component={ModuleQuizPageViewStudentAttempt} />
         <Route exact path="/modules/:moduleId/gradebook/:gradeItemId/viewGrades" component={ModuleGradebookPageTeacherViewGrades} />
         <Route exact path="/coursepack/:coursepackId/quiz/create" component={CoursepackQuizPageCreateQuiz} />

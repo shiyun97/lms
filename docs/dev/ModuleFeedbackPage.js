@@ -118,7 +118,7 @@ class ModuleFeedbackPage extends Component {
         let accessRight = sessionStorage.getItem("accessRight");
         let moduleId = this.props.match.params.moduleId;
         if (moduleId && accessRight) {
-            console.log(moduleId);
+            // console.log(moduleId);
             this.setState({
                 accessRight: accessRight,
                 moduleId: moduleId
@@ -127,7 +127,7 @@ class ModuleFeedbackPage extends Component {
             await axios
                 .get(API_URL + "/feedback/retrieveAllFeedbackForModule/" + moduleId)
                 .then((result) => {
-                    console.log(result)
+                    // console.log(result)
                     let data = result.data.feedbacks;
                     let arr = [];
                     let idx = 1;
@@ -160,7 +160,7 @@ class ModuleFeedbackPage extends Component {
             await axios
                 .get(`${API_URL}/feedback/retrieveSurveyAttempts?userId=${sessionStorage.getItem('userId')}&moduleId=${moduleId}`)
                 .then((result) => {
-                    console.log(result);
+                    // console.log(result.data);
                     let data = result.data.surveyAttempts;
                     let arr = [];
                     let idx = 1;
@@ -253,7 +253,7 @@ class ModuleFeedbackPage extends Component {
                 type: questionAttemptList[key].question.type,
                 name: JSON.stringify(questionAttemptList[key].question.title)
             }
-            
+
             surveyDisplayArr.push(question);
             answerDict[JSON.stringify(questionAttemptList[key].question.title)] = questionAttemptList[key].answer
         })
@@ -319,19 +319,19 @@ class ModuleFeedbackPage extends Component {
                     'Content-Type': 'application/json'
                 }
             })
-            .then(() => {
-                this.setState({
-                    ...this.state,
-                    modalAddFeedback: false,
-                    addingFeedback: {
-                        title: "",
-                        content: ""
-                    },
-                    message: "Feedback submitted successfully!",
-                    openSnackbar: true
-                });
-                return this.initPage();
-            })
+                .then(() => {
+                    this.setState({
+                        ...this.state,
+                        modalAddFeedback: false,
+                        addingFeedback: {
+                            title: "",
+                            content: ""
+                        },
+                        message: "Feedback submitted successfully!",
+                        openSnackbar: true
+                    });
+                    return this.initPage();
+                })
                 .catch((error) => {
                     this.setState({
                         editMode: false,
@@ -493,21 +493,26 @@ class ModuleFeedbackPage extends Component {
                                 }
                                 {
                                     this.state.accessRight == "Teacher" &&
-                                    <MDBRow>
-                                        <MDBCol>
-                                            <MDBRow>
-                                                <MDBCol>
-                                                    <h5 className="mt-5">End-of-Semester Evaluation</h5>
-                                                    <div className="mb-3"></div>
-                                                </MDBCol>
-                                            </MDBRow>
-                                            <MDBRow>
-                                                <MDBCol>
-                                                    <MDBDataTable data={this.state.surveyAttempts} bordered striped hover />
-                                                </MDBCol>
-                                            </MDBRow>
-                                        </MDBCol>
-                                    </MDBRow>
+                                    <>
+                                        <MDBRow>
+                                            <MDBCol>
+                                                <MDBRow>
+                                                    <MDBCol>
+                                                        <h5 className="mt-5">End-of-Semester Evaluation</h5>
+                                                        <div className="mb-3"></div>
+                                                    </MDBCol>
+                                                </MDBRow>
+                                                <MDBRow>
+                                                    <MDBCol>
+                                                        <MDBDataTable data={this.state.surveyAttempts} bordered striped hover />
+                                                    </MDBCol>
+                                                </MDBRow>
+                                            </MDBCol>
+                                        </MDBRow>
+                                        <MDBRow>
+                                            <MDBBtn color="blue" href={`/modules/${this.state.moduleId}/feedback/statistics`}>View Feedback Survey Analytics</MDBBtn>
+                                        </MDBRow>
+                                    </>
                                 }
                             </MDBCol>
                         </MDBRow>

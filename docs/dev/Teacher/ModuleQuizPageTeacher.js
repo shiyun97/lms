@@ -205,7 +205,7 @@ class ModuleQuizPageTeacher extends Component {
                         </center>,
                     analyticsButton:
                         <center>
-                            <MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quiz[i].quizId}/analytics`}>View</MDBBtn>
+                            <MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quiz[i].quizId}/statistics`}>View</MDBBtn>
                         </center>
                 })
             }
