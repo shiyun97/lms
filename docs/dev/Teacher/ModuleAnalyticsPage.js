@@ -25,6 +25,7 @@ class ModuleAnalyticsPage extends Component {
     gradeItems: [],
     gradeItemStatus: "retrieving",
     gradeItemMessage: "Grade Item Analytics is not available at the moment.",
+
     quizItems: [],
     quizStatus: "retrieving",
     quizMessage: "Quiz Analytics is not available at the moment.",
@@ -468,10 +469,6 @@ class ModuleAnalyticsPage extends Component {
   }
 
   render() {
-    if (this.state.redirect) {
-      return <Redirect to={this.state.redirectLink} />
-    }
-
     const optionsQuiz = {
       animationEnabled: true,
       exportEnabled: true,
@@ -492,30 +489,10 @@ class ModuleAnalyticsPage extends Component {
       data: [{
         type: "boxAndWhisker",
         whiskerColor: "#C0504E",
-        toolTipContent: "<span style=\"color:#6D78AD\">{label}:</span> <br><b>Maximum:</b> {y[3]},<br><b>Q3:</b> {y[2]},<br><b>Median:</b> {y[4]}<br><b>Q1:</b> {y[1]}<br><b>Minimum:</b> {y[0]}<br>Click to view quiz details.",
+        toolTipContent: "<span style=\"color:#6D78AD\">{label}:</span> <br><b>Maximum:</b> {y[3]},<br><b>Q3:</b> {y[2]},<br><b>Median:</b> {y[4]}<br><b>Q1:</b> {y[1]}<br><b>Minimum:</b> {y[0]}<br>Click to view quiz statistics.",
         yValueFormatString: "0.0",
         dataPoints: this.state.quizItems
-        // [
-        //   { label: "Quiz 1", y: [54, 85, 98, 99, 95], click: () => console.log(1) },
-        //   { label: "Quiz 2", y: [56, 80, 89, 96, 84], click: () => console.log(1) },
-        //   { label: "Quiz 3", y: [54, 84, 88, 91, 86], click: () => console.log(1) },
-        //   { label: "Quiz 4", y: [52, 76, 87, 92, 81], click: () => console.log(1) },
-        //   { label: "Quiz 5", y: [54, 80, 87, 95, 81], click: () => console.log(1) }
-        // ]
-      },
-        // {
-        //   type: "scatter",
-        //   name: "Your Score",
-        //   toolTipContent: "<span style=\"color:#C0504E\">{name}</span>: {y}",
-        //   showInLegend: true,
-        //   dataPoints: [
-        //     { label: "Quiz 1", y: 65 },
-        //     { label: "Quiz 2", y: 62 },
-        //     { label: "Quiz 3", y: 72 },
-        //     { label: "Quiz 4", y: 72 },
-        //     { label: "Quiz 5", y: 97 }
-      ]
-      // }]
+      }]
     }
     const optionsGradebook = {
       animationEnabled: true,
