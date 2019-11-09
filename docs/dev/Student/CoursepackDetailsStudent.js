@@ -354,8 +354,8 @@ class CoursepackDetailsStudent extends Component {
                         <MDBRow>
                             <MDBCol>
                                 <div style={{ float: "right" }}>
-                                    <MDBBtn onClick={e => this.addRating()} color="primary">Rate</MDBBtn>
-                                    {this.showAddRatingDialog()}
+                                    {/*<MDBBtn onClick={e => this.addRating()} color="primary">Rate</MDBBtn>
+                                    {this.showAddRatingDialog()}*/}
                                 </div>
                             </MDBCol>
                         </MDBRow>
@@ -389,7 +389,7 @@ class CoursepackDetailsStudent extends Component {
                         <MDBCol className="col-md-2">
                             <div className="mt-1" />
                             {ratingValues.map((ratingValue, index) => (
-                                <Rating value={ratingValue} key={index} readOnly size="small" />
+                                <Rating value={ratingValue} key={index} precision={0.1} readOnly size="small" />
                             ))}
                         </MDBCol>
                         <MDBCol className="col-md-1">

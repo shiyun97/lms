@@ -209,7 +209,7 @@ function PaypalButtonComponent() {
         }
     })
 
-    const goToDashboard = () => {
+    const goToMyCourses = () => {
         console.log("completed payment")
         let boughtItems = JSON.parse(sessionStorage.getItem("cart"))
         for (var i=0; i<boughtItems.length; i++) {
@@ -220,7 +220,7 @@ function PaypalButtonComponent() {
                     sessionStorage.setItem("cart", JSON.stringify([]))
                     setPaidFor(false)
                     setLoaded(false)
-                    document.getElementById("goToDashboard").click();
+                    document.getElementById("goToMyCourses").click();
                 })
                 .catch(error => {
                     console.error("error in axios " + error);
@@ -236,14 +236,14 @@ function PaypalButtonComponent() {
         <div>
         {
             paidFor ? (
-                <div>{goToDashboard()}</div>
+                <div>{goToMyCourses()}</div>
             ) : (
                 <div>
                     <div ref={v => (paypalRef = v)} />
                 </div>
             )
         }
-        <div><a href="/coursepack/dashboard" id="goToDashboard" style={{display: "none"}} /></div>
+        <div><a href="/coursepack/myCourses" id="goToMyCourses" style={{display: "none"}} /></div>
         </div>
     )
 }

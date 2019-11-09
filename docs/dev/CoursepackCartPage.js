@@ -71,7 +71,7 @@ class CoursepackCartPage extends Component {
             <MDBRow>
                 <MDBCol md="10" lg="10">
                     <MDBRow>
-                        <h4 className="mb-3">{cartObjs.length + " Course in Cart"}</h4>
+                        <h4 className="mb-3">{cartObjs.length + " Coursepacks in Cart"}</h4>
                     </MDBRow>
                     {
                         cartObjs.map((cartObj) => (

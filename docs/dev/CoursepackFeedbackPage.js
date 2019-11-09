@@ -274,7 +274,7 @@ class CoursepackFeedbackPage extends Component {
                         <MDBCol className="col-md-2">
                             <div className="mt-1" />
                             {ratingValues.map((ratingValue, index) => (
-                                <Rating value={ratingValue} key={index} readOnly size="small" />
+                                <Rating value={ratingValue} key={index} precison={0.1} readOnly size="small" />
                             ))}
                         </MDBCol>
                         <MDBCol className="col-md-1">

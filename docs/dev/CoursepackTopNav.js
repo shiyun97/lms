@@ -135,29 +135,31 @@ class CoursepackTopNav extends Component {
                                 </Paper>
                             </MDBNavItem>
                             </MDBNavbarNav>*/}
-                        
-                        <NavbarNav right>
-                            <MDBNavItem>
-                                {
-                                    this.props.cartNum > 0 &&
-                                    <Tooltip title="Cart">
-                                        <span className="mr-2">
-                                            <Badge badgeContent={itemsInCart} color="secondary">
-                                                <ShoppingCartIcon style={{ color: "white" }} aria-label="add" onClick={e => this.goToCart()} />
-                                            </Badge>
-                                        </span>
-                                    </Tooltip>
-                                }
-                                {
-                                    this.props.cartNum == 0 && 
-                                    <Tooltip title="Empty Cart!">
-                                        <span className="mr-2">
-                                            <ShoppingCartIcon style={{ color: "white" }} aria-label="add" />
-                                        </span>
-                                    </Tooltip>
-                                }
-                            </MDBNavItem>
+                        {
+                            sessionStorage.getItem("accessRight") === "Public" &&
+                            <NavbarNav right>
+                                <MDBNavItem>
+                                    {
+                                        this.props.cartNum > 0 &&
+                                        <Tooltip title="Cart">
+                                            <span className="mr-2">
+                                                <Badge badgeContent={itemsInCart} color="secondary">
+                                                    <ShoppingCartIcon style={{ color: "white" }} aria-label="add" onClick={e => this.goToCart()} />
+                                                </Badge>
+                                            </span>
+                                        </Tooltip>
+                                    }
+                                    {
+                                        this.props.cartNum == 0 &&
+                                        <Tooltip title="Empty Cart!">
+                                            <span className="mr-2">
+                                                <ShoppingCartIcon style={{ color: "white" }} aria-label="add" />
+                                            </span>
+                                        </Tooltip>
+                                    }
+                                </MDBNavItem>
                             </NavbarNav>
+                        }
                     </MDBCollapse>
                 </MDBNavbar>
                 {collapseID && overlay}

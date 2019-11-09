@@ -231,6 +231,43 @@ class CoursepackDashboardPage extends Component {
     console.log(sessionStorage.getItem("cart"))
   }
 
+  enrollCourse = (course) => {
+    let found = false;
+    let idx = 0;
+    let userCoursepackList = this.state.userCoursepackList;
+    for (idx = 0; (idx < userCoursepackList.length) && found == false; idx++) {
+      let obj = userCoursepackList[idx];
+      if (obj.coursepackId == course.coursepackId) {
+        found = true
+        // do not enroll again, send alert
+        this.setState({
+          openSnackbar: true,
+          message: "You have enrolled in this coursepack already!"
+        })
+      }
+    }
+
+    if (course && sessionStorage.getItem("userId") && found == false) {
+      axios
+      .put(`${API}CoursepackEnrollment/enrollCoursepack?userId=${sessionStorage.getItem("userId")}&coursepackId=${course.coursepackId}`)
+      .then(result => {
+        this.setState({
+          openSnackbar: true,
+          message: "Enrolled into coursepack succesfully"
+        })
+        this.props.dataStore.setPath(`/coursepack/myCourses`);
+        this.props.history.push(`/coursepack/myCourses`);
+      })
+      .catch(error => {
+        this.setState({
+          openSnackbar: false,
+          message: "An error occurred, please try again"
+        })
+        console.error("error in axios " + error);
+      });
+    }
+  }
+
   /*
   courseRecommendation = () => {
     return (
@@ -290,14 +327,6 @@ class CoursepackDashboardPage extends Component {
           {displayCoursepackList && displayCoursepackList.map((course, index) => {
             return (
               <MDBCol size="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
-                {/*<MDBCard style={{ width: "15rem", height: "18rem" }} className="mr-2">
-                      <MDBCardImage className="img-fluid" src={cprog} waves />
-                      <MDBCardBody>
-                        <MDBCardTitle><h6><b>{course.title}</b></h6></MDBCardTitle>
-                          <MDBCardText>{course.category}</MDBCardText>
-                          <MDBCardText>{course.price}</MDBCardText>
-                      </MDBCardBody>
-                    </MDBCard>*/}
                 <Card style={{ height: "25rem" }}>
                   <CardActionArea>
                     <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>
@@ -315,21 +344,30 @@ class CoursepackDashboardPage extends Component {
                         </Typography>
                         <Typography variant="body2" color="textSecondary" component="p">
                           <div style={{ width: 200, display: "flex", marginTop: 10 }}>
-                            <Rating name="hover-side" value={course.rating} readOnly size="small" />
+                            <Rating name="hover-side" value={course.rating} precision={0.1} readOnly size="small" />
                             <Box ml={2}>{course.rating.toFixed(1) + " (" + course.ratingList.length + ")"}</Box>
                           </div>
                         </Typography>
                         <Typography gutterBottom variant="h6" component="h2" style={{ color: "#000000", marginTop: 10 }}>
-                          {"S$" + course.price.toFixed(2)}
+                          {sessionStorage.getItem("accessRight") === "Public" ? "S$" + course.price.toFixed(2) : "FREE"}
                         </Typography>
                       </CardContent>
                     </NavLink>
                   </CardActionArea>
 
                   <CardActions>
-                    <Button variant="contained" color="secondary"  onClick={e => this.addToCart(course)}>
-                      Add To Cart
-                    </Button>
+                  {
+                      sessionStorage.getItem("accessRight") === "Public" && 
+                      <Button variant="contained" color="secondary" onClick={e => this.addToCart(course)}>
+                        Add To Cart
+                      </Button>
+                    }
+                    {
+                      sessionStorage.getItem("accessRight") === "Student" && 
+                      <Button variant="contained" color="secondary" onClick={e => this.enrollCourse(course)}>
+                        Enroll Now
+                      </Button>
+                    }
                   </CardActions>
                 </Card>
               </MDBCol>
@@ -355,14 +393,6 @@ class CoursepackDashboardPage extends Component {
           {coursepackList && coursepackList.map((course, index) => {
             return (
               <MDBCol size="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
-                {/*<MDBCard style={{ width: "15rem", height: "18rem" }} className="mr-2">
-                      <MDBCardImage className="img-fluid" src={cprog} waves />
-                      <MDBCardBody>
-                        <MDBCardTitle><h6><b>{course.title}</b></h6></MDBCardTitle>
-                          <MDBCardText>{course.category}</MDBCardText>
-                          <MDBCardText>{course.price}</MDBCardText>
-                      </MDBCardBody>
-                    </MDBCard>*/}
                 <Card style={{ height: "25rem" }}>
                   <CardActionArea>
                     <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>
@@ -380,21 +410,30 @@ class CoursepackDashboardPage extends Component {
                         </Typography>
                         <Typography variant="body2" color="textSecondary" component="p">
                           <div style={{ width: 200, display: "flex", marginTop: 10 }}>
-                            <Rating name="hover-side" value={course.rating} readOnly size="small" />
+                            <Rating name="hover-side" value={course.rating} precision={0.1} readOnly size="small" />
                             <Box ml={2}>{course.rating.toFixed(1) + " (" + course.ratingList.length + ")"}</Box>
                           </div>
                         </Typography>
                         <Typography gutterBottom variant="h6" component="h2" style={{ color: "#000000", marginTop: 10 }}>
-                          {"S$" + course.price.toFixed(2)}
+                          {sessionStorage.getItem("accessRight") === "Public" ? "S$" + course.price.toFixed(2) : "FREE"}
                         </Typography>
                       </CardContent>
                     </NavLink>
                   </CardActionArea>
 
                   <CardActions>
-                    <Button variant="contained" color="secondary" onClick={e => this.addToCart(course)}>
-                      Add To Cart
-                    </Button>
+                    {
+                      sessionStorage.getItem("accessRight") === "Public" && 
+                      <Button variant="contained" color="secondary" onClick={e => this.addToCart(course)}>
+                        Add To Cart
+                      </Button>
+                    }
+                    {
+                      sessionStorage.getItem("accessRight") === "Student" && 
+                      <Button variant="contained" color="secondary" onClick={e => this.enrollCourse(course)}>
+                        Enroll Now
+                      </Button>
+                    }
                   </CardActions>
                 </Card>
               </MDBCol>

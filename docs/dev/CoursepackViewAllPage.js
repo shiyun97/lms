@@ -33,6 +33,7 @@ const API = "http://localhost:8080/LMS-war/webresources/"
 class CoursepackViewAllPage extends Component {
 
     state = {
+        userCoursepackList: [],
         categories: [],
         categoryId: "",
         categoryName: "",
@@ -57,6 +58,16 @@ class CoursepackViewAllPage extends Component {
         this.setState({
             cartNum: cartNum
         })
+
+        // get all coursepacks of student / public user
+        axios.get(`${API}Coursepack/getUserCoursepack/${sessionStorage.getItem("userId")}`)
+            .then(result => {
+                console.log(result.data)
+                this.setState({ userCoursepackList: result.data.coursepack })
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
 
         // get all categories
         axios.get(`${API}Coursepack/getAllCategories`)
@@ -116,6 +127,7 @@ class CoursepackViewAllPage extends Component {
         let cart = sessionStorage.cart;
         if (cart != null && cart != undefined) {
             let cartObjs = JSON.parse(cart);
+            console.log(cartObjs)
             let found = false
             let idx = 0;
             for (idx = 0; (idx < cartObjs.length) && found == false; idx++) {
@@ -163,6 +175,44 @@ class CoursepackViewAllPage extends Component {
         }
         console.log(sessionStorage.getItem("cart"))
     }
+
+    enrollCourse = (course) => {
+        let found = false;
+        let idx = 0;
+        let userCoursepackList = this.state.userCoursepackList;
+        for (idx = 0; (idx < userCoursepackList.length) && found == false; idx++) {
+            let obj = userCoursepackList[idx];
+            if (obj.coursepackId == course.coursepackId) {
+                found = true
+                // do not enroll again, send alert
+                this.setState({
+                    openSnackbar: true,
+                    message: "You have enrolled in this coursepack already!"
+                })
+            }
+        }
+
+        if (course && sessionStorage.getItem("userId") && found == false) {
+            axios
+                .put(`${API}CoursepackEnrollment/enrollCoursepack?userId=${sessionStorage.getItem("userId")}&coursepackId=${course.coursepackId}`)
+                .then(result => {
+                    this.setState({
+                        openSnackbar: true,
+                        message: "Enrolled into coursepack succesfully"
+                    })
+                    this.props.dataStore.setPath(`/coursepack/myCourses`);
+                    this.props.history.push(`/coursepack/myCourses`);
+                })
+                .catch(error => {
+                    this.setState({
+                        openSnackbar: false,
+                        message: "An error occurred, please try again"
+                    })
+                    console.error("error in axios " + error);
+                });
+        }
+    }
+
 
     showCategory = (categoryId) => {
         axios.get(`${API}Coursepack/getCategoryById?categoryId=${categoryId}`)
@@ -229,11 +279,18 @@ class CoursepackViewAllPage extends Component {
                                     </MDBCol>
                                     <MDBCol md="2" lg="2">
                                         <MDBRow>
-                                            <b style={{ color: "#f44336", fontSize: "18px" }}>S${coursepack.price.toFixed(2)}</b>
+                                            <b style={{ color: "#f44336", fontSize: "18px" }}>
+                                                {
+                                                    sessionStorage.getItem("accessRight") === "Public" && <span>S${coursepack.price.toFixed(2)}</span>
+                                                }
+                                                {
+                                                    sessionStorage.getItem("accessRight") === "Student" && <span>FREE</span>
+                                                }
+                                            </b>
                                         </MDBRow>
                                         <div className="mb-2" />
                                         <MDBRow>
-                                            <Rating name="hover-side" value={coursepack.rating} readOnly size="small" />
+                                            <Rating name="hover-side" value={coursepack.rating} precision={0.1} readOnly size="small" />
                                             <Box ml={2} style={{ fontSize: "14px" }}>{coursepack.rating.toFixed(1)}</Box>
                                         </MDBRow>
                                         <MDBRow>
@@ -241,9 +298,18 @@ class CoursepackViewAllPage extends Component {
                                         </MDBRow>
                                         <div className="mb-2" />
                                         <MDBRow>
-                                            <Button variant="contained" color="secondary" onClick={e => this.addToCart(coursepack)}>
-                                                Add To Cart
+                                            {
+                                                sessionStorage.getItem("accessRight") === "Public" &&
+                                                <Button variant="contained" color="secondary" onClick={e => this.addToCart(coursepack)}>
+                                                    Add To Cart
                                                 </Button>
+                                            }
+                                            {
+                                                sessionStorage.getItem("accessRight") === "Student" &&
+                                                <Button variant="contained" color="secondary" onClick={e => this.enrollCourse(coursepack)}>
+                                                    Enroll Now
+                                                </Button>
+                                            }
                                         </MDBRow>
                                     </MDBCol>
                                 </div>

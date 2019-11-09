@@ -9,7 +9,7 @@ class CoursepackDetailsPage extends Component {
         let accessRight = sessionStorage.getItem("accessRight")
         return (
             <div>
-                {accessRight === "Student" && <CoursepackDetailsStudent coursepackId={this.props.match.params.coursepackId} />}
+                {(accessRight === "Student" || accessRight === "Public") && <CoursepackDetailsStudent coursepackId={this.props.match.params.coursepackId} />}
                 {accessRight === "Teacher" && <CoursepackDetailsTeacher coursepackId={this.props.match.params.coursepackId} />}
             </div>
         )
