@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MDBRow, MDBContainer, MDBCard, MDBCardBody, MDBCardHeader, MDBIcon, MDBCol, MDBCardText, MDBBreadcrumb, MDBBreadcrumbItem, MDBProgress } from 'mdbreact';
+import { MDBRow, MDBContainer, MDBCard, MDBCardBody, MDBCardHeader, MDBIcon, MDBCol, MDBCardText, MDBBreadcrumb, MDBBreadcrumbItem, MDBProgress, MDBBtn } from 'mdbreact';
 import styled from 'styled-components';
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Bar, Pie } from 'react-chartjs-2';
@@ -436,6 +436,7 @@ class ModuleAnalyticsPage extends Component {
   }
 
   renderForumPieChart = () => {
+    var moduleId = this.props.dataStore.getCurrModId;
     const dataPie = {
       labels: this.state.forumLabels,
       datasets: [
@@ -451,8 +452,9 @@ class ModuleAnalyticsPage extends Component {
         <MDBCard className="mb-4">
           <MDBCardHeader>Forum Contribution</MDBCardHeader>
           <MDBCardBody>
-            <Pie data={dataPie} height={300} options={{ responsive: true }} />
+            <Pie data={dataPie} height={300} options={{ responsive: true, legend: { position: 'bottom' } }} />
           </MDBCardBody>
+          <MDBBtn color="blue" onClick={() => this.routeChange(`/modules/${moduleId}/forum/topics`)}>Go To Forum</MDBBtn>
         </MDBCard>
       </MDBCol>
     )

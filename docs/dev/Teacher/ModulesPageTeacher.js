@@ -13,7 +13,7 @@ class ModulesPageTeacher extends Component {
     };
 
     componentDidMount() {
-        const { userId } = this.props.dataStore
+        var userId = sessionStorage.getItem('userId')
         axios
             .get(`http://localhost:8080/LMS-war/webresources/module/retrieveTeacherModules/${userId}`)
             .then(result => {

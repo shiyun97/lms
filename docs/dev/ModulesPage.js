@@ -4,14 +4,12 @@ import axios from "axios";
 import { observer, inject } from 'mobx-react';
 import ModulesPageTeacher from "./Teacher/ModulesPageTeacher";
 import ModulesPageStudent from "./Student/ModulesPageStudent";
+import styled from 'styled-components';
+import MainSideNavDropdown from "./MainSideNavDropdown";
 
 @inject('dataStore')
 @observer
 class ModulesPage extends Component {
-
-    state = {
-        status: "retrieving"
-    };
 
     componentDidMount() {
         axios
@@ -19,37 +17,25 @@ class ModulesPage extends Component {
             .then(result => {
                 // console.log(result)
                 this.props.dataStore.updateYearSem(result.data.year, result.data.semester);
-                this.setState({
-                    status: "done"
-                });
             })
             .catch(error => {
-                this.setState({
-                    status: "error"
-                });
                 console.error("error in axios " + error);
             });
     }
 
     render() {
         return (
+            <div className={this.props.className}>
+                <div className="module-navbar-small">
+                    <MainSideNavDropdown moduleId={this.props.moduleId} activeTab={'Modules'}></MainSideNavDropdown>
+                </div>
+                <div className="module-content">
             <MDBContainer style={{ paddingBottom: 240 }}>
                 <MDBRow>
                     <MDBCol md="8" className="mt-4">
                         <h2 className="font-weight-bold" style={{ paddingTop: 50 }}>
                             Modules
                     </h2>
-                        {/* <MDBInputGroup
-                            containerClassName="mb-3"
-                            style={{ width: 300 }}
-                            prepend="Term"
-                            inputs={
-                                <select className="browser-default custom-select">
-                                    <option value="0">AY XX/XX SEMESTER XX</option>
-                                    <option value="1">Past Semesters</option>
-                                </select>
-                            }
-                        /> */}
                     </MDBCol>
                     {this.props.dataStore.getAccessRight === "Student" ?
                         <ModulesPageStudent /> :
@@ -57,8 +43,41 @@ class ModulesPage extends Component {
                     }
                 </MDBRow>
             </MDBContainer>
+                </div>
+            </div>
         );
     }
 }
 
-export default ModulesPage;
+export default styled(ModulesPage)`
+.module-content{
+    margin-top: 40px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 90px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+}
+
+.new-paragraph{
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+.align-right{
+    float: right;
+}
+`;

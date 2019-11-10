@@ -49,7 +49,7 @@ class ModuleSideNavigationDropdown extends Component {
                                     <MDBNavLink exact={true} to={`/modules/${moduleId}/files`}>Files</MDBNavLink>
                                 </MDBNavItem>
                                 <MDBNavItem active={activeTab == "Forum"}>
-                                    <MDBNavLink exact={true} to={`/modules/${moduleId}/forum`}>Forum</MDBNavLink>
+                                    <MDBNavLink exact={true} to={`/modules/${moduleId}/forum/topics`}>Forum</MDBNavLink>
                                 </MDBNavItem>
                                 <MDBNavItem active={activeTab == "Gradebook"}>
                                     <MDBNavLink exact={true} to={`/modules/${moduleId}/gradebook`}>Gradebook</MDBNavLink>
@@ -68,6 +68,9 @@ class ModuleSideNavigationDropdown extends Component {
                                 </MDBNavItem>
                                 <MDBNavItem active={activeTab == "Feedback"}>
                                     <MDBNavLink exact={true} to={`/modules/${moduleId}/feedback`}>Feedback</MDBNavLink>
+                                </MDBNavItem>
+                                <MDBNavItem active={activeTab == "Analytics"}>
+                                    <MDBNavLink exact={true} to={`/modules/${moduleId}/analytics`}>Analytics</MDBNavLink>
                                 </MDBNavItem>
                             </NavbarNav>
                         </MDBCollapse>
