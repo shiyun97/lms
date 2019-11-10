@@ -166,8 +166,8 @@ class RegisterPage extends Component {
                                                         <MDBCol md="10">
                                                             <input type={this.state.hidden ? "password" : "text"} className="form-control" onChange={this.handleChange} name="password" defaultValue={this.state.password} required />
                                                         </MDBCol>
-                                                        <MDBCol md="2" align="left">
-                                                            <span onClick={() => this.setState({ hidden: !this.state.hidden })} class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                                                        <MDBCol md="2">
+                                                            <span onClick={() => this.setState({ hidden: !this.state.hidden })} className="fa fa-fw fa-eye field-icon toggle-password"></span>
                                                         </MDBCol>
                                                     </MDBRow>
                                                 </MDBCol>

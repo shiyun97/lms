@@ -40,7 +40,7 @@ class CoursepackCoursesTeacher extends Component {
                 <MDBRow>
                     {this.state.createdCoursepacks && this.state.createdCoursepacks.map((course) => {
                         return (
-                            <MDBCol size="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
+                            <MDBCol md="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
                                 <NavLink to={`/coursepack/${course.coursepackId}/`} activeClassName="activeClass">
                                     <MDBCard style={{height: 150}}>
                                         <MDBCardBody>
