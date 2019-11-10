@@ -83,10 +83,13 @@ class ModuleQuizPageViewStatistics extends Component {
       return (
         <MDBCard cascade className="my-3" style={{ padding: 20 }}>
           <h4>Quiz Statistics</h4>
-          <h6>
-            Quiz Title: {this.state.title} <br />
-            Description: {this.state.description} <br />
-            No. of Attempts: {this.state.attempts}
+          <br />
+          Quiz Title: {this.state.title} <br />
+          Description: {this.state.description} <br />
+          No. of Attempts: {this.state.attempts}
+          <h6 style={{ fontStyle: "italic" }}>
+            <br />
+            Note: Short Answer questions are removed from quiz statistics.
           </h6>
           <hr />
           <br />
