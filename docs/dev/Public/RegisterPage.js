@@ -107,7 +107,7 @@ class RegisterPage extends Component {
                         <MDBRow>
                             <MDBCol md="8" className="mt-3 mx-auto">
                                 <MDBJumbotron>
-                                    <center><img src={logo} /></center>
+                                    <center><img src={logo} width="50%" /></center>
                                     <h5 className="text-center">
                                         Create New Account
                                     </h5>

@@ -4,6 +4,8 @@ import { Snackbar, TextField, Checkbox } from '@material-ui/core';
 import axios from "axios";
 import { observer, inject } from 'mobx-react';
 import moment from 'moment';
+import styled from 'styled-components';
+import MainSideNavDropdown from "../MainSideNavDropdown";
 
 @inject('dataStore')
 @observer
@@ -389,6 +391,11 @@ class DashboardPageAdmin extends Component {
         let expiredAnnouncements = this.state.expiredAnnouncements;
         return (
             <>
+            <div className={this.props.className}>
+              <div className="module-navbar-small">
+                <MainSideNavDropdown moduleId={this.props.moduleId} activeTab={'Dashboard'}></MainSideNavDropdown>
+              </div>
+              <div className="module-content">
               <MDBEdgeHeader color="indigo darken-3" className="dashboardPage" />
               <MDBContainer style={{ paddingBottom: 240 }}>
             <MDBRow>
@@ -537,6 +544,8 @@ class DashboardPageAdmin extends Component {
         </MDBCol>
       </MDBRow>
           </MDBContainer>
+            </div>
+          </div>
         </>
         );
     }
@@ -577,4 +586,35 @@ class AnnouncementListItem extends Component {
     }
 }
 
-export default DashboardPageAdmin;
+export default  styled(DashboardPageAdmin)`
+.module-content{
+    margin-top: 10px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin: 0px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+}
+
+.new-paragraph{
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+.align-right{
+    float: right;
+}
+`;

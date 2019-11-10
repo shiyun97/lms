@@ -55,7 +55,7 @@ class PublicLoginPage extends Component {
             <MDBRow>
               <MDBCol md="8" className="mt-3 mx-auto">
                 <MDBJumbotron>
-                  <center><img src={logo}/></center>
+                  <center><img src={logo} width="50%"/></center>
                   <ul className="list-unstyled example-components-list">
                     <form onSubmit={this.checkLogIn}>
                       <br />
