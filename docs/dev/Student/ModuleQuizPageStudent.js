@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable, MDBCardHeader } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import { Snackbar } from '@material-ui/core';
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
 import moment from 'moment';
+import CanvasJSReact from '../../assets/canvasjs.react';
+var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 @inject('dataStore')
 @observer
@@ -65,18 +67,28 @@ class ModuleQuizPageStudent extends Component {
         status: "retrieving",
         openSnackbar: false,
         message: "",
-        recallQuiz: false
+        recallQuiz: false,
+
+        quizItems: [],
+        studentScoreItems: [],
+        quizStatus: "retrieving",
+        quizMessage: "Quiz Analytics is not available at the moment.",
     }
 
     componentDidMount() {
         this.initPage();
         this.getAllModuleQuizzes();
+        this.getQuizAnalytics();
     }
 
     componentDidUpdate() {
         if (this.state.recallQuiz) {
             this.getAllModuleQuizzes();
         }
+    }
+
+    routeChange = (path) => {
+        this.props.history.push(path);
     }
 
     handleChange = event => {
@@ -94,7 +106,7 @@ class ModuleQuizPageStudent extends Component {
             // this.updateQuizState(row);
         }
     };
-    
+
     handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -104,7 +116,7 @@ class ModuleQuizPageStudent extends Component {
     };
 
     getAllModuleQuizzes = () => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         let moduleId = this.props.dataStore.getCurrModId;
         axios
             .get(` http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllModuleQuiz/${moduleId}?userId=${userId}`)
@@ -118,7 +130,112 @@ class ModuleQuizPageStudent extends Component {
             });
     }
 
+    getQuizAnalytics = () => {
+        let userId = sessionStorage.getItem('userId');
+        var moduleId = this.props.dataStore.getCurrModId;
+        axios
+            .get(`http://localhost:8080/LMS-war/webresources/analytics/retrieveQuizAnalytics?userId=${userId}&moduleId=${moduleId}`)
+            .then(result => {
+                var temp = []
+                var studentTemp = []
+                var tempY = []
+                if (result.data.items.length === 0) {
+                    this.setState({ gradeItemStatus: "Empty Data" })
+                } else {
+                    result.data.items.map((item) => {
+                        tempY[0] = item.min;
+                        tempY[1] = item.twentyfifth;
+                        tempY[2] = item.seventyfifth;
+                        tempY[3] = item.max;
+                        tempY[4] = item.median;
+
+                        temp.push({
+                            label: item.title,
+                            y: tempY
+                        })
+                        studentTemp.push({
+                            label: item.title,
+                            y: item.studentMarks
+                        })
+                        tempY = []
+                    })
+                    this.setState({
+                        quizItems: temp,
+                        studentScoreItems: studentTemp,
+                        quizStatus: "done"
+                    });
+                }
+            })
+            .catch(error => {
+                this.setState({
+                    quizStatus: "error",
+                });
+                console.error("error in axios " + error);
+            });
+    }
+
+    renderNoCardSection = () => {
+        return (
+            <MDBRow className="mb-4">
+                <MDBCol md="12" className="mb-r" align="center">
+                    <MDBCard>
+                        <MDBCardHeader>Quiz Analytics</MDBCardHeader>
+                        <MDBCardBody>
+                            {this.state.quizMessage}
+                        </MDBCardBody>
+                    </MDBCard>
+                </MDBCol>
+            </MDBRow>
+        )
+    }
+
+    renderBoxPlot = (data) => {
+        return (
+            <MDBRow className="mb-4">
+                <MDBCol md="12">
+                    <MDBCard>
+                        <MDBCardBody>
+                            <CanvasJSChart options={data} />
+                        </MDBCardBody>
+                    </MDBCard>
+                </MDBCol>
+            </MDBRow>
+        )
+    }
+
     renderQuizTable = () => {
+        const optionsQuiz = {
+            animationEnabled: true,
+            exportEnabled: true,
+            theme: "light2", // "light1", "light2", "dark1", "dark2"
+            title: {
+                text: "Quiz Analytics",
+                fontSize: 25
+            },
+            subtitles: [{
+                text: "Overall Scores",
+                fontSize: 15
+            }],
+            axisY: {
+                title: "Scores",
+                includeZero: true,
+                tickLength: 0,
+            },
+            data: [{
+                type: "boxAndWhisker",
+                whiskerColor: "#C0504E",
+                toolTipContent: "<span style=\"color:#6D78AD\">{label}:</span> <br><b>Maximum:</b> {y[3]},<br><b>Q3:</b> {y[2]},<br><b>Median:</b> {y[4]}<br><b>Q1:</b> {y[1]}<br><b>Minimum:</b> {y[0]}",
+                yValueFormatString: "0.0",
+                dataPoints: this.state.quizItems
+            },
+            {
+                type: "scatter",
+                name: "Your Score",
+                toolTipContent: "<span style=\"color:#C0504E\">{name}</span>: {y}",
+                showInLegend: true,
+                dataPoints: this.state.studentScoreItems
+            }]
+        }
         var quiz = this.state.quizzes;
         var moduleId = this.props.dataStore.getCurrModId;
         // console.log(quiz)
@@ -131,12 +248,6 @@ class ModuleQuizPageStudent extends Component {
                     openingDate: moment(quiz[i].openingDate).format("DD-MM-YYYY"),
                     closingDate: moment(quiz[i].closingDate).format("DD-MM-YYYY"),
                     status: quiz[i].publish ? "Open" : "Closed",
-                    // description: quiz[i].description,
-                    // order: quiz[i].questionsOrder,
-                    // publishAnswer: quiz[i].publishAnswer,
-                    // numOfAttempts: quiz[i].noOfAttempts,
-                    // maxTimeToFinish: quiz[i].maxTimeToFinish,
-                    // quizType: quiz[i].quizType,
                     viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quiz[i].quizId}`}>Attempt</MDBBtn></center>
                 })
             }
@@ -145,14 +256,12 @@ class ModuleQuizPageStudent extends Component {
         }
 
         const data = () => ({ columns: this.state.columns, rows: tempQuizzes })
-        // clickEvent: () => goToProfilePage(1)
 
         const widerData = {
             columns: [...data().columns.map(col => {
                 col.width = 150;
                 return col;
             })], rows: [...data().rows.map(row => {
-                // row.clickEvent = () => goToProfilePage(1)
                 return row;
             })]
         }
@@ -179,6 +288,9 @@ class ModuleQuizPageStudent extends Component {
                                         <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={widerData} pagesAmount={4} />
                                     </MDBCardBody>
                                 </MDBCard>
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-3">
+                                {this.state.quizStatus === "done" ? this.renderBoxPlot(optionsQuiz) : this.renderNoCardSection()}
                             </MDBCol>
                         </MDBRow>
                         <Snackbar
@@ -235,6 +347,9 @@ class ModuleQuizPageStudent extends Component {
                                         <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
                                     </MDBCardBody>
                                 </MDBCard>
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-3">
+                                {this.renderNoCardSection()}
                             </MDBCol>
                         </MDBRow>
                     </MDBContainer>

@@ -57,16 +57,16 @@ class UsersManagementPage extends Component {
                 "field": "email",
                 "width": 270
             },
-            {
-                "label": "Password",
-                "field": "password",
-                "width": 200
-            },
-            {
-                "label": "Access Right",
-                "field": "accessRight",
-                "width": 100
-            },
+            // {
+            //     "label": "Password",
+            //     "field": "password",
+            //     "width": 200
+            // },
+            // {
+            //     "label": "Access Right",
+            //     "field": "accessRight",
+            //     "width": 100
+            // },
             {
                 "label": "Username",
                 "field": "username",
@@ -212,13 +212,6 @@ class UsersManagementPage extends Component {
     handleChange = event => {
         event.preventDefault();
         this.setState({ [event.target.name]: event.target.value });
-        // console.log(this.state.accessRight) 
-        // console.log(this.state.gender)
-        // console.log(this.state.password)
-        // console.log(this.state.email)
-        // console.log(this.state.username)
-        // console.log(this.state.firstName)
-        // console.log(this.state.lastName)
     }
 
     toggle = (nr, row) => {
@@ -319,7 +312,7 @@ class UsersManagementPage extends Component {
                 <MDBRow style={{ paddingTop: 60 }}>
                     <MDBCol md="12">
                         <h2 className="font-weight-bold">
-                            Users Management
+                            Public Users Management
                 </h2>
                     </MDBCol>
                     {/* <MDBCol md="1">
@@ -412,8 +405,8 @@ class UsersManagementPage extends Component {
                 lastName: row[i].lastName,
                 gender: row[i].gender,
                 email: row[i].email,
-                password: "********",
-                accessRight: row[i].accessRight,
+                // password: "********",
+                // accessRight: row[i].accessRight,
                 username: row[i].username,
                 editButton: <MDBRow align="center">
                     <MDBCol md={6}><MDBIcon onClick={() => this.toggle(1, row[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
@@ -422,14 +415,12 @@ class UsersManagementPage extends Component {
             })
         }
         const data = () => ({ columns: this.state.columns, rows: newRows })
-        // clickEvent: () => goToProfilePage(1)
 
         const widerData = {
             columns: [...data().columns.map(col => {
                 col.width = 150;
                 return col;
             })], rows: [...data().rows.map(row => {
-                // row.clickEvent = () => goToProfilePage(1)
                 return row;
             })]
         }

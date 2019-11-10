@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable, NavLink } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable, NavLink, MDBCardHeader } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
+import ModuleSideNavigationDropdown from "../ModuleSideNavigationDropdown";
 import { Snackbar } from '@material-ui/core';
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
 import moment from 'moment';
+import CanvasJSReact from '../../assets/canvasjs.react';
+var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 @inject('dataStore')
 @observer
@@ -77,6 +80,11 @@ class ModuleQuizPageTeacher extends Component {
                 "label": "Publish Answers",
                 "field": "publish",
                 "width": 100
+            },
+            {
+                "label": "View Statistics",
+                "field": "statistics",
+                "width": 100
             }
         ],
         rows: [{ label: "Retrieving data..." }],
@@ -84,17 +92,26 @@ class ModuleQuizPageTeacher extends Component {
         message: "",
         status: "retrieving",
         recallQuiz: false,
+
+        quizItems: [],
+        quizStatus: "retrieving",
+        quizMessage: "Quiz Analytics is not available at the moment.",
     }
 
     componentDidMount() {
         this.initPage();
         this.getAllModuleQuizzes();
+        this.getQuizAnalytics();
     }
 
     componentDidUpdate() {
         if (this.state.recallQuiz) {
             this.getAllModuleQuizzes();
         }
+    }
+
+    routeChange = (path) => {
+      this.props.history.push(path);
     }
 
     handleChange = event => {
@@ -118,7 +135,7 @@ class ModuleQuizPageTeacher extends Component {
     }
 
     getAllModuleQuizzes = () => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         let moduleId = this.props.dataStore.getCurrModId;
         axios
             .get(` http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllModuleQuiz/${moduleId}?userId=${userId}`)
@@ -132,8 +149,47 @@ class ModuleQuizPageTeacher extends Component {
             });
     }
 
+    getQuizAnalytics = () => {
+        let userId = sessionStorage.getItem('userId');
+        var moduleId = this.props.dataStore.getCurrModId;
+        axios
+            .get(`http://localhost:8080/LMS-war/webresources/analytics/retrieveQuizAnalytics?userId=${userId}&moduleId=${moduleId}`)
+            .then(result => {
+                var temp = []
+                var tempY = []
+                if (result.data.items.length === 0) {
+                    this.setState({ gradeItemStatus: "Empty Data" })
+                } else {
+                    result.data.items.map((item) => {
+                        tempY[0] = item.min;
+                        tempY[1] = item.twentyfifth;
+                        tempY[2] = item.seventyfifth;
+                        tempY[3] = item.max;
+                        tempY[4] = item.median;
+
+                        temp.push({
+                            label: item.title,
+                            y: tempY,
+                            click: () => this.routeChange(`/modules/${moduleId}/quiz/${item.quizId}/statistics`)
+                        })
+                        tempY = []
+                    })
+                    this.setState({
+                        quizItems: temp,
+                        quizStatus: "done"
+                    });
+                }
+            })
+            .catch(error => {
+                this.setState({
+                    quizStatus: "error",
+                });
+                console.error("error in axios " + error);
+            });
+    }
+
     publishAnswers = (quizId) => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         axios
             .post(`http://localhost:8080/LMS-war/webresources/Assessment/publishQuizAnswer?userId=${userId}&quizId=${quizId}`)
             .then(result => {
@@ -153,7 +209,7 @@ class ModuleQuizPageTeacher extends Component {
     }
 
     deleteQuiz = (quizId) => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         event.preventDefault();
         axios
             .delete(`http://localhost:8080/LMS-war/webresources/Assessment/deleteModuleQuiz?userId=${userId}&quizId=${quizId}`)
@@ -173,7 +229,61 @@ class ModuleQuizPageTeacher extends Component {
             });
     }
 
+    renderNoCardSection = () => {
+        return (
+            <MDBRow className="mb-4">
+                <MDBCol md="12" className="mb-r" align="center">
+                    <MDBCard>
+                        <MDBCardHeader>Quiz Analytics</MDBCardHeader>
+                        <MDBCardBody>
+                            {this.state.quizMessage}
+                        </MDBCardBody>
+                    </MDBCard>
+                </MDBCol>
+            </MDBRow>
+        )
+    }
+
+    renderBoxPlot = (data) => {
+        return (
+            <MDBRow className="mb-4">
+                <MDBCol md="12">
+                    <MDBCard>
+                        <MDBCardBody>
+                            <CanvasJSChart options={data} />
+                        </MDBCardBody>
+                    </MDBCard>
+                </MDBCol>
+            </MDBRow>
+        )
+    }
+
     renderQuizTable = () => {
+        const optionsQuiz = {
+            animationEnabled: true,
+            exportEnabled: true,
+            theme: "light2", // "light1", "light2", "dark1", "dark2"
+            title: {
+                text: "Quiz Analytics",
+                fontSize: 25
+            },
+            subtitles: [{
+                text: "Overall Scores",
+                fontSize: 15
+            }],
+            axisY: {
+                title: "Scores",
+                includeZero: true,
+                tickLength: 0,
+            },
+            data: [{
+                type: "boxAndWhisker",
+                whiskerColor: "#C0504E",
+                toolTipContent: "<span style=\"color:#6D78AD\">{label}:</span> <br><b>Maximum:</b> {y[3]},<br><b>Q3:</b> {y[2]},<br><b>Median:</b> {y[4]}<br><b>Q1:</b> {y[1]}<br><b>Minimum:</b> {y[0]}<br>Click to view quiz statistics.",
+                yValueFormatString: "0.0",
+                dataPoints: this.state.quizItems
+            }]
+        }
         var quiz = this.state.quizzes;
         var moduleId = this.props.dataStore.getCurrModId;
         // console.log(quiz)
@@ -193,9 +303,14 @@ class ModuleQuizPageTeacher extends Component {
                     </MDBRow>,
                     previewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quiz[i].quizId}/preview`}>Preview</MDBBtn></center>,
                     viewButton: <center><MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quiz[i].quizId}/review`}>Review</MDBBtn></center>,
-                    publishButton: <center>
-                        {quiz[i].publishAnswer ? "Published" : <MDBBtn color="primary" outline size="sm" onClick={() => this.publishAnswers(quiz[i].quizId)}>Publish</MDBBtn>}
-                    </center>
+                    publishButton:
+                        <center>
+                            {quiz[i].publishAnswer ? "Published" : <MDBBtn color="primary" outline size="sm" onClick={() => this.publishAnswers(quiz[i].quizId)}>Publish</MDBBtn>}
+                        </center>,
+                    analyticsButton:
+                        <center>
+                            <MDBBtn color="primary" outline size="sm" href={`/modules/${moduleId}/quiz/${quiz[i].quizId}/statistics`}>View</MDBBtn>
+                        </center>
                 })
             }
         } else {
@@ -203,21 +318,22 @@ class ModuleQuizPageTeacher extends Component {
         }
 
         const data = () => ({ columns: this.state.columns, rows: tempQuizzes })
-        // clickEvent: () => goToProfilePage(1)
 
         const widerData = {
             columns: [...data().columns.map(col => {
                 col.width = 150;
                 return col;
             })], rows: [...data().rows.map(row => {
-                // row.clickEvent = () => goToProfilePage(1)
                 return row;
             })]
         }
 
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
@@ -237,6 +353,9 @@ class ModuleQuizPageTeacher extends Component {
                                         <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={widerData} pagesAmount={4} />
                                     </MDBCardBody>
                                 </MDBCard>
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-3">
+                                {this.state.quizStatus === "done" ? this.renderBoxPlot(optionsQuiz) : this.renderNoCardSection()}
                             </MDBCol>
                         </MDBRow>
                         <Snackbar
@@ -273,7 +392,10 @@ class ModuleQuizPageTeacher extends Component {
         }
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
@@ -291,6 +413,9 @@ class ModuleQuizPageTeacher extends Component {
                                     </MDBCardBody>
                                 </MDBCard>
                             </MDBCol>
+                            <MDBCol md="12" className="mt-3">
+                                {this.renderNoCardSection()}
+                            </MDBCol>
                         </MDBRow>
                     </MDBContainer>
                 </div>
@@ -302,7 +427,10 @@ class ModuleQuizPageTeacher extends Component {
         var moduleId = this.props.dataStore.getCurrModId;
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }} align="center">
@@ -332,7 +460,25 @@ class ModuleQuizPageTeacher extends Component {
 
 export default styled(ModuleQuizPageTeacher)`
 .module-content{
-    margin-left: 270px;
     margin-top: 40px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
 }
 `;

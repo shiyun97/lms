@@ -116,7 +116,7 @@ class ModuleMultimediaPage extends Component {
 
     async initPage() {
         let moduleId = this.props.match.params.moduleId;
-        let accessRight = localStorage.getItem("accessRight");
+        let accessRight = sessionStorage.getItem("accessRight");
         if (moduleId) {
             // retrieve module multimedia & set state
             // customise the clickEvent to pass id
@@ -263,13 +263,13 @@ class ModuleMultimediaPage extends Component {
 
         // call api to send
         var files = this.state.uploadedMultimedia;
-        if (files.length > 0 && this.state.moduleId && localStorage.getItem("userId")) {
+        if (files.length > 0 && this.state.moduleId && sessionStorage.getItem("userId")) {
             const formData = new FormData();
             for (let i = 0; i < files.length; i++) {
                 formData.append('file', files[i]);
             }
             
-            fetch(`${API_URL}/file/uploadMultiple?moduleId=${this.state.moduleId}&type=multimedia&userId=${localStorage.getItem("userId")}`, {
+            fetch(`${API_URL}/file/uploadMultiple?moduleId=${this.state.moduleId}&type=multimedia&userId=${sessionStorage.getItem("userId")}`, {
                 method: 'post',
                 body: formData
             })
@@ -326,7 +326,7 @@ class ModuleMultimediaPage extends Component {
         if (file != null) {
             const formData = new FormData();
             formData.append('file', file)
-            fetch(`${API_URL}/file/upload?moduleId=${this.state.moduleId}&type=multimedia&userId=${localStorage.getItem("userId")}`, {
+            fetch(`${API_URL}/file/upload?moduleId=${this.state.moduleId}&type=multimedia&userId=${sessionStorage.getItem("userId")}`, {
                 method: 'post',
                 body: formData
             })

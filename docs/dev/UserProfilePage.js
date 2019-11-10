@@ -29,7 +29,7 @@ class UserProfilePage extends Component {
     }
 
     componentDidUpdate() {
-        let userId = localStorage.getItem('userId')
+        let userId = sessionStorage.getItem('userId')
         if (this.state.status === "recallUsers") {
             event.preventDefault();
             axios

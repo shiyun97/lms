@@ -67,7 +67,7 @@ class ModuleQuizPageViewStudents extends Component {
     };
 
     getAllStudentsAttempts = () => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         var quizId = this.props.dataStore.getCurrQuizId
         axios
             .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveAllQuizAttempts?userId=${userId}&quizId=${quizId}`)
@@ -233,14 +233,12 @@ class ModuleQuizPageViewStudents extends Component {
             })
         }
         const data = () => ({ columns: this.state.columns, rows: newRows })
-        // clickEvent: () => goToProfilePage(1)
 
         const widerData = {
             columns: [...data().columns.map(col => {
                 col.width = 150;
                 return col;
             })], rows: [...data().rows.map(row => {
-                // row.clickEvent = () => goToProfilePage(1)
                 return row;
             })]
         }

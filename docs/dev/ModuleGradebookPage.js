@@ -30,9 +30,9 @@ class ModuleGradebookPage extends Component {
 
     render() {
         if (this.props.dataStore.getAccessRight === "Student")
-            return <ModuleGradebookPageStudent/>;
+            return <ModuleGradebookPageStudent history={this.props.history}/>;
         else if (this.props.dataStore.getAccessRight === "Teacher")
-            return <ModuleGradebookPageTeacher/>;
+            return <ModuleGradebookPageTeacher history={this.props.history} />;
         else
             return <AccessDeniedPage />;
     }

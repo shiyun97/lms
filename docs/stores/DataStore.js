@@ -1,4 +1,4 @@
-import { action, computed, observable } from "mobx"
+import { action, computed, observable, toJS } from "mobx"
 
 class DataStore {
   @observable signInStatus = false
@@ -35,15 +35,24 @@ class DataStore {
 
   //questionsList
   @observable elements = []
+  @observable currAnswers = [{ text: "" }]
+
+  // coursepack quiz score
+  @observable currScore = 0
+  @observable maxMarks = 0
+  @observable attempted = false
+
+  // coursepack certification
+  @observable listOfCoursepacks = []
 
   @action setSignInStatus(status, email, password, accessRight) {
     this.signInStatus = status;
     this.email = email;
     this.password = password;
     this.accessRight = accessRight;
-    localStorage.setItem("email", this.email)
-    localStorage.setItem("password", this.password)
-    localStorage.setItem("accessRight", this.accessRight)
+    sessionStorage.setItem("email", this.email)
+    sessionStorage.setItem("password", this.password)
+    sessionStorage.setItem("accessRight", this.accessRight)
     if (this.accessRight === "Public")
       this.path = "/coursepack/dashboard"
     else
@@ -55,10 +64,10 @@ class DataStore {
     this.email = email;
     this.password = password;
     this.accessRight = accessRight;
-    localStorage.setItem("email", this.email)
-    localStorage.setItem("password", this.password)
-    localStorage.setItem("accessRight", this.accessRight)
-      this.mobilePath = "/student/markAttendance"
+    sessionStorage.setItem("email", this.email)
+    sessionStorage.setItem("password", this.password)
+    sessionStorage.setItem("accessRight", this.accessRight)
+    this.mobilePath = "/student/markAttendance"
   }
 
   @action setSignOutStatus() {
@@ -76,7 +85,7 @@ class DataStore {
     this.gender = "";
     this.firstName = "";
     this.lastName = "";
-    localStorage.clear();
+    sessionStorage.clear();
   }
 
   @action setPath(path) {
@@ -165,11 +174,11 @@ class DataStore {
     this.firstName = firstName;
     this.lastName = lastName;
     this.username = username;
-    localStorage.setItem("userId", this.userId)
-    localStorage.setItem("gender", this.gender)
-    localStorage.setItem("firstName", this.firstName)
-    localStorage.setItem("lastName", this.lastName)
-    localStorage.setItem("username", this.username)
+    sessionStorage.setItem("userId", this.userId)
+    sessionStorage.setItem("gender", this.gender)
+    sessionStorage.setItem("firstName", this.firstName)
+    sessionStorage.setItem("lastName", this.lastName)
+    sessionStorage.setItem("username", this.username)
   }
 
   @computed get getSignInStatus() {
@@ -230,9 +239,55 @@ class DataStore {
   }
 
   @action addAnswerToQuestion(number, answer) {
-    this.elements[number-1].choices.push(answer)
+    this.elements[number - 1].choices.push(answer)
     // console.log(this.elements[number-1].level)
   }
+
+  @computed get getCurrAnswers() {
+    return this.currAnswers;
+  }
+
+  @action addAnswerToList(answer, index) {
+    if (index === undefined)
+      this.currAnswers.push(answer)
+    else
+      this.currAnswers[0] = answer
+  }
+
+  @action resetQuestions() {
+    this.elements = []
+    this.currAnswers = [{ text: "" }]
+  }
+
+  @computed get getCurrScore() {
+    return this.currScore;
+  }
+
+  @computed get getMaxMarks() {
+    return this.maxMarks;
+  }
+
+  @action setCurrScore(score) {
+    this.currScore = score
+  }
+
+  @action setMaxMarks(score) {
+    this.maxMarks = score
+  }
+
+  @computed get getCoursepackQuizAttempt() {
+    return this.attempted;
+  }
+
+  @action setListOfCoursepacks(coursepacks) {
+    this.listOfCoursepacks = coursepacks
+  }
+
+  @computed get getListOfCoursepacks() {
+    return toJS(this.listOfCoursepacks);
+  }
+
+
 }
 
 export default DataStore;

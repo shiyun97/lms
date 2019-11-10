@@ -150,7 +150,7 @@ class ModuleAnnouncementsPageTeacher extends Component {
         var endDate = this.state.endDate;
         endDate = moment(endDate).format("DD-MM-YYYY HH:mm:ss")
         axios
-            .post(`http://localhost:8080/LMS-war/webresources/Annoucement/createModuleAnnoucement/${this.state.moduleId}?userId=${localStorage.getItem('userId')}`, {
+            .post(`http://localhost:8080/LMS-war/webresources/Annoucement/createModuleAnnoucement/${this.state.moduleId}?userId=${sessionStorage.getItem('userId')}`, {
                 content: this.state.content,
                 emailNotification: this.state.emailNotification,
                 // publish: this.state.publish,
@@ -188,7 +188,7 @@ class ModuleAnnouncementsPageTeacher extends Component {
     }
 
     updateAnnouncement = () => {
-        console.log(this.state)
+        // console.log(this.state)
         var lastUpdateDate = new Date;
         lastUpdateDate = moment(lastUpdateDate).format("DD-MM-YYYY HH:mm:ss")
         var startDate = this.state.startDate;
@@ -196,7 +196,7 @@ class ModuleAnnouncementsPageTeacher extends Component {
         var endDate = this.state.endDate;
         endDate = moment(endDate).format("DD-MM-YYYY HH:mm:ss")
         axios
-            .put(`http://localhost:8080/LMS-war/webresources/Annoucement/updateModuleAnnoucement?moduleId=${this.state.moduleId}&annoucementId=${this.state.currAnnouncementId}&userId=${localStorage.getItem('userId')}`, {
+            .put(`http://localhost:8080/LMS-war/webresources/Annoucement/updateModuleAnnoucement?moduleId=${this.state.moduleId}&annoucementId=${this.state.currAnnouncementId}&userId=${sessionStorage.getItem('userId')}`, {
                 content: this.state.content,
                 emailNotification: this.state.emailNotification,
                 // publish: this.state.publish,
@@ -498,7 +498,7 @@ class ModuleAnnouncementsPageTeacher extends Component {
                                 <div className="mb-2"></div>
                                 <div className="align-right">
 
-                                    {localStorage.getItem("accessRight") === "Teacher" &&
+                                    {sessionStorage.getItem("accessRight") === "Teacher" &&
                                         <MDBBtn color="indigo" outline className="mr-0 mb-3" size="md" onClick={() => this.toggle(1)}>
                                             <MDBIcon icon="plus" className="mr-1" /> Add
                                     </MDBBtn>
@@ -521,7 +521,7 @@ class ModuleAnnouncementsPageTeacher extends Component {
                             <MDBTabPane tabId="upcoming" role="tabpanel">
                                 <div className="mb-2"></div>
                                 <div className="align-right">
-                                    {localStorage.getItem("accessRight") === "Teacher" &&
+                                    {sessionStorage.getItem("accessRight") === "Teacher" &&
                                         <MDBBtn color="indigo" outline className="mr-0 mb-3" size="md" onClick={() => this.toggle(1)}>
                                             <MDBIcon icon="plus" className="mr-1" /> Add
                                     </MDBBtn>
@@ -591,7 +591,7 @@ class AnnouncementListItem extends Component {
                 {
                     !this.props.expired &&
                     <div className="h6">{announcement.title}
-                        {localStorage.getItem("accessRight") === "Teacher" &&
+                        {sessionStorage.getItem("accessRight") === "Teacher" &&
                             <>
                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                             <MDBIcon icon="edit" className="mr-1" onClick={this.props.edit} style={{ cursor: "pointer", textShadow: "1px 0px 1px #777777" }} />
@@ -604,7 +604,7 @@ class AnnouncementListItem extends Component {
                 {
                     this.props.expired &&
                     <div className="h6">{announcement.title}
-                        {localStorage.getItem("accessRight") === "Teacher" &&
+                        {sessionStorage.getItem("accessRight") === "Teacher" &&
                             <>
                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                         <MDBIcon icon="trash-alt" className="mr-1" onClick={this.props.delete} style={{ cursor: "pointer", textShadow: "1px 0px 1px #777777" }} />
@@ -615,7 +615,7 @@ class AnnouncementListItem extends Component {
                 {/* <MDBIcon icon="user" className="mr-2 fa-fw" /> */}
                 {/* by {announcement.createdBy}<br /> */}
                 <MDBIcon icon="calendar-alt" className="mr-2 fa-fw" />
-                on {new Date(announcement.startDate).toLocaleString()}
+                on {moment(announcement.startDate).format('DD-MM-YYYY HH:mm:ss')}
                 <div className="mb-2"></div>
                 {announcement.content}
             </div>

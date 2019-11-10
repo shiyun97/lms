@@ -3,7 +3,12 @@ import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBBtn } from "mdbreact";
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
-import CoursepackQuizPageAnswerNormalQuiz from './CoursepackQuizPageAnswerNormalQuiz';
+import * as Survey from "survey-react";
+
+var pathname = location.pathname;
+pathname = pathname.split("/");
+var answers = [];
+var json = {}
 
 @inject('dataStore')
 @observer
@@ -16,36 +21,32 @@ class CoursepackQuizPageAnswerQuiz extends Component {
     email: "",
     moduleId: 0,
     message: "",
-    status: "retrieving",
-    json: {}
+    status: "retrieving"
   }
 
   initPage() {
-    var pathname = location.pathname;
-    pathname = pathname.split("/");
-    // console.log(pathname[2])
-    this.props.dataStore.setCurrModId(pathname[2]);
-    this.props.dataStore.setCurrQuizId(pathname[4]);
+    console.log(this.props.currentQuiz)
+    this.props.dataStore.setCurrQuizId(this.props.currentQuiz);
   }
 
   componentDidMount() {
     this.initPage();
-    this.getModuleQuiz();
+    this.getCoursepackQuiz();
   }
 
-  getModuleQuiz = () => {
-    let userId = localStorage.getItem('userId');
+  getCoursepackQuiz = () => {
+    let userId = sessionStorage.getItem('userId');
     let quizId = this.props.dataStore.getCurrQuizId;
     axios
-      .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveModuleQuiz/${quizId}?userId=${userId}`)
+      .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveCoursepackQuiz/${quizId}?userId=${userId}`)
       .then(result => {
         // console.log(result.data)
         var newJson = result.data;
         newJson['completedHtml'] = "<p><h4>You have completed the quiz!</h4></p>";
-        if (result.data.reachedMaxAttempt) {
-          this.setState({ status: "maximumAttempt" })
-        } else
-          this.setState({ status: "done", json: newJson })
+        newJson['showTimerPanel'] = "none";
+        json = newJson
+        this.setState({ status: "done" })
+        this.props.dataStore.setMaxMarks(result.data.maxMarks)
       })
       .catch(error => {
         this.setState({ status: "error" })
@@ -53,47 +54,125 @@ class CoursepackQuizPageAnswerQuiz extends Component {
       });
   }
 
-  render() {
-    var moduleId = this.props.dataStore.getCurrModId;
-    if (this.state.status === "done") {
-      return <CoursepackQuizPageAnswerNormalQuiz />;
-    } else if (this.state.status === "retrieving") {
-      return (
-        <MDBContainer className="mt-3">
-          <MDBRow className="py-3">
-            <MDBCol md="12">
-              <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
-                <h3>Retrieving Quiz Details...</h3>
-              </MDBCard>
-            </MDBCol>
-          </MDBRow>
-        </MDBContainer>
-      )
-    } else if (this.state.status === "error") {
-      return (
-        <MDBContainer className="mt-3">
-          <MDBRow className="py-3">
-            <MDBCol md="12">
-              <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
-                <h3>Unable to retrieve quiz details. Please try again later.</h3>
-              </MDBCard>
-            </MDBCol>
-          </MDBRow>
-        </MDBContainer>
-      )
-    } else {
-      return (
-        <MDBContainer className="mt-3">
-          <MDBRow className="py-3">
-            <MDBCol md="12">
-              <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
-                <h3>No such quiz exist.</h3>
-              </MDBCard>
-            </MDBCol>
-          </MDBRow>
-        </MDBContainer>
-      )
+  onValueChanged(result) {
+    // match question name with answer and question Id
+    var tempResult = result.data
+    var questionAttempts = Object.keys(tempResult);
+    var questions = json.pages[0].elements;
+    // console.log(result.data)
+    for (var i = 0; i < questionAttempts.length; i++) {
+      var questionNumber = questionAttempts[i].substr(8, questionAttempts[i].length)
+      for (var j = 0; j < questions.length; j++) {
+        if (questionNumber == questions[j].number) {
+          if (tempResult[questionAttempts[i]].text === undefined)
+            answers[questionNumber - 1] = {
+              questionId: questions[j].questionId,
+              answer: tempResult[questionAttempts[i]],
+              correctAnswer: questions[j].correctAnswer,
+              question: questions[j].title
+            }
+          else {
+            answers[questionNumber - 1] = {
+              questionId: questions[j].questionId, answer:
+                tempResult[questionAttempts[i]].text,
+              correctAnswer: questions[j].correctAnswer,
+              question: questions[j].title
+            }
+          }
+        }
+      }
     }
+    // console.log(answers)
+  }
+
+  onComplete = (result) => {
+    let userId = sessionStorage.getItem('userId');
+    var score = 0
+    for (var i = 0; i < answers.length; i++) {
+      if (answers[i].answer == answers[i].correctAnswer) {
+        score++;
+      }
+    }
+    this.props.dataStore.setCurrScore(score);
+    this.props.dataStore.attempted = true;
+    if (this.props.dataStore.getCurrScore === this.props.dataStore.getMaxMarks) {
+      axios
+        .post(`http://localhost:8080/LMS-war/webresources/Assessment/completeCoursepackQuiz?quizId=157&userId=${userId}`, {})
+        .then(result => {
+          console.log("Unlocked next quiz!")
+        })
+        .catch(error => {
+          console.log("Error in unlocking next quiz.")
+        });
+    }
+  }
+
+  renderQuiz = () => {
+    var model = new Survey.Model(json);
+    return (
+      <MDBContainer align="left">
+        <MDBRow >
+          <MDBCol md="12">
+            <MDBCard cascade className="my-3 grey lighten-4">
+              {this.state.status === "done" &&
+                <Survey.Survey
+                  model={model}
+                  onComplete={() => this.onComplete()}
+                  onValueChanged={this.onValueChanged}
+                />
+              }
+              {this.state.status !== "done" && <h5 align="center" style={{ padding: 20 }}>Error in retrieving quiz. Please try again later.</h5>}
+            </MDBCard>
+          </MDBCol>
+        </MDBRow>
+      </MDBContainer>
+    );
+  }
+
+  renderQuizResults = () => {
+    return (
+      <MDBContainer className="mt-3" align="left">
+        <MDBRow className="py-3">
+          <MDBCol md="12">
+            <h2>Quiz Results</h2>
+            <h3>Score: {this.props.dataStore.getCurrScore} / {this.props.dataStore.getMaxMarks}</h3>
+            <br />
+            {answers.map((answer) => {
+              return (
+                <>
+                  <p>
+                    Question: {answer.question} <br />
+                    Your Answer: {answer.answer} <br />
+                  </p>
+                  {answer.answer != answer.correctAnswer && <MDBBtn color="red" disabled>WRONG</MDBBtn>}
+                  {answer.answer == answer.correctAnswer && <MDBBtn color="green" disabled>RIGHT</MDBBtn>}
+                  <hr />
+                </>
+              )
+            })}
+            {
+              this.props.dataStore.getCurrScore !== this.props.dataStore.getMaxMarks &&
+              <center><MDBBtn onClick={() => { this.props.dataStore.attempted = false }}>Reattempt</MDBBtn></center>
+            }
+            {
+              this.props.dataStore.getCurrScore === this.props.dataStore.getMaxMarks &&
+              <div>
+                <center>You have unlocked the next quiz!</center>
+                <center><MDBBtn>Proceed</MDBBtn></center>
+              </div>
+            }
+          </MDBCol>
+        </MDBRow>
+      </MDBContainer>
+    )
+  }
+
+  render() {
+    // if already attempted quiz or got full marks, render quiz results
+    if (this.props.dataStore.getCurrScore === this.props.dataStore.getMaxMarks || this.props.dataStore.getCoursepackQuizAttempt)
+      return this.renderQuizResults();
+    else
+      return this.renderQuiz();
   }
 }
 

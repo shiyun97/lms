@@ -167,7 +167,7 @@ class ModuleClassGroupsPage extends Component {
 
     async initPage() {
         let moduleId = this.props.match.params.moduleId;
-        let accessRight = localStorage.getItem("accessRight");
+        let accessRight = sessionStorage.getItem("accessRight");
         if (moduleId) {
             console.log(moduleId);
             let url = this.props.match.url;
@@ -1018,7 +1018,7 @@ export class ClassGroupDetails extends Component {
     async initPage() {
         let classGroupId = this.props.match.params.classGroupId;
         let moduleId = this.props.match.params.moduleId;
-        let accessRight = localStorage.getItem("accessRight");
+        let accessRight = sessionStorage.getItem("accessRight");
 
         if (moduleId && classGroupId) {
             // retrieve class group by id & set state
@@ -1202,7 +1202,7 @@ export class ClassGroupDetails extends Component {
     signUp = () => {
         let classGroupId = this.state.classGroupId;
         // get student info from store
-        let studentId = localStorage.getItem("userId");
+        let studentId = sessionStorage.getItem("userId");
         axios
             .post(API_URL + "/ManageGroup/joinClassGroup?classGroupId=" + classGroupId + "&userId=" + studentId)
             .then((result) => {

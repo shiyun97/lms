@@ -49,7 +49,7 @@ class ModuleDetailsPage extends Component {
     }
 
     initPage() {
-        let accessRight = localStorage.getItem("accessRight");
+        let accessRight = sessionStorage.getItem("accessRight");
         let moduleId = this.props.match.params.moduleId;
         if (moduleId && accessRight) {
             // retrieve module & set state

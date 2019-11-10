@@ -35,7 +35,7 @@ class ModuleQuizPagePreviewQuiz extends Component {
   }
 
   getModuleQuiz = () => {
-    let userId = localStorage.getItem('userId');
+    let userId = sessionStorage.getItem('userId');
     let quizId = this.props.dataStore.getCurrQuizId;
     axios
       .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveCoursepackQuiz/${quizId}?userId=${userId}`)

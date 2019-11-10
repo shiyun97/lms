@@ -111,7 +111,7 @@ class ModuleFeedbackEvaluationPage extends Component {
         }
         console.log(request)
         axios
-            .post(`${API_URL}/feedback/createSurveyAttempt?userId=${localStorage.getItem("userId")}`, request)
+            .post(`${API_URL}/feedback/createSurveyAttempt?userId=${sessionStorage.getItem("userId")}`, request)
             .then((result) => {
                 console.log(result)
                 this.setState({ isCompleted: true });
@@ -151,7 +151,7 @@ class ModuleFeedbackEvaluationPage extends Component {
             // retrieve questions
             await axios
                 //.get("http://localhost:3002/feedbackEvaluation2")
-                .get(`${API_URL}/feedback/retrieveSurvey?userId=${localStorage.getItem('userId')}&moduleId=${moduleId}`)
+                .get(`${API_URL}/feedback/retrieveSurvey?userId=${sessionStorage.getItem('userId')}&moduleId=${moduleId}`)
                 .then((result) => {
                     console.log(result);
                     if (result) {

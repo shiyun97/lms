@@ -3,6 +3,7 @@ import { MDBEdgeHeader, MDBContainer, MDBRow, MDBCol, MDBJumbotron, MDBAnimation
 import { observer, inject } from 'mobx-react'
 import { Redirect } from "react-router-dom";
 import axios from "axios";
+import logo from '../img/coursepack-logo.jpg';
 
 @inject('dataStore')
 @observer
@@ -54,12 +55,7 @@ class PublicLoginPage extends Component {
             <MDBRow>
               <MDBCol md="8" className="mt-3 mx-auto">
                 <MDBJumbotron>
-                  <h1 className="text-center" style={{ fontWeight: "bold" }}>
-                    COURSEPACK
-                </h1>
-                  <h3 className="text-center">
-                    Learning Management Platform
-                </h3>
+                  <center><img src={logo}/></center>
                   <ul className="list-unstyled example-components-list">
                     <form onSubmit={this.checkLogIn}>
                       <br />

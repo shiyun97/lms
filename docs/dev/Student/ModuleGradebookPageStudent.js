@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBCardBody, MDBCard, MDBDataTable } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBCardBody, MDBCard, MDBDataTable, MDBCardHeader } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
+import CanvasJSReact from '../../assets/canvasjs.react';
+var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 @inject('dataStore')
 @observer
@@ -52,15 +54,25 @@ class ModuleGradebookPageStudent extends Component {
         ],
         rows: [{ label: "Retrieving data..." }],
         status: "retrieving",
+
+        gradeItemsAnalytics: [],
+        studentScoreItems: [],
+        gradeItemStatus: "retrieving",
+        gradeItemMessage: "Gradebook Analytics is not available at the moment.",
     }
 
     componentDidMount() {
         this.initPage();
         this.getAllGrades();
+        this.getGradeItemAnalytics();
+    }
+
+    routeChange = (path) => {
+        this.props.history.push(path);
     }
 
     getAllGrades = () => {
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         let moduleId = this.props.dataStore.getCurrModId;
         axios
             .get(` http://localhost:8080/LMS-war/webresources/Assessment/retrieveStudentGrades?moduleId=${moduleId}&userId=${userId}`)
@@ -77,7 +89,112 @@ class ModuleGradebookPageStudent extends Component {
             });
     }
 
+    getGradeItemAnalytics = () => {
+        let userId = sessionStorage.getItem('userId');
+        var moduleId = this.props.dataStore.getCurrModId;
+        axios
+            .get(`http://localhost:8080/LMS-war/webresources/analytics/retrieveGradeItemAnalytics?userId=${userId}&moduleId=${moduleId}`)
+            .then(result => {
+                var temp = []
+                var tempY = []
+                var studentTemp = []
+                if (result.data.items.length === 0) {
+                    this.setState({ gradeItemStatus: "Empty Data" })
+                } else {
+                    result.data.items.map((item) => {
+                        tempY[0] = item.min;
+                        tempY[1] = item.twentyfifth;
+                        tempY[2] = item.seventyfifth;
+                        tempY[3] = item.max;
+                        tempY[4] = item.median;
+
+                        temp.push({
+                            label: item.title,
+                            y: tempY
+                        })
+                        studentTemp.push({
+                            label: item.title,
+                            y: item.studentMarks
+                        })
+                        tempY = []
+                    })
+                    this.setState({
+                        gradeItemsAnalytics: temp,
+                        studentScoreItems: studentTemp,
+                        gradeItemStatus: "done"
+                    });
+                }
+            })
+            .catch(error => {
+                this.setState({
+                    gradeItemStatus: "error",
+                });
+                console.error("error in axios " + error);
+            });
+    }
+
+    renderNoCardSection = () => {
+        return (
+            <MDBRow className="mb-4">
+                <MDBCol md="12" className="mb-r" align="center">
+                    <MDBCard>
+                        <MDBCardHeader>Gradebook Analytics</MDBCardHeader>
+                        <MDBCardBody>
+                            {this.state.gradeItemMessage}
+                        </MDBCardBody>
+                    </MDBCard>
+                </MDBCol>
+            </MDBRow>
+        )
+    }
+
+    renderBoxPlot = (data) => {
+        return (
+            <MDBRow className="mb-4">
+                <MDBCol md="12">
+                    <MDBCard>
+                        <MDBCardBody>
+                            <CanvasJSChart options={data} />
+                        </MDBCardBody>
+                    </MDBCard>
+                </MDBCol>
+            </MDBRow>
+        )
+    }
+
     renderGradebookTable = () => {
+        const optionsGradebook = {
+            animationEnabled: true,
+            exportEnabled: true,
+            theme: "light2", // "light1", "light2", "dark1", "dark2"
+            title: {
+                text: "Gradebook Analytics",
+                fontSize: 25
+            },
+            subtitles: [{
+                text: "Overall Scores",
+                fontSize: 15
+            }],
+            axisY: {
+                title: "Scores",
+                includeZero: true,
+                tickLength: 0,
+            },
+            data: [{
+                type: "boxAndWhisker",
+                whiskerColor: "#C0504E",
+                toolTipContent: "<span style=\"color:#6D78AD\">{label}:</span> <br><b>Maximum:</b> {y[3]},<br><b>Q3:</b> {y[2]},<br><b>Median:</b> {y[4]}<br><b>Q1:</b> {y[1]}<br><b>Minimum:</b> {y[0]}",
+                yValueFormatString: "0.0",
+                dataPoints: this.state.gradeItemsAnalytics
+            },
+            {
+                type: "scatter",
+                name: "Your Score",
+                toolTipContent: "<span style=\"color:#C0504E\">{name}</span>: {y}",
+                showInLegend: true,
+                dataPoints: this.state.studentScoreItems
+            }]
+        }
         var gradeItem = this.state.gradeItems;
         var moduleId = this.props.dataStore.getCurrModId;
         // console.log(gradeItem)
@@ -97,14 +214,12 @@ class ModuleGradebookPageStudent extends Component {
         }
 
         const data = () => ({ columns: this.state.columns, rows: tempGradeItems })
-        // clickEvent: () => goToProfilePage(1)
 
         const widerData = {
             columns: [...data().columns.map(col => {
                 col.width = 150;
                 return col;
             })], rows: [...data().rows.map(row => {
-                // row.clickEvent = () => goToProfilePage(1)
                 return row;
             })]
         }
@@ -123,7 +238,6 @@ class ModuleGradebookPageStudent extends Component {
                             <MDBCol md="4" align="right">
                             </MDBCol>
                         </MDBRow>
-                        {/* {this.renderEditQuizModalBox()} */}
                         <MDBRow className="py-3">
                             <MDBCol md="12">
                                 <MDBCard>
@@ -131,6 +245,9 @@ class ModuleGradebookPageStudent extends Component {
                                         <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={widerData} pagesAmount={4} />
                                     </MDBCardBody>
                                 </MDBCard>
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-3">
+                                {this.state.gradeItemStatus === "done" ? this.renderBoxPlot(optionsGradebook) : this.renderNoCardSection()}
                             </MDBCol>
                         </MDBRow>
                     </MDBContainer>
@@ -162,7 +279,6 @@ class ModuleGradebookPageStudent extends Component {
                             </MDBCol>
                             <MDBCol md="4" align="right">
                             </MDBCol>
-                            {/* {this.renderEditQuizModalBox()} */}
                         </MDBRow>
                         <MDBRow className="py-3">
                             <MDBCol md="12">
@@ -171,6 +287,9 @@ class ModuleGradebookPageStudent extends Component {
                                         <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
                                     </MDBCardBody>
                                 </MDBCard>
+                            </MDBCol>
+                            <MDBCol md="12" className="mt-3">
+                                {this.renderNoCardSection()}
                             </MDBCol>
                         </MDBRow>
                     </MDBContainer>

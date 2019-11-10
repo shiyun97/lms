@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react'
 import { Redirect } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from '../utils/GetApiUrl';
+import logo from '../img/lmp-logo.jpg';
 
 @inject('dataStore')
 @observer
@@ -23,7 +24,6 @@ class StudentLoginPage extends Component {
     const { email, password } = this.state;
     event.preventDefault();
     axios
-      // .post("http://localhost:3001/login", {
       .get(`${API_URL()}/LMS-war/webresources/User/userLogin?email=${email}&password=${password}`)
       .then(result => {
         if (result.data.user.accessRight === "Student" || result.data.user.accessRight === "Teacher") {
@@ -54,12 +54,7 @@ class StudentLoginPage extends Component {
             <MDBRow>
               <MDBCol md="8" className="mt-3 mx-auto">
                 <MDBJumbotron>
-                  <h1 className="text-center" style={{ fontWeight: "bold" }}>
-                    FLIPIT
-                </h1>
-                  <h3 className="text-center">
-                    Learning Management Platform
-                </h3>
+                  <center><img src={logo} width="50%" /></center>
                   <ul className="list-unstyled example-components-list">
                     <form onSubmit={this.checkLogIn}>
                       <br />

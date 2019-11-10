@@ -3,6 +3,7 @@ import { MDBEdgeHeader, MDBContainer, MDBRow, MDBCol, MDBJumbotron, MDBAnimation
 import { observer, inject } from 'mobx-react'
 import { Redirect } from "react-router-dom";
 import axios from "axios";
+import logo from '../img/lmp-logo.jpg';
 
 @inject('dataStore')
 @observer
@@ -55,12 +56,10 @@ class AdminLoginPage extends Component {
             <MDBRow>
               <MDBCol md="8" className="mt-3 mx-auto">
                 <MDBJumbotron>
-                  <h1 className="text-center" style={{ fontWeight: "bold" }}>
-                  FLIPIT
-                </h1>
-                  <h3 className="text-center">
+                  <center><img src={logo}/></center>
+                  <h5 className="text-center">
                     Administration Login
-                </h3>
+                </h5>
                   <ul className="list-unstyled example-components-list">
                     <form onSubmit={this.checkLogIn}>
                       <br />

@@ -178,7 +178,7 @@ class ModuleForumPage extends Component {
 
         // api to create new thread
         axios
-            .put(`${API_URL}/Forum/createThread?forumTopicId=${this.state.topicId}&userId=${localStorage.getItem('userId')}`,
+            .put(`${API_URL}/Forum/createThread?forumTopicId=${this.state.topicId}&userId=${sessionStorage.getItem('userId')}`,
             request)
             .then((result) => {
                 console.log(result);
@@ -221,7 +221,7 @@ class ModuleForumPage extends Component {
     confirmDelete = () => {
         if (this.state.threadToDelete) {
             axios
-                .delete(`${API_URL}/Forum/deletePost?postId=${this.state.threadToDelete}&userId=${localStorage.getItem('userId')}`)
+                .delete(`${API_URL}/Forum/deletePost?postId=${this.state.threadToDelete}&userId=${sessionStorage.getItem('userId')}`)
                 .then((result) => {
                     console.log(result);
                     if (result) {
@@ -397,7 +397,7 @@ class ForumThreadListItem extends Component {
                             textDecoration: "underline", overflow: "hidden" }}>
                             <span onClick={this.props.enterForumThread}>{forumThread.title}</span>
                             {
-                                forumThread.owner.userId == localStorage.getItem('userId') &&
+                                forumThread.owner.userId == sessionStorage.getItem('userId') &&
                                 <MDBIcon icon="trash-alt" className="indigo-text mt-2 ml-3" size="md" onClick={this.props.delete} />
                             }
                         </div>

@@ -200,13 +200,13 @@ class CoursepackMultimediaPage extends Component {
 
         // call api to send
         var files = this.state.uploadedMultimedia;
-        if (files.length > 0 && this.state.coursepackId && localStorage.getItem("userId")) {
+        if (files.length > 0 && this.state.coursepackId && sessionStorage.getItem("userId")) {
             const formData = new FormData();
             for (let i = 0; i < files.length; i++) {
                 formData.append('file', files[i]);
             }
 
-            fetch(`${API}/file/uploadMultipleMultimediaForCoursepack?coursepackId=${this.state.coursepackId}&userId=${localStorage.getItem("userId")}`, {
+            fetch(`${API}/file/uploadMultipleMultimediaForCoursepack?coursepackId=${this.state.coursepackId}&userId=${sessionStorage.getItem("userId")}`, {
                 method: 'post',
                 body: formData
             })

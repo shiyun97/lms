@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBBtn } from "mdbreact";
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
-import moment from 'moment';
 import styled from 'styled-components';
 import * as Survey from "survey-react";
 import ModuleSideNavigation from "../ModuleSideNavigation";
@@ -35,10 +34,6 @@ var json = {
           "number": 1,
           "title": "What is a MCQ question?",
           "isRequired": true,
-          // "level": 1, //only for adaptive,
-          //"explanation" : "Explanation/ Feedback of Question",
-          // "correctAnswer" : "Answer Choice 1",
-          // "points": 1,
           "choices": [
             {
               "text": "Answer Choice 1"
@@ -60,10 +55,6 @@ var json = {
           "number": 2,
           "title": "Do you ask questions?",
           "isRequired": true,
-          // "level": 1, //only for adaptive
-          //"explanation" : "Explanation/ Feedback of Question",
-          // "correctAnswer" : "Answer Choice 1",
-          // "points": 1,
           "choices": [
             {
               "text": "Answer Choice 1"
@@ -85,10 +76,6 @@ var json = {
           "number": 3,
           "title": "What is a multiple choice question?",
           "isRequired": true,
-          // "level": 1, //only for adaptive,
-          //"explanation" : "Explanation/ Feedback of Question",
-          // "correctAnswer" : "Answer Choice 1",
-          // "points" : 1
         }
       ]
     }
@@ -124,7 +111,7 @@ class ModuleQuizPageAnswerNormalQuiz extends Component {
   }
 
   getModuleQuiz = () => {
-    let userId = localStorage.getItem('userId');
+    let userId = sessionStorage.getItem('userId');
     let quizId = this.props.dataStore.getCurrQuizId;
     axios
       .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveModuleQuiz/${quizId}?userId=${userId}`)
@@ -148,7 +135,6 @@ class ModuleQuizPageAnswerNormalQuiz extends Component {
     var questions = json.pages[0].elements;
     // console.log(result.data)
     for (var i = 0; i < questionAttempts.length; i++) {
-      // console.log(questionAttempts[i].substr(8, questionAttempts[i].length))
       var questionNumber = questionAttempts[i].substr(8, questionAttempts[i].length)
       for (var j = 0; j < questions.length; j++) {
         if (questionNumber == questions[j].number) {
@@ -164,9 +150,9 @@ class ModuleQuizPageAnswerNormalQuiz extends Component {
   }
 
   onComplete = (result) => {
-    let userId = localStorage.getItem('userId');
-    console.log(quizId)
-    console.log(answers)
+    let userId = sessionStorage.getItem('userId');
+    // console.log(quizId)
+    // console.log(answers)
     axios
       .post(`http://localhost:8080/LMS-war/webresources/Assessment/createQuizAttempt?userId=${userId}`, {
         quizId: quizId,

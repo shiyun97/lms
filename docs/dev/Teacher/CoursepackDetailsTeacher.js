@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBCol, MDBBtn, MDBRow, MDBMedia, MDBCard, MDBIcon, MDBProgress } from "mdbreact";
+import { MDBContainer, MDBCol, MDBBtn, MDBRow, MDBIcon, MDBProgress } from "mdbreact";
 import axios from "axios";
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
 import CoursepackSideNavigation from "../CoursepackSideNavigation";
 import SectionContainer from "../../components/sectionContainer";
 import { Snackbar } from '@material-ui/core';
 import 'babel-polyfill';
+import { NavLink } from 'react-router-dom';
 import { Rating } from '@material-ui/lab';
 import TextField from '@material-ui/core/TextField';
 import Slide from '@material-ui/core/Slide';
@@ -27,26 +28,7 @@ class CoursepackDetailsTeacher extends Component {
         message: "",
         openSnackbar: false,
         coursepackId: "",
-        ratings: [
-            /*{
-                ratingId: 2,
-                comment: "This is a good course. yay",
-                rating: 5,
-                user: {
-                    firstName: "John",
-                    lastName: "Doe"
-                }
-            },
-            {
-                ratingId: 3,
-                comment: "This is a good course. yay",
-                rating: 4.5,
-                user: {
-                    firstName: "Tom",
-                    lastName: "Doe"
-                }
-            }*/
-        ],
+        ratings: [],
         averageRating: "",
         ratingSpread: [],
         ratingValues: [],
@@ -60,7 +42,7 @@ class CoursepackDetailsTeacher extends Component {
     componentDidMount() {
 
         let coursepackId = this.props.coursepackId;
-        let accessRight = localStorage.getItem("accessRight");
+        let accessRight = sessionStorage.getItem("accessRight");
         if (coursepackId) {
             this.setState({
                 coursepackId: coursepackId
@@ -126,7 +108,9 @@ class CoursepackDetailsTeacher extends Component {
                         <h6> SGD {this.state.courseDetails.price}</h6>
 
                         <MDBCol align="right">
-                            <MDBBtn color="primary" onClick={this.viewCourse} >View Course</MDBBtn>
+                            <NavLink to={`/coursepack/${this.state.coursepackId}/assessments`}>
+                                <MDBBtn color="primary" >View Course</MDBBtn>
+                            </NavLink>
                         </MDBCol>
                     </MDBCol>
                     <MDBCol size="4">
@@ -298,7 +282,7 @@ class CoursepackDetailsTeacher extends Component {
         let ratingStarsInput = this.state.ratingStarsInput;
         if (ratingCommentInput && ratingStarsInput) {
             let request = {
-                userId: localStorage.getItem('userId'),
+                userId: sessionStorage.getItem('userId'),
                 coursepackId: this.state.coursepackId,
                 rating: ratingStarsInput,
                 comment: ratingCommentInput
@@ -383,11 +367,11 @@ class CoursepackDetailsTeacher extends Component {
         let ratings = this.state.ratings;
         return (
             <div className={this.props.className}>
-                {localStorage.getItem('accessRight') === 'Teacher' ? <CoursepackSideNavigation courseId={this.props.coursepackId} /> : null}
+                {sessionStorage.getItem('accessRight') === 'Teacher' ? <CoursepackSideNavigation courseId={this.props.coursepackId} /> : null}
                 {/*                 <CoursepackSideNavigation courseId={this.props.coursepackId} />
  */}
                 <MDBContainer style={{ paddingTop: 50 }}>
-                    {localStorage.getItem('accessRight') !== 'Teacher' ? (
+                    {sessionStorage.getItem('accessRight') !== 'Teacher' ? (
                         <div>
                             <MDBBtn onClick={e => this.addRating()} color="primary">Rate</MDBBtn>
                             {this.showAddRatingDialog()}
@@ -422,7 +406,7 @@ class CoursepackDetailsTeacher extends Component {
                         <MDBCol className="col-md-2">
                             <div className="mt-1" />
                             {ratingValues.map((ratingValue, index) => (
-                                <Rating value={ratingValue} key={index} readOnly size="small" />
+                                <Rating value={ratingValue} key={index} precision={0.1} readOnly size="small" />
                             ))}
                         </MDBCol>
                         <MDBCol className="col-md-1">

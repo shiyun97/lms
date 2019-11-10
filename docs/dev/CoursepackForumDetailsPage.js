@@ -117,7 +117,7 @@ class CoursepackForumDetailsPage extends Component {
             type: "reply"
         }
         axios
-            .put(`${API_URL}/Forum/createPost?parentPostId=${forumPostId}&userId=${localStorage.getItem('userId')}`, request)
+            .put(`${API_URL}/Forum/createPost?parentPostId=${forumPostId}&userId=${sessionStorage.getItem('userId')}`, request)
             .then((result) => {
                 this.setState({
                     message: "New reply added successfully",
@@ -143,7 +143,7 @@ class CoursepackForumDetailsPage extends Component {
             type: "comment"
         }
         axios
-            .put(`${API_URL}/Forum/createPost?parentPostId=${forumPostId}&userId=${localStorage.getItem('userId')}`, request)
+            .put(`${API_URL}/Forum/createPost?parentPostId=${forumPostId}&userId=${sessionStorage.getItem('userId')}`, request)
             .then((result) => {
                 this.setState({
                     message: "New comment added successfully",
@@ -182,7 +182,7 @@ class CoursepackForumDetailsPage extends Component {
         //e.preventDefault()
         if (this.state.postToDelete) {
             axios
-            .delete(`${API_URL}/Forum/deletePost?postId=${this.state.postToDelete}&userId=${localStorage.getItem('userId')}`)
+            .delete(`${API_URL}/Forum/deletePost?postId=${this.state.postToDelete}&userId=${sessionStorage.getItem('userId')}`)
             .then((result) => {
                 console.log(result);
                 if (result) {
@@ -233,7 +233,7 @@ class CoursepackForumDetailsPage extends Component {
         if (this.state.commentToDelete != "") {
             console.log(this.state.commentToDelete)
             axios
-            .delete(`${API_URL}/Forum/deletePost?postId=${this.state.commentToDelete}&userId=${localStorage.getItem('userId')}`)
+            .delete(`${API_URL}/Forum/deletePost?postId=${this.state.commentToDelete}&userId=${sessionStorage.getItem('userId')}`)
             .then((result) => {
                 console.log(result);
                 if (result) {
@@ -326,7 +326,7 @@ class CoursepackForumDetailsPage extends Component {
         }
 
         axios
-            .put(`${API_URL}/Forum/editPost?forumPostId=${id}&userId=${localStorage.getItem('userId')}`,
+            .put(`${API_URL}/Forum/editPost?forumPostId=${id}&userId=${sessionStorage.getItem('userId')}`,
             request)
             .then((result) => {
                 console.log(result);
@@ -361,7 +361,7 @@ class CoursepackForumDetailsPage extends Component {
         }
 
         axios
-            .put(`${API_URL}/Forum/editPost?forumPostId=${id}&userId=${localStorage.getItem('userId')}`,
+            .put(`${API_URL}/Forum/editPost?forumPostId=${id}&userId=${sessionStorage.getItem('userId')}`,
             request)
             .then((result) => {
                 console.log(result);
@@ -630,7 +630,7 @@ class ForumThreadListItem extends Component {
     render() {
         let forumThread = this.props.forumThread;
         let comments = this.props.forumThread.comments;
-        let userId = localStorage.getItem("userId");
+        let userId = sessionStorage.getItem("userId");
         return <div className={this.props.className}>
             <div className="container-fluid section border p-4 justify-content d-flex mt-2">
                 <MDBCol sm="12">
@@ -764,7 +764,7 @@ class ForumThreadListItem extends Component {
                 this.state.showAddReply &&
                 <div className="container-fluid section border p-4 justify-content d-flex mb-2"  style={{ backgroundColor: "#f6f7f9" }}>
                     <div className="mt-3">
-                        Posting as {localStorage.getItem('firstName') + localStorage.getItem('lastName')}
+                        Posting as {sessionStorage.getItem('firstName') + sessionStorage.getItem('lastName')}
                         <div className="form-row align-items-center mb-2 mt-1">
                             <div className="col-12">
                                 <label className="mb-1" style={{color: "#2F79B9", fontWeight: "600", fontSize: "16px", lineHeight: "1.2",}}>Title</label>
@@ -798,7 +798,7 @@ class ForumThreadListItem extends Component {
                 this.state.showAddComment &&
                 <div className="container-fluid section border p-4 justify-content d-flex mb-2"  style={{ backgroundColor: "#f6f7f9" }}>
                     <div className="mt-3">
-                        Posting as {localStorage.getItem('firstName') + localStorage.getItem('lastName')}
+                        Posting as {sessionStorage.getItem('firstName') + sessionStorage.getItem('lastName')}
                         <div className="form-row align-items-center mb-2">
                             <div className="col-12">
                                 <label className="mb-1" style={{color: "#2F79B9", fontWeight: "600", fontSize: "16px", lineHeight: "1.2",}}>Comment</label>

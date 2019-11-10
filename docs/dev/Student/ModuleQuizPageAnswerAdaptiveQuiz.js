@@ -174,7 +174,7 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
   }
 
   getModuleQuiz = () => {
-    let userId = localStorage.getItem('userId');
+    let userId = sessionStorage.getItem('userId');
     let quizId = this.props.dataStore.getCurrQuizId;
     axios
       .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveModuleQuiz/${quizId}?userId=${userId}`)
@@ -182,8 +182,8 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
         // console.log(result.data)
         var newJson = result.data;
         newJson['completedHtml'] = "<p><h4>You have completed the quiz!</h4></p>";
-        newJson['goNextPageAutomatic'] = true
-        newJson['showNavigationButtons'] = false
+        newJson['showPrevButton'] = false
+        newJson['maxTimeToFinish'] = 0
         json = newJson
         this.rearrangePages();
         this.setState({ status: "done" })
@@ -217,8 +217,13 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
     // console.log(answers)
   }
 
+  doOnCurrentPageChanged = (result) => {
+    console.log(page)
+    page = 2
+  }
+
   onComplete = (result) => {
-    let userId = localStorage.getItem('userId');
+    let userId = sessionStorage.getItem('userId');
     // console.log(quizId)
     // console.log(answers)
     axios
@@ -243,7 +248,6 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
   }
 
   render() {
-    console.log(page)
     // console.log(json)
     var model = new Survey.Model(json);
     var moduleId = this.props.dataStore.getCurrModId;
@@ -262,6 +266,7 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
                         model={model}
                         onComplete={() => this.onComplete()}
                         currentPageNo={page}
+                        doOnCurrentPageChanged={this.doOnCurrentPageChanged}
                         onValueChanged={this.onValueChanged}
                       />
                     }

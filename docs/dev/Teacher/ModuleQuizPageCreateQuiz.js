@@ -3,7 +3,7 @@ import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBIcon, MDBInputGroup }
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import ModuleSideNavigation from "./../ModuleSideNavigation";
-import { Stepper, Step, StepLabel, TextField, Typography, Switch, Snackbar, Checkbox } from '@material-ui/core';
+import { Stepper, Step, StepLabel, TextField, Typography, Snackbar, Checkbox } from '@material-ui/core';
 import axios from 'axios';
 import { Redirect } from "react-router-dom";
 
@@ -22,7 +22,7 @@ class ModuleQuizPageCreateQuiz extends Component {
         description: "",
         title: "", // title
         activeStep: 0,
-        steps: ['Quiz Configuration', 'Build Quiz'],
+        steps: ['Quiz Configuration', 'Edit Quiz Build'],
         questionType: "",
 
         //create quiz inputs
@@ -63,7 +63,7 @@ class ModuleQuizPageCreateQuiz extends Component {
 
     handleSubmit = () => {
         // call api to submit quiz
-        let userId = localStorage.getItem('userId');
+        let userId = sessionStorage.getItem('userId');
         var moduleId = this.props.dataStore.getCurrModId;
         // console.log({
         //     title: this.state.title,
@@ -111,6 +111,7 @@ class ModuleQuizPageCreateQuiz extends Component {
 
         //to reset
         this.setState({ activeStep: 0 });
+        this.props.dataStore.resetQuestions();
     }
 
     handleNext = () => {
@@ -266,8 +267,6 @@ class ModuleQuizPageCreateQuiz extends Component {
                 newQuestions.push(
                     {
                         type: "radiogroup",
-                        // name: "MCQ",
-                        // number: number,
                         title: this.state.questionTitle,
                         isRequired: true,
                         level: this.state.level, //only for adaptive,
@@ -281,8 +280,6 @@ class ModuleQuizPageCreateQuiz extends Component {
                 newQuestions.push(
                     {
                         type: "text", //text
-                        // name: "Short Answer",
-                        // number: number,
                         title: this.state.questionTitle,
                         isRequired: true,
                         level: this.state.level, //only for adaptive,

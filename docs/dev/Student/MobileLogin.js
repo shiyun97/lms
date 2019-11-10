@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react'
 import { Redirect } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from '../utils/GetApiUrl';
+import logo from '../img/logo-white.jpg';
 
 @inject('dataStore')
 @observer
@@ -72,8 +73,7 @@ class MobileLogin extends Component {
                         <MDBRow>
                             <MDBCol md="8" className="mt-3 mx-auto">
                                 <MDBJumbotron>
-                                    <h1 className="text-center" style={{ fontWeight: "bold" }}>FLIPIT </h1>
-                                    <h3 className="text-center">Learning Management Platform</h3>
+                                    <center><img src={logo} width="50%" /></center>
                                     <ul className="list-unstyled example-components-list">
                                         <form onSubmit={this.checkLogIn}>
                                             <br />
