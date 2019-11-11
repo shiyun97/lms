@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBIcon, MDBRow, MDBCol, MDBDataTable, MDBBtn, MDBModal, MDBModalHeader, MDBModalBody, MDBModalFooter } from "mdbreact";
+import { MDBIcon, MDBRow, MDBCol, MDBDataTable, MDBBtn, MDBModal, MDBModalHeader, MDBModalBody, MDBModalFooter } from "mdbreact";
 import axios from "axios";
+import { Snackbar } from "@material-ui/core";
 import { observer, inject } from 'mobx-react'
-import CoursepackCertificatePdf from './CoursepackCertificatePdf'
 const API = "http://localhost:8080/LMS-war/webresources/";
 
 @inject('dataStore')
@@ -12,10 +12,13 @@ class CoursepackCertificatesDetailsPage extends Component {
     state = {
         listOfCoursepacks: [],
         message: "",
-        openSnackbar: false, //TODO:
+        openSnackbar: false,
         modal: false,
         modalDelete: false,
-        heading: "HTML Certificate Coursepacks"
+        coursepackList: "",
+        certId: 0,
+        selectedCoursepack: "",
+        title: ""
     }
 
     componentDidMount() {
@@ -23,17 +26,25 @@ class CoursepackCertificatesDetailsPage extends Component {
     }
 
     initPage() {
-        /* let certId = this.props.params.match.certId */ //FIXME:
+        let certId = this.props.match.params.certId
+        this.setState({ certId: certId })
+        axios.get(`${API}Gamification/getCertification?certificationId=${certId}`)
+            .then(result => {
+                this.setState({ coursepackList: result.data.coursepackList, title: result.data.title })
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
 
-        //get created coursepack  
-/*         axios.get(`${API}Coursepack/getAllCoursepack`) //FIXME:
+        //get all coursepacks
+        axios.get(`${API}Coursepack/getAllCoursepack`)
             .then(result => {
                 this.setState({ listOfCoursepacks: result.data.coursepack })
             })
             .catch(error => {
-                this.setState({ message: error.response, openSnackbar: true })
                 console.error("error in axios " + error);
-            }); */
+            });
+
     }
 
     toggleModal = event => {
@@ -44,8 +55,15 @@ class CoursepackCertificatesDetailsPage extends Component {
         this.setState({ modalDelete: !this.state.modal })
     }
 
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        this.setState({ openSnackbar: false });
+    };
+
     cancel = event => {
-        this.setState({modalDelete: false})
+        this.setState({ modalDelete: false })
     }
 
     showTable = () => {
@@ -63,16 +81,6 @@ class CoursepackCertificatesDetailsPage extends Component {
                     width: 100
                 },
                 {
-                    label: 'Category',
-                    field: 'cateogry',
-                    width: 100
-                },
-                {
-                    label: 'Price',
-                    field: 'price',
-                    width: 100
-                },
-                {
                     label: 'Remove',
                     field: 'remove',
                     width: 100
@@ -80,6 +88,10 @@ class CoursepackCertificatesDetailsPage extends Component {
             ],
             rows:
                 this.tableRows()
+        }
+
+        if (data.rows.length === 0) {
+            return <div>No coursepack assigned</div>
         }
         return (
             <div>
@@ -98,71 +110,102 @@ class CoursepackCertificatesDetailsPage extends Component {
 
     tableRows = () => {
         let coursepacks = []
-        let allCoursepacks = this.props.dataStore.getListOfCoursepacks
-         console.log(allCoursepacks)
-         allCoursepacks && allCoursepacks.map((coursepack, index) => {
+
+        this.state.coursepackList && this.state.coursepackList.map((coursepack) => {
             coursepacks.push({
                 coursepackTitle: coursepack.title,
                 code: coursepack.code,
-                category: coursepack.category,
-                price: coursepack.price,
-                remove: this.showDeleteButton(),
-                clickEvent: () => this.handleDeleteCoursepack(index) //TODO:
+                remove: this.showDeleteButton(coursepack.coursepackId),
 
             })
         })
         return coursepacks
     }
 
-    showDeleteButton = () => {
+    showDeleteButton = (index) => {
         return (
-            <MDBIcon icon="trash-alt" />
+            <MDBIcon onClick={() => this.deleteCoursepack(index)} icon="trash-alt" />
         )
     }
 
-    handleDeleteCoursepack = coursepackId => {
-        /*         axios.delete(`${API}Coursepack/deleteLessonOrder?lessonOrderId=${lessonOrderId}`)
-                .then(result => {
-                    this.setState({
-                        message: "Coursepack removed",
-                        openSnackbar: true
-                    })
-                    this.initPage()
+    deleteCoursepack = index => {
+        axios.put(`${API}Gamification/removeCoursepackFromCert?certificationId=${this.state.certId}&coursepackId=${index}`)
+            .then(result => {
+                this.setState({
+                    message: "Coursepack removed",
+                    openSnackbar: true
                 })
-                .catch(error => {
-                    this.setState({
-                        message: error.response,
-                        openSnackbar: true
-                    })
-                    console.error("error in axios " + error);
-                }); */
+                this.initPage()
+            })
+            .catch(error => {
+                this.setState({
+                    message: error.response,
+                    openSnackbar: true
+                })
+                console.error("error in axios " + error);
+            });
+    }
+
+    handleSelectedCoursepack = event => {
+        this.setState({ selectedCoursepack: event.target.value }, () => event)
     }
 
     addCoursepack = event => {
         this.setState({ modal: false })
-
-        /*         axios.put(`${API}Coursepack/createOutline?coursepackId=${this.state.coursepackId}&name=${this.state.outlineName}`)
-                    .then(result => {
-                        this.setState({ message: "New coursepack added", openSnackbar: true, modal: false })
-                        this.initPage()
-                    })
-                    .catch(error => {
-                        this.setState({ message: error.response, openSnackbar: true })
-                        console.error("error in axios " + error);
-                    }); */
+        axios.put(`${API}Gamification/assignCoursepackToCert?certificationId=${this.state.certId}&coursepackId=${this.state.selectedCoursepack}`)
+            .then(result => {
+                this.setState({
+                    message: "New coursepack added",
+                    openSnackbar: true,
+                    modal: false
+                })
+                this.initPage()
+            })
+            .catch(error => {
+                this.setState({
+                    message: error.response,
+                    openSnackbar: true
+                })
+                console.error("error in axios " + error);
+            });
     }
 
     removeCert = event => {
+        axios.delete(`${API}Gamification/deleteCertification?certificationId=${this.state.certId}`)
+            .then(result => {
+                this.setState({
+                    message: "Successfully deleted certificate",
+                    openSnackbar: true,
+                    modalDelete: false
+                })
+                this.props.history.go(-1)
+            })
+            .catch(error => {
+                this.setState({ message: error.response, openSnackbar: true })
+                console.error("error in axios " + error);
+            });
+    }
 
+    select = () => {
+    
+        return (
+            <select onChange={this.handleSelectedCoursepack} className="browser-default custom-select">
+                <option>Choose a coursepack</option>
+                {this.state.listOfCoursepacks && this.state.listOfCoursepacks.map(
+                    (coursepack, index) => <option key={index} value={coursepack.coursepackId}>{coursepack.title}</option>)
+                }
+            </select>
+        )
     }
 
     render() {
+
         return (
             <div style={{ paddingLeft: 150, paddingTop: 50, paddingRight: 50 }}>
                 <MDBRow size="12" >
                     <MDBCol size="8">
                         <h2 className="font-weight-bold" style={{ paddingTop: 50 }}>
-                            {this.state.heading}
+                            {this.state.title}
                         </h2>
                     </MDBCol>
                     <MDBCol size="4" align="right" style={{ paddingTop: 40, paddingRight: 30 }}>
@@ -173,12 +216,7 @@ class CoursepackCertificatesDetailsPage extends Component {
                                 <MDBRow>
                                     <MDBCol sm="4">Select Coursepack: </MDBCol>
                                     <MDBCol sm="8">
-                                        <select onChange={this.handleSelectedCoursepack} className="browser-default custom-select">
-                                            <option>Choose a coursepack</option>
-                                            {this.state.listOfCoursepacks && this.state.listOfCoursepacks.map(
-                                                (coursepack, index) => <option key={index} value={coursepack.coursepackId}>{coursepack.title}</option>)
-                                            }
-                                        </select>
+                                        {this.select()}
                                     </MDBCol>
                                 </MDBRow>
                             </MDBModalBody>
@@ -205,10 +243,21 @@ class CoursepackCertificatesDetailsPage extends Component {
                         </MDBModalFooter>
                     </MDBModal>
                 </MDBCol>
-                <CoursepackCertificatePdf 
-                heading={this.state.heading} 
-                firstName={sessionStorage.getItem("firstName")}
-                lastName = {sessionStorage.getItem("lastName")}
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.openSnackbar}
+                    autoHideDuration={6000}
+                    onClose={this.handleClose}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">{this.state.message}</span>}
+                    action={[
+                        <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                    ]}
                 />
 
             </div>

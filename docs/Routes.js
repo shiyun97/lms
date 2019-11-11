@@ -120,13 +120,14 @@ import CoursepackQuizPagePreviewQuiz from "./dev/Teacher/CoursepackQuizPagePrevi
 import ModuleAnalyticsPage from "./dev/Teacher/ModuleAnalyticsPage";
 import CoursepackCartPage from "./dev/CoursepackCartPage";
 import CoursepackCheckoutPage from "./dev/CoursepackCheckoutPage";
-import CoursepackCertificatesDetailsPage from "./dev/CoursepackCertificatesDetailsPage";
+import CoursepackCertificatesDetailsPage from "./dev/Admin/CoursepackCertificatesDetailsPage";
 import CoursepackDashboardAdmin from "./dev/Admin/CoursepackDashboardAdmin";
 import CoursepackQuizPageEditQuiz from "./dev/Teacher/CoursepackQuizPageEditQuiz";
 import CoursepackViewAllPage from "./dev/CoursepackViewAllPage";
 import CoursepackAchievementsPage from "./dev/CoursepackAchievementsPage";
 import ModuleQuizPageViewStatistics from "./dev/Teacher/ModuleQuizPageViewStatistics";
 import ModuleFeedbackPageViewStatistics from "./dev/Teacher/ModuleFeedbackPageViewStatistics";
+import CoursepackAchievementsPageView from "./dev/CoursepackAchievementsPageView";
 
 @inject('dataStore')
 @observer
@@ -179,7 +180,7 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/quiz/:quizId/edit" component={ModuleQuizPageEditQuiz} />
         <Route exact path="/coursepack/:coursepackId/arrangements" component={CoursepackArrangementPage} />
         <Route exact path="/coursepack/:coursepackId/edit" component={CoursePackEditPage} />
-        <Route exact path="/coursepack/:coursepackId/assessments/" component={CoursepackAssessmentPage} />        
+        <Route exact path="/coursepack/:coursepackId/assessments/" component={CoursepackAssessmentPage} />
         <Route exact path="/coursepack/create/" component={CoursepackCreatePage} />
         <Route exact path="/modules/:moduleId/quiz/:quizId/review" component={ModuleQuizPageViewStudents} />
         <Route exact path="/modules/:moduleId/quiz/:quizId/statistics" component={ModuleQuizPageViewStatistics} />
@@ -250,7 +251,9 @@ class Routes extends React.Component {
         <Route exact path="/coursepack/dashboard/admin/" component={CoursepackDashboardAdmin} />
         <Route exact path="/coursepacks" component={CoursepackViewAllPage} />
         <Route exact path="/coursepacks/:categoryId" component={CoursepackViewAllPage} />
-        <Route exact path="/coursepack/achievements/view" component={CoursepackAchievementsPage} />
+        <Route exact path="/coursepack/achievements/view/certificates" component={CoursepackAchievementsPage} />
+        <Route exact path="/coursepack/achievements/view/badges" component={CoursepackAchievementsPage} />
+        <Route exact path="/coursepack/achievements/certificates/view/:certId" component={CoursepackAchievementsPageView} />
 
         {/* FREE Templates */}
         <Route exact path="/home" component={HomePage} />

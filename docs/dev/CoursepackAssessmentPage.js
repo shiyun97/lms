@@ -29,10 +29,10 @@ class CoursepackAssessmentPage extends Component {
 
     componentDidMount() {
         let coursepackId = this.props.match.params.coursepackId
+        console.log(this.props.match.params.coursepackId)
         this.setState({ coursepackId: coursepackId })
-        console.log(coursepackId)
 
-        axios.get(`${API}Coursepack/getCoursepack/${coursepackId}`)
+        axios.get(`${API}Coursepack/getCoursepackUser/${coursepackId}?userId=${sessionStorage.getItem("userId")}`)
             .then(result => {
                 this.setState({
                     coursepackDetails: result.data,
@@ -84,14 +84,12 @@ class CoursepackAssessmentPage extends Component {
         return list;
     }
 
-    nextItem = currentId => {
-        
-    }
 
     showVideoQuiz = () => {
         var location = ""
         var currentFile = this.state.currentLessonOrder && this.state.currentLessonOrder.file ? this.state.currentLessonOrder.file.fileId : null
         var currentQuiz = this.state.currentLessonOrder && this.state.currentLessonOrder.quiz ? this.state.currentLessonOrder.quiz.quizId : null
+        var currentStatus = this.state.currentLessonOrder.status
 
         if (currentFile) { //video 
             return (
@@ -106,7 +104,10 @@ class CoursepackAssessmentPage extends Component {
                         )
                     }
                 }))
-        } else { //quiz
+        } /* else if (currentQuiz && currentStatus === 'Locked') { //TODO: uncomment
+            return <div>Please complete the previous quiz to unlocked</div>
+
+        } */ else { //quiz
             console.log(currentQuiz)
             return (
                 <div>
@@ -124,7 +125,7 @@ class CoursepackAssessmentPage extends Component {
                                 height: window.screen.height,
                                 overflow: 'scroll',
                             }}>
-                                <CoursepackQuizPageAnswerQuiz onClick={()=>this.nextItem(currentQuiz)} currentQuiz={currentQuiz} />
+                                <CoursepackQuizPageAnswerQuiz proceed={this.ended} currentQuiz={currentQuiz} />
                             </Element>
 
                         </Fullscreen>

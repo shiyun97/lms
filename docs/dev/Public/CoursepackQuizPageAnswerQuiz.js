@@ -21,12 +21,13 @@ class CoursepackQuizPageAnswerQuiz extends Component {
     email: "",
     moduleId: 0,
     message: "",
-    status: "retrieving"
+    status: "retrieving",
+    quizId: ""
   }
 
   initPage() {
-    console.log(this.props.currentQuiz)
-    this.props.dataStore.setCurrQuizId(this.props.currentQuiz);
+/*     console.log(this.props.currentQuiz)
+ */    this.props.dataStore.setCurrQuizId(this.props.currentQuiz);
   }
 
   componentDidMount() {
@@ -37,15 +38,17 @@ class CoursepackQuizPageAnswerQuiz extends Component {
   getCoursepackQuiz = () => {
     let userId = sessionStorage.getItem('userId');
     let quizId = this.props.dataStore.getCurrQuizId;
+
+    console.log(quizId)
+    console.log(userId) 
     axios
       .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveCoursepackQuiz/${quizId}?userId=${userId}`)
       .then(result => {
-        // console.log(result.data)
         var newJson = result.data;
         newJson['completedHtml'] = "<p><h4>You have completed the quiz!</h4></p>";
         newJson['showTimerPanel'] = "none";
         json = newJson
-        this.setState({ status: "done" })
+        this.setState({ status: "done",  userId: userId, quizId: quizId})
         this.props.dataStore.setMaxMarks(result.data.maxMarks)
       })
       .catch(error => {
@@ -97,11 +100,12 @@ class CoursepackQuizPageAnswerQuiz extends Component {
     this.props.dataStore.attempted = true;
     if (this.props.dataStore.getCurrScore === this.props.dataStore.getMaxMarks) {
       axios
-        .post(`http://localhost:8080/LMS-war/webresources/Assessment/completeCoursepackQuiz?quizId=157&userId=${userId}`, {})
+        .post(`http://localhost:8080/LMS-war/webresources/Assessment/completeCoursepackQuiz?userId=${userId}&quizId=${this.state.quizId}`)
         .then(result => {
           console.log("Unlocked next quiz!")
         })
         .catch(error => {
+          console.log(error.message)
           console.log("Error in unlocking next quiz.")
         });
     }
@@ -157,8 +161,8 @@ class CoursepackQuizPageAnswerQuiz extends Component {
             {
               this.props.dataStore.getCurrScore === this.props.dataStore.getMaxMarks &&
               <div>
-                <center>You have unlocked the next quiz!</center>
-                <center><MDBBtn>Proceed</MDBBtn></center>
+                <center>You have unlocked the next quiz!</center> 
+                <center><MDBBtn onClick={this.props.proceed}>Proceed</MDBBtn></center>
               </div>
             }
           </MDBCol>
