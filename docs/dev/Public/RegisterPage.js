@@ -57,13 +57,6 @@ class RegisterPage extends Component {
     handleChange = event => {
         event.preventDefault();
         this.setState({ [event.target.name]: event.target.value });
-        // console.log(this.state.accessRight) 
-        // console.log(this.state.gender)
-        // console.log(this.state.password)
-        // console.log(this.state.email)
-        // console.log(this.state.username)
-        // console.log(this.state.firstName)
-        // console.log(this.state.lastName)
     }
 
     handleOpenSnackbar = () => {
@@ -79,11 +72,10 @@ class RegisterPage extends Component {
     };
 
     render() {
-        // console.log(this.props.dataStore.getPath)
         if (this.state.creationSuccess === true) {
             return (
                 <>
-                    <MDBEdgeHeader color="indigo darken-3" className="loginPage" />
+                    <MDBEdgeHeader color="red lighten-2" className="loginPage" />
                     <MDBAnimation type="zoomIn" duration="500ms">
                         <MDBContainer>
                             <MDBRow>
@@ -101,7 +93,7 @@ class RegisterPage extends Component {
         }
         return (
             <>
-                <MDBEdgeHeader color="indigo darken-3" className="loginPage" />
+                <MDBEdgeHeader color="red lighten-2" className="loginPage" />
                 <MDBAnimation type="zoomIn" duration="500ms">
                     <MDBContainer>
                         <MDBRow>
@@ -173,7 +165,7 @@ class RegisterPage extends Component {
                                                 </MDBCol>
                                                 <MDBCol md="12" className="mt-4">
                                                     <div className="text-center mt-4">
-                                                        <button className="btn btn-indigo" type="submit">
+                                                        <button className="btn" type="submit" style={{ backgroundColor: "#fb6d63" }}>
                                                             Sign Up
                                                         </button>
                                                     </div>
@@ -181,7 +173,7 @@ class RegisterPage extends Component {
                                             </MDBRow>
                                         </form>
                                     </ul>
-                                    <center>Already have an account?<a href="/coursepack/login"> Login here.</a></center>
+                                    <center>Already have an account?<a href="/coursepack/login" style={{ color: "#fb6d63" }}> Login here.</a></center>
                                 </MDBJumbotron>
                             </MDBCol>
                         </MDBRow>
