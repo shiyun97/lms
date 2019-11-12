@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import ModuleQuizPageAnswerAdaptiveQuiz from './ModuleQuizPageAnswerAdaptiveQuiz';
 import ModuleQuizPageAnswerNormalQuiz from './ModuleQuizPageAnswerNormalQuiz';
+import ModuleSideNavigationDropdown from "../ModuleSideNavigationDropdown";
 
 @inject('dataStore')
 @observer
@@ -59,7 +60,10 @@ class ModuleQuizPageAnswerQuiz extends Component {
     var moduleId = this.props.dataStore.getCurrModId;
     return (
       <div className={this.props.className}>
-        <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+        <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+        <div className="module-navbar-small">
+          <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
+        </div>
         <div className="module-content">
           <MDBContainer className="mt-3">
             <MDBRow className="py-3">
@@ -108,7 +112,7 @@ class ModuleQuizPageAnswerQuiz extends Component {
     } else if (this.state.status === "error") {
       return this.renderEmptyCardWithMessage("Unable to retrieve quiz details. Please try again later.")
     } else if (this.state.status === "maximumAttempt") {
-      return this.renderEmptyCardWithMessage("Sorry, you have exhausted all your quiz attempts.")
+      return this.renderEmptyCardWithMessage("Sorry, you have no quiz attempts left.")
     } else {
       return this.renderEmptyCardWithMessage("No such quiz exist.")
     }
@@ -117,7 +121,25 @@ class ModuleQuizPageAnswerQuiz extends Component {
 
 export default styled(ModuleQuizPageAnswerQuiz)`
 .module-content{
-    margin-left: 270px;
     margin-top: 40px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
 }
 `;

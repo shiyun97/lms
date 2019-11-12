@@ -5,6 +5,7 @@ import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import * as Survey from "survey-react";
 import ModuleSideNavigation from "../ModuleSideNavigation";
+import ModuleSideNavigationDropdown from "../ModuleSideNavigationDropdown";
 
 var pathname = location.pathname;
 pathname = pathname.split("/");
@@ -230,7 +231,10 @@ class ModuleQuizPagePreviewAdaptiveQuiz extends Component {
     if (this.state.start) {
       return (
         <div className={this.props.className}>
-          <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+          <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+          <div className="module-navbar-small">
+            <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
+          </div>
           <div className="module-content">
             <MDBContainer className="mt-3">
               <MDBRow className="py-3">
@@ -257,13 +261,27 @@ class ModuleQuizPagePreviewAdaptiveQuiz extends Component {
     } else {
       return (
         <div className={this.props.className}>
-          <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+          <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+          <div className="module-navbar-small">
+            <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
+          </div>
           <div className="module-content">
             <MDBContainer className="mt-3">
               <MDBRow className="py-3">
                 <MDBCol md="12">
-                  <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
-                    <MDBBtn color="blue" onClick={() => { this.setState({ start: true }) }}><h4>Start Quiz</h4></MDBBtn>
+                  <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }} align="center">
+                    <h3>{json.title}</h3>
+                    {json.description}
+                    <br />
+                    <br />
+                    Please read the questions carefully.
+                    <br />
+                    You only have {json.noOfAttempts} attempt(s).
+                    <br />
+                    <br />
+                    <MDBBtn color="blue" onClick={() => { this.setState({ start: true }) }} style={{ maxWidth: 250 }}>
+                      Start Quiz
+                      </MDBBtn>
                   </MDBCard>
                 </MDBCol>
               </MDBRow>
@@ -277,7 +295,25 @@ class ModuleQuizPagePreviewAdaptiveQuiz extends Component {
 
 export default styled(ModuleQuizPagePreviewAdaptiveQuiz)`
 .module-content{
-    margin-left: 270px;
     margin-top: 40px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
 }
 `;
