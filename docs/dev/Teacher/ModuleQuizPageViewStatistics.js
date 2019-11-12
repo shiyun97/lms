@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBProgress, MDBBreadcrumb, MDBBreadcrumbItem, MDBCardBody } from "mdbreact";
+import { MDBDataTable, MDBContainer, MDBBtn, MDBCardHeader, MDBRow, MDBCol, MDBCard, MDBProgress, MDBBreadcrumb, MDBBreadcrumbItem, MDBCardBody, MDBIcon } from "mdbreact";
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
@@ -15,7 +15,30 @@ class ModuleQuizPageViewStatistics extends Component {
     title: "",
     description: "",
     attempts: 0,
-    questions: []
+    questions: [],
+    columns: [
+      {
+        "label": "Student",
+        "field": "student",
+        "width": 50,
+        "attributes": {
+          "aria-controls": "DataTable",
+          "aria-label": "Name"
+        }
+      },
+      {
+        "label": "Score",
+        "field": "score",
+        "width": 100
+      },
+      {
+        "label": "",
+        "field": "",
+        "width": 100
+      }
+    ],
+    rows: [{ label: "Retrieving data..." }],
+    status: "retrieving",
   }
 
   initPage() {
@@ -105,6 +128,82 @@ class ModuleQuizPageViewStatistics extends Component {
     }
   }
 
+  renderUserTable = (tableData) => {
+    return (
+      <MDBCard>
+        <MDBCardHeader>
+          Students Below 25th Percentile
+              </MDBCardHeader>
+        <MDBCardBody>
+          <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
+        </MDBCardBody>
+      </MDBCard>
+    )
+  }
+
+  renderTableWithMessage = (message) => {
+    const data = () => ({ columns: this.state.columns, rows: [{ label: message }] })
+
+    const tableData = {
+      columns: [...data().columns.map(col => {
+        col.width = 200;
+        return col;
+      })], rows: [...data().rows]
+    }
+    return (
+      <MDBCard>
+        <MDBCardHeader>
+          Students Below 25th Percentile
+              </MDBCardHeader>
+        <MDBCardBody>
+          <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
+        </MDBCardBody>
+      </MDBCard>
+    )
+  }
+
+  renderAwaiting = () => {
+    return (
+      <div className="spinner-border text-primary" role="status">
+        <span className="sr-only">Loading...</span>
+      </div>
+    )
+  }
+
+  renderTable = () => {
+    var newRows = []
+    const row = this.state.rows
+    for (let i = 0; i < row.length; i++) {
+      newRows.push({
+        userId: row[i].name,
+        firstName: row[i].score,
+        button: <center><MDBBtn color="primary" outline size="sm">Plan</MDBBtn></center>
+      })
+    }
+    const data = () => ({ columns: this.state.columns, rows: newRows })
+
+    const widerData = {
+      columns: [...data().columns.map(col => {
+        col.width = 150;
+        return col;
+      })], rows: [...data().rows.map(row => {
+        return row;
+      })]
+    }
+
+    if (this.state.status === "retrieving")
+      return this.renderAwaiting();
+    else if (this.state.status === "error")
+      return this.renderTableWithMessage("Error in Retrieving Data. Please try again later.");
+    else if (this.state.status === "done")
+      if (this.state.rows[0].label === "Retrieving data...")
+        return this.renderTableWithMessage("No data found.");
+      else
+        return this.renderUserTable(widerData);
+    else
+      return this.renderTableWithMessage("No data found.");
+  }
+
   render() {
     var moduleId = this.props.dataStore.getCurrModId;
     return (
@@ -125,6 +224,9 @@ class ModuleQuizPageViewStatistics extends Component {
               </MDBCol>
               <MDBCol md="12">
                 {this.renderResults()}
+              </MDBCol>
+              <MDBCol md="12">
+                {this.renderTable()}
               </MDBCol>
             </MDBRow>
           </MDBContainer>

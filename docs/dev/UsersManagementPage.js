@@ -315,9 +315,6 @@ class UsersManagementPage extends Component {
                             Public Users Management
                 </h2>
                     </MDBCol>
-                    {/* <MDBCol md="1">
-                        <Fab onClick={() => this.getAllUserDetails()} style={{ height: 50, width: 50, backgroundColor: "#bbb", borderRadius: "50%" }}><MDBIcon icon="sync" /></Fab>
-                    </MDBCol> */}
                 </MDBRow>
                 {this.renderEditUserModalBox()}
                 <MDBRow className="py-3">
