@@ -70,3 +70,20 @@ a.border.nav-link.border-light.rounded.mr-1:hover {
   background-size: cover;
   filter: opacity(.5);
 }
+
+.analyticsPage {
+  position: relative;
+  top: 0px;
+  margin-bottom: -125px;
+}
+
+.analyticsPage::after {
+  content: '';
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background: url('../dev/img/analytics-banner.jpg');
+  background-position: center center;
+  background-size: cover;
+  filter: opacity(.5);
+}
