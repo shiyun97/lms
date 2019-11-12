@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import styled from 'styled-components';
 import { MDBContainer, MDBRow, MDBCol, MDBCardBody, MDBCard, MDBDataTable, MDBCardHeader } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
+import ModuleSideNavigationDropdown from "../ModuleSideNavigationDropdown";
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
 import CanvasJSReact from '../../assets/canvasjs.react';
@@ -226,7 +227,10 @@ class ModuleGradebookPageStudent extends Component {
 
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Gradebook'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
@@ -268,7 +272,10 @@ class ModuleGradebookPageStudent extends Component {
         }
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Gradebook'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
@@ -302,7 +309,10 @@ class ModuleGradebookPageStudent extends Component {
         var moduleId = this.props.dataStore.getCurrModId;
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Gradebook'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }} align="center">
@@ -338,10 +348,25 @@ class ModuleGradebookPageStudent extends Component {
 }
 export default styled(ModuleGradebookPageStudent)`
 .module-content{
-    margin-left: 270px;
     margin-top: 40px;
 }
-.align-right{
-    float: right;
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
 }
 `;
