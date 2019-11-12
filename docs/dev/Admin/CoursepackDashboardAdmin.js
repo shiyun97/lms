@@ -1,11 +1,13 @@
 import React, { Component } from "react";
-import { MDBIcon, MDBDataTable, MDBRow, MDBBtn, MDBCol, MDBTabContent, MDBTabPane, MDBNav, MDBNavItem, MDBNavLink, MDBModal, MDBModalHeader, MDBModalBody, MDBModalFooter } from "mdbreact";
+import { MDBIcon, MDBDataTable, MDBRow, MDBBtn, MDBCol, MDBTabContent, MDBTabPane, MDBNav, MDBNavItem, MDBNavLink, MDBModal, MDBModalHeader, MDBModalBody, MDBModalFooter, MDBContainer } from "mdbreact";
 import { observer, inject } from 'mobx-react'
 import Dropzone from 'react-dropzone';
 import SectionContainer from "../../components/sectionContainer";
 import { Slide, Card, Dialog, DialogTitle, DialogContent, DialogContentText, ListItem, ListItemText, DialogActions, Button, List, Snackbar } from "@material-ui/core";
 import IconButton from '@material-ui/core/IconButton';
 import axios from "axios";
+import styled from 'styled-components';
+import MainSideNavDropdown from "../MainSideNavDropdown";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -393,31 +395,69 @@ class CoursepackDashboardAdmin extends Component {
 
     render() {
         return (
-            <div style={{ paddingLeft: 150, paddingTop: 50, paddingRight: 50 }} >
-                <MDBCol>
-                    <h3><b>Coursepack Achievements Management</b></h3>
-                    <hr />
-                </MDBCol>
-                {this.showTabs()}
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    open={this.state.openSnackbar}
-                    autoHideDuration={6000}
-                    onClose={this.handleClose}
-                    ContentProps={{
-                        'aria-describedby': 'message-id',
-                    }}
-                    message={<span id="message-id">{this.state.message}</span>}
-                    action={[
-                        <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-                    ]}
-                />
-            </div >
+            <div className={this.props.className}>
+                <div className="module-navbar-small">
+                    <MainSideNavDropdown moduleId={this.props.moduleId} activeTab={'Achievements'}></MainSideNavDropdown>
+                </div>
+                <div className="module-content">
+                    <MDBContainer className="mt-3">
+                        <MDBCol style={{ paddingTop: 60 }}>
+                            <h2 className="font-weight-bold">Coursepack Achievements Management</h2>
+                            <hr />
+                        </MDBCol>
+                        {this.showTabs()}
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            open={this.state.openSnackbar}
+                            autoHideDuration={6000}
+                            onClose={this.handleClose}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">{this.state.message}</span>}
+                            action={[
+                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                            ]}
+                        />
+                    </MDBContainer>
+                </div>
+            </div>
         )
     }
 }
 
-export default CoursepackDashboardAdmin
+export default styled(CoursepackDashboardAdmin)`
+.module-content{
+    margin-top: 10px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 0px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+}
+
+.new-paragraph{
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+.align-right{
+    float: right;
+}
+`

@@ -50,55 +50,55 @@ class MainSideNavDropdown extends Component {
                         <NavbarNav left>
                             {this.props.dataStore.getSignInStatus ?
                                 <>
-                                {(this.props.dataStore.accessRight !== "Admin" && this.props.dataStore.accessRight !== "Teacher") &&
-                                    <MDBNavItem active={activeTab == "Dashboard"}>
-                                        <MDBNavLink exact={true} to={`/coursepack/dashboard`} onClick={() => this.updatePath("/coursepack/dashboard")}>
-                                            Dashboard
+                                    {(this.props.dataStore.accessRight !== "Admin" && this.props.dataStore.accessRight !== "Teacher") &&
+                                        <MDBNavItem active={activeTab == "Dashboard"}>
+                                            <MDBNavLink exact={true} to={`/coursepack/dashboard`} onClick={() => this.updatePath("/coursepack/dashboard")}>
+                                                Dashboard
                                             </MDBNavLink>
-                                    </MDBNavItem>
-                            }
-                            {(this.props.dataStore.accessRight !== "Admin" && this.props.dataStore.accessRight !== "Public") &&
-                                    <MDBNavItem active={activeTab == "Module"}>
-                                        <MDBNavLink exact={true} to={`/modules`} onClick={() => this.updatePath("/modules")}>
-                                            Module
+                                        </MDBNavItem>
+                                    }
+                                    {(this.props.dataStore.accessRight !== "Admin" && this.props.dataStore.accessRight !== "Public") &&
+                                        <MDBNavItem active={activeTab == "Module"}>
+                                            <MDBNavLink exact={true} to={`/modules`} onClick={() => this.updatePath("/modules")}>
+                                                Module
                                             </MDBNavLink>
-                                    </MDBNavItem>
-                            }
-                            {this.props.dataStore.accessRight !== "Admin" &&
-                                    <MDBNavItem active={activeTab == "My Coursepacks"}>
-                                        <MDBNavLink exact={true} to={`/coursepack/myCourses`} onClick={() => this.updatePath("/coursepack/myCourses")}>
-                                            My Coursepacks
+                                        </MDBNavItem>
+                                    }
+                                    {this.props.dataStore.accessRight !== "Admin" &&
+                                        <MDBNavItem active={activeTab == "My Coursepacks"}>
+                                            <MDBNavLink exact={true} to={`/coursepack/myCourses`} onClick={() => this.updatePath("/coursepack/myCourses")}>
+                                                My Coursepacks
                                             </MDBNavLink>
-                                    </MDBNavItem>
-                            }
-                            {this.props.dataStore.accessRight !== "Admin" &&
-                                    <MDBNavItem active={activeTab == "My Achievements"}>
-                                        <MDBNavLink exact={true} to={`/coursepack/achievements/view/badges`} onClick={() => this.updatePath("/coursepack/achievements/view/badges")}>
-                                            My Achievements
+                                        </MDBNavItem>
+                                    }
+                                    {this.props.dataStore.accessRight !== "Admin" &&
+                                        <MDBNavItem active={activeTab == "My Achievements"}>
+                                            <MDBNavLink exact={true} to={`/coursepack/achievements/view/badges`} onClick={() => this.updatePath("/coursepack/achievements/view/badges")}>
+                                                My Achievements
                                             </MDBNavLink>
-                                    </MDBNavItem>
-                            }
-                            {this.props.dataStore.accessRight === "Admin" &&
-                                    <MDBNavItem active={activeTab == "Achievements"}>
-                                        <MDBNavLink exact={true} to={`/coursepack/dashboard/admin`} onClick={() => this.updatePath("/coursepack/dashboard/admin")}>
-                                            Achievements
+                                        </MDBNavItem>
+                                    }
+                                    {this.props.dataStore.accessRight === "Admin" &&
+                                        <MDBNavItem active={activeTab == "Achievements"}>
+                                            <MDBNavLink exact={true} to={`/coursepack/dashboard/admin`} onClick={() => this.updatePath("/coursepack/dashboard/admin")}>
+                                                Achievements
                                             </MDBNavLink>
-                                    </MDBNavItem>
-                            }
-                            {(this.props.dataStore.accessRight === "Admin" &&
-                                    <MDBNavItem active={activeTab == "LMP"}>
-                                        <MDBNavLink exact={true} to={`/dashboard`} onClick={() => this.updatePath("/dashboard")}>
-                                            LMP
+                                        </MDBNavItem>
+                                    }
+                                    {(this.props.dataStore.accessRight === "Admin" &&
+                                        <MDBNavItem active={activeTab == "LMP"}>
+                                            <MDBNavLink exact={true} to={`/dashboard`} onClick={() => this.updatePath("/dashboard")}>
+                                                LMP
                                             </MDBNavLink>
-                                    </MDBNavItem>
-                            )}
-                            {this.props.dataStore.accessRight === "Admin" &&
-                                    <MDBNavItem active={activeTab == "Quiz"}>
-                                        <MDBNavLink exact={true} to={`/coursepack/users`} onClick={() => this.updatePath("/coursepack/users")}>
-                                            Public Users
+                                        </MDBNavItem>
+                                    )}
+                                    {this.props.dataStore.accessRight === "Admin" &&
+                                        <MDBNavItem active={activeTab == "Quiz"}>
+                                            <MDBNavLink exact={true} to={`/coursepack/users`} onClick={() => this.updatePath("/coursepack/users")}>
+                                                Public Users
                                             </MDBNavLink>
-                                    </MDBNavItem>
-                            }
+                                        </MDBNavItem>
+                                    }
                                     <MDBNavItem active={activeTab == "Account"}>
                                         <MDBNavLink exact={true} to={`/coursepack/account`} onClick={() => this.updatePath("/coursepack/account")}>
                                             Account

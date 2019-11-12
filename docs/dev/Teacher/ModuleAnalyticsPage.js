@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { MDBRow, MDBContainer, MDBCard, MDBCardBody, MDBCardHeader, MDBIcon, MDBCol, MDBDataTable, MDBCardText, MDBBreadcrumb, MDBBreadcrumbItem, MDBProgress, MDBBtn } from 'mdbreact';
 import styled from 'styled-components';
 import ModuleSideNavigation from "../ModuleSideNavigation";
+import ModuleSideNavigationDropdown from "../ModuleSideNavigationDropdown";
 import { Bar, Pie } from 'react-chartjs-2';
 import { observer, inject } from 'mobx-react';
 import CanvasJSReact from '../../assets/canvasjs.react';
@@ -586,7 +587,7 @@ class ModuleAnalyticsPage extends Component {
     else if (this.state.percentileStatus === "error")
       return this.renderPercentileTableWithMessage("Error in Retrieving Data. Please try again later.");
     else if (this.state.percentileStatus === "done")
-        return this.renderUserPercentileTable(widerData);
+      return this.renderUserPercentileTable(widerData);
     else
       return this.renderPercentileTableWithMessage("No data found.");
   }
@@ -646,7 +647,10 @@ class ModuleAnalyticsPage extends Component {
     var moduleId = this.props.dataStore.getCurrModId;
     return (
       <div className={this.props.className}>
-        <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+        <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+        <div className="module-navbar-small">
+          <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Analytics'}></ModuleSideNavigationDropdown>
+        </div>
         <div className="module-content">
           <MDBContainer>
             {this.renderBreadcrumbSection()}
@@ -669,6 +673,25 @@ class ModuleAnalyticsPage extends Component {
 
 export default styled(ModuleAnalyticsPage)`
 .module-content{
-    margin-left: 270px;
     margin-top: 40px;
-}`
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+}
+`
