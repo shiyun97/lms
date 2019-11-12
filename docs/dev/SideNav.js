@@ -189,12 +189,12 @@ class SideNav extends Component {
 
     render() {
         if (this.props.dataStore.accessRight !== "Public") {
-            console.log(this.props.dataStore.getPath)
+            // console.log(this.props.dataStore.getPath)
             if (this.props.dataStore.getPath.includes("/coursepack"))
                 return this.renderCoursepackSideNav();
             return this.renderFlipItSideNav();
         } else {
-            console.log(this.props.dataStore.getPath)
+            // console.log(this.props.dataStore.getPath)
             if (this.props.dataStore.getPath.includes("/coursepack"))
                 return this.renderCoursepackSideNav();
             return <div></div>

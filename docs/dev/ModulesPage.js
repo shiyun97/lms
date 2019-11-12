@@ -51,11 +51,11 @@ class ModulesPage extends Component {
 
 export default styled(ModulesPage)`
 .module-content{
-    margin-top: 40px;
+    margin-top: 10px;
 }
 @media screen and (min-width: 800px) {
     .module-content{
-        margin-left: 90px;
+        margin-left: 0px;
     }
     .module-navbar-small{
         display: none;
