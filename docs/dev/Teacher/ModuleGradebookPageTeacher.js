@@ -65,12 +65,39 @@ class ModuleGradebookPageTeacher extends Component {
             }
         ],
         rows: [{ label: "Retrieving data..." }],
+        gradeColumns: [
+            {
+                "label": "Student",
+                "field": "student",
+                "width": 50,
+                "attributes": {
+                    "aria-controls": "DataTable",
+                    "aria-label": "Name"
+                }
+            },
+            {
+                "label": "Email",
+                "field": "email",
+                "width": 100
+            },
+            {
+                "label": "",
+                "field": "",
+                "width": 100
+            }
+        ],
+        gradeRows: [{ label: "Retrieving data..." }],
+        selectedGradeRows: [],
+        percentileStatus: "retrieving",
+        message: "",
         status: "retrieving",
         openSnackbar: false,
-        message: "",
         recallGradebook: false,
         ungradedQuizzes: [],
         type: "",
+        currGradeItemId: 0,
+        gradeItemList: [],
+        recallGradeItems: false,
 
         gradeItemsAnalytics: [],
         gradeItemStatus: "retrieving",
@@ -82,6 +109,7 @@ class ModuleGradebookPageTeacher extends Component {
         this.getAllGradeItem();
         this.getUngradedModuleQuiz();
         this.getGradeItemAnalytics();
+        this.getPercentileAnalytics();
     }
 
     componentDidUpdate() {
@@ -89,20 +117,33 @@ class ModuleGradebookPageTeacher extends Component {
             this.getAllGradeItem();
             this.getUngradedModuleQuiz();
         }
+        if (this.state.recallGradeItems) {
+            this.getPercentileAnalytics();
+        }
     }
 
     routeChange = (path) => {
-      this.props.history.push(path);
+        this.props.history.push(path);
     }
 
     handleChange = event => {
         event.preventDefault();
         this.setState({ [event.target.name]: event.target.value });
+        if (event.target.name === "currGradeItemId") {
+            this.state.gradeRows.map((item) => {
+                if (item.gradeItemId == event.target.value) {
+                    this.props.dataStore.setCurrGradeItemName(item.title)
+                    this.setState({
+                        selectedGradeRows: item.gradeEntries,
+                        recallGradeItems: true
+                    })
+                }
+            })
+        }
     }
 
     toggle = (nr, row) => {
         let modalNumber = "modal" + nr;
-        // console.log("toggle")
         this.setState({
             [modalNumber]: !this.state[modalNumber]
         });
@@ -124,6 +165,29 @@ class ModuleGradebookPageTeacher extends Component {
 
         this.setState({ openSnackbar: false });
     };
+
+    getPercentileAnalytics = () => {
+        var moduleId = this.props.dataStore.getCurrModId;
+        axios
+            .get(`http://localhost:8080/LMS-war/webresources/analytics/retrieveBottomStudentsForEachItem?moduleId=${moduleId}`)
+            .then(result => {
+                var newGradeItemList = []
+                result.data.gradeItems.map((item) => newGradeItemList.push({ itemId: item.gradeItemId, title: item.title }))
+                this.setState({
+                    gradeRows: result.data.gradeItems,
+                    gradeItemList: newGradeItemList,
+                    percentileStatus: "done",
+                    recallGradeItems: false
+                });
+            })
+            .catch(error => {
+                this.setState({
+                    percentileStatus: "error",
+                    recallGradeItems: false
+                });
+                console.error("error in axios " + error);
+            });
+    }
 
     getGradeItemAnalytics = () => {
         let userId = sessionStorage.getItem('userId');
@@ -309,7 +373,7 @@ class ModuleGradebookPageTeacher extends Component {
     renderNoCardSection = () => {
         return (
             <MDBRow className="mb-4">
-                <MDBCol md="12" className="mb-r" align="center">
+                <MDBCol md="12" className="mb-r">
                     <MDBCard>
                         <MDBCardHeader>Gradebook Analytics</MDBCardHeader>
                         <MDBCardBody>
@@ -565,7 +629,6 @@ class ModuleGradebookPageTeacher extends Component {
         }
         var item = this.state.gradeItems;
         var moduleId = this.props.dataStore.getCurrModId;
-        // console.log(quiz)
         if (this.state.gradeItems.length !== 0) {
             var tempGradeItems = []
             for (let i = 0; i < this.state.gradeItems.length; i++) {
@@ -631,6 +694,28 @@ class ModuleGradebookPageTeacher extends Component {
                             <MDBCol md="12" className="mt-3">
                                 {this.state.gradeItemStatus === "done" ? this.renderBoxPlot(optionsGradebook) : this.renderNoCardSection()}
                             </MDBCol>
+                            <MDBCol md="12">
+                                <MDBCard>
+                                    <MDBCardHeader>
+                                        Students Below 25th Percentile
+                </MDBCardHeader>
+                                    <div style={{ paddingLeft: 20, paddingRight: 20 }}>
+                                        <MDBInputGroup
+                                            style={{ paddingTop: 22 }}
+                                            containerClassName="mb-3"
+                                            prepend="Grade Item"
+                                            required
+                                            inputs={
+                                                <select name="currGradeItemId" onChange={this.handleChange} className="browser-default custom-select">
+                                                    <option value={this.props.dataStore.getCurrGradeItemId}>Choose..</option>
+                                                    {this.state.gradeItemList.map((item) => { return <option value={item.itemId}>{item.title}</option> })}
+                                                </select>
+                                            }
+                                        />
+                                    </div>
+                                    {this.renderPercentileTable()}
+                                </MDBCard>
+                            </MDBCol>
                         </MDBRow>
                         <Snackbar
                             anchorOrigin={{
@@ -694,6 +779,12 @@ class ModuleGradebookPageTeacher extends Component {
                             <MDBCol md="12" className="mt-3">
                                 {this.renderNoCardSection()}
                             </MDBCol>
+                            {/* <MDBCard>
+                <MDBCardHeader>
+                    Students Below 25th Percentile
+                </MDBCardHeader>
+                                {this.renderPercentileTable()}
+                </MDBCard> */}
                         </MDBRow>
                     </MDBContainer>
                 </div>
@@ -719,6 +810,72 @@ class ModuleGradebookPageTeacher extends Component {
                 </div>
             </div>
         )
+    }
+
+    renderUserPercentileTable = (tableData) => {
+        return (
+            <MDBCardBody>
+                <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
+            </MDBCardBody>
+        )
+    }
+
+    renderPercentileTableWithMessage = (message) => {
+        const data = () => ({ columns: this.state.gradeColumns, rows: [{ label: message }] })
+
+        const tableData = {
+            columns: [...data().columns.map(col => {
+                col.width = 200;
+                return col;
+            })], rows: [...data().rows]
+        }
+        return (
+            <MDBCardBody>
+                <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
+            </MDBCardBody>
+        )
+    }
+
+    renderPercentileAwaiting = () => {
+        return (
+            <div className="spinner-border text-primary" role="status">
+                <span className="sr-only">Loading...</span>
+            </div>
+        )
+    }
+
+    renderPercentileTable = () => {
+        var newRows = []
+        const row = this.state.selectedGradeRows
+        for (let i = 0; i < row.length; i++) {
+            newRows.push({
+                user: row[i].student.firstName + " " + row[i].student.lastName,
+                email: row[i].student.email,
+                button: <center><MDBBtn color="primary" outline size="sm">Plan Consultation</MDBBtn></center>
+            })
+        }
+        const data = () => ({ columns: this.state.gradeColumns, rows: newRows })
+
+        const widerData = {
+            columns: [...data().columns.map(col => {
+                col.width = 150;
+                return col;
+            })], rows: [...data().rows.map(row => {
+                return row;
+            })]
+        }
+
+        if (this.state.percentileStatus === "retrieving")
+            return this.renderPercentileAwaiting();
+        else if (this.state.percentileStatus === "error")
+            return this.renderPercentileTableWithMessage("Error in Retrieving Data. Please try again later.");
+        else if (this.state.percentileStatus === "done")
+            if (this.state.selectedGradeRows.length === 0)
+                return this.renderPercentileTableWithMessage("No data found.");
+            else
+                return this.renderUserPercentileTable(widerData);
+        else
+            return this.renderPercentileTableWithMessage("No data found.");
     }
 
     initPage() {

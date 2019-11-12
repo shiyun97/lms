@@ -27,6 +27,7 @@ class DataStore {
   @observable currentQuizAttemptId = 0
   @observable currentGradeItemId = 0
   @observable currentCoursepackId = 0
+  @observable currentGradeItemName = "Choose..."
 
   //attendance
   @observable attendanceClassId = ""
@@ -140,6 +141,14 @@ class DataStore {
 
   @action setCurrGradeItemId(id) {
     this.currentGradeItemId = id;
+  }
+
+  @computed get getCurrGradeItemName() {
+    return this.currentGradeItemName;
+  }
+
+  @action setCurrGradeItemName(name) {
+    this.currentGradeItemName = name;
   }
 
   @computed get getCurrGradeItemId() {
