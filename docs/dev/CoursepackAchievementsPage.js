@@ -5,6 +5,7 @@ import axios from "axios";
 import CoursepackAchievementsCertificate from './CoursepackAchievementsCertificate'
 import SwipeableViews from 'react-swipeable-views';
 import { AppBar, Tabs, Tab, Paper, Card, Typography } from '@material-ui/core';
+import CoursepackAchievementsTranscript from "./CoursepackAchievementsTranscript";
 
 const API = "http://localhost:8080/LMS-war/webresources/";
 const FILE_SERVER = "http://127.0.0.1:8887/";
@@ -107,6 +108,7 @@ class CoursepackAchievementsPage extends Component {
                 {this.state.allBadges && this.state.allBadges.map((badge, index) => {
                     location = badge.location
                     let savedFileName = location.split('/')[5]; //FIXME:
+                    /* let savedFileName = location.split('\\')[1]; */
                     let fullPath = FILE_SERVER + savedFileName;
                     console.log(fullPath)
 
@@ -181,14 +183,16 @@ class CoursepackAchievementsPage extends Component {
             <div>
                 <MDBNav className="nav-tabs mt-5" >
                     <MDBNavItem>
-
                         <MDBNavLink to="/coursepack/achievements/view/badges" active={this.state.activeItem === "1"} onClick={this.toggle("1")} role="tab" >Badges</MDBNavLink>
                     </MDBNavItem>
                     <MDBNavItem>
                         <MDBNavLink to="/coursepack/achievements/view/certificates" active={this.state.activeItem === "2"} onClick={this.toggle("2")} role="tab" >Certificates</MDBNavLink>
                     </MDBNavItem>
+                    <MDBNavItem>
+                        <MDBNavLink to="/coursepack/achievements/view/transcript" active={this.state.activeItem === "3"} onClick={this.toggle("3")} role="tab" >Transcripts</MDBNavLink>
+                    </MDBNavItem> 
                 </MDBNav>
-                <MDBTabContent style={{paddingTop: 30}} activeItem={this.state.activeItem} >
+                <MDBTabContent style={{ paddingTop: 30 }} activeItem={this.state.activeItem} >
                     <MDBTabPane tabId="1" role="tabpanel">
                         {this.showBadges()}
                     </MDBTabPane>
@@ -218,6 +222,9 @@ class CoursepackAchievementsPage extends Component {
                                 <Typography component="div">{this.showCertTable()}</Typography>
                             </SwipeableViews>
                         </Paper>
+                    </MDBTabPane>
+                    <MDBTabPane tabId="3" role="tabpanel">
+                        <CoursepackAchievementsTranscript />
                     </MDBTabPane>
                 </MDBTabContent>
             </div >
