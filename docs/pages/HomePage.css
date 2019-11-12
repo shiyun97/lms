@@ -87,3 +87,37 @@ a.border.nav-link.border-light.rounded.mr-1:hover {
   background-size: cover;
   filter: opacity(.5);
 }
+
+.discussionPage {
+  position: relative;
+  top: 0px;
+  margin-bottom: -125px;
+}
+
+.discussionPage::after {
+  content: '';
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background: url('../dev/img/discussion-banner.jpg');
+  background-position: center center;
+  background-size: cover;
+  filter: opacity(.5);
+}
+
+.multimediaPage {
+  position: relative;
+  top: 0px;
+  margin-bottom: -125px;
+}
+
+.multimediaPage::after {
+  content: '';
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background: url('../dev/img/multimedia-banner.jpg');
+  background-position: center center;
+  background-size: cover;
+  filter: opacity(.5);
+}
