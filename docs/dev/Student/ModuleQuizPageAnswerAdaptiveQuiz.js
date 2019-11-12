@@ -199,21 +199,10 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
     // match question name with answer and question Id
     var tempResult = result.data
     var questionAttempts = Object.keys(tempResult);
-    var questions = json.pages[0].elements;
-    // console.log(result.data)
-    for (var i = 0; i < questionAttempts.length; i++) {
-      // console.log(questionAttempts[i].substr(8, questionAttempts[i].length))
-      var questionNumber = questionAttempts[i].substr(8, questionAttempts[i].length)
-      for (var j = 0; j < questions.length; j++) {
-        if (questionNumber == questions[j].number) {
-          if (tempResult[questionAttempts[i]].text === undefined)
-            answers[questionNumber - 1] = { questionId: questions[j].questionId, answer: tempResult[questionAttempts[i]] }
-          else {
-            answers[questionNumber - 1] = { questionId: questions[j].questionId, answer: tempResult[questionAttempts[i]].text } //, quizId: 1
-          }
-        }
-      }
-    }
+    var questions = json.pages[result.currentPageNo].elements;
+    console.log(questions)
+    console.log(result.data)
+    answers[answers.length] = { questionId: questions[0].questionId, answer: tempResult[questionAttempts[answers.length]] }
     // console.log(answers)
   }
 

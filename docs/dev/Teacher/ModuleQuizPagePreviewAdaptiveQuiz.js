@@ -200,21 +200,10 @@ class ModuleQuizPagePreviewAdaptiveQuiz extends Component {
     // match question name with answer and question Id
     var tempResult = result.data
     var questionAttempts = Object.keys(tempResult);
-    var questions = json.pages[0].elements;
-    // console.log(result.data)
-    for (var i = 0; i < questionAttempts.length; i++) {
-      // console.log(questionAttempts[i].substr(8, questionAttempts[i].length))
-      var questionNumber = questionAttempts[i].substr(8, questionAttempts[i].length)
-      for (var j = 0; j < questions.length; j++) {
-        if (questionNumber == questions[j].number) {
-          if (tempResult[questionAttempts[i]].text === undefined)
-            answers[questionNumber - 1] = { questionId: questions[j].questionId, answer: tempResult[questionAttempts[i]] }
-          else {
-            answers[questionNumber - 1] = { questionId: questions[j].questionId, answer: tempResult[questionAttempts[i]].text } //, quizId: 1
-          }
-        }
-      }
-    }
+    var questions = json.pages[result.currentPageNo].elements;
+    console.log(questions)
+    console.log(result.data)
+    answers[answers.length] = { questionId: questions[0].questionId, answer: tempResult[questionAttempts[answers.length]] }
     // console.log(answers)
   }
 
@@ -223,29 +212,14 @@ class ModuleQuizPagePreviewAdaptiveQuiz extends Component {
     page = 2
   }
 
-  onComplete = (result) => {
-    let userId = sessionStorage.getItem('userId');
-    // console.log(quizId)
-    // console.log(answers)
-    // axios
-    //   .post(`http://localhost:8080/LMS-war/webresources/Assessment/createQuizAttempt?userId=${userId}`, {
-    //     quizId: quizId,
-    //     questionAttempts: answers
-    //   })
-    //   .then(result => {
-    //     console.log("success")
-    //     // this.setState({ status: "done", quizzes: result.data.quizzes })
-    //   })
-    //   .catch(error => {
-    //     // this.setState({ status: "error" })
-    //     console.log("error")
-    //     console.error("error in axios " + error);
-    //   });
+  onComplete(result) {
+    console.log(answers)
+    console.log(quizId)
   }
 
   submitAnswers = () => {
     var quizId = this.props.dataStore.getCurrQuizId;
-    console.log(json, quizId);
+    // console.log(json, quizId);
   }
 
   render() {
@@ -266,7 +240,7 @@ class ModuleQuizPagePreviewAdaptiveQuiz extends Component {
                     {this.state.status === "done" &&
                       <Survey.Survey
                         model={model}
-                        onComplete={() => this.onComplete()}
+                        onComplete={this.onComplete}
                         doOnCurrentPageChanged={this.doOnCurrentPageChanged}
                         currentPageNo={page}
                         onValueChanged={this.onValueChanged}
