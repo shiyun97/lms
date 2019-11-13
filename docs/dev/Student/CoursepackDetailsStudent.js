@@ -1,6 +1,20 @@
 import React, { Component } from "react";
+import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
-import { MDBContainer, MDBCol, MDBBtn, MDBRow, MDBIcon, MDBProgress } from "mdbreact";
+import { 
+    MDBContainer, 
+    MDBCol, 
+    MDBBtn, 
+    MDBRow, 
+    MDBIcon, 
+    MDBProgress,
+    MDBJumbotron,
+    MDBNavItem,
+    MDBNav,
+    MDBNavLink,
+    MDBMedia,
+    MDBCard
+} from "mdbreact";
 import axios from "axios";
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
 import { NavLink } from 'react-router-dom';
@@ -9,6 +23,8 @@ import 'babel-polyfill';
 import { Rating } from '@material-ui/lab';
 import TextField from '@material-ui/core/TextField';
 import Slide from '@material-ui/core/Slide';
+import Snackbar from '@material-ui/core/Snackbar';
+import CoursepackTopNav from "../CoursepackTopNav";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -16,7 +32,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const API_MOCK = "http://localhost:3001"
 const API = "http://localhost:8080/LMS-war/webresources/"
 
-
+@inject('dataStore')
+@observer
 class CoursepackDetailsStudent extends Component {
 
     state = {
@@ -34,7 +51,13 @@ class CoursepackDetailsStudent extends Component {
         ratingStarsInput: 5,
         message: "",
         openSnackbar: false,
-        ratingCoursepackId: ""
+        ratingCoursepackId: "",
+        categories: [],
+        studentEnrolled: false,
+        cartNum: 0,
+        openSnackbar: false,
+        message: "",
+        userCoursepackList: []
     }
 
     componentDidMount() {
@@ -57,6 +80,17 @@ class CoursepackDetailsStudent extends Component {
     }
 
     initPage() {
+        // get cart items if any
+        let cart = sessionStorage.getItem("cart");
+        let cartNum = 0;
+        if (cart != undefined && cart != null) {
+            let cartObjs = JSON.parse(cart);
+            cartNum = cartObjs.length;
+        }
+        this.setState({
+            cartNum: cartNum
+        })
+
         var pathname = location.pathname;
         pathname = pathname.split('/');
         let ratingCoursepackId = pathname[2];
@@ -77,6 +111,59 @@ class CoursepackDetailsStudent extends Component {
             .catch(error => {
                 console.error("error in axios " + error);
             });
+
+        // get all categories
+        axios.get(`${API}Coursepack/getAllCategories`)
+            .then(result => {
+                this.setState({ categories: result.data.categories })
+                console.log(result.data)
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
+
+        if (sessionStorage.getItem("userId")) {
+            axios
+                .get(`${API}CoursepackEnrollment/findStudentInCoursepack?userId=${sessionStorage.getItem("userId")}&coursepackId=${ratingCoursepackId}`)
+                .then((result) => {
+                    console.log(result);
+                    if (result) {
+                        this.setState({
+                            studentEnrolled: true
+                        })
+                    }
+                })
+                .catch(error => {
+                    console.error("error in axios " + error);
+                });
+
+            // get all coursepacks of student / public user
+            axios.get(`${API}Coursepack/getUserCoursepack/${sessionStorage.getItem("userId")}`)
+                .then(result => {
+                    console.log(result.data)
+                    this.setState({ userCoursepackList: result.data.coursepack })
+                })
+                .catch(error => {
+                    console.error("error in axios " + error);
+                });
+
+        }
+    }
+
+    handleOpenSnackbar = () => {
+        this.setState({ openSnackbar: true });
+    };
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        this.setState({ openSnackbar: false });
+    };
+
+    showCategory = (categoryId) => {
+        this.props.dataStore.setPath('/coursepacks/' + categoryId);
+        this.props.history.push('/coursepacks/' + categoryId);
     }
 
     getListOfOutlineId = (outlines) => {
@@ -99,25 +186,148 @@ class CoursepackDetailsStudent extends Component {
         }
     }
 
+    proceedToLogin = () => {
+        this.props.dataStore.setPath('/coursepack/login');
+        this.props.history.push('/coursepack/login');
+    }
+
+    proceedToCourseDetails = () => {
+        this.props.dataStore.setPath(`/coursepack/${this.state.coursepackId}/assessments`);
+        this.props.history.push(`/coursepack/${this.state.coursepackId}/assessments`);
+    }
+
+    addToCart = (course) => {
+        let cart = sessionStorage.cart;
+        if (cart != null && cart != undefined) {
+            let cartObjs = JSON.parse(cart);
+            console.log(cartObjs)
+            let found = false
+            let idx = 0;
+            for (idx = 0; (idx < cartObjs.length) && found == false; idx++) {
+                let obj = cartObjs[idx];
+                if (obj.coursepackId == course.coursepackId) {
+                    found = true
+                    // do not add to cart again, send alert
+                    console.log("found in cart alr");
+                    this.setState({
+                        openSnackbar: true,
+                        message: "Item has been added into cart already!"
+                    })
+                }
+            }
+
+            if (found == false) {
+                // add to cart
+                cartObjs.push(course);
+                sessionStorage.setItem("cart", JSON.stringify(cartObjs));
+                this.setState({
+                    cartNum: cartObjs.length
+                })
+            }
+        }
+        else {
+            let cartObjs = [course]
+            sessionStorage.setItem("cart", JSON.stringify(cartObjs));
+            this.setState({
+                cartNum: cartObjs.length
+            })
+        }
+        console.log(sessionStorage.getItem("cart"))
+    }
+
+    enrollCourse = (course) => {
+        let found = false;
+        let idx = 0;
+        let userCoursepackList = this.state.userCoursepackList;
+        for (idx = 0; (idx < userCoursepackList.length) && found == false; idx++) {
+            let obj = userCoursepackList[idx];
+            if (obj.coursepackId == course.coursepackId) {
+                found = true
+                // do not enroll again, send alert
+                this.setState({
+                    openSnackbar: true,
+                    message: "You have enrolled in this coursepack already!"
+                })
+            }
+        }
+
+        if (course && sessionStorage.getItem("userId") && found == false) {
+            axios
+                .put(`${API}CoursepackEnrollment/enrollCoursepack?userId=${sessionStorage.getItem("userId")}&coursepackId=${course.coursepackId}`)
+                .then(result => {
+                    this.setState({
+                        openSnackbar: true,
+                        message: "Enrolled into coursepack succesfully"
+                    })
+                    this.props.dataStore.setPath(`/coursepack/myCourses`);
+                    this.props.history.push(`/coursepack/myCourses`);
+                })
+                .catch(error => {
+                    this.setState({
+                        openSnackbar: false,
+                        message: "An error occurred, please try again"
+                    })
+                    console.error("error in axios " + error);
+                });
+        }
+    }
+
     showDescriptions = () => {
         return (
             <MDBContainer style={{ paddingTop: 20 }}>
                 <MDBRow>
-                    <MDBCol size="8">
-                        <h2 style={{ paddingBottom: 20 }}>{this.state.courseDetails.title}</h2>
+                    <MDBCol size="8" className="text-white">
+                        <h2 style={{ paddingBottom: 20, paddingTop: 20, fontWeight: "bold" }}>{this.state.courseDetails.title}</h2>
                         <h5 style={{ paddingBottom: 20 }}> {this.state.courseDetails.description}</h5>
-                        <h6> SGD {this.state.courseDetails.price}</h6>
+                        {/*<h6> SGD {this.state.courseDetails.price}</h6>*/}
 
-                        <MDBCol align="right">
+                        {/*<MDBCol align="right">
                             <NavLink to={`/coursepack/${this.state.coursepackId}/assessments`}>
                                 <MDBBtn color="primary" >View Course</MDBBtn>
                             </NavLink>
-                        </MDBCol>
+                        </MDBCol>*/}
                     </MDBCol>
-                    <MDBCol size="4">
-                        {/*                         <MDBCard style={{ width: "23rem", minHeight: "12rem" }}>
-                            <MDBMedia object src="https://mdbootstrap.com/img/Photos/Others/placeholder1.jpg" alt="" />
-                        </MDBCard> */}
+                    <MDBCol size="1" />
+                    <MDBCol size="3">
+                        <MDBCard style={{ width: "22rem", minHeight: "12rem", marginTop: 20 }}>
+                            <MDBMedia object src={this.state.courseDetails && this.state.courseDetails.imageLocation} className="img-fluid" alt="" style={{minHeight: "120px"}} />
+                            <div style={{ padding: 20 }}>
+                                <MDBRow><MDBCol>
+                                    <span style={{ fontSize: "35px", fontWeight: "bold" }}>
+                                        {this.state.courseDetails.price && "S$ " + this.state.courseDetails.price.toFixed(2)}
+                                    </span>
+                                </MDBCol></MDBRow>
+                                <MDBRow><MDBCol>
+                                    <br/>
+                                    {
+                                        this.state.studentEnrolled === true && 
+                                        <Button variant="contained" color="secondary" style={{ height: "55px" }} fullWidth onClick={e => this.proceedToCourseDetails()}>
+                                            Proceed to Course
+                                        </Button>
+                                    }
+                                    {
+                                        this.state.studentEnrolled === false && sessionStorage.getItem("accessRight") == "Public" &&
+                                        <Button variant="contained" color="secondary" style={{ height: "55px" }} fullWidth onClick={e => this.addToCart(this.state.courseDetails)}>
+                                            Add To Cart
+                                        </Button>
+                                    }
+                                    {
+                                        this.state.studentEnrolled === false && sessionStorage.getItem("accessRight") == "Student" &&
+                                        <Button variant="contained" color="secondary" style={{ height: "55px" }} fullWidth onClick={e => this.enrollCourse(this.state.courseDetails)}>
+                                            Enroll Now
+                                        </Button>
+                                    }
+                                    {
+                                        this.state.studentEnrolled === false && !sessionStorage.getItem("userId") && <div>
+                                            <Typography variant="body2" color="textSecondary" component="p" style={{ fontSize: "18px", marginBottom: "10px" }}>Please login to purchase</Typography>
+                                            <Button variant="contained" color="secondary" style={{ height: "55px" }} fullWidth onClick={e => this.proceedToLogin()}>
+                                                Proceed to Login
+                                            </Button>
+                                        </div>
+                                    }
+                                </MDBCol></MDBRow>
+                            </div>
+                        </MDBCard> 
                     </MDBCol>
                 </MDBRow>
             </MDBContainer>
@@ -365,14 +575,9 @@ class CoursepackDetailsStudent extends Component {
                     {/* <MDBBtn onClick={e => this.addRating()} color="primary">Rate</MDBBtn>
                     {this.showAddRatingDialog()} */}
                     <MDBRow>
-                        <MDBCol>
-                            <h5>Student Feedback</h5>
-                        </MDBCol>
-                    </MDBRow>
-                    <MDBRow>
                         <MDBCol className="col-md-3">
                             <MDBRow>
-                                <div style={{ fontSize: "4rem" }}>{this.state.averageRating}</div>
+                                <div style={{ fontSize: "4rem" }}>{this.state.averageRating.toFixed(1)}</div>
                             </MDBRow>
                             <MDBRow>
                                 <Rating value={this.state.averageRating} readOnly precision={0.1} />
@@ -403,7 +608,7 @@ class CoursepackDetailsStudent extends Component {
                     <div className="mt-4" />
                     <MDBRow>
                         <MDBCol>
-                            <h5>Reviews</h5>
+                            <MDBRow><h5>Reviews</h5></MDBRow>
                         </MDBCol>
                     </MDBRow>
                     <MDBRow className="mt-2">
@@ -432,39 +637,84 @@ class CoursepackDetailsStudent extends Component {
         )
     }
 
-
+    renderSnackbar = () => {
+        return (
+          <Snackbar
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            open={this.state.openSnackbar}
+            autoHideDuration={6000}
+            onClose={this.handleClose}
+            ContentProps={{
+              'aria-describedby': 'message-id',
+            }}
+            message={<span id="message-id">{this.state.message}</span>}
+            action={[
+              <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+            ]}
+          />
+        )
+      }
 
     render() {
+        let cartNum = this.state.cartNum;
+        let categories = this.state.categories;
         return (
-
-            <div style={{ paddingTop: 70, paddingLeft: 70 }}>
-
-                <div style={{ backgroundColor: '#B8CECD', minHeight: 250 }}>
+            <div>
+                <CoursepackTopNav cartNum={cartNum} />
+                <MDBJumbotron style={{ paddingLeft: 260, paddingBottom: 40, height: 10, marginBottom: 0, float: "center", backgroundColor: "#f0f0f0" }}>
                     <div>
-                        <MDBContainer>
-                            {this.showDescriptions()}
-                        </MDBContainer>
+                        <MDBNav>
+                            {
+                                categories.length > 0 && categories.map((category, index) => {
+                                    return (
+                                        <MDBNavItem>
+                                            <MDBNavLink active={false} to={`/coursepacks/${category.categoryId}`} onClick={e => this.showCategory(category.categoryId)}
+                                                style={{ color: "black" }}>
+                                                {category.name}
+                                            </MDBNavLink>
+                                        </MDBNavItem>
+                                    )
+                                })
+                            }
+                        </MDBNav>
                     </div>
-                </div>
-                <div style={{ paddingTop: 50, paddingRight: 30, paddingLeft: 30 }}>
-                    <SectionContainer>
-                        <MDBContainer >
-                            <h4>Course Outline</h4>
-                            <hr />
-                            {this.showOutline()}
-                        </MDBContainer>
-                    </SectionContainer>
-                    <SectionContainer>
-                        {this.getFeedback()}
-                    </SectionContainer>
-                    <SectionContainer>
-                        <MDBContainer>
-                            {this.showTeacherBackground()}
-                        </MDBContainer>
+                </MDBJumbotron>
+                <div style={{ paddingLeft: 70 }}>
 
-                    </SectionContainer>
-                </div>
-            </div >
+                    <div style={{ backgroundColor: '#505763', minHeight: 250, maxHeight: 250 }}>
+                        <div>
+                            <MDBContainer>
+                                {this.showDescriptions()}
+                            </MDBContainer>
+                        </div>
+                    </div>
+                    <div style={{ paddingTop: 50, marginRight: 450, paddingRight: 30, paddingLeft: 30 }}>
+                        <SectionContainer>
+                            <MDBContainer style={{ paddingRight: 50}}>
+                                <h4>Course Outline</h4>
+                                <hr />
+                                {this.showOutline()}
+                            </MDBContainer>
+                        </SectionContainer>
+                        <SectionContainer>
+                            <MDBContainer style={{ paddingRight: 50 }}>
+                                <h4>Student Feedback</h4>
+                                <hr />
+                                {this.getFeedback()}
+                            </MDBContainer>
+                        </SectionContainer>
+                        <SectionContainer>
+                            <MDBContainer>
+                                {this.showTeacherBackground()}
+                            </MDBContainer>
+                        </SectionContainer>
+                    </div>
+                </div >
+                {this.renderSnackbar()}
+            </div>
         )
     }
 }

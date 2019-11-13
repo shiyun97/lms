@@ -327,7 +327,7 @@ class CoursepackDashboardPage extends Component {
           {displayCoursepackList && displayCoursepackList.map((course, index) => {
             return (
               <MDBCol size="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
-                <Card style={{ height: "25rem" }}>
+                <Card>
                   <CardActionArea>
                     <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>
                       <CardMedia
@@ -349,26 +349,25 @@ class CoursepackDashboardPage extends Component {
                           </div>
                         </Typography>
                         <Typography gutterBottom variant="h6" component="h2" style={{ color: "#000000", marginTop: 10 }}>
-                          {sessionStorage.getItem("accessRight") === "Public" ? "S$" + course.price.toFixed(2) : "FREE"}
+                          {sessionStorage.getItem("accessRight") === "Student" ? "FREE" : "S$" + course.price.toFixed(2)}
                         </Typography>
                       </CardContent>
                     </NavLink>
                   </CardActionArea>
-
-                  <CardActions>
                   {
-                      sessionStorage.getItem("accessRight") === "Public" && 
+                    sessionStorage.getItem("accessRight") === "Public" && <CardActions>
                       <Button variant="contained" color="secondary" onClick={e => this.addToCart(course)}>
                         Add To Cart
                       </Button>
-                    }
-                    {
-                      sessionStorage.getItem("accessRight") === "Student" && 
+                    </CardActions>
+                  }
+                  {
+                    sessionStorage.getItem("accessRight") === "Student" && <CardActions>
                       <Button variant="contained" color="secondary" onClick={e => this.enrollCourse(course)}>
                         Enroll Now
                       </Button>
-                    }
-                  </CardActions>
+                    </CardActions>
+                  }
                 </Card>
               </MDBCol>
             )
@@ -393,7 +392,7 @@ class CoursepackDashboardPage extends Component {
           {coursepackList && coursepackList.map((course, index) => {
             return (
               <MDBCol size="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
-                <Card style={{ height: "25rem" }}>
+                <Card>
                   <CardActionArea>
                     <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>
                       <CardMedia
@@ -415,7 +414,7 @@ class CoursepackDashboardPage extends Component {
                           </div>
                         </Typography>
                         <Typography gutterBottom variant="h6" component="h2" style={{ color: "#000000", marginTop: 10 }}>
-                          {sessionStorage.getItem("accessRight") === "Public" ? "S$" + course.price.toFixed(2) : "FREE"}
+                          {sessionStorage.getItem("accessRight") === "Student" ? "FREE" : "S$" + course.price.toFixed(2)}
                         </Typography>
                       </CardContent>
                     </NavLink>

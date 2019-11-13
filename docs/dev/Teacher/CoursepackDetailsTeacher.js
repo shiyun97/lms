@@ -1,6 +1,7 @@
 import React, { Component } from "react";
+import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
-import { MDBContainer, MDBCol, MDBBtn, MDBRow, MDBIcon, MDBProgress } from "mdbreact";
+import { MDBContainer, MDBCol, MDBBtn, MDBRow, MDBIcon, MDBProgress, MDBCard, MDBMedia } from "mdbreact";
 import axios from "axios";
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
 import CoursepackSideNavigation from "../CoursepackSideNavigation";
@@ -17,6 +18,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 const API = "http://localhost:8080/LMS-war/webresources/"
 
+@inject('dataStore')
+@observer
 class CoursepackDetailsTeacher extends Component {
 
     state = {
@@ -25,16 +28,10 @@ class CoursepackDetailsTeacher extends Component {
         courseOutline: "",
         listOfOutlineId: "",
         coursepackId: "",
-        message: "",
-        openSnackbar: false,
-        coursepackId: "",
         ratings: [],
-        averageRating: "",
-        ratingSpread: [],
-        ratingValues: [],
-        modalAddRating: false,
-        ratingCommentInput: "",
-        ratingStarsInput: 5,
+        averageRating: 0,
+        ratingSpread: [0,0,0,0,0],
+        ratingValues: [5, 4, 3, 2, 1],
         message: "",
         openSnackbar: false,
     }
@@ -101,25 +98,39 @@ class CoursepackDetailsTeacher extends Component {
     showDescriptions = () => {
         return (
             <MDBContainer style={{ paddingTop: 20 }}>
-                <MDBRow>
-                    <MDBCol size="8">
-                        <h2 style={{ paddingBottom: 20 }}>{this.state.courseDetails.title}</h2>
-                        <h5 style={{ paddingBottom: 20 }}> {this.state.courseDetails.description}</h5>
-                        <h6> SGD {this.state.courseDetails.price}</h6>
+            <MDBRow>
+                <MDBCol size="8" className="text-white">
+                    <h2 style={{ paddingBottom: 20, paddingTop: 20, fontWeight: "bold" }}>{this.state.courseDetails.title}</h2>
+                    <h5 style={{ paddingBottom: 20 }}> {this.state.courseDetails.description}</h5>
+                    {/*<h6> SGD {this.state.courseDetails.price}</h6>*/}
 
-                        <MDBCol align="right">
-                            <NavLink to={`/coursepack/${this.state.coursepackId}/assessments`}>
-                                <MDBBtn color="primary" >View Course</MDBBtn>
-                            </NavLink>
-                        </MDBCol>
-                    </MDBCol>
-                    <MDBCol size="4">
-                        {/*                         <MDBCard style={{ width: "23rem", minHeight: "12rem" }}>
-                            <MDBMedia object src="https://mdbootstrap.com/img/Photos/Others/placeholder1.jpg" alt="" />
-                        </MDBCard> */}
-                    </MDBCol>
-                </MDBRow>
-            </MDBContainer>)
+                    {/*<MDBCol align="right">
+                        <NavLink to={`/coursepack/${this.state.coursepackId}/assessments`}>
+                            <MDBBtn color="primary" >View Course</MDBBtn>
+                        </NavLink>
+                    </MDBCol>*/}
+                </MDBCol>
+                <MDBCol size="1" />
+                <MDBCol size="3">
+                        <MDBCard style={{ width: "20rem", minHeight: "12rem", marginTop: 20 }}>
+                            <MDBMedia object src={this.state.courseDetails && this.state.courseDetails.imageLocation} className="img-fluid" alt="" style={{ minHeight: "120px" }} />
+                            <div style={{ padding: 20 }}>
+                                <MDBRow><MDBCol>
+                                    <span style={{ fontSize: "35px", fontWeight: "bold" }}>
+                                        {this.state.courseDetails.price && "S$ " + this.state.courseDetails.price.toFixed(2)}
+                                    </span>
+                                </MDBCol></MDBRow>
+                                <MDBRow><MDBCol>
+                                    <br />
+                                    <Button variant="contained" color="secondary" style={{ height: "55px" }} fullWidth onClick={e => this.proceedToCourseDetails()}>
+                                        Proceed to Course
+                                    </Button>
+                                </MDBCol></MDBRow>
+                            </div>
+                        </MDBCard> 
+                </MDBCol>
+            </MDBRow>
+        </MDBContainer>)
     }
 
     getLessonOrder = outlineId => {
@@ -253,64 +264,9 @@ class CoursepackDetailsTeacher extends Component {
         }
     };
 
-    addRating = () => {
-        this.setState({
-            modalAddRating: true
-        })
-    }
-
-    inputChangeHandler = (e) => {
-        e.preventDefault();
-        this.setState({
-            [e.target.name]: e.target.value
-        });
-        console.log(e.target.name + " " + e.target.value)
-    }
-
-    setValue = (newValue) => {
-        console.log(newValue)
-        this.setState({
-            ratingStarsInput: newValue
-        })
-    }
-
-    submitHandler = (e) => {
-        e.preventDefault();
-        console.log(this.state.ratingCommentInput);
-        console.log(this.state.ratingStarsInput);
-        let ratingCommentInput = this.state.ratingCommentInput;
-        let ratingStarsInput = this.state.ratingStarsInput;
-        if (ratingCommentInput && ratingStarsInput) {
-            let request = {
-                userId: sessionStorage.getItem('userId'),
-                coursepackId: this.state.coursepackId,
-                rating: ratingStarsInput,
-                comment: ratingCommentInput
-            }
-            axios
-                .post(`${API}/feedback/createRating`, request)
-                .then((result) => {
-                    console.log(result);
-                    this.setState({
-                        ratingStarsInput: "",
-                        ratingCommentInput: "",
-                        modalAddRating: false,
-                        message: "Rating added successfully",
-                        openSnackbar: true
-                    })
-                    return this.initPage();
-                })
-                .catch(error => {
-                    this.setState({
-                        ratingStarsInput: "",
-                        ratingCommentInput: "",
-                        modalAddRating: false,
-                        message: error.response.data.errorMessage,
-                        openSnackbar: true
-                    })
-                    console.error("error in axios " + error);
-                });
-        }
+    proceedToCourseDetails = () => {
+        this.props.dataStore.setPath(`/coursepack/${this.state.coursepackId}/assessments`);
+        this.props.history.push(`/coursepack/${this.state.coursepackId}/assessments`);
     }
 
     showAddRatingDialog() {
@@ -362,6 +318,7 @@ class CoursepackDetailsTeacher extends Component {
     }
 
     getFeedback = () => {
+        console.log(this.state)
         let ratingSpread = this.state.ratingSpread;
         let ratingValues = this.state.ratingValues;
         let ratings = this.state.ratings;
@@ -370,7 +327,7 @@ class CoursepackDetailsTeacher extends Component {
                 {sessionStorage.getItem('accessRight') === 'Teacher' ? <CoursepackSideNavigation courseId={this.props.coursepackId} /> : null}
                 {/*                 <CoursepackSideNavigation courseId={this.props.coursepackId} />
  */}
-                <MDBContainer style={{ paddingTop: 50 }}>
+                <MDBContainer style={{ paddingTop: 20 }}>
                     {sessionStorage.getItem('accessRight') !== 'Teacher' ? (
                         <div>
                             <MDBBtn onClick={e => this.addRating()} color="primary">Rate</MDBBtn>
@@ -382,14 +339,9 @@ class CoursepackDetailsTeacher extends Component {
                     {/* <MDBBtn onClick={e => this.addRating()} color="primary">Rate</MDBBtn>
                     {this.showAddRatingDialog()} */}
                     <MDBRow>
-                        <MDBCol>
-                            <h5>Student Feedback</h5>
-                        </MDBCol>
-                    </MDBRow>
-                    <MDBRow>
                         <MDBCol className="col-md-3">
                             <MDBRow>
-                                <div style={{ fontSize: "4rem" }}>{this.state.averageRating}</div>
+                                <div style={{ fontSize: "4rem" }}>{this.state.averageRating.toFixed(1)}</div>
                             </MDBRow>
                             <MDBRow>
                                 <Rating value={this.state.averageRating} readOnly precision={0.1} />
@@ -449,30 +401,32 @@ class CoursepackDetailsTeacher extends Component {
         )
     }
 
-
-
     render() {
         return (
 
             <div className="module-content" style={{ paddingTop: 20 }}>
                 <CoursepackSideNavigation courseId={this.props.coursepackId} />
-                <div style={{ backgroundColor: '#B8CECD', minHeight: 250 }}>
+                <div style={{ backgroundColor: '#505763', minHeight: 250, maxHeight: 250 }}>
                     <div>
                         <MDBContainer>
                             {this.showDescriptions()}
                         </MDBContainer>
                     </div>
                 </div>
-                <div style={{ paddingTop: 50, paddingRight: 30, paddingLeft: 20 }}>
+                <div style={{ paddingTop: 50, paddingRight: 30, paddingLeft: 20, marginRight: 330, }}>
                     <SectionContainer>
-                        <MDBContainer >
+                        <MDBContainer>
                             <h4>Course Outline</h4>
                             <hr />
                             {this.showCoursepackOutline()}
                         </MDBContainer>
                     </SectionContainer>
                     <SectionContainer>
-                        {this.getFeedback()}
+                        <MDBContainer>
+                            <h4>Student Feedback</h4>
+                            <hr />
+                            {this.getFeedback()}
+                        </MDBContainer>
                     </SectionContainer>
                     <SectionContainer>
                         <MDBContainer>

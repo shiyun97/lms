@@ -58,8 +58,8 @@ class CoursepackFeedbackPage extends Component {
                 }
             }*/
         ],
-        averageRating: 4.6,
-        ratingSpread: [64, 29, 6, 1, 0],
+        averageRating: 0,
+        ratingSpread: [0,0,0,0,0],
         ratingValues: [5, 4, 3, 2, 1],
         modalAddRating: false,
         ratingCommentInput: "",

@@ -281,7 +281,7 @@ class CoursepackViewAllPage extends Component {
                                         <MDBRow>
                                             <b style={{ color: "#f44336", fontSize: "18px" }}>
                                                 {
-                                                    sessionStorage.getItem("accessRight") === "Public" && <span>S${coursepack.price.toFixed(2)}</span>
+                                                    (sessionStorage.getItem("accessRight") === "Public" || !sessionStorage.getItem("accessRight")) && <span>S${coursepack.price.toFixed(2)}</span>
                                                 }
                                                 {
                                                     sessionStorage.getItem("accessRight") === "Student" && <span>FREE</span>

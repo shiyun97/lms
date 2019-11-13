@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import {
   MDBContainer, MDBTabPane, MDBNavItem, MDBNavLink, MDBTabContent, MDBRow, MDBCol, MDBNav, MDBFormInline, MDBIcon,
   MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBCardBody, MDBCardText, MDBCardImage, MDBCard, 
-  MDBCardTitle, MDBCardGroup, MDBJumbotron
+  MDBCardTitle, MDBCardGroup, MDBJumbotron, MDBProgress
 } from "mdbreact";
 import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
@@ -514,7 +514,11 @@ class CoursepackEnrolledCourses extends Component {
                         <Typography variant="body2" color="textSecondary" component="p">
                           {course.assignedTeacher.firstName + " " + course.assignedTeacher.lastName}
                         </Typography>
-                        <Typography variant="body2" color="textSecondary" component="p">
+                        <Typography variant="body2" color="textSecondary">
+                          <MDBProgress value={50} className="my-2" height="5px" />
+                          {"50% complete"}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
                           <div style={{ width: 200, display: "flex", marginTop: 10 }}>
                             <Rating name="hover-side" value={course.ratingList.length > 0 && course.ratingList[0].rating} precision={0.1} readOnly size="small" />
                           </div>
