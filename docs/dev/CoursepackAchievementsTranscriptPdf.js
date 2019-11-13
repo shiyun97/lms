@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     },
     personalInfo: {
         fontSize: 12,
-        fontFamily: 'HindSiliguri',
+        fontFamily: 'Muli',
     },
     heading: {
         paddingRight: 58,
@@ -41,34 +41,47 @@ const styles = StyleSheet.create({
     content: {
         fontSize: 14,
         paddingRight: 40,
-        paddingBottom: 40
+        paddingBottom: 8,
+        fontFamily: 'Muli',
     },
-    certID: {
-        fontSize: 14,
-        fontFamily: 'HindSiliguri',
-        textAlign: "left",
-        paddingLeft: 85,
-        paddingTop: 70
+    officialTranscript: {
+        textAlign: "center",
+        fontWeight: "extrabold",
+        paddingRight: 50,
+        fontSize: 15,
+        paddingTop: 30,
+        fontFamily: 'Kanit',
+    },
+    coursepackCertAttained: {
+        paddingTop: 20,
+        fontWeight: "bold",
+        fontSize: 13,
+        textDecoration: "underline",
     }
 });
 
 Font.register(
     {
-        family: 'Playball',
-        src: `http://fonts.gstatic.com/s/playball/v6/bTcyeVjOJ0HzO36ebPilS_esZW2xOQ-xsNqO47m55DA.ttf`
+        family: 'Roboto Slab',
+        src: `http://fonts.gstatic.com/s/robotoslab/v6/y7lebkjgREBJK96VQi37Zp0EAVxt0G0biEntp43Qt6E.ttf`
     }
 );
 Font.register(
     {
-        family: `OleoSript`,
-        src: `http://fonts.gstatic.com/s/cormorantupright/v3/0n68kajKjTOJn9EPQkf1a5OaXSpdknEt7iHrNREE1MM.ttf`
+        family: `Muli`,
+        src: `http://fonts.gstatic.com/s/muli/v10/BfQP1MR3mJNaumtWa4Tizg.ttf`
     }
 );
-
 Font.register(
     {
-        family: `HindSiliguri`,
-        src: `http://fonts.gstatic.com/s/hindsiliguri/v2/f2eEi2pbIa8eBfNwpUl0AkPlcwLEEFMaFVaeSfNKhMM.ttf`
+        family: `Kanit`,
+        src: `http://fonts.gstatic.com/s/kanit/v1/kkq0USULIwHHdoKxKBuLog.ttf`
+    }
+);
+Font.register(
+    {
+        family: `Noto Sans`,
+        src: `http://fonts.gstatic.com/s/notosans/v6/LeFlHvsZjXu2c3ZRgBq9nKCWcynf_cDxXwCLxiixG1c.ttf`
     }
 );
 
@@ -77,7 +90,7 @@ export function PdfDocument(props) {
     console.log(props.cert)
     console.log(props.coursepack.length)
 
-    if (props.cert.length === 0 && props.coursepack.length === 0) {
+    if (props.cert.length === 0 && props.coursepack.length === 0) { //no coursepack and no cert
         return (
             <Document>
                 <Page size="A4" style={styles.page}>
@@ -88,15 +101,15 @@ export function PdfDocument(props) {
                         <Text style={styles.personalInfo}>{sessionStorage.getItem('gender')}</Text>
                         <Text style={styles.personalInfo}>{sessionStorage.getItem('email')}</Text>
 
-                        <Text style={{ textAlign: "center" }}>
-                            No certificates attainted. No coursepack Completed.
+                        <Text style={{ textAlign: "center", fontSize: 14, paddingTop: 20 }}>
+                            No certificates attained. No coursepack completed.
                         </Text>
 
                     </View>
                 </Page>
             </Document>
         )
-    } else if (props.coursepack.length !== 0) {
+    } else if (props.coursepack.length !== 0 && props.cert.length !== 0) { //there are certs and coursepacks
         return (
             <Document>
                 <Page size="A4" style={styles.page}>
@@ -107,10 +120,58 @@ export function PdfDocument(props) {
                         <Text style={styles.personalInfo}>{sessionStorage.getItem('gender')}</Text>
                         <Text style={styles.personalInfo}>{sessionStorage.getItem('email')}</Text>
                         <Text style={{ textAlign: "center", fontWeight: "bold", paddingRight: 50, fontSize: 15, paddingTop: 30 }}>Offical Transcript</Text>
+                        <Text style={styles.coursepackCertAttained}>Certificates Attained</Text>
+
+                        <View style={{ flexDirection: 'row', paddingTop: 13 }}>
+                            <Text style={styles.heading}>Id</Text>
+                            <Text style={styles.heading}>Title</Text>
+                        </View>
+
+                        {props.cert && props.cert.map((cert) => {
+                            return (
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={styles.content}>{cert.id}</Text>
+                                    <Text style={styles.content}>{cert.title}</Text>
+                                </View>
+                            )
+                        })}
+
+                        <Text style={styles.coursepackCertAttained}>Coursepack Completed</Text>
+                        <View style={{ flexDirection: 'row', paddingTop: 13 }}>
+                            <Text style={styles.heading}>Code</Text>
+                            <Text style={styles.heading}>Coursepack</Text>
+                        </View>
+
+                        {props.coursepack && props.coursepack.map((coursepack) => {
+                            return (
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={styles.content}>{coursepack.code}</Text>
+                                    <Text style={styles.content}>{coursepack.title}</Text>
+                                </View>
+                            )
+                        })}
+                    </View>
+                </Page>
+            </Document>
+        )
+    } else { // there is coursepack but no cert
+        return (
+            <Document>
+                <Page size="A4" style={styles.page}>
+
+                    <View >
+                        <Image style={styles.nusLogo} src={'https://logos-download.com/wp-content/uploads/2016/12/National_University_of_Singapore_logo_NUS.png'} />
+                        <Text style={styles.personalInfo}>{sessionStorage.getItem('firstName')} {sessionStorage.getItem('lastName')}</Text>
+                        <Text style={styles.personalInfo}>{sessionStorage.getItem('gender')}</Text>
+                        <Text style={styles.personalInfo}>{sessionStorage.getItem('email')}</Text>
+                        <Text style={{ textAlign: "center", fontWeight: "bold", paddingRight: 50, fontSize: 15, paddingTop: 30 }}>Offical Transcript</Text>
+                        <Text style={{ paddingTop: 20, fontWeight: "bold", fontSize: 14, textDecoration: "underline" }}>Coursepack Completed</Text>
+
                         <View style={{ flexDirection: 'row', paddingTop: 30 }}>
                             <Text style={styles.heading}>Code</Text>
                             <Text style={styles.heading}>Coursepack</Text>
                         </View>
+
                         {props.coursepack && props.coursepack.map((coursepack) => {
                             return (
                                 <View style={{ flexDirection: 'row' }}>
@@ -124,39 +185,4 @@ export function PdfDocument(props) {
             </Document>
         )
     }
-
-
-    return (
-        <Document>
-            <Page size="A4" style={styles.page}>
-
-                <View style={{ paddingLeft: 30 }}>
-                    <Image style={styles.nusLogo} src={'https://logos-download.com/wp-content/uploads/2016/12/National_University_of_Singapore_logo_NUS.png'} />
-                    <Text style={styles.personalInfo}>{sessionStorage.getItem('firstName')} {sessionStorage.getItem('lastName')}</Text>
-                    <Text style={styles.personalInfo}>{sessionStorage.getItem('gender')}</Text>
-                    <Text style={styles.personalInfo}>{sessionStorage.getItem('email')}</Text>
-
-                    {props.cert.length === 0 && props.coursepack.length === 0 &&
-                        <Text style={{ textAlign: "center" }}>
-                            No certificates attainted. No coursepack Completed.
-                        </Text>
-                    }
-                    {props.cert.length !== 0 &&
-                        <Text style={{ textAlign: "center" }}>
-                            Show cert
-                        </Text>
-                    }
-                    {props.coursepack.length !== 0 &&
-                        props.coursepack && props.coursepack.map((coursepack) => {
-                            return (
-                                <Text>{coursepack.code} {coursepack.title}</Text>
-                            )
-                        })
-                    }
-
-                </View>
-
-            </Page>
-        </Document>
-    );
 } 

@@ -30,7 +30,6 @@ class ModuleAttendancePage extends Component {
   }
 
   render() {
-    //TODO: remove the top bar
     return (
       <div className={this.props.className}>
         <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>

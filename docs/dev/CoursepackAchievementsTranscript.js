@@ -3,6 +3,7 @@ import axios from "axios";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import { PdfDocument } from "./CoursepackAchievementsTranscriptPdf";
 import { MDBContainer, MDBCol, MDBBtn } from "mdbreact";
+import { Button } from "@material-ui/core";
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 
@@ -25,7 +26,7 @@ export default function CoursepackAchievementsTranscript(props) {
             let res_cert = await axios(
                 `${API}Gamification/getAllUserCertifications?userId=${sessionStorage.getItem("userId")}`
             );
-            setCertDetails(res_cert.data);
+            setCertDetails(res_cert.data.certificationList);
         } catch (error) {
             console.log(error);
         }
@@ -35,27 +36,27 @@ export default function CoursepackAchievementsTranscript(props) {
 
     return (
         <MDBContainer style={{ paddingTop: 30 }} align="center">
-
-            <MDBCol size="12">
-                <MDBBtn onClick={fetchCert}>Get Transcript</MDBBtn>
-            </MDBCol>
+            {show === false &&
+                <MDBCol size="12">
+                    <Button color="primary" onClick={fetchCert}>Get Transcript</Button>
+                </MDBCol>
+            }
 
             {show && (
-                <MDBBtn>
+                <Button color="primary">
                     <PDFDownloadLink
-                        document={<PdfDocument cert={certDetails} coursepack={coursepackDetails}  />}
-                        fileName="transcript.pdf"
+                        document={<PdfDocument cert={certDetails} coursepack={coursepackDetails} />}
+                        fileName={`${sessionStorage.getItem("firstName")}_${sessionStorage.getItem("lastName")}.pdf`}
                     >
                         {({ blob, url, loading, error }) =>
-                            loading ? "Loading document..." : "Download Certificate"
+                            loading ? "Loading document..." : "Download Transcript"
                         }
                     </PDFDownloadLink>
 
-                    {/* <PDFViewer
-                    >
+                    {/* <PDFViewer>
                         <PdfDocument cert={certDetails} coursepack={coursepackDetails} />
                     </PDFViewer> */}
-                </MDBBtn>
+                </Button>
 
             )}
         </MDBContainer>

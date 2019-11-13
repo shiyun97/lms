@@ -93,7 +93,7 @@ export function PdfDocument(props) {
                 <View>
                     <Text style={styles.heading} >Certificate of Completion</Text>
                     <Text style={styles.content}>This is to certify that</Text>
-                    <Text style={styles.name}> {sessionStorage.getItem("firstName")} {sessionStorage.getItem("firstName")}</Text>
+                    <Text style={styles.name}> {sessionStorage.getItem("firstName")} {sessionStorage.getItem("lastName")}</Text>
                     <Text style={styles.content}> has attained {props.data.title} on {day}-{month}-{year}.</Text>
                     <Image style={styles.nusLogo} src={'https://logos-download.com/wp-content/uploads/2016/12/National_University_of_Singapore_logo_NUS.png'} />
                     <Text style={styles.certID}>Certification Id: {props.data.id}</Text>

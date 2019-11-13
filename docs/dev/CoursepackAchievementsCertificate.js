@@ -22,7 +22,7 @@ export default function CoursepackAchievementsCertificate(props) {
         }
     };
 
-    if (props.attainedCerts.length === 0) { //FIXME:
+    if (props.attainedCerts.length === 0) {
         return <div align="center" style={{paddingTop: 30}}>No certificate attained</div>
     } else {
         var attainedCerts = props.attainedCerts

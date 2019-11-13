@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { MDBRow, MDBCol, MDBBtn } from "mdbreact";
+import { MDBRow, MDBCol, MDBBtn, MDBIcon } from "mdbreact";
 import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
-import { List, ListItem, ListSubheader } from '@material-ui/core/';
+import { List, ListItem, ListSubheader, Snackbar } from '@material-ui/core/';
 import ReactPlayer from 'react-player'
 import CoursepackQuizPageAnswerQuiz from './Public/CoursepackQuizPageAnswerQuiz'
 import Fullscreen from "react-full-screen";
@@ -25,7 +25,9 @@ class CoursepackAssessmentPage extends Component {
         allMultimedia: [],
         currentLessonOrder: [],
         isFull: false,
-        lastItem: ""
+        lastItem: "",
+        openSnackbar: false,
+        message: ""
     }
 
     componentDidMount() {
@@ -39,7 +41,8 @@ class CoursepackAssessmentPage extends Component {
                     coursepackDetails: result.data,
                     outlineList: result.data.outlineList.sort((a, b) => (a.number - b.number)),
                     listOfLessonOrder: this.getLessonIds(result.data.outlineList.sort((a, b) => (a.number - b.number))),
-                    currentLessonOrder: this.getLessonIds(result.data.outlineList.sort((a, b) => (a.number - b.number)))[0]
+                    currentLessonOrder: this.getLessonIds(result.data.outlineList.sort((a, b) => (a.number - b.number)))[0],
+                    prevLessonOrder: 0
                 })
             })
             .catch(error => {
@@ -67,9 +70,18 @@ class CoursepackAssessmentPage extends Component {
 
         scrollSpy.update();
     }
+
     scrollToTop() {
         scroll.scrollToTop();
     }
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        this.setState({ openSnackbar: false });
+    };
+
     componentWillUnmount() {
         Events.scrollEvent.remove('begin');
         Events.scrollEvent.remove('end');
@@ -85,12 +97,12 @@ class CoursepackAssessmentPage extends Component {
         return list;
     }
 
-
     showVideoQuiz = () => {
         var location = ""
         var currentFile = this.state.currentLessonOrder && this.state.currentLessonOrder.file ? this.state.currentLessonOrder.file.fileId : null
         var currentQuiz = this.state.currentLessonOrder && this.state.currentLessonOrder.quiz ? this.state.currentLessonOrder.quiz.quizId : null
         var currentStatus = this.state.currentLessonOrder.status
+        console.log(this.state.currentLessonOrder)
 
         if (currentFile) { //video 
             return (
@@ -107,9 +119,10 @@ class CoursepackAssessmentPage extends Component {
                     }
                 }))
         } else if (currentQuiz && currentStatus === 'Locked') {
+            console.log(currentStatus)
             return <div style={{ paddingTop: 170 }}>Please complete the previous quiz to unlock.</div>
 
-        } else { //quiz
+        } else if (currentQuiz) { //quiz
             console.log(currentQuiz)
             return (
                 <div>
@@ -138,6 +151,8 @@ class CoursepackAssessmentPage extends Component {
                     </MDBCol>
                 </div>
             )
+        } else {
+            return (<div>{this.state.lastItem}</div>)
         }
     }
 
@@ -154,6 +169,7 @@ class CoursepackAssessmentPage extends Component {
             axios.post(`http://localhost:8080/LMS-war/webresources/Assessment/completeCoursepackFile?userId=${sessionStorage.getItem("userId")}&fileId=${currentFile}`)
                 .then(result => {
                     console.log("Completed current video!")
+                    this.init()
                 })
                 .catch(error => {
                     console.log(error.message)
@@ -161,17 +177,23 @@ class CoursepackAssessmentPage extends Component {
                 });
         }
 
+        this.setState({ prevLessonOrder: this.state.currentLessonOrder })
+
         if (currentQuiz) {
-            this.setState({isFull: false})
+            this.init()
+            this.setState({ isFull: false })
         }
 
         if (this.state.listOfLessonOrder.length !== index + 1) {
             this.setState({ currentLessonOrder: this.state.listOfLessonOrder[index + 1] })
         }
-/*         else { //reached the last item
-            this.showLastItem()
+        else { //reached the last item
             this.setState({ lastItem: `You have completed the coursepack, ${this.state.coursepackDetails.title}!` })
-        } */
+        }
+
+        if (this.state.prevLessonOrder.state!=="Completed") {
+            this.setState({openSnackbar: true, message: "You are not eligible for any badge/ certificate"})
+        }
     }
 
 
@@ -206,6 +228,27 @@ class CoursepackAssessmentPage extends Component {
         )
     }
 
+    renderSnackbar = () => {
+        return (
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                open={this.state.openSnackbar}
+                autoHideDuration={6000}
+                onClose={this.handleClose}
+                ContentProps={{
+                    'aria-describedby': 'message-id',
+                }}
+                message={<span id="message-id">{this.state.message}</span>}
+                action={[
+                    <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                ]}
+            />
+        )
+    }
+
     render() {
         return (
             <div >
@@ -235,6 +278,7 @@ class CoursepackAssessmentPage extends Component {
                         </MDBRow>
                     </SectionContainer>
                 </div>
+                {this.renderSnackbar()}
             </div>
         )
     }

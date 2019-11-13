@@ -80,7 +80,6 @@ class CoursepackCreatePage extends Component {
                         </MDBCol>
                     </MDBRow>
 
-                    {/**TODO: dropdown of available categories that they can create  */}
                     <MDBRow style={{ paddingTop: "20px" }}>
                         <MDBCol sm="4">Category: </MDBCol>
                         <MDBCol sm="8">

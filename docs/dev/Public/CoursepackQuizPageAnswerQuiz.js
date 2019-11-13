@@ -102,7 +102,7 @@ class CoursepackQuizPageAnswerQuiz extends Component {
       axios
         .post(`http://localhost:8080/LMS-war/webresources/Assessment/completeCoursepackQuiz?userId=${userId}&quizId=${this.state.quizId}`)
         .then(result => {
-          console.log("Unlocked next quiz!")
+          console.log("Completed quiz!")
         })
         .catch(error => {
           console.log(error.message)

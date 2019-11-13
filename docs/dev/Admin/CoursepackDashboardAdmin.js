@@ -257,7 +257,7 @@ class CoursepackDashboardAdmin extends Component {
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
                         <div className="text-center mt-2">
-                            <Dropzone onDrop={this.onDrop} multiple /* accept=".mp4" */>
+                            <Dropzone onDrop={this.onDrop} multiple accept="image/*">
                                 {({ getRootProps, getInputProps, isDragActive, isDragReject, rejectedFiles }) => (
                                     <div {...getRootProps()}>
                                         <input {...getInputProps()} />
