@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { MDBContainer, MDBRow, MDBCol, MDBBtn } from "mdbreact";
+import { MDBRow, MDBCol, MDBBtn } from "mdbreact";
 import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
-import { List, ListItem, ListItemText, Toolbar, ListSubheader, useScrollTrigger, CssBaseline, AppBar, Typography, Container, Box, Slide } from '@material-ui/core/';
+import { List, ListItem, ListSubheader } from '@material-ui/core/';
 import ReactPlayer from 'react-player'
 import CoursepackQuizPageAnswerQuiz from './Public/CoursepackQuizPageAnswerQuiz'
 import Fullscreen from "react-full-screen";
@@ -25,6 +25,7 @@ class CoursepackAssessmentPage extends Component {
         allMultimedia: [],
         currentLessonOrder: [],
         isFull: false,
+        lastItem: ""
     }
 
     componentDidMount() {
@@ -93,10 +94,11 @@ class CoursepackAssessmentPage extends Component {
 
         if (currentFile) { //video 
             return (
-                this.state.allMultimedia && this.state.allMultimedia.map((eachMultimedia, index) => {
+                this.state.allMultimedia && this.state.allMultimedia.map((eachMultimedia) => {
                     if (eachMultimedia.fileId === currentFile) {
                         location = eachMultimedia.location
                         let savedFileName = location.split('/')[5]; //FIXME:
+                        /* let savedFileName = location.split('\\')[1]; */
                         let fullPath = FILE_SERVER + savedFileName;
                         console.log(fullPath)
                         return (
@@ -104,10 +106,10 @@ class CoursepackAssessmentPage extends Component {
                         )
                     }
                 }))
-        } /* else if (currentQuiz && currentStatus === 'Locked') { //TODO: uncomment
-            return <div>Please complete the previous quiz to unlocked</div>
+        } else if (currentQuiz && currentStatus === 'Locked') {
+            return <div style={{ paddingTop: 170 }}>Please complete the previous quiz to unlock.</div>
 
-        } */ else { //quiz
+        } else { //quiz
             console.log(currentQuiz)
             return (
                 <div>
@@ -136,7 +138,6 @@ class CoursepackAssessmentPage extends Component {
                     </MDBCol>
                 </div>
             )
-
         }
     }
 
@@ -146,11 +147,33 @@ class CoursepackAssessmentPage extends Component {
 
     ended = event => {
         var index = this.state.listOfLessonOrder.findIndex(x => x.lessonOrderId === this.state.currentLessonOrder.lessonOrderId);
-        console.log(index)
+        var currentFile = this.state.currentLessonOrder && this.state.currentLessonOrder.file ? this.state.currentLessonOrder.file.fileId : null
+        var currentQuiz = this.state.currentLessonOrder && this.state.currentLessonOrder.quiz ? this.state.currentLessonOrder.quiz.quizId : null
+
+        if (currentFile) { //video 
+            axios.post(`http://localhost:8080/LMS-war/webresources/Assessment/completeCoursepackFile?userId=${sessionStorage.getItem("userId")}&fileId=${currentFile}`)
+                .then(result => {
+                    console.log("Completed current video!")
+                })
+                .catch(error => {
+                    console.log(error.message)
+                    console.log("Error completing video")
+                });
+        }
+
+        if (currentQuiz) {
+            this.setState({isFull: false})
+        }
+
         if (this.state.listOfLessonOrder.length !== index + 1) {
             this.setState({ currentLessonOrder: this.state.listOfLessonOrder[index + 1] })
         }
+/*         else { //reached the last item
+            this.showLastItem()
+            this.setState({ lastItem: `You have completed the coursepack, ${this.state.coursepackDetails.title}!` })
+        } */
     }
+
 
     clickLessonOrder = lessonOrderId => {
         this.setState({ currentLessonOrder: lessonOrderId })
@@ -183,7 +206,6 @@ class CoursepackAssessmentPage extends Component {
         )
     }
 
-
     render() {
         return (
             <div >
@@ -195,7 +217,6 @@ class CoursepackAssessmentPage extends Component {
                     <SectionContainer style={{ height: 400 }}>
                         <MDBRow>
                             <MDBCol size="8" align="center">
-
                                 {this.showVideoQuiz()}
                             </MDBCol>
                             <MDBCol size="4">
@@ -218,7 +239,5 @@ class CoursepackAssessmentPage extends Component {
         )
     }
 }
-
-
 
 export default CoursepackAssessmentPage;

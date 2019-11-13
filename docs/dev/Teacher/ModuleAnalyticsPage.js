@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MDBRow, MDBContainer, MDBCard, MDBCardBody, MDBCardHeader, MDBIcon, MDBCol, MDBDataTable, MDBCardText, MDBBreadcrumb, MDBBreadcrumbItem, MDBProgress, MDBBtn } from 'mdbreact';
+import { MDBRow, MDBContainer, MDBCard, MDBCardBody, MDBCardHeader, MDBIcon, MDBCol, MDBDataTable, MDBCardText, MDBEdgeHeader, MDBBreadcrumb, MDBBreadcrumbItem, MDBProgress, MDBBtn } from 'mdbreact';
 import styled from 'styled-components';
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import ModuleSideNavigationDropdown from "../ModuleSideNavigationDropdown";
@@ -652,7 +652,8 @@ class ModuleAnalyticsPage extends Component {
           <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Analytics'}></ModuleSideNavigationDropdown>
         </div>
         <div className="module-content">
-          <MDBContainer>
+              <MDBEdgeHeader color="indigo darken-3" className="analyticsPage" />
+          <MDBContainer style={{ paddingBottom: 240, paddingTop: 60 }}>
             {this.renderBreadcrumbSection()}
             {this.state.barStatus === "done" ? this.renderCardSection() : this.renderNoCardSection("bar")}
             <MDBRow>
@@ -673,7 +674,7 @@ class ModuleAnalyticsPage extends Component {
 
 export default styled(ModuleAnalyticsPage)`
 .module-content{
-    margin-top: 40px;
+    margin-top: 0px;
 }
 @media screen and (min-width: 800px) {
     .module-content{

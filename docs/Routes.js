@@ -84,7 +84,7 @@ import ModuleFeedbackPage from './dev/ModuleFeedbackPage';
 import ModuleFeedbackEvaluationPage from './dev/ModuleFeedbackEvaluationPage';
 import DashboardPage from './dev/DashboardPage';
 import ModulesPage from './dev/ModulesPage';
-import UsersManagementPage from './dev/UsersManagementPage';
+import UsersManagementPage from './dev/Admin/UsersManagementPage';
 import UserProfilePage from "./dev/UserProfilePage";
 import UnderMaintenancePage from "./dev/UnderMaintenancePage";
 import AdminLoginPage from "./dev/Admin/AdminLoginPage";
@@ -127,7 +127,7 @@ import CoursepackViewAllPage from "./dev/CoursepackViewAllPage";
 import CoursepackAchievementsPage from "./dev/CoursepackAchievementsPage";
 import ModuleQuizPageViewStatistics from "./dev/Teacher/ModuleQuizPageViewStatistics";
 import ModuleFeedbackPageViewStatistics from "./dev/Teacher/ModuleFeedbackPageViewStatistics";
-import CoursepackAchievementsPageView from "./dev/CoursepackAchievementsPageView";
+import CoursepackAchievementsPageView from "./dev/CoursepackAchievementsPageView";
 
 @inject('dataStore')
 @observer
@@ -253,6 +253,7 @@ class Routes extends React.Component {
         <Route exact path="/coursepacks/:categoryId" component={CoursepackViewAllPage} />
         <Route exact path="/coursepack/achievements/view/certificates" component={CoursepackAchievementsPage} />
         <Route exact path="/coursepack/achievements/view/badges" component={CoursepackAchievementsPage} />
+        <Route exact path="/coursepack/achievements/view/transcript" component={CoursepackAchievementsPage} />
         <Route exact path="/coursepack/achievements/certificates/view/:certId" component={CoursepackAchievementsPageView} />
 
         {/* FREE Templates */}

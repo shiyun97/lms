@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable, MDBCardHeader } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable, MDBCardHeader, MDBEdgeHeader } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import ModuleSideNavigationDropdown from "../ModuleSideNavigationDropdown";
 import { Snackbar } from '@material-ui/core';
@@ -274,8 +274,9 @@ class ModuleQuizPageStudent extends Component {
                     <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }}>
+                        <MDBRow>
                             <MDBCol md="8">
                                 <h2 className="font-weight-bold">
                                     Quiz
@@ -336,8 +337,9 @@ class ModuleQuizPageStudent extends Component {
                     <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }}>
+                        <MDBRow>
                             <MDBCol md="8">
                                 <h2 className="font-weight-bold">
                                     Quiz
@@ -374,8 +376,9 @@ class ModuleQuizPageStudent extends Component {
                     <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }} align="center">
+                        <MDBRow align="center">
                             <MDBCol md="12">
                                 <div className="spinner-border text-primary" role="status">
                                     <span className="sr-only">Loading...</span>
@@ -409,7 +412,7 @@ class ModuleQuizPageStudent extends Component {
 
 export default styled(ModuleQuizPageStudent)`
 .module-content{
-    margin-top: 40px;
+    margin-top: 0px;
 }
 @media screen and (min-width: 800px) {
     .module-content{
