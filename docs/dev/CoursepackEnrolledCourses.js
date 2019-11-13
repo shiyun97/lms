@@ -515,7 +515,7 @@ class CoursepackEnrolledCourses extends Component {
                           {course.assignedTeacher.firstName + " " + course.assignedTeacher.lastName}
                         </Typography>
                         <Typography variant="body2" color="textSecondary">
-                          <MDBProgress value={course.progress} className="my-2" height="5px" />
+                          <MDBProgress value={course.progress*100} className="my-2" height="5px" />
                           {(course.progress*100).toFixed(0) + "% complete"}
                         </Typography>
                         <Typography variant="body2" color="textSecondary">

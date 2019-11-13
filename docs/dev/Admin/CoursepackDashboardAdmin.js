@@ -135,7 +135,7 @@ class CoursepackDashboardAdmin extends Component {
                         <MDBCol size="3">
                             <MDBCol align="center" size="12" style={{ paddingBottom: 30 }}>
                                 <Card style={{ height: 180, color: this.disabled(badge.achieved) }} >
-                                    <img src={fullPath} alt={badge.title} />
+                                    <img src={fullPath} alt={badge.title} style={{maxWidth: 180}} />
                                 </Card>
                                 <MDBIcon onClick={() => this.deleteBadge(badge.id)} icon="trash-alt" />
                             </MDBCol>

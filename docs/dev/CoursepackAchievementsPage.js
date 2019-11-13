@@ -116,7 +116,7 @@ class CoursepackAchievementsPage extends Component {
                         <MDBCol size="3">
                             <MDBCol align="center" size="12" style={{ paddingBottom: 30 }}>
                                 <Card style={{ height: 180, color: this.disabled(badge.achieved) }} >
-                                    <img src={fullPath} style={{ opacity: this.checkAchieved(badge.id) }} alt={badge.title} />
+                                    <img src={fullPath} style={{ opacity: this.checkAchieved(badge.id), maxWidth: 180 }} alt={badge.title} />
                                 </Card>
                             </MDBCol>
                         </MDBCol>
