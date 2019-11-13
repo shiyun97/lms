@@ -2,6 +2,13 @@ import React, { Component } from "react";
 import { MDBContainer, MDBBtn, MDBCard, MDBCardBody, MDBCardText, MDBCardTitle, MDBRow, MDBCol } from "mdbreact";
 import axios from "axios";
 import { NavLink } from 'react-router-dom'
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import Typography from '@material-ui/core/Typography';
+import { Rating } from '@material-ui/lab';
 
 const API_MOCK = "http://localhost:3001"
 const API = "http://localhost:8080/LMS-war/webresources/"
@@ -15,7 +22,7 @@ class CoursepackCoursesTeacher extends Component {
     }
 
     componentDidMount() {
-        axios.get(`${API}Coursepack/getAllCoursepack/`)
+        axios.get(`${API}Coursepack/getUserCoursepack/${sessionStorage.getItem("userId")}`)
             .then(result => {
                 this.setState({ createdCoursepacks: result.data.coursepack, published: result.data.coursepack })
             })
@@ -33,18 +40,63 @@ class CoursepackCoursesTeacher extends Component {
     }
 
     showAll = () => {
+        let coursepackList = this.state.createdCoursepacks;
 
+        if (coursepackList.length == 0) {
+            return (
+                <div className={this.props.className}>
+                    <MDBRow>
+                        No coursepacks enrolled yet.
+                    </MDBRow>
+                </div>
+            )
+        }
 
-        return (
+        return (<div className={this.props.className}>
+            <MDBRow>
+              {coursepackList && coursepackList.map((course, index) => {
+                return (
+                  <MDBCol size="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
+                    <Card style={{ display: "flex" }}>
+                      <CardActionArea>
+                      <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>
+                        <CardMedia
+                          style={{ height: 140 }}
+                          image={course.imageLocation}
+                          title={course.title}
+                        />
+                          <CardContent>
+                            <Typography gutterBottom variant="h5" style={{ color: "#000000" }}>
+                              {course.title}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary" component="p">
+                              {course.assignedTeacher.firstName + " " + course.assignedTeacher.lastName}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              <div style={{ width: 200, display: "flex", marginTop: 10 }}>
+                                <Rating name="hover-side" value={course.rating} precision={0.1} readOnly size="small" /><span className="ml-2">{course.rating.toFixed(1)}</span>
+                              </div>
+                            </Typography>
+                          </CardContent>
+                        </NavLink>
+                      </CardActionArea>
+                    </Card>
+                  </MDBCol>
+                )
+              })}
+            </MDBRow>
+          </div>)
+
+        /*return (
             <MDBContainer>
                 <MDBRow>
-                    {this.state.createdCoursepacks && this.state.createdCoursepacks.map((course) => {
+                    {coursepackList && coursepackList.map((course) => {
                         return (
                             <MDBCol md="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
                                 <NavLink to={`/coursepack/${course.coursepackId}/`} activeClassName="activeClass">
                                     <MDBCard style={{height: 150}}>
                                         <MDBCardBody>
-                                            {/* <MDBMedia object src="https://mdbootstrap.com/img/Photos/Others/placeholder1.jpg" alt="" /> */}
+                                            {/* <MDBMedia object src="https://mdbootstrap.com/img/Photos/Others/placeholder1.jpg" alt="" /> 
                                             <MDBCardTitle>
                                                 <MDBCardText><b>{course.title}</b></MDBCardText>
                                                 <MDBCardText>{course.category}</MDBCardText>
@@ -59,7 +111,7 @@ class CoursepackCoursesTeacher extends Component {
                     })}
                 </MDBRow>
             </MDBContainer>
-        )
+        )*/
     }
 
     displayCourses = () => {

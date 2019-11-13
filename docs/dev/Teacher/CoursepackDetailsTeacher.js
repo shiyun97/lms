@@ -377,23 +377,31 @@ class CoursepackDetailsTeacher extends Component {
                     </MDBRow>
                     <MDBRow className="mt-2">
                         <MDBCol>
-                            {ratings.map((rating, index) => (
-                                <div>
-                                    <MDBRow>
-                                        <MDBCol className="col-md-1">
-                                            <MDBIcon icon="user-circle" size="3x" style={{ color: "#808080" }} />
-                                        </MDBCol>
-                                        <MDBCol className="col-md-3">
-                                            {rating.user.firstName + " " + rating.user.lastName}
-                                        </MDBCol>
-                                        <MDBCol className="col-md-8">
-                                            <Rating value={rating.rating} readOnly precision={0.1} /><br />
-                                            {rating.comment}
-                                        </MDBCol>
-                                    </MDBRow>
-                                    <div className="mb-5" />
+                            {
+                                ratings.length == 0 && <div>No reviews to show</div>
+                            }
+                            {
+                                ratings.length > 0 && <div>
+                                    {ratings.map((rating, index) => (
+                                        <div>
+                                            <MDBRow>
+                                                <MDBCol className="col-md-1">
+                                                    <MDBIcon icon="user-circle" size="3x" style={{ color: "#808080" }} />
+                                                </MDBCol>
+                                                <MDBCol className="col-md-3">
+                                                    {rating.user.firstName + " " + rating.user.lastName}
+                                                </MDBCol>
+                                                <MDBCol className="col-md-8">
+                                                    <Rating value={rating.rating} readOnly precision={0.1} /><br />
+                                                    {rating.comment}
+                                                </MDBCol>
+                                            </MDBRow>
+                                            <div className="mb-5" />
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
+                            }
+                            
                         </MDBCol>
                     </MDBRow>
                 </MDBContainer>
