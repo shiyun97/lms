@@ -169,7 +169,6 @@ class CoursepackAssessmentPage extends Component {
             axios.post(`http://localhost:8080/LMS-war/webresources/Assessment/completeCoursepackFile?userId=${sessionStorage.getItem("userId")}&fileId=${currentFile}`)
                 .then(result => {
                     console.log("Completed current video!")
-                    this.init()
                 })
                 .catch(error => {
                     console.log(error.message)
@@ -192,7 +191,7 @@ class CoursepackAssessmentPage extends Component {
         }
 
         if (this.state.prevLessonOrder.state!=="Completed") {
-            this.setState({openSnackbar: true, message: "You are not eligible for any badge/ certificate"})
+            this.setState({openSnackbar: true, message: "Please complete all videos and/or quizzes to achieve badge/ certificate"})
         }
     }
 
