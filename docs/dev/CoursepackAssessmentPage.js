@@ -7,6 +7,7 @@ import ReactPlayer from 'react-player'
 import CoursepackQuizPageAnswerQuiz from './Public/CoursepackQuizPageAnswerQuiz'
 import Fullscreen from "react-full-screen";
 import Scroll from 'react-scroll';
+import { observer, inject } from 'mobx-react';
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 const FILE_SERVER = "http://127.0.0.1:8887/";
@@ -16,6 +17,8 @@ var Events = Scroll.Events;
 var scroll = Scroll.animateScroll;
 var scrollSpy = Scroll.scrollSpy;
 
+@inject('dataStore')
+@observer
 class CoursepackAssessmentPage extends Component {
 
     state = {
@@ -27,10 +30,16 @@ class CoursepackAssessmentPage extends Component {
         isFull: false,
         lastItem: "",
         openSnackbar: false,
-        message: ""
+        message: "",
+        hasIncomplete: false
     }
 
     componentDidMount() {
+
+        this.initPage()
+    }
+
+    initPage() {
         let coursepackId = this.props.match.params.coursepackId
         console.log(this.props.match.params.coursepackId)
         this.setState({ coursepackId: coursepackId })
@@ -42,7 +51,6 @@ class CoursepackAssessmentPage extends Component {
                     outlineList: result.data.outlineList.sort((a, b) => (a.number - b.number)),
                     listOfLessonOrder: this.getLessonIds(result.data.outlineList.sort((a, b) => (a.number - b.number))),
                     currentLessonOrder: this.getLessonIds(result.data.outlineList.sort((a, b) => (a.number - b.number)))[0],
-                    prevLessonOrder: 0
                 })
             })
             .catch(error => {
@@ -118,10 +126,6 @@ class CoursepackAssessmentPage extends Component {
                         )
                     }
                 }))
-        } else if (currentQuiz && currentStatus === 'Locked') {
-            console.log(currentStatus)
-            return <div style={{ paddingTop: 170 }}>Please complete the previous quiz to unlock.</div>
-
         } else if (currentQuiz) { //quiz
             console.log(currentQuiz)
             return (
@@ -151,8 +155,8 @@ class CoursepackAssessmentPage extends Component {
                     </MDBCol>
                 </div>
             )
-        } else {
-            return (<div>{this.state.lastItem}</div>)
+        } else if (this.state.hasIncomplete) {
+            return (<div>You are not eligible for badge/ certificate as you did not complete all videos and/ or quizzes</div>)
         }
     }
 
@@ -169,6 +173,7 @@ class CoursepackAssessmentPage extends Component {
             axios.post(`http://localhost:8080/LMS-war/webresources/Assessment/completeCoursepackFile?userId=${sessionStorage.getItem("userId")}&fileId=${currentFile}`)
                 .then(result => {
                     console.log("Completed current video!")
+                    this.props.dataStore.setCompleteStatus(true)
                 })
                 .catch(error => {
                     console.log(error.message)
@@ -176,22 +181,14 @@ class CoursepackAssessmentPage extends Component {
                 });
         }
 
-        this.setState({ prevLessonOrder: this.state.currentLessonOrder })
-
         if (currentQuiz) {
-            this.init()
             this.setState({ isFull: false })
         }
 
         if (this.state.listOfLessonOrder.length !== index + 1) {
             this.setState({ currentLessonOrder: this.state.listOfLessonOrder[index + 1] })
-        }
-        else { //reached the last item
-            this.setState({ lastItem: `You have completed the coursepack, ${this.state.coursepackDetails.title}!` })
-        }
-
-        if (this.state.prevLessonOrder.state!=="Completed") {
-            this.setState({openSnackbar: true, message: "Please complete all videos and/or quizzes to achieve badge/ certificate"})
+        } else  if (this.state.listOfLessonOrder.length!==this.props.dataStore.getCompleteStatus+1) {
+            this.setState({hasIncomplete: true})
         }
     }
 

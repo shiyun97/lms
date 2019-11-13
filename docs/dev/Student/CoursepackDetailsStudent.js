@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
-import { 
-    MDBContainer, 
-    MDBCol, 
-    MDBBtn, 
-    MDBRow, 
-    MDBIcon, 
+import {
+    MDBContainer,
+    MDBCol,
+    MDBBtn,
+    MDBRow,
+    MDBIcon,
     MDBProgress,
     MDBJumbotron,
     MDBNavItem,
@@ -44,7 +44,7 @@ class CoursepackDetailsStudent extends Component {
         listOfOutlineId: "",
         ratings: [],
         averageRating: 0,
-        ratingSpread: [0,0,0,0,0],
+        ratingSpread: [0, 0, 0, 0, 0],
         ratingValues: [5, 4, 3, 2, 1],
         modalAddRating: false,
         ratingCommentInput: "",
@@ -278,7 +278,8 @@ class CoursepackDetailsStudent extends Component {
                 <MDBRow>
                     <MDBCol size="8" className="text-white">
                         <h2 style={{ paddingBottom: 20, paddingTop: 20, fontWeight: "bold" }}>{this.state.courseDetails.title}</h2>
-                        <h5 style={{ paddingBottom: 20 }}> {this.state.courseDetails.description}</h5>
+                        <h5 style={{ paddingBottom: 80 }}> {this.state.courseDetails.description}</h5>
+                        <h7>*Complete all videos and/ or quizzes to get badges/ certificates</h7>
                         {/*<h6> SGD {this.state.courseDetails.price}</h6>*/}
 
                         {/*<MDBCol align="right">
@@ -290,7 +291,7 @@ class CoursepackDetailsStudent extends Component {
                     <MDBCol size="1" />
                     <MDBCol size="3">
                         <MDBCard style={{ width: "22rem", minHeight: "12rem", marginTop: 20 }}>
-                            <MDBMedia object src={this.state.courseDetails && this.state.courseDetails.imageLocation} className="img-fluid" alt="" style={{minHeight: "120px"}} />
+                            <MDBMedia object src={this.state.courseDetails && this.state.courseDetails.imageLocation} className="img-fluid" alt="" style={{ minHeight: "120px" }} />
                             <div style={{ padding: 20 }}>
                                 <MDBRow><MDBCol>
                                     <span style={{ fontSize: "35px", fontWeight: "bold" }}>
@@ -298,9 +299,9 @@ class CoursepackDetailsStudent extends Component {
                                     </span>
                                 </MDBCol></MDBRow>
                                 <MDBRow><MDBCol>
-                                    <br/>
+                                    <br />
                                     {
-                                        this.state.studentEnrolled === true && 
+                                        this.state.studentEnrolled === true &&
                                         <Button variant="contained" color="secondary" style={{ height: "55px" }} fullWidth onClick={e => this.proceedToCourseDetails()}>
                                             Proceed to Course
                                         </Button>
@@ -327,7 +328,7 @@ class CoursepackDetailsStudent extends Component {
                                     }
                                 </MDBCol></MDBRow>
                             </div>
-                        </MDBCard> 
+                        </MDBCard>
                     </MDBCol>
                 </MDBRow>
             </MDBContainer>
@@ -646,24 +647,24 @@ class CoursepackDetailsStudent extends Component {
 
     renderSnackbar = () => {
         return (
-          <Snackbar
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-            open={this.state.openSnackbar}
-            autoHideDuration={6000}
-            onClose={this.handleClose}
-            ContentProps={{
-              'aria-describedby': 'message-id',
-            }}
-            message={<span id="message-id">{this.state.message}</span>}
-            action={[
-              <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-            ]}
-          />
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                open={this.state.openSnackbar}
+                autoHideDuration={6000}
+                onClose={this.handleClose}
+                ContentProps={{
+                    'aria-describedby': 'message-id',
+                }}
+                message={<span id="message-id">{this.state.message}</span>}
+                action={[
+                    <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                ]}
+            />
         )
-      }
+    }
 
     render() {
         let cartNum = this.state.cartNum;
@@ -696,11 +697,12 @@ class CoursepackDetailsStudent extends Component {
                             <MDBContainer>
                                 {this.showDescriptions()}
                             </MDBContainer>
+                          
                         </div>
                     </div>
                     <div style={{ paddingTop: 50, marginRight: 450, paddingRight: 30, paddingLeft: 30 }}>
                         <SectionContainer>
-                            <MDBContainer style={{ paddingRight: 50}}>
+                            <MDBContainer style={{ paddingRight: 50 }}>
                                 <h4>Course Outline</h4>
                                 <hr />
                                 {this.showOutline()}
