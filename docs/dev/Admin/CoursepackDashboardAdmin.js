@@ -304,7 +304,7 @@ class CoursepackDashboardAdmin extends Component {
             for (let i = 0; i < files.length; i++) {
                 formData.append('file', files[i]);
             }
-            fetch(`${API}Gamification/uploadBadge`, {
+            fetch(`${API}Gamification/uploadMultipleBadges`, {
                 method: 'post',
                 body: formData
             })
