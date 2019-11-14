@@ -129,7 +129,7 @@ class CoursepackCoursesTeacher extends Component {
                     </MDBCol>
                     <MDBCol md="4" align="right" style={{ paddingTop: 40, paddingRight: 30 }}>
                         <NavLink to="/coursepack/create/" style={{ color: 'white' }}>
-                            <MDBBtn color="primary">Create</MDBBtn>
+                            <MDBBtn color="deep-orange">Create</MDBBtn>
                         </NavLink>
                     </MDBCol>
 
