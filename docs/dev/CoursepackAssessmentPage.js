@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { MDBContainer, MDBRow, MDBCol, MDBBtn } from "mdbreact";
+import { MDBRow, MDBCol, MDBBtn, MDBModal, MDBModalBody, MDBModalFooter, MDBIcon } from "mdbreact";
 import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
-import { List, ListItem, ListItemText, Toolbar, ListSubheader, useScrollTrigger, CssBaseline, AppBar, Typography, Container, Box, Slide } from '@material-ui/core/';
+import { List, ListItem, ListSubheader } from '@material-ui/core/';
 import ReactPlayer from 'react-player'
 import CoursepackQuizPageAnswerQuiz from './Public/CoursepackQuizPageAnswerQuiz'
 import Fullscreen from "react-full-screen";
 import Scroll from 'react-scroll';
+import { observer, inject } from 'mobx-react';
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 const FILE_SERVER = "http://127.0.0.1:8887/";
@@ -16,6 +17,8 @@ var Events = Scroll.Events;
 var scroll = Scroll.animateScroll;
 var scrollSpy = Scroll.scrollSpy;
 
+@inject('dataStore')
+@observer
 class CoursepackAssessmentPage extends Component {
 
     state = {
@@ -25,20 +28,28 @@ class CoursepackAssessmentPage extends Component {
         allMultimedia: [],
         currentLessonOrder: [],
         isFull: false,
+        lastItem: "",
+        modal: false,
+        open: false
     }
 
     componentDidMount() {
-        let coursepackId = this.props.match.params.coursepackId
-        this.setState({ coursepackId: coursepackId })
-        console.log(coursepackId)
 
-        axios.get(`${API}Coursepack/getCoursepack/${coursepackId}`)
+        this.initPage()
+    }
+
+    initPage() {
+        let coursepackId = this.props.match.params.coursepackId
+        console.log(this.props.match.params.coursepackId)
+        this.setState({ coursepackId: coursepackId })
+
+        axios.get(`${API}Coursepack/getCoursepackUser/${coursepackId}?userId=${sessionStorage.getItem("userId")}`)
             .then(result => {
                 this.setState({
                     coursepackDetails: result.data,
                     outlineList: result.data.outlineList.sort((a, b) => (a.number - b.number)),
                     listOfLessonOrder: this.getLessonIds(result.data.outlineList.sort((a, b) => (a.number - b.number))),
-                    currentLessonOrder: this.getLessonIds(result.data.outlineList.sort((a, b) => (a.number - b.number)))[0]
+                    currentLessonOrder: this.getLessonIds(result.data.outlineList.sort((a, b) => (a.number - b.number)))[0],
                 })
             })
             .catch(error => {
@@ -66,9 +77,18 @@ class CoursepackAssessmentPage extends Component {
 
         scrollSpy.update();
     }
+
     scrollToTop() {
         scroll.scrollToTop();
     }
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        this.setState({ openSnackbar: false });
+    };
+
     componentWillUnmount() {
         Events.scrollEvent.remove('begin');
         Events.scrollEvent.remove('end');
@@ -84,10 +104,6 @@ class CoursepackAssessmentPage extends Component {
         return list;
     }
 
-    nextItem = currentId => {
-        
-    }
-
     showVideoQuiz = () => {
         var location = ""
         var currentFile = this.state.currentLessonOrder && this.state.currentLessonOrder.file ? this.state.currentLessonOrder.file.fileId : null
@@ -95,10 +111,11 @@ class CoursepackAssessmentPage extends Component {
 
         if (currentFile) { //video 
             return (
-                this.state.allMultimedia && this.state.allMultimedia.map((eachMultimedia, index) => {
+                this.state.allMultimedia && this.state.allMultimedia.map((eachMultimedia) => {
                     if (eachMultimedia.fileId === currentFile) {
                         location = eachMultimedia.location
                         let savedFileName = location.split('/')[5]; //FIXME:
+                        /* let savedFileName = location.split('\\')[1]; */
                         let fullPath = FILE_SERVER + savedFileName;
                         console.log(fullPath)
                         return (
@@ -106,7 +123,7 @@ class CoursepackAssessmentPage extends Component {
                         )
                     }
                 }))
-        } else { //quiz
+        } else if (currentQuiz) { //quiz
             console.log(currentQuiz)
             return (
                 <div>
@@ -124,7 +141,12 @@ class CoursepackAssessmentPage extends Component {
                                 height: window.screen.height,
                                 overflow: 'scroll',
                             }}>
-                                <CoursepackQuizPageAnswerQuiz onClick={()=>this.nextItem(currentQuiz)} currentQuiz={currentQuiz} />
+                                <CoursepackQuizPageAnswerQuiz
+                                    proceed={this.ended}
+                                    currentQuiz={currentQuiz}
+                                    index={this.state.listOfLessonOrder.findIndex(x => x.lessonOrderId === this.state.currentLessonOrder.lessonOrderId)}
+                                    length={this.state.listOfLessonOrder.length}
+                                />
                             </Element>
 
                         </Fullscreen>
@@ -135,7 +157,6 @@ class CoursepackAssessmentPage extends Component {
                     </MDBCol>
                 </div>
             )
-
         }
     }
 
@@ -143,13 +164,38 @@ class CoursepackAssessmentPage extends Component {
         this.setState({ isFull: true });
     }
 
+    toggle = event => {
+        this.setState({ modal: !this.state.modal })
+    }
+
     ended = event => {
         var index = this.state.listOfLessonOrder.findIndex(x => x.lessonOrderId === this.state.currentLessonOrder.lessonOrderId);
-        console.log(index)
+        var currentFile = this.state.currentLessonOrder && this.state.currentLessonOrder.file ? this.state.currentLessonOrder.file.fileId : null
+        var currentQuiz = this.state.currentLessonOrder && this.state.currentLessonOrder.quiz ? this.state.currentLessonOrder.quiz.quizId : null
+
+        if (currentFile) { //video 
+            axios.post(`http://localhost:8080/LMS-war/webresources/Assessment/completeCoursepackFile?userId=${sessionStorage.getItem("userId")}&fileId=${currentFile}`)
+                .then(result => {
+                    console.log("Completed current video!")
+                    this.props.dataStore.setComplete(result.data)
+                })
+                .catch(error => {
+                    console.log(error.message)
+                    console.log("Error completing video")
+                });
+        }
+
+        if (currentQuiz) {
+            this.setState({ isFull: false })
+        }
+
         if (this.state.listOfLessonOrder.length !== index + 1) {
             this.setState({ currentLessonOrder: this.state.listOfLessonOrder[index + 1] })
+        } else {
+            this.setState({ modal: !this.state.modal })
         }
     }
+
 
     clickLessonOrder = lessonOrderId => {
         this.setState({ currentLessonOrder: lessonOrderId })
@@ -162,15 +208,21 @@ class CoursepackAssessmentPage extends Component {
                     {this.state.outlineList && this.state.outlineList.map((outline) => (
                         <li key={outline.outlineId} style={{ backgroundColor: 'inherit' }}>
                             <ul style={{ backgroundColor: 'inherit' }}>
-                                <ListSubheader align="center">{outline.name}</ListSubheader>
+                                <ListSubheader align="center"><b>{outline.name}</b></ListSubheader>
                                 {outline.lessonOrder.sort((a, b) => (a.number - b.number)) && outline.lessonOrder.sort((a, b) => (a.number - b.number)).map((lesson) => {
                                     if (lesson.file) {
                                         return (
-                                            <ListItem selected={this.state.currentLessonOrder.lessonOrderId === lesson.lessonOrderId} onClick={() => this.clickLessonOrder(lesson)} key={lesson.lessonOrderId}>{lesson.file.name.slice(0, -4)}</ListItem>
+                                            <div>
+                                                <ListItem selected={this.state.currentLessonOrder.lessonOrderId === lesson.lessonOrderId} onClick={() => this.clickLessonOrder(lesson)} key={lesson.lessonOrderId}>{lesson.file.name.slice(0, -4)}</ListItem>
+                                                <hr />
+                                            </div>
                                         )
                                     } else {
                                         return (
-                                            <ListItem selected={this.state.currentLessonOrder.lessonOrderId === lesson.lessonOrderId} onClick={() => this.clickLessonOrder(lesson)} key={lesson.lessonOrderId}>{lesson.quiz.title}</ListItem>
+                                            <div>
+                                                <ListItem selected={this.state.currentLessonOrder.lessonOrderId === lesson.lessonOrderId} onClick={() => this.clickLessonOrder(lesson)} key={lesson.lessonOrderId}>{lesson.quiz.title}</ListItem>
+                                                <hr />
+                                            </div>
                                         )
                                     }
                                 })}
@@ -182,6 +234,39 @@ class CoursepackAssessmentPage extends Component {
         )
     }
 
+    modal = () => {
+        var complete = this.props.dataStore.getComplete
+        return (
+            <MDBModal isOpen={this.state.modal} toggle={this.toggle}>
+
+                <MDBModalBody>
+                    <center>You have come to the end of the coursepack.</center>
+                    {complete !== undefined && complete.completeCoursepack === true &&
+                        <center><MDBIcon icon="check" style={{ color: "green" }} />You have fully completed the coursepack.</center>
+                    }
+                    {complete !== undefined && complete.completeCoursepack === false &&
+                        <center><MDBIcon icon="times" style={{ color: "red" }} />You have fully completed the coursepack.</center>
+                    }
+                    {complete !== undefined && complete.unlockBadge === true &&
+                        <center><MDBIcon icon="check" style={{ color: "green" }} />You have achieved a new badge.</center>
+                    }
+                    {complete !== undefined && complete.unlockBadge === false &&
+                        <center><MDBIcon icon="times" style={{ color: "red" }} />You have achieved a new badge.</center>
+                    }
+                    {complete !== undefined && complete.unlockCertificate === true &&
+                        <center><MDBIcon icon="check" style={{ color: "green" }} />You have achieved a new certificate.</center>
+                    }
+                    {complete !== undefined && complete.unlockCertificate === false &&
+                        <center><MDBIcon icon="times" style={{ color: "red" }} />You have achieved a new certificate.</center>
+                    }
+                </MDBModalBody>
+
+                <MDBModalFooter>
+                    <MDBBtn color="secondary" onClick={this.toggle}>Close</MDBBtn>
+                </MDBModalFooter>
+            </MDBModal>
+        )
+    }
 
     render() {
         return (
@@ -194,7 +279,6 @@ class CoursepackAssessmentPage extends Component {
                     <SectionContainer style={{ height: 400 }}>
                         <MDBRow>
                             <MDBCol size="8" align="center">
-
                                 {this.showVideoQuiz()}
                             </MDBCol>
                             <MDBCol size="4">
@@ -213,11 +297,10 @@ class CoursepackAssessmentPage extends Component {
                         </MDBRow>
                     </SectionContainer>
                 </div>
+                {this.modal()}
             </div>
         )
     }
 }
-
-
 
 export default CoursepackAssessmentPage;

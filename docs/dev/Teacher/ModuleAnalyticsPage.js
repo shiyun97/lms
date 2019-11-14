@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { MDBRow, MDBContainer, MDBCard, MDBCardBody, MDBCardHeader, MDBIcon, MDBCol, MDBCardText, MDBBreadcrumb, MDBBreadcrumbItem, MDBProgress } from 'mdbreact';
+import { MDBRow, MDBContainer, MDBCard, MDBCardBody, MDBCardHeader, MDBIcon, MDBCol, MDBDataTable, MDBCardText, MDBEdgeHeader, MDBBreadcrumb, MDBBreadcrumbItem, MDBProgress, MDBBtn } from 'mdbreact';
 import styled from 'styled-components';
 import ModuleSideNavigation from "../ModuleSideNavigation";
+import ModuleSideNavigationDropdown from "../ModuleSideNavigationDropdown";
 import { Bar, Pie } from 'react-chartjs-2';
 import { observer, inject } from 'mobx-react';
 import CanvasJSReact from '../../assets/canvasjs.react';
@@ -39,6 +40,30 @@ class ModuleAnalyticsPage extends Component {
     absentData: [],
     attendanceStatus: "retrieving",
     attendanceMessage: "Attendance Analytics is not available at the moment.",
+
+    gradeColumns: [
+      {
+        "label": "Student",
+        "field": "student",
+        "width": 50,
+        "attributes": {
+          "aria-controls": "DataTable",
+          "aria-label": "Name"
+        }
+      },
+      {
+        "label": "Email",
+        "field": "email",
+        "width": 100
+      },
+      {
+        "label": "",
+        "field": "",
+        "width": 100
+      }
+    ],
+    gradeRows: [{ label: "Retrieving data..." }],
+    percentileStatus: "retrieving"
   }
 
   componentDidMount() {
@@ -48,6 +73,7 @@ class ModuleAnalyticsPage extends Component {
     this.getQuizAnalytics();
     this.getForumAnalytics();
     this.getAttendanceAnalytics();
+    this.getPercentileAnalytics();
   }
 
   initPage() {
@@ -58,6 +84,25 @@ class ModuleAnalyticsPage extends Component {
 
   routeChange = (path) => {
     this.props.history.push(path);
+  }
+
+  getPercentileAnalytics = () => {
+    var moduleId = this.props.dataStore.getCurrModId;
+    axios
+      .get(`http://localhost:8080/LMS-war/webresources/analytics/retrieveBottomStudents?moduleId=${moduleId}`)
+      .then(result => {
+        console.log(result.data.userList)
+        this.setState({
+          gradeRows: result.data.userList,
+          percentileStatus: "done"
+        });
+      })
+      .catch(error => {
+        this.setState({
+          percentileStatus: "error",
+        });
+        console.error("error in axios " + error);
+      });
   }
 
   getBarAnalytics = () => {
@@ -201,7 +246,7 @@ class ModuleAnalyticsPage extends Component {
           this.setState({ attendanceStatus: "Empty Data" })
         } else {
           result.data.items.map((item, index) => {
-            if (item.startDate !== null && item.startDate !== undefined) {
+            // if (item.startDate !== null && item.startDate !== undefined) {
               present.push({
                 label: "Week " + (index + 1) + " - Lecture",
                 y: item.presentLecture,
@@ -222,7 +267,7 @@ class ModuleAnalyticsPage extends Component {
                 y: item.absentTutorial,
                 click: () => this.routeChange(`/modules/${moduleId}/attendance`)
               })
-            }
+            // }
           })
           this.setState({
             presentData: present,
@@ -400,8 +445,6 @@ class ModuleAnalyticsPage extends Component {
         reversed: true
       },
       legend: {
-        verticalAlign: "center",
-        horizontalAlign: "right",
         reversed: true,
         cursor: "pointer",
       },
@@ -436,6 +479,7 @@ class ModuleAnalyticsPage extends Component {
   }
 
   renderForumPieChart = () => {
+    var moduleId = this.props.dataStore.getCurrModId;
     const dataPie = {
       labels: this.state.forumLabels,
       datasets: [
@@ -451,8 +495,9 @@ class ModuleAnalyticsPage extends Component {
         <MDBCard className="mb-4">
           <MDBCardHeader>Forum Contribution</MDBCardHeader>
           <MDBCardBody>
-            <Pie data={dataPie} height={300} options={{ responsive: true }} />
+            <Pie data={dataPie} height={300} options={{ responsive: true, legend: { position: 'bottom' } }} />
           </MDBCardBody>
+          <MDBBtn color="blue" onClick={() => this.routeChange(`/modules/${moduleId}/forum/topics`)}>Go To Forum</MDBBtn>
         </MDBCard>
       </MDBCol>
     )
@@ -470,6 +515,79 @@ class ModuleAnalyticsPage extends Component {
         </MDBCol>
       </MDBRow>
     )
+  }
+
+  renderUserPercentileTable = (tableData) => {
+    return (
+      <MDBCard>
+        <MDBCardHeader>
+          Students Below 25th Percentile
+                </MDBCardHeader>
+        <MDBCardBody>
+          <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
+        </MDBCardBody>
+      </MDBCard>
+    )
+  }
+
+  renderPercentileTableWithMessage = (message) => {
+    const data = () => ({ columns: this.state.gradeColumns, rows: [{ label: message }] })
+
+    const tableData = {
+      columns: [...data().columns.map(col => {
+        col.width = 200;
+        return col;
+      })], rows: [...data().rows]
+    }
+    return (
+      <MDBCard>
+        <MDBCardHeader>
+          Students Below 25th Percentile
+                </MDBCardHeader>
+        <MDBCardBody>
+          <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
+        </MDBCardBody>
+      </MDBCard>
+    )
+  }
+
+  renderPercentileAwaiting = () => {
+    return (
+      <div className="spinner-border text-primary" role="status">
+        <span className="sr-only">Loading...</span>
+      </div>
+    )
+  }
+
+  renderPercentileTable = () => {
+    var newRows = []
+    const row = this.state.gradeRows
+    for (let i = 0; i < row.length; i++) {
+      newRows.push({
+        user: row[i].firstName + " " + row[i].lastName,
+        email: row[i].email,
+        button: <center><MDBBtn color="primary" outline size="sm" href={`mailto:${row[i].email}`}>Send Mail</MDBBtn></center>
+      })
+    }
+    const data = () => ({ columns: this.state.gradeColumns, rows: newRows })
+
+    const widerData = {
+      columns: [...data().columns.map(col => {
+        col.width = 150;
+        return col;
+      })], rows: [...data().rows.map(row => {
+        return row;
+      })]
+    }
+
+    if (this.state.percentileStatus === "retrieving")
+      return this.renderPercentileAwaiting();
+    else if (this.state.percentileStatus === "error")
+      return this.renderPercentileTableWithMessage("Error in Retrieving Data. Please try again later.");
+    else if (this.state.percentileStatus === "done")
+      return this.renderUserPercentileTable(widerData);
+    else
+      return this.renderPercentileTableWithMessage("No data found.");
   }
 
   render() {
@@ -527,18 +645,25 @@ class ModuleAnalyticsPage extends Component {
     var moduleId = this.props.dataStore.getCurrModId;
     return (
       <div className={this.props.className}>
-        <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+        <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+        <div className="module-navbar-small">
+          <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Analytics'}></ModuleSideNavigationDropdown>
+        </div>
         <div className="module-content">
-            <MDBContainer>
-              {this.renderBreadcrumbSection()}
-              {this.state.barStatus === "done" ? this.renderCardSection() : this.renderNoCardSection("bar")}
-              <MDBRow>
-                {this.state.attendanceStatus === "done" ? this.renderAttendanceBarChart() : this.renderNoCardSection("attendance")}
-                {this.state.forumStatus === "done" ? this.renderForumPieChart() : this.renderNoCardSection("forum")}
-              </MDBRow>
-              {this.state.gradeItemStatus === "done" ? this.renderBoxPlot(optionsGradebook) : this.renderNoCardSection("gradeItem")}
-              {this.state.quizStatus === "done" ? this.renderBoxPlot(optionsQuiz) : this.renderNoCardSection("quiz")}
-            </MDBContainer>
+              <MDBEdgeHeader color="indigo darken-3" className="analyticsPage" />
+          <MDBContainer style={{ paddingBottom: 240, paddingTop: 60 }}>
+            {this.renderBreadcrumbSection()}
+            {this.state.barStatus === "done" ? this.renderCardSection() : this.renderNoCardSection("bar")}
+            <MDBRow>
+              {this.state.attendanceStatus === "done" ? this.renderAttendanceBarChart() : this.renderNoCardSection("attendance")}
+              {this.state.forumStatus === "done" ? this.renderForumPieChart() : this.renderNoCardSection("forum")}
+            </MDBRow>
+            {this.state.gradeItemStatus === "done" ? this.renderBoxPlot(optionsGradebook) : this.renderNoCardSection("gradeItem")}
+            {this.state.quizStatus === "done" ? this.renderBoxPlot(optionsQuiz) : this.renderNoCardSection("quiz")}
+            {this.state.percentileStatus === "done" && this.renderPercentileTable()}
+            <br />
+            <br />
+          </MDBContainer>
         </div>
       </div>
     );
@@ -547,6 +672,25 @@ class ModuleAnalyticsPage extends Component {
 
 export default styled(ModuleAnalyticsPage)`
 .module-content{
-    margin-left: 270px;
-    margin-top: 40px;
-}`
+    margin-top: 0px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+}
+`

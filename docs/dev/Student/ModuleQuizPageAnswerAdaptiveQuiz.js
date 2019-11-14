@@ -5,6 +5,7 @@ import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import * as Survey from "survey-react";
 import ModuleSideNavigation from "../ModuleSideNavigation";
+import ModuleSideNavigationDropdown from "../ModuleSideNavigationDropdown";
 
 var pathname = location.pathname;
 pathname = pathname.split("/");
@@ -24,7 +25,7 @@ var json = {
   completedHtml: "<p><h4>You have completed the quiz!</h4></p>",
   completeText: "Submit",
   showTimerPanel: "top",
-  maxTimeToFinish: 60, // in seconds
+  maxTimeToFinish: 60,
   pages: [
     {
       "elements": [
@@ -199,26 +200,15 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
     // match question name with answer and question Id
     var tempResult = result.data
     var questionAttempts = Object.keys(tempResult);
-    var questions = json.pages[0].elements;
-    // console.log(result.data)
-    for (var i = 0; i < questionAttempts.length; i++) {
-      // console.log(questionAttempts[i].substr(8, questionAttempts[i].length))
-      var questionNumber = questionAttempts[i].substr(8, questionAttempts[i].length)
-      for (var j = 0; j < questions.length; j++) {
-        if (questionNumber == questions[j].number) {
-          if (tempResult[questionAttempts[i]].text === undefined)
-            answers[questionNumber - 1] = { questionId: questions[j].questionId, answer: tempResult[questionAttempts[i]] }
-          else {
-            answers[questionNumber - 1] = { questionId: questions[j].questionId, answer: tempResult[questionAttempts[i]].text } //, quizId: 1
-          }
-        }
-      }
-    }
+    var questions = json.pages[result.currentPageNo].elements;
+    console.log(questions)
+    console.log(result.data)
+    answers[answers.length] = { questionId: questions[0].questionId, answer: tempResult[questionAttempts[answers.length]] }
     // console.log(answers)
   }
 
   doOnCurrentPageChanged = (result) => {
-    console.log(page)
+    // console.log(page)
     page = 2
   }
 
@@ -244,22 +234,23 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
 
   submitAnswers = () => {
     var quizId = this.props.dataStore.getCurrQuizId;
-    console.log(json, quizId);
+    // console.log(json, quizId);
   }
 
   render() {
-    // console.log(json)
     var model = new Survey.Model(json);
     var moduleId = this.props.dataStore.getCurrModId;
     if (this.state.start) {
       return (
         <div className={this.props.className}>
-          <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+          <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+          <div className="module-navbar-small">
+            <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
+          </div>
           <div className="module-content">
             <MDBContainer className="mt-3">
               <MDBRow className="py-3">
                 <MDBCol md="12">
-                  {/* <h1>Adaptive</h1> */}
                   <MDBCard cascade className="my-3 grey lighten-4">
                     {this.state.status === "done" &&
                       <Survey.Survey
@@ -281,13 +272,27 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
     } else {
       return (
         <div className={this.props.className}>
-          <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+          <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+          <div className="module-navbar-small">
+            <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
+          </div>
           <div className="module-content">
             <MDBContainer className="mt-3">
               <MDBRow className="py-3">
                 <MDBCol md="12">
-                  <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
-                    <MDBBtn color="blue" onClick={() => { this.setState({ start: true }) }}><h4>Start Quiz</h4></MDBBtn>
+                  <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }} align="center">
+                    <h3>{json.title}</h3>
+                    {json.description}
+                    <br />
+                    <br />
+                    Please read the questions carefully.
+                    <br />
+                    You only have {json.noOfAttempts} attempt(s).
+                    <br />
+                    <br />
+                    <MDBBtn color="blue" onClick={() => { this.setState({ start: true }) }} style={{ maxWidth: 250 }}>
+                      Start Quiz
+                      </MDBBtn>
                   </MDBCard>
                 </MDBCol>
               </MDBRow>
@@ -301,7 +306,25 @@ class ModuleQuizPageAnswerAdaptiveQuiz extends Component {
 
 export default styled(ModuleQuizPageAnswerAdaptiveQuiz)`
 .module-content{
-    margin-left: 270px;
     margin-top: 40px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
 }
 `;

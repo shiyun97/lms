@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { 
-    MDBContainer, 
-    MDBRow, 
-    MDBCol, 
-    MDBIcon, 
-    MDBBtn
+import {
+    MDBContainer,
+    MDBRow,
+    MDBCol,
+    MDBIcon,
+    MDBBtn,
+    MDBEdgeHeader,
+    MDBJumbotron
 } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
 import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
@@ -23,7 +25,7 @@ class ModuleDetailsPage extends Component {
 
     state = {
         accessRight: "",
-        module:{
+        module: {
             moduleId: "",
             description: ""
         },
@@ -74,7 +76,7 @@ class ModuleDetailsPage extends Component {
                         openSnackbar: true
                     })
                     console.error("error in axios " + error);
-            });
+                });
         }
     }
 
@@ -89,7 +91,7 @@ class ModuleDetailsPage extends Component {
         const moduleId = this.state.module.moduleId
         axios
             .post(API_URL + "/ModuleMounting/updateModuleDescription/" + moduleId,
-            htmlText, {
+                htmlText, {
                 headers: {
                     "Accept": "application/json",
                     "Content-type": "application/json"
@@ -126,22 +128,28 @@ class ModuleDetailsPage extends Component {
                         <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Module Details'}></ModuleSideNavigationDropdown>
                     </div>
                     <div className="module-content">
+                        <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                         <MDBContainer>
                             <MDBRow>
-                                <MDBCol>
-                                    <h4 className="mb-2">Module Details</h4>
-                                </MDBCol>
-                            </MDBRow>
-                            <MDBRow>
-                                <MDBCol>
-                                    <div className="align-right">
-                                        <MDBBtn color="blue lighten-2" outline className="mr-0 mb-2" size="md" onClick={this.setEditMode}>
-                                            Cancel
+                                <MDBCol md="12" className="mt-3 mx-auto">
+                                    <MDBJumbotron>
+                                        <MDBRow>
+                                            <MDBCol md={10}>
+                                                <h2 className="font-weight-bold">Module Details</h2>
+                                            </MDBCol>
+                                            <MDBCol md={2}>
+                                                <div className="align-right">
+                                                    <MDBBtn color="blue lighten-2" outline className="mr-0 mb-2" size="md" onClick={this.setEditMode}>
+                                                        Cancel
                                         </MDBBtn>
-                                    </div>
+                                                </div>
+                                                <br />
+                                            </MDBCol>
+                                        </MDBRow>
+                                        <RichTextEditorStyled submitTextEditor={this.submitTextEditor} initial={module.description}></RichTextEditorStyled>
+                                    </MDBJumbotron>
                                 </MDBCol>
                             </MDBRow>
-                            <RichTextEditorStyled submitTextEditor={this.submitTextEditor} initial={module.description}></RichTextEditorStyled>
                         </MDBContainer>
                     </div>
                 </div>
@@ -154,66 +162,72 @@ class ModuleDetailsPage extends Component {
                     <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Module Details'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer>
                         <MDBRow>
-                            <MDBCol>
-                                <h4 className="mb-2">Module Details</h4>
-                            </MDBCol>
-                        </MDBRow>
-                        <MDBRow>
-                            <MDBCol>
-                                <div className="align-right">
-                                    {
-                                        this.state.accessRight == "Teacher" &&
-                                        <MDBBtn color="blue lighten-2" outline className="mr-0" size="md" onClick={this.setEditMode}>
-                                            <MDBIcon icon="edit" className="mr-1" /> Edit
+                            <MDBCol md="12" className="mt-3 mx-auto">
+                                <MDBJumbotron>
+                                    <MDBRow>
+                                        <MDBCol md={10}>
+                                            <h2 className="font-weight-bold">Module Details</h2>
+                                        </MDBCol>
+                                        <MDBCol md={2}>
+                                            <div className="align-right">
+                                                {
+                                                    this.state.accessRight == "Teacher" &&
+                                                    <MDBBtn color="blue lighten-2" outline className="mr-0" size="md" onClick={this.setEditMode}>
+                                                        <MDBIcon icon="edit" className="mr-1" /> Edit
                                         </MDBBtn>
-                                    }
-                                </div>
+                                                }
+                                            </div>
+                                            <br />
+                                        </MDBCol>
+                                    </MDBRow>
+                                    <MDBRow>
+                                        <MDBCol>
+                                            {
+                                                module.description &&
+                                                <SectionContainer className="justify-content d-flex mt-2">
+                                                    <div className="new-paragraph"><div className="h5">Description</div>
+                                                        {ReactHtmlParser(module.description)}
+                                                    </div>
+                                                </SectionContainer>
+                                            }
+                                            {
+                                                !module.description &&
+                                                <div>No module description set yet</div>
+                                            }
+                                        </MDBCol>
+                                    </MDBRow>
+                                    <Snackbar
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'left',
+                                        }}
+                                        open={this.state.openSnackbar}
+                                        autoHideDuration={6000}
+                                        onClose={this.handleClose}
+                                        ContentProps={{
+                                            'aria-describedby': 'message-id',
+                                        }}
+                                        message={<span id="message-id">{this.state.message}</span>}
+                                        action={[
+                                            <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                                        ]}
+                                    />
+                                </MDBJumbotron>
                             </MDBCol>
                         </MDBRow>
-                        <MDBRow>
-                            <MDBCol>
-                                {
-                                    module.description &&
-                                    <SectionContainer className="justify-content d-flex mt-2">
-                                        <div className="new-paragraph"><div className="h5">Description</div>
-                                            {ReactHtmlParser(module.description)}
-                                        </div>
-                                    </SectionContainer>
-                                }
-                                {
-                                    !module.description &&
-                                    <div>No module description set yet</div>
-                                }
-                            </MDBCol>
-                        </MDBRow>
-                        <Snackbar
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            open={this.state.openSnackbar}
-                            autoHideDuration={6000}
-                            onClose={this.handleClose}
-                            ContentProps={{
-                                'aria-describedby': 'message-id',
-                            }}
-                            message={<span id="message-id">{this.state.message}</span>}
-                            action={[
-                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-                            ]}
-                        />
                     </MDBContainer>
                 </div>
             </div>
-          );
+        );
     }
 }
 
 export default styled(ModuleDetailsPage)`
 .module-content{
-    margin-top: 40px;
+    margin-top: 0px;
 }
 @media screen and (min-width: 800px) {
     .module-content{
@@ -263,39 +277,39 @@ export default styled(ModuleDetailsPage)`
 
 
 class RichTextEditor extends Component {
-	constructor(props) {
-		super(props);
+    constructor(props) {
+        super(props);
 
-		this.modules = {
-			toolbar: [
-		      [{ 'font': [] }],
-		      [{ 'size': ['small', false, 'large', 'huge'] }],
-		      ['bold', 'italic', 'underline'],
-		      [{'list': 'ordered'}, {'list': 'bullet'}],
-		      [{ 'align': [] }],
-		      [{ 'color': [] }, { 'background': [] }],
-		      ['clean']
-		    ]
-		};
+        this.modules = {
+            toolbar: [
+                [{ 'font': [] }],
+                [{ 'size': ['small', false, 'large', 'huge'] }],
+                ['bold', 'italic', 'underline'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                [{ 'align': [] }],
+                [{ 'color': [] }, { 'background': [] }],
+                ['clean']
+            ]
+        };
 
-		this.formats = [
-		    'font',
-		    'size',
-		    'bold', 'italic', 'underline',
-		    'list', 'bullet',
-		    'align',
-		    'color', 'background'
-	  	];
+        this.formats = [
+            'font',
+            'size',
+            'bold', 'italic', 'underline',
+            'list', 'bullet',
+            'align',
+            'color', 'background'
+        ];
 
-	  	this.state = {
+        this.state = {
             comments: this.props.initial
-		}
+        }
 
-		this.rteChange = this.rteChange.bind(this);
-	}
+        this.rteChange = this.rteChange.bind(this);
+    }
 
-	rteChange = (content, delta, source, editor) => {
-		//console.log(editor.getHTML()); // rich text
+    rteChange = (content, delta, source, editor) => {
+        //console.log(editor.getHTML()); // rich text
         //console.log(editor.getText()); // plain text
         //var text = editor.getHTML();
         this.setState({

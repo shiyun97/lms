@@ -84,7 +84,7 @@ import ModuleFeedbackPage from './dev/ModuleFeedbackPage';
 import ModuleFeedbackEvaluationPage from './dev/ModuleFeedbackEvaluationPage';
 import DashboardPage from './dev/DashboardPage';
 import ModulesPage from './dev/ModulesPage';
-import UsersManagementPage from './dev/UsersManagementPage';
+import UsersManagementPage from './dev/Admin/UsersManagementPage';
 import UserProfilePage from "./dev/UserProfilePage";
 import UnderMaintenancePage from "./dev/UnderMaintenancePage";
 import AdminLoginPage from "./dev/Admin/AdminLoginPage";
@@ -120,13 +120,15 @@ import CoursepackQuizPagePreviewQuiz from "./dev/Teacher/CoursepackQuizPagePrevi
 import ModuleAnalyticsPage from "./dev/Teacher/ModuleAnalyticsPage";
 import CoursepackCartPage from "./dev/CoursepackCartPage";
 import CoursepackCheckoutPage from "./dev/CoursepackCheckoutPage";
-import CoursepackCertificatesDetailsPage from "./dev/CoursepackCertificatesDetailsPage";
+import CoursepackCertificatesDetailsPage from "./dev/Admin/CoursepackCertificatesDetailsPage";
 import CoursepackDashboardAdmin from "./dev/Admin/CoursepackDashboardAdmin";
 import CoursepackQuizPageEditQuiz from "./dev/Teacher/CoursepackQuizPageEditQuiz";
 import CoursepackViewAllPage from "./dev/CoursepackViewAllPage";
 import CoursepackAchievementsPage from "./dev/CoursepackAchievementsPage";
 import ModuleQuizPageViewStatistics from "./dev/Teacher/ModuleQuizPageViewStatistics";
 import ModuleFeedbackPageViewStatistics from "./dev/Teacher/ModuleFeedbackPageViewStatistics";
+import CoursepackAchievementsPageView from "./dev/CoursepackAchievementsPageView";
+import UsersManagementAchievements from "./dev/Admin/UsersManagementAchievements";
 
 @inject('dataStore')
 @observer
@@ -170,6 +172,7 @@ class Routes extends React.Component {
         {/* LMS PAGES - Admin */}
         <Route exact path="/admin" component={AdminLoginPage} />
         <Route exact path="/coursepack/users" component={UsersManagementPage} />
+        <Route exact path="/coursepack/users/achievements/:userId" component={UsersManagementAchievements} />
         <Route exact path="/dashboard/active" component={DashboardPageAdmin} />
         <Route exact path="/dashboard/upcoming" component={DashboardPageAdmin} />
         <Route exact path="/dashboard/expired" component={DashboardPageAdmin} />
@@ -179,7 +182,7 @@ class Routes extends React.Component {
         <Route exact path="/modules/:moduleId/quiz/:quizId/edit" component={ModuleQuizPageEditQuiz} />
         <Route exact path="/coursepack/:coursepackId/arrangements" component={CoursepackArrangementPage} />
         <Route exact path="/coursepack/:coursepackId/edit" component={CoursePackEditPage} />
-        <Route exact path="/coursepack/:coursepackId/assessments/" component={CoursepackAssessmentPage} />        
+        <Route exact path="/coursepack/:coursepackId/assessments/" component={CoursepackAssessmentPage} />
         <Route exact path="/coursepack/create/" component={CoursepackCreatePage} />
         <Route exact path="/modules/:moduleId/quiz/:quizId/review" component={ModuleQuizPageViewStudents} />
         <Route exact path="/modules/:moduleId/quiz/:quizId/statistics" component={ModuleQuizPageViewStatistics} />
@@ -250,7 +253,10 @@ class Routes extends React.Component {
         <Route exact path="/coursepack/dashboard/admin/" component={CoursepackDashboardAdmin} />
         <Route exact path="/coursepacks" component={CoursepackViewAllPage} />
         <Route exact path="/coursepacks/:categoryId" component={CoursepackViewAllPage} />
-        <Route exact path="/coursepack/achievements/view" component={CoursepackAchievementsPage} />
+        <Route exact path="/coursepack/achievements/view/" component={CoursepackAchievementsPage} />
+        <Route exact path="/coursepack/achievements/view/certificates" component={CoursepackAchievementsPage} />
+        <Route exact path="/coursepack/achievements/view/badges" component={CoursepackAchievementsPage} />
+        <Route exact path="/coursepack/achievements/certificates/view/:certId" component={CoursepackAchievementsPageView} />
 
         {/* FREE Templates */}
         <Route exact path="/home" component={HomePage} />

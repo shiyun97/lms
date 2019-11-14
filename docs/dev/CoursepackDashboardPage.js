@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { observer, inject } from 'mobx-react'
 import {
-  MDBContainer, 
-  MDBCarouselInner, 
-  MDBView, 
-  MDBCarouselItem, 
-  MDBCarousel, 
-  MDBCol, 
+  MDBContainer,
+  MDBAnimation,
+  MDBCarouselInner,
+  MDBView,
+  MDBCarouselItem,
+  MDBCarousel,
+  MDBCol,
   MDBRow,
   MDBIcon,
   MDBJumbotron,
@@ -32,6 +33,8 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Snackbar from '@material-ui/core/Snackbar';
+import styled from 'styled-components';
+import MainSideNavDropdown from "./MainSideNavDropdown";
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 const FILE_SERVER = "http://127.0.0.1:8887/";
@@ -54,13 +57,13 @@ class CoursepackDashboardPage extends Component {
   componentDidMount() {
     // get all categories
     axios.get(`${API}Coursepack/getAllCategories`)
-    .then(result => {
+      .then(result => {
         this.setState({ categories: result.data.categories })
         console.log(result.data)
-    })
-    .catch(error => {
+      })
+      .catch(error => {
         console.error("error in axios " + error);
-    });
+      });
 
     // get all coursepacks
     axios.get(`${API}Coursepack/getAllCoursepack`)
@@ -102,16 +105,16 @@ class CoursepackDashboardPage extends Component {
         console.error("error in axios " + error);
       });
 
-      // get cart items if any
-      let cart = sessionStorage.getItem("cart");
-      let cartNum = 0;
-      if (cart != undefined && cart != null) {
-        let cartObjs = JSON.parse(cart);
-        cartNum = cartObjs.length;
-      }
-      this.setState({
-        cartNum: cartNum
-      })
+    // get cart items if any
+    let cart = sessionStorage.getItem("cart");
+    let cartNum = 0;
+    if (cart != undefined && cart != null) {
+      let cartObjs = JSON.parse(cart);
+      cartNum = cartObjs.length;
+    }
+    this.setState({
+      cartNum: cartNum
+    })
   }
 
   handleOpenSnackbar = () => {
@@ -184,8 +187,8 @@ class CoursepackDashboardPage extends Component {
     if (cart != null && cart != undefined) {
       let cartObjs = JSON.parse(cart);
       let found = false
-      let idx=0;
-      for (idx=0; (idx < cartObjs.length) && found == false; idx++) {
+      let idx = 0;
+      for (idx = 0; (idx < cartObjs.length) && found == false; idx++) {
         let obj = cartObjs[idx];
         if (obj.coursepackId == course.coursepackId) {
           found = true
@@ -199,7 +202,7 @@ class CoursepackDashboardPage extends Component {
       }
 
       let userCoursepackList = this.state.userCoursepackList;
-      for (idx=0; (idx < userCoursepackList.length) && found == false; idx++) {
+      for (idx = 0; (idx < userCoursepackList.length) && found == false; idx++) {
         let obj = userCoursepackList[idx];
         if (obj.coursepackId == course.coursepackId) {
           found = true
@@ -249,22 +252,22 @@ class CoursepackDashboardPage extends Component {
 
     if (course && sessionStorage.getItem("userId") && found == false) {
       axios
-      .put(`${API}CoursepackEnrollment/enrollCoursepack?userId=${sessionStorage.getItem("userId")}&coursepackId=${course.coursepackId}`)
-      .then(result => {
-        this.setState({
-          openSnackbar: true,
-          message: "Enrolled into coursepack succesfully"
+        .put(`${API}CoursepackEnrollment/enrollCoursepack?userId=${sessionStorage.getItem("userId")}&coursepackId=${course.coursepackId}`)
+        .then(result => {
+          this.setState({
+            openSnackbar: true,
+            message: "Enrolled into coursepack succesfully"
+          })
+          this.props.dataStore.setPath(`/coursepack/myCourses`);
+          this.props.history.push(`/coursepack/myCourses`);
         })
-        this.props.dataStore.setPath(`/coursepack/myCourses`);
-        this.props.history.push(`/coursepack/myCourses`);
-      })
-      .catch(error => {
-        this.setState({
-          openSnackbar: false,
-          message: "An error occurred, please try again"
-        })
-        console.error("error in axios " + error);
-      });
+        .catch(error => {
+          this.setState({
+            openSnackbar: false,
+            message: "An error occurred, please try again"
+          })
+          console.error("error in axios " + error);
+        });
     }
   }
 
@@ -309,16 +312,16 @@ class CoursepackDashboardPage extends Component {
     let coursepackList = this.state.coursepackList;
     let displayCoursepackList = coursepackList;
     if (displayCoursepackList.length > 8) {
-      displayCoursepackList = displayCoursepackList.slice(0,8);
+      displayCoursepackList = displayCoursepackList.slice(0, 8);
     }
-    
+
     return (
-      <div className={this.props.className}>
+      <>
         <h4><b>Discover coursepacks</b></h4>
         <hr />
         <MDBRow>
           <MDBCol>
-            <span style={{float: "right", textDecorationLine:"underline", cursor: "pointer"}} className="mb-2" onClick={e => this.viewAllCoursepacks()}>
+            <span style={{ float: "right", textDecorationLine: "underline", cursor: "pointer" }} className="mb-2" onClick={e => this.viewAllCoursepacks()}>
               View all coursepacks >
             </span>
           </MDBCol>
@@ -326,55 +329,56 @@ class CoursepackDashboardPage extends Component {
         <MDBRow>
           {displayCoursepackList && displayCoursepackList.map((course, index) => {
             return (
-              <MDBCol size="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
-                <Card style={{ height: "25rem" }}>
-                  <CardActionArea>
-                    <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>
-                      <CardMedia
-                        style={{ height: 140 }}
-                        image={course.imageLocation}
-                        title={course.title}
-                      />
-                      <CardContent>
-                        <Typography gutterBottom variant="h5" component="h2" style={{ color: "#000000" }}>
-                          {course.title}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary" component="p">
-                          {course.assignedTeacher.firstName + " " + course.assignedTeacher.lastName}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary" component="p">
-                          <div style={{ width: 200, display: "flex", marginTop: 10 }}>
-                            <Rating name="hover-side" value={course.rating} precision={0.1} readOnly size="small" />
-                            <Box ml={2}>{course.rating.toFixed(1) + " (" + course.ratingList.length + ")"}</Box>
-                          </div>
-                        </Typography>
-                        <Typography gutterBottom variant="h6" component="h2" style={{ color: "#000000", marginTop: 10 }}>
-                          {sessionStorage.getItem("accessRight") === "Public" ? "S$" + course.price.toFixed(2) : "FREE"}
-                        </Typography>
-                      </CardContent>
-                    </NavLink>
-                  </CardActionArea>
-
-                  <CardActions>
-                  {
-                      sessionStorage.getItem("accessRight") === "Public" && 
-                      <Button variant="contained" color="secondary" onClick={e => this.addToCart(course)}>
-                        Add To Cart
+              <MDBCol md="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
+                <MDBAnimation reveal type="fadeInUp">
+                  <Card>
+                    <CardActionArea>
+                      <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>
+                        <CardMedia
+                          style={{ height: 140 }}
+                          image={course.imageLocation}
+                          title={course.title}
+                        />
+                        <CardContent>
+                          <Typography gutterBottom variant="h5" component="h2" style={{ color: "#000000" }}>
+                            {course.title}
+                          </Typography>
+                          <Typography variant="body2" color="textSecondary" component="p">
+                            {course.assignedTeacher.firstName + " " + course.assignedTeacher.lastName}
+                          </Typography>
+                          <Typography variant="body2" color="textSecondary" component="p">
+                            <div style={{ width: 200, display: "flex", marginTop: 10 }}>
+                              <Rating name="hover-side" value={course.rating} precision={0.1} readOnly size="small" />
+                              <Box ml={2}>{course.rating.toFixed(1) + " (" + course.ratingList.length + ")"}</Box>
+                            </div>
+                          </Typography>
+                          <Typography gutterBottom variant="h6" component="h2" style={{ color: "#000000", marginTop: 10 }}>
+                            {sessionStorage.getItem("accessRight") === "Student" ? "FREE" : "S$" + course.price.toFixed(2)}
+                          </Typography>
+                        </CardContent>
+                      </NavLink>
+                    </CardActionArea>
+                    {
+                      sessionStorage.getItem("accessRight") === "Public" && <CardActions>
+                        <Button variant="contained" style={{ backgroundColor: "#fb6d63" }} onClick={e => this.addToCart(course)}>
+                          Add To Cart
                       </Button>
+                      </CardActions>
                     }
                     {
-                      sessionStorage.getItem("accessRight") === "Student" && 
-                      <Button variant="contained" color="secondary" onClick={e => this.enrollCourse(course)}>
-                        Enroll Now
+                      sessionStorage.getItem("accessRight") === "Student" && <CardActions>
+                        <Button variant="contained" style={{ backgroundColor: "#fb6d63" }} onClick={e => this.enrollCourse(course)}>
+                          Enroll Now
                       </Button>
+                      </CardActions>
                     }
-                  </CardActions>
-                </Card>
+                  </Card>
+                </MDBAnimation>
               </MDBCol>
             )
           })}
         </MDBRow>
-      </div>
+      </>
     )
   };
 
@@ -383,7 +387,7 @@ class CoursepackDashboardPage extends Component {
     let coursepackList = this.state.recommendedCoursepackList;
     let displayCoursepackList = coursepackList;
     if (displayCoursepackList.length > 4) {
-      displayCoursepackList = displayCoursepackList.slice(0,4);
+      displayCoursepackList = displayCoursepackList.slice(0, 4);
     }
     return (
       <div className={this.props.className}>
@@ -392,50 +396,52 @@ class CoursepackDashboardPage extends Component {
         <MDBRow>
           {coursepackList && coursepackList.map((course, index) => {
             return (
-              <MDBCol size="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
-                <Card style={{ height: "25rem" }}>
-                  <CardActionArea>
-                    <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>
-                      <CardMedia
-                        style={{ height: 140 }}
-                        image={course.imageLocation}
-                        title={course.title}
-                      />
-                      <CardContent>
-                        <Typography gutterBottom variant="h5" component="h2" style={{ color: "#000000" }}>
-                          {course.title}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary" component="p">
-                          {course.assignedTeacher.firstName + " " + course.assignedTeacher.lastName}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary" component="p">
-                          <div style={{ width: 200, display: "flex", marginTop: 10 }}>
-                            <Rating name="hover-side" value={course.rating} precision={0.1} readOnly size="small" />
-                            <Box ml={2}>{course.rating.toFixed(1) + " (" + course.ratingList.length + ")"}</Box>
-                          </div>
-                        </Typography>
-                        <Typography gutterBottom variant="h6" component="h2" style={{ color: "#000000", marginTop: 10 }}>
-                          {sessionStorage.getItem("accessRight") === "Public" ? "S$" + course.price.toFixed(2) : "FREE"}
-                        </Typography>
-                      </CardContent>
-                    </NavLink>
-                  </CardActionArea>
+              <MDBCol md="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
+                <MDBAnimation reveal type="fadeInUp">
+                  <Card>
+                    <CardActionArea>
+                      <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>
+                        <CardMedia
+                          style={{ height: 140 }}
+                          image={course.imageLocation}
+                          title={course.title}
+                        />
+                        <CardContent>
+                          <Typography gutterBottom variant="h5" component="h2" style={{ color: "#000000" }}>
+                            {course.title}
+                          </Typography>
+                          <Typography variant="body2" color="textSecondary" component="p">
+                            {course.assignedTeacher.firstName + " " + course.assignedTeacher.lastName}
+                          </Typography>
+                          <Typography variant="body2" color="textSecondary" component="p">
+                            <div style={{ width: 200, display: "flex", marginTop: 10 }}>
+                              <Rating name="hover-side" value={course.rating} precision={0.1} readOnly size="small" />
+                              <Box ml={2}>{course.rating.toFixed(1) + " (" + course.ratingList.length + ")"}</Box>
+                            </div>
+                          </Typography>
+                          <Typography gutterBottom variant="h6" component="h2" style={{ color: "#000000", marginTop: 10 }}>
+                            {sessionStorage.getItem("accessRight") === "Student" ? "FREE" : "S$" + course.price.toFixed(2)}
+                          </Typography>
+                        </CardContent>
+                      </NavLink>
+                    </CardActionArea>
 
-                  <CardActions>
-                    {
-                      sessionStorage.getItem("accessRight") === "Public" && 
-                      <Button variant="contained" color="secondary" onClick={e => this.addToCart(course)}>
-                        Add To Cart
+                    <CardActions>
+                      {
+                        sessionStorage.getItem("accessRight") === "Public" &&
+                        <Button variant="contained" style={{ backgroundColor: "#fb6d63" }} onClick={e => this.addToCart(course)}>
+                          Add To Cart
                       </Button>
-                    }
-                    {
-                      sessionStorage.getItem("accessRight") === "Student" && 
-                      <Button variant="contained" color="secondary" onClick={e => this.enrollCourse(course)}>
-                        Enroll Now
+                      }
+                      {
+                        sessionStorage.getItem("accessRight") === "Student" &&
+                        <Button variant="contained" style={{ backgroundColor: "#fb6d63" }} onClick={e => this.enrollCourse(course)}>
+                          Enroll Now
                       </Button>
-                    }
-                  </CardActions>
-                </Card>
+                      }
+                    </CardActions>
+                  </Card>
+                </MDBAnimation>
               </MDBCol>
             )
           })}
@@ -473,11 +479,11 @@ class CoursepackDashboardPage extends Component {
     this.props.dataStore.setPath('/coursepacks/' + categoryId);
     this.props.history.push('/coursepacks/' + categoryId);
   }
-  
+
   render() {
     let categories = this.state.categories;
     return (
-      <div>
+      <>
         <CoursepackTopNav cartNum={this.state.cartNum} />
         <MDBJumbotron style={{ paddingLeft: 260, paddingBottom: 40, height: 10, marginBottom: 0, float: "center", backgroundColor: "#f0f0f0" }}>
           <div>
@@ -498,24 +504,22 @@ class CoursepackDashboardPage extends Component {
           </div>
         </MDBJumbotron>
         <MDBContainer style={{ paddingBottom: 240 }}>
-
-
-          <MDBContainer style={{ paddingTop: 0 }} >
-            {/*this.mediaCarousel()*/}
+          {/*this.mediaCarousel()*/}
+          <MDBAnimation type="zoomIn" duration="500ms">
             <img
               src={coursepackBanner}
               alt="FlipIT"
-              style={{ maxWidth: 1130 }}
+              width="100%"
             />
-            <br />
-            <br />
-            <br />
-            {this.discoverCoursepacks()}
-            {this.courseRecommendation()}
-            {this.renderSnackbar()}
-          </MDBContainer>
+          </MDBAnimation>
+          <br />
+          <br />
+          <br />
+          {this.discoverCoursepacks()}
+          {this.courseRecommendation()}
+          {this.renderSnackbar()}
         </MDBContainer>
-      </div>
+      </>
     );
   }
 }

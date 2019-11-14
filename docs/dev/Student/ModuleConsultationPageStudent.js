@@ -191,9 +191,6 @@ class ModuleConsultationPageStudent extends Component {
                     startDate: moment(bookedRow[i].startD).format('DD-MM-YYYY'),
                     startTime: bookedRow[i].startTs,
                     endTime: bookedRow[i].endTs,
-                    // date: "",
-                    // startTime: "",
-                    // endTime: "",
                     button: <MDBBtn size="small" onClick={() => this.dropConsultationSlot(bookedRow[i].consultationTsId)} color="primary">Drop Slot</MDBBtn>
                 })
             }

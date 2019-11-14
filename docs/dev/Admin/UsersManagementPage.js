@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { MDBDataTable, MDBInputGroup, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter, MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBCardBody, MDBIcon } from "mdbreact";
 import axios from "axios";
-import { RandomPassword } from "./utils/RandomPassword";
+import { RandomPassword } from "../utils/RandomPassword";
 import { observer, inject } from 'mobx-react';
 import { Snackbar } from '@material-ui/core';
+import styled from 'styled-components';
+import MainSideNavDropdown from "../MainSideNavDropdown";
 
 @inject('dataStore')
 @observer
@@ -57,16 +59,6 @@ class UsersManagementPage extends Component {
                 "field": "email",
                 "width": 270
             },
-            // {
-            //     "label": "Password",
-            //     "field": "password",
-            //     "width": 200
-            // },
-            // {
-            //     "label": "Access Right",
-            //     "field": "accessRight",
-            //     "width": 100
-            // },
             {
                 "label": "Username",
                 "field": "username",
@@ -76,7 +68,12 @@ class UsersManagementPage extends Component {
                 "label": "",
                 "field": "",
                 "width": 100
-            }
+            },
+            {
+                "label": "Achievements",
+                "field": "achievenemts",
+                "width": 100
+            },
         ],
         rows: [{ label: "Retrieving data..." }],
         status: "retrieving",
@@ -87,7 +84,6 @@ class UsersManagementPage extends Component {
     getAllUserDetails = () => {
         axios
             .get(`http://localhost:8080/LMS-war/webresources/User/getAllUser`)
-            // .get("http://localhost:3001/users")
             .then(result => {
                 // console.log(result)
                 var publicUserList = []
@@ -98,8 +94,6 @@ class UsersManagementPage extends Component {
                 this.setState({
                     rows: publicUserList,
                     status: "done",
-                    // message: "Retrieved user data successfully!",
-                    // openSnackbar: true
                 });
             })
             .catch(error => {
@@ -151,7 +145,6 @@ class UsersManagementPage extends Component {
         event.preventDefault();
         this.toggle(1);
         axios
-            // .post("http://localhost:3001/newUser", {
             .post(`http://localhost:8080/LMS-war/webresources/User/updateUser`, {
                 userId: this.state.userId,
                 firstName: this.state.firstName,
@@ -272,9 +265,7 @@ class UsersManagementPage extends Component {
                             <MDBCol md="6">
                                 <input type="text" className="form-control" onChange={this.handleChange} disabled value={this.state.password} />
                             </MDBCol>
-                            <MDBCol md="6" align="right">
-                                {/* <MDBBtn onClick={() => this.generatePwd()} outline size="sm" color="primary">Reset Password</MDBBtn> */}
-                            </MDBCol>
+                            <MDBCol md="6" align="right"> </MDBCol>
                             <MDBCol md="12" className="mt-4">
                                 <MDBInputGroup
                                     style={{ paddingTop: 32 }}
@@ -308,44 +299,48 @@ class UsersManagementPage extends Component {
 
     renderUserTable = (tableData) => {
         return (
-            <MDBContainer className="mt-3">
-                <MDBRow style={{ paddingTop: 60 }}>
-                    <MDBCol md="12">
-                        <h2 className="font-weight-bold">
-                            Public Users Management
+            <div className={this.props.className}>
+                <div className="module-navbar-small">
+                    <MainSideNavDropdown moduleId={this.props.moduleId} activeTab={'Public Users'}></MainSideNavDropdown>
+                </div>
+                <div className="module-content">
+                    <MDBContainer className="mt-3">
+                        <MDBRow style={{ paddingTop: 60 }}>
+                            <MDBCol md="12">
+                                <h2 className="font-weight-bold">
+                                    Public Users Management
                 </h2>
-                    </MDBCol>
-                    {/* <MDBCol md="1">
-                        <Fab onClick={() => this.getAllUserDetails()} style={{ height: 50, width: 50, backgroundColor: "#bbb", borderRadius: "50%" }}><MDBIcon icon="sync" /></Fab>
-                    </MDBCol> */}
-                </MDBRow>
-                {this.renderEditUserModalBox()}
-                <MDBRow className="py-3">
-                    <MDBCol md="12">
-                        <MDBCard>
-                            <MDBCardBody>
-                                <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
-                            </MDBCardBody>
-                        </MDBCard>
-                    </MDBCol>
-                </MDBRow>
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    open={this.state.openSnackbar}
-                    autoHideDuration={6000}
-                    onClose={this.handleClose}
-                    ContentProps={{
-                        'aria-describedby': 'message-id',
-                    }}
-                    message={<span id="message-id">{this.state.message}</span>}
-                    action={[
-                        <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-                    ]}
-                />
-            </MDBContainer>
+                            </MDBCol>
+                        </MDBRow>
+                        {this.renderEditUserModalBox()}
+                        <MDBRow className="py-3">
+                            <MDBCol md="12">
+                                <MDBCard>
+                                    <MDBCardBody>
+                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
+                                    </MDBCardBody>
+                                </MDBCard>
+                            </MDBCol>
+                        </MDBRow>
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            open={this.state.openSnackbar}
+                            autoHideDuration={6000}
+                            onClose={this.handleClose}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">{this.state.message}</span>}
+                            action={[
+                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                            ]}
+                        />
+                    </MDBContainer>
+                </div>
+            </div>
         )
     }
 
@@ -359,40 +354,58 @@ class UsersManagementPage extends Component {
             })], rows: [...data().rows]
         }
         return (
-            <MDBContainer className="mt-3">
-                <MDBRow style={{ paddingTop: 60 }}>
-                    <MDBCol md="12">
-                        <h2 className="font-weight-bold">
-                            Users Management
+            <div className={this.props.className}>
+                <div className="module-navbar-small">
+                    <MainSideNavDropdown moduleId={this.props.moduleId} activeTab={'Public Users'}></MainSideNavDropdown>
+                </div>
+                <div className="module-content">
+                    <MDBContainer className="mt-3">
+                        <MDBRow style={{ paddingTop: 60 }}>
+                            <MDBCol md="12">
+                                <h2 className="font-weight-bold">
+                                    Users Management
                 </h2>
-                    </MDBCol>
-                    {this.renderEditUserModalBox()}
-                </MDBRow>
-                <MDBRow className="py-3">
-                    <MDBCol md="12">
-                        <MDBCard>
-                            <MDBCardBody>
-                                <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
-                            </MDBCardBody>
-                        </MDBCard>
-                    </MDBCol>
-                </MDBRow>
-            </MDBContainer>
+                            </MDBCol>
+                            {this.renderEditUserModalBox()}
+                        </MDBRow>
+                        <MDBRow className="py-3">
+                            <MDBCol md="12">
+                                <MDBCard>
+                                    <MDBCardBody>
+                                        <MDBDataTable striped bordered hover scrollX scrollY maxHeight="400px" data={tableData} pagesAmount={4} />
+                                    </MDBCardBody>
+                                </MDBCard>
+                            </MDBCol>
+                        </MDBRow>
+                    </MDBContainer>
+                </div>
+            </div>
         )
     }
 
     renderAwaiting = () => {
         return (
-            <MDBContainer className="mt-3">
-                <MDBRow style={{ paddingTop: 60 }} align="center">
-                    <MDBCol md="12">
-                        <div className="spinner-border text-primary" role="status">
-                            <span className="sr-only">Loading...</span>
-                        </div>
-                    </MDBCol>
-                </MDBRow>
-            </MDBContainer>
+            <div className={this.props.className}>
+                <div className="module-navbar-small">
+                    <MainSideNavDropdown moduleId={this.props.moduleId} activeTab={'Public Users'}></MainSideNavDropdown>
+                </div>
+                <div className="module-content">
+                    <MDBContainer className="mt-3">
+                        <MDBRow style={{ paddingTop: 60 }} align="center">
+                            <MDBCol md="12">
+                                <div className="spinner-border text-primary" role="status">
+                                    <span className="sr-only">Loading...</span>
+                                </div>
+                            </MDBCol>
+                        </MDBRow>
+                    </MDBContainer>
+                </div>
+            </div>
         )
+    }
+
+    viewUserAchievements = (userId) => {
+        this.props.history.push(`/coursepack/users/achievements/${userId}`)
     }
 
     render() {
@@ -405,13 +418,12 @@ class UsersManagementPage extends Component {
                 lastName: row[i].lastName,
                 gender: row[i].gender,
                 email: row[i].email,
-                // password: "********",
-                // accessRight: row[i].accessRight,
                 username: row[i].username,
                 editButton: <MDBRow align="center">
                     <MDBCol md={6}><MDBIcon onClick={() => this.toggle(1, row[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
                     <MDBCol md={6}><MDBIcon onClick={() => this.deleteUser(row[i].userId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
-                </MDBRow>
+                </MDBRow>,
+                                achievements: <MDBCol align="center" md={6}><MDBBtn color="deep-orange" size="sm" onClick={() => this.viewUserAchievements(row[i].userId)}>View</MDBBtn></MDBCol>,
             })
         }
         const data = () => ({ columns: this.state.columns, rows: newRows })
@@ -436,4 +448,35 @@ class UsersManagementPage extends Component {
     }
 }
 
-export default UsersManagementPage;
+export default styled(UsersManagementPage)`
+.module-content{
+    margin-top: 10px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 0px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+}
+
+.new-paragraph{
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+.align-right{
+    float: right;
+}
+`;

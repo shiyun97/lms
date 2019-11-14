@@ -4,6 +4,8 @@ import { observer, inject } from 'mobx-react';
 import axios from "axios";
 import { Snackbar } from '@material-ui/core';
 import { Redirect } from "react-router-dom";
+import styled from 'styled-components';
+import MainSideNavDropdown from "./MainSideNavDropdown";
 
 @inject('dataStore')
 @observer
@@ -261,81 +263,134 @@ class UserProfilePage extends Component {
             return <Redirect to={`/coursepack/login`} />
         }
         return (
-            <MDBContainer className="mt-3">
-                <MDBRow style={{ paddingTop: 60 }}>
-                    <MDBCol md="8">
-                        <h2 className="font-weight-bold">
-                            Your Account
+            <div className={this.props.className}>
+                <div className="module-navbar-small">
+                    <MainSideNavDropdown moduleId={this.props.moduleId} activeTab={'Account'}></MainSideNavDropdown>
+                </div>
+                <div className="module-content">
+                    <MDBContainer className="mt-3">
+                        <MDBRow style={{ paddingTop: 60 }}>
+                            <MDBCol md="8">
+                                <h2 className="font-weight-bold">
+                                    Your Account
                     </h2>
-                    </MDBCol>
-                    <MDBCol md="4" align="right">
-                        {/* to edit profile for coursepack users */}
-                        {this.props.dataStore.accessRight === "Public" &&
-                            <><MDBBtn color="primary" onClick={() => this.toggle(1)}>Edit Profile</MDBBtn>
-                                <MDBBtn color="grey" onClick={() => this.toggle(2)}>Delete Account</MDBBtn></>
-                        }
-                    </MDBCol>
-                </MDBRow>
-                <MDBRow className="py-3">
-                    <MDBCol md="12">
-                        <MDBCard cascade className="my-3 grey lighten-4">
-                            <MDBCardBody cascade>
-                                <MDBCardText style={{ paddingTop: 10 }}>
-                                    <strong>Account Details</strong>
-                                    <MDBRow>
-                                        <MDBCol md="2">
-                                            First Name: <br />
-                                            Last Name: <br />
-                                            Username:<br />
-                                            User ID:
+                            </MDBCol>
+                            <MDBCol md="4" align="right">
+                                {this.props.dataStore.accessRight === "Public" &&
+                                    <><MDBBtn color="deep-orange" onClick={() => this.toggle(1)}>Edit Profile</MDBBtn>
+                                        <MDBBtn color="grey" onClick={() => this.toggle(2)}>Delete Account</MDBBtn></>
+                                }
+                            </MDBCol>
+                        </MDBRow>
+                        <MDBRow className="py-3">
+                            <MDBCol md="12">
+                                <MDBCard cascade className="my-3 grey lighten-4">
+                                    <MDBCardBody cascade>
+                                        <MDBCardText style={{ paddingTop: 10 }}>
+                                            <strong>Account Details</strong>
+                                            <MDBRow>
+                                                <MDBCol md="2">
+                                                    First Name:
                                         </MDBCol>
-                                        <MDBCol md="10">
-                                            {this.props.dataStore.getFirstName}
-                                            <br />{this.props.dataStore.getLastName}
-                                            <br />{this.props.dataStore.getUsername}
-                                            <br />{this.props.dataStore.getUserId}
+                                                <MDBCol md="10">
+                                                    {this.props.dataStore.getFirstName}
+                                                </MDBCol>
+                                                <MDBCol md="2">
+                                                    Last Name:
                                         </MDBCol>
-                                    </MDBRow>
-                                </MDBCardText>
-                                <MDBCardText style={{ paddingTop: 10 }}>
-                                    <strong>Contact Details</strong>
-                                    <br />
-                                    <MDBRow>
-                                        <MDBCol md="2">
-                                            Email: <br />
-                                            Password:
+                                                <MDBCol md="10">
+                                                    {this.props.dataStore.getLastName}
+                                                </MDBCol>
+                                                <MDBCol md="2">
+                                                    Username:
                                         </MDBCol>
-                                        <MDBCol md="10">
-                                            {this.props.dataStore.getEmail}
-                                            <br />********
+                                                <MDBCol md="10">
+                                                    {this.props.dataStore.getUsername}
+                                                </MDBCol>
+                                                <MDBCol md="2">
+                                                    User ID:
                                         </MDBCol>
-                                    </MDBRow>
-                                </MDBCardText>
-                            </MDBCardBody>
-                        </MDBCard>
-                    </MDBCol>
-                </MDBRow>
-                {this.renderEditUserModalBox()}
-                {this.renderDeleteUserModalBox()}
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    open={this.state.openSnackbar}
-                    autoHideDuration={6000}
-                    onClose={this.handleClose}
-                    ContentProps={{
-                        'aria-describedby': 'message-id',
-                    }}
-                    message={<span id="message-id">{this.state.message}</span>}
-                    action={[
-                        <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-                    ]}
-                />
-            </MDBContainer>
+                                                <MDBCol md="10">
+                                                    {this.props.dataStore.getUserId}
+                                                </MDBCol>
+                                            </MDBRow>
+                                        </MDBCardText>
+                                        <MDBCardText style={{ paddingTop: 10 }}>
+                                            <strong>Contact Details</strong>
+                                            <br />
+                                            <MDBRow>
+                                                <MDBCol md="2">
+                                                    Email:
+                                        </MDBCol>
+                                                <MDBCol md="10">
+                                                    {this.props.dataStore.getEmail}
+                                                </MDBCol>
+                                                <MDBCol md="2">
+                                                    Password:
+                                        </MDBCol>
+                                                <MDBCol md="10">
+                                                    ********
+                                        </MDBCol>
+                                            </MDBRow>
+                                        </MDBCardText>
+                                    </MDBCardBody>
+                                </MDBCard>
+                            </MDBCol>
+                        </MDBRow>
+                        {this.renderEditUserModalBox()}
+                        {this.renderDeleteUserModalBox()}
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            open={this.state.openSnackbar}
+                            autoHideDuration={6000}
+                            onClose={this.handleClose}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">{this.state.message}</span>}
+                            action={[
+                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                            ]}
+                        />
+                    </MDBContainer>
+                </div>
+            </div>
         );
     }
 }
 
-export default UserProfilePage;
+export default styled(UserProfilePage)`
+.module-content{
+    margin-top: 10px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 0px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+}
+
+.new-paragraph{
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+.align-right{
+    float: right;
+}
+`;

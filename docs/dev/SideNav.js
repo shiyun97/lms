@@ -60,11 +60,10 @@ class SideNav extends Component {
                                     </MDBListGroupItem>
                                 </NavLink>
                             }
-                            {this.props.dataStore.accessRight !== "Admin" &&
-                                <NavLink to="/coursepack/achievements/view" activeClassName="activeClass-coursepack" onClick={() => this.updatePath("/coursepack/achievements/view")} style={{ color: "#fb6d63" }}>
+                            {this.props.dataStore.accessRight !== "Admin" && this.props.dataStore.accessRight !== "Teacher" &&
+                                <NavLink to="/coursepack/achievements/view/" activeClassName="activeClass-coursepack" onClick={() => this.updatePath("/coursepack/achievements/view/")} style={{ color: "#fb6d63" }}>
                                     <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
-                                        <MDBIcon icon="trophy" />
-                                        <br /> <p style={{ fontSize: "10px" }}>My Achievements</p>
+                                        <MDBIcon icon="trophy" /> <p style={{ fontSize: "10px" }}>My <br/>Achievements</p>
                                     </MDBListGroupItem>
                                 </NavLink>
                             }
@@ -156,7 +155,7 @@ class SideNav extends Component {
                         </NavLink>
                     }
                     {(this.props.dataStore.accessRight === "Teacher") &&
-                        <NavLink to="/coursepack/myCourses" activeClassName="activeClass" onClick={() => this.updatePath("/coursepack/dashboard")}>
+                        <NavLink to="/coursepack/myCourses" activeClassName="activeClass" onClick={() => this.updatePath("/coursepack/myCourses")}>
                             <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
                                 <MDBIcon icon="book" />
                                 <br /> <p style={{ fontSize: "10px" }}>Coursepack</p>
@@ -190,12 +189,12 @@ class SideNav extends Component {
 
     render() {
         if (this.props.dataStore.accessRight !== "Public") {
-            console.log(this.props.dataStore.getPath)
+            // console.log(this.props.dataStore.getPath)
             if (this.props.dataStore.getPath.includes("/coursepack"))
                 return this.renderCoursepackSideNav();
             return this.renderFlipItSideNav();
         } else {
-            console.log(this.props.dataStore.getPath)
+            // console.log(this.props.dataStore.getPath)
             if (this.props.dataStore.getPath.includes("/coursepack"))
                 return this.renderCoursepackSideNav();
             return <div></div>

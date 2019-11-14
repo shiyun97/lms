@@ -258,7 +258,7 @@ class ModuleConsultationPageTeacher extends Component {
         }
         return (
             <>
-                <MDBRow style={{ paddingTop: 60 }}>
+                <MDBRow>
                     <MDBCol md="8">
                         <h2 className="font-weight-bold">
                             Consultation Slots

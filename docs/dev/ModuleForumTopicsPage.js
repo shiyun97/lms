@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { observer, inject } from 'mobx-react'
 import styled from 'styled-components';
-import { 
-    MDBContainer, 
-    MDBRow, 
-    MDBCol, 
+import {
+    MDBContainer,
+    MDBRow,
+    MDBCol,
     MDBDataTable,
     MDBIcon,
     MDBBtn,
@@ -12,9 +12,8 @@ import {
     MDBModalHeader,
     MDBModalBody,
     MDBModalFooter,
-    MDBCard,
-    MDBCardBody,
-    MDBNavLink 
+    MDBEdgeHeader,
+    MDBJumbotron
 } from "mdbreact";
 import axios from "axios";
 import 'babel-polyfill';
@@ -190,7 +189,7 @@ class ModuleForumTopicsPage extends Component {
         // api to create new topic
         axios
             .post(`${API_URL}/Forum/createTopic?moduleId=${this.state.moduleId}&userId=${sessionStorage.getItem('userId')}`,
-            request)
+                request)
             .then((result) => {
                 console.log(result);
                 if (result) {
@@ -285,7 +284,7 @@ class ModuleForumTopicsPage extends Component {
         // api to edit topic
         axios
             .put(`${API_URL}/Forum/editTopic?forumTopicId=${this.state.forumTopicIdToEdit}&userId=${sessionStorage.getItem('userId')}`,
-            request)
+                request)
             .then((result) => {
                 console.log(result);
                 if (result) {
@@ -401,67 +400,74 @@ class ModuleForumTopicsPage extends Component {
                     <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Forum'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="discussionPage" />
                     <MDBContainer>
                         <MDBRow>
-                            <MDBCol>
-                                <h4 className="font-weight-bold mb-4">Forum</h4>
-                                <hr className="my-4" />
+                            <MDBCol md="12" className="mt-3 mx-auto">
+                                <MDBJumbotron>
+                                    <MDBRow>
+                                        <MDBCol>
+                                            <h2 className="font-weight-bold mb-4">Forum</h2>
+                                            <hr className="my-4" />
+                                        </MDBCol>
+                                    </MDBRow>
+                                    <MDBRow>
+                                        <MDBCol>
+                                            {
+                                                sessionStorage.getItem('accessRight') == 'Teacher' &&
+                                                <MDBBtn className="ml-0 mb-4" color="primary" block onClick={e => { this.newTopic() }}>Add New Discussion Category</MDBBtn>
+                                            }
+
+                                            {
+                                                topics.length > 0 && topics.map((topic) => (
+                                                    <TopicListItem key={topic.forumTopicId}
+                                                        ownerId={this.state.ownerId}
+                                                        topic={topic}
+                                                        moduleId={this.props.moduleId}
+                                                        delete={e => { this.deleteTopic(topic.forumTopicId) }}
+                                                        edit={e => { this.editTopic(topic) }}
+                                                        enterTopic={e => { this.enterTopic(topic.forumTopicId) }}>
+                                                    </TopicListItem>
+                                                ))
+                                            }
+                                            {
+                                                topics.length == 0 &&
+                                                <div>No forum threads available</div>
+                                            }
+                                        </MDBCol>
+                                    </MDBRow>
+                                    {this.renderAddModal()}
+                                    {this.renderEditModal()}
+                                    {this.renderDeleteDialog()}
+                                    <Snackbar
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'left',
+                                        }}
+                                        open={this.state.openSnackbar}
+                                        autoHideDuration={6000}
+                                        onClose={this.handleClose}
+                                        ContentProps={{
+                                            'aria-describedby': 'message-id',
+                                        }}
+                                        message={<span id="message-id">{this.state.message}</span>}
+                                        action={[
+                                            <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                                        ]}
+                                    />
+                                </MDBJumbotron>
                             </MDBCol>
                         </MDBRow>
-                        <MDBRow>
-                            <MDBCol>
-                                {
-                                    sessionStorage.getItem('accessRight') == 'Teacher' &&
-                                    <MDBBtn className="ml-0 mb-4" color="primary" block onClick={e => {this.newTopic()}}>Add New Discussion Category</MDBBtn>
-                                }
-                                
-                                {
-                                    topics.length > 0 && topics.map((topic) => (
-                                        <TopicListItem key={topic.forumTopicId} 
-                                        ownerId={this.state.ownerId}
-                                        topic={topic}
-                                        moduleId={this.props.moduleId}
-                                        delete={e => {this.deleteTopic(topic.forumTopicId)}}
-                                        edit={e => {this.editTopic(topic)}}
-                                        enterTopic={e => {this.enterTopic(topic.forumTopicId)}}>
-                                        </TopicListItem>
-                                    ))
-                                }
-                                {
-                                    topics.length == 0 &&
-                                    <div>No forum threads available</div>
-                                }
-                            </MDBCol>
-                        </MDBRow>
-                        {this.renderAddModal()}
-                        {this.renderEditModal()}
-                        {this.renderDeleteDialog()}
-                        <Snackbar
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            open={this.state.openSnackbar}
-                            autoHideDuration={6000}
-                            onClose={this.handleClose}
-                            ContentProps={{
-                                'aria-describedby': 'message-id',
-                            }}
-                            message={<span id="message-id">{this.state.message}</span>}
-                            action={[
-                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-                            ]}
-                        />
                     </MDBContainer>
                 </div>
             </div>
-          );
+        );
     }
 }
 
 export default styled(ModuleForumTopicsPage)`
 .module-content{
-    margin-top: 40px;
+    margin-top: 0px;
 }
 @media screen and (min-width: 800px) {
     .module-content{
@@ -490,18 +496,20 @@ class TopicListItem extends Component {
         return <div className="container-fluid section border p-3 justify-content d-flex mb-2">
             <MDBCol sm="12">
                 <MDBRow>
-                        <div className="mb-2 mt-0 ml-0" 
-                            style={{ color: "#2F79B9", fontWeight: "600", fontSize: "16px", lineHeight: "1.2", cursor: "pointer", 
-                            textDecoration: "underline", overflow: "hidden" }}>
-                            <span onClick={this.props.enterTopic}>{topic.title}</span>
-                            {
-                                this.props.ownerId == sessionStorage.getItem('userId') &&
-                                <span>
-                                    <MDBIcon icon="edit" className="indigo-text mt-2 ml-3" size="md" onClick={this.props.edit} />
-                                    <MDBIcon icon="trash-alt" className="indigo-text mt-2 ml-2" size="md" onClick={this.props.delete} />
-                                </span>
-                            }
-                        </div>
+                    <div className="mb-2 mt-0 ml-0"
+                        style={{
+                            color: "#2F79B9", fontWeight: "600", fontSize: "16px", lineHeight: "1.2", cursor: "pointer",
+                            textDecoration: "underline", overflow: "hidden"
+                        }}>
+                        <span onClick={this.props.enterTopic}>{topic.title}</span>
+                        {
+                            this.props.ownerId == sessionStorage.getItem('userId') &&
+                            <span>
+                                <MDBIcon icon="edit" className="indigo-text mt-2 ml-3" size="md" onClick={this.props.edit} />
+                                <MDBIcon icon="trash-alt" className="indigo-text mt-2 ml-2" size="md" onClick={this.props.delete} />
+                            </span>
+                        }
+                    </div>
                 </MDBRow>
                 <MDBRow>
                     <MDBCol>
@@ -511,7 +519,7 @@ class TopicListItem extends Component {
                             </div>
                         </MDBRow>
                         <MDBRow>
-                            <MDBIcon far icon="comment-alt" className="mr-2 mt-1" /><div style={{ fontSize: "0.9rem"}}>{topic.threads && topic.threads.length + " Discussion Thread"}</div>
+                            <MDBIcon far icon="comment-alt" className="mr-2 mt-1" /><div style={{ fontSize: "0.9rem" }}>{topic.threads && topic.threads.length + " Discussion Thread"}</div>
                         </MDBRow>
                     </MDBCol>
                 </MDBRow>

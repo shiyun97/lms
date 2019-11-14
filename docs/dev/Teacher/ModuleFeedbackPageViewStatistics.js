@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBProgress, MDBBreadcrumb, MDBBreadcrumbItem, MDBCardBody } from "mdbreact";
 import axios from 'axios';
+import 'babel-polyfill';
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import ModuleSideNavigation from "../ModuleSideNavigation";
@@ -10,7 +11,7 @@ import ModuleSideNavigation from "../ModuleSideNavigation";
 class ModuleFeedbackPageViewStatistics extends Component {
 
     state = {
-        moduleId: 0,
+        moduleId: "",
         status: "retrieving",
         title: "",
         description: "",
@@ -23,6 +24,9 @@ class ModuleFeedbackPageViewStatistics extends Component {
         pathname = pathname.split("/");
         this.props.dataStore.setCurrModId(pathname[2]);
         // this.props.dataStore.setCurrFeedbackId(pathname[4]);
+        this.setState({
+            moduleId: pathname[2]
+        })
     }
 
     componentDidMount() {
@@ -30,10 +34,28 @@ class ModuleFeedbackPageViewStatistics extends Component {
         this.getModuleFeedbackStatistics()
     }
 
-    getModuleFeedbackStatistics = () => {
+    async getModuleFeedbackStatistics() {
         // let feedbackId = this.props.dataStore.getCurrFeedbackId;
+        var pathname = location.pathname;
+        pathname = pathname.split("/");
+        let surveyId;
+        await axios
+            //.get("http://localhost:3002/feedbackEvaluation2")
+            .get(`http://localhost:8080/LMS-war/webresources/feedback/retrieveSurvey?userId=${sessionStorage.getItem('userId')}&moduleId=${pathname[2]}`)
+            .then((result) => {
+                console.log(result);
+                if (result) {
+                    surveyId = result.data.quizId;
+                }
+
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
+
+
         axios
-            .get(`http://localhost:8080/LMS-war/webresources/feedback/retrieveSurveyStatistics?surveyId=61`) // need to update with survey id
+            .get(`http://localhost:8080/LMS-war/webresources/feedback/retrieveSurveyStatistics?surveyId=${surveyId}`) // need to update with survey id
             .then(result => {
                 this.setState({
                     status: "done",

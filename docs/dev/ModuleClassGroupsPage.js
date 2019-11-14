@@ -3,26 +3,28 @@ import { observer, inject } from 'mobx-react';
 import { withRouter } from "react-router-dom";
 import styled from 'styled-components';
 import {
-    MDBContainer, 
-    MDBRow, 
-    MDBCol, 
+    MDBContainer,
+    MDBRow,
+    MDBCol,
     MDBCard,
     MDBCardBody,
-    MDBIcon, 
-    MDBTabPane, 
-    MDBTabContent, 
-    MDBNav, 
-    MDBNavItem, 
-    MDBNavLink, 
+    MDBIcon,
+    MDBTabPane,
+    MDBTabContent,
+    MDBNav,
+    MDBNavItem,
+    MDBNavLink,
     MDBDataTable,
     MDBTable,
     MDBTableHead,
-    MDBTableBody, 
-    MDBModal, 
-    MDBModalHeader, 
-    MDBModalFooter, 
-    MDBModalBody, 
-    MDBBtn 
+    MDBTableBody,
+    MDBModal,
+    MDBModalHeader,
+    MDBModalFooter,
+    MDBModalBody,
+    MDBBtn,
+    MDBEdgeHeader,
+    MDBJumbotron
 } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
 import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
@@ -220,7 +222,7 @@ class ModuleClassGroupsPage extends Component {
                         openSnackbar: true
                     });
                     console.error("error in axios " + error);
-                    
+
                 });
 
             // retrieve class groups
@@ -232,12 +234,12 @@ class ModuleClassGroupsPage extends Component {
                     let classGroupsArr = result.data.classGroupList;
                     let arr = [];
                     const method = this.goToClassGroup;
-                    for (var i=0; i<classGroupsArr.length; i++) {
+                    for (var i = 0; i < classGroupsArr.length; i++) {
                         let classGroupId = classGroupsArr[i].classGroupId;
-                        let dateStart = classGroupsArr[i].startTs.substring(0,10);
-                        let timeStart = classGroupsArr[i].startTs.substring(11,16);
-                        let dateClose = classGroupsArr[i].closeTs.substring(0,10);
-                        let timeClose = classGroupsArr[i].closeTs.substring(11,16);
+                        let dateStart = classGroupsArr[i].startTs.substring(0, 10);
+                        let timeStart = classGroupsArr[i].startTs.substring(11, 16);
+                        let dateClose = classGroupsArr[i].closeTs.substring(0, 10);
+                        let timeClose = classGroupsArr[i].closeTs.substring(11, 16);
                         let temp = {
                             name: classGroupsArr[i].name,
                             currentEnrollment: currentEnrollmentArr[i],
@@ -265,7 +267,7 @@ class ModuleClassGroupsPage extends Component {
                     });
                     console.error("error in axios " + error);
                 });
-            
+
             //set lecture group
             console.log(moduleEnrollment)
             this.setState({
@@ -279,7 +281,7 @@ class ModuleClassGroupsPage extends Component {
                     }]
                 }
             });
-            
+
             //retrieve tutorial groups
             await axios
                 .get(API_URL + "/ModuleMounting/getAllTutorialByModule?moduleId=" + moduleId)
@@ -289,7 +291,7 @@ class ModuleClassGroupsPage extends Component {
                     let tutorialsArr = result.data.tutorials;
                     let arr = [];
                     const method = this.goToTutorialGroup;
-                    for (var i=0; i<tutorialsArr.length; i++) {
+                    for (var i = 0; i < tutorialsArr.length; i++) {
                         let tutorialId = tutorialsArr[i].tutorialId;
                         let temp = {
                             name: "Tutorial " + tutorialsArr[i].tutorialId,
@@ -392,7 +394,7 @@ class ModuleClassGroupsPage extends Component {
     submitAddClassGroupHandler = event => {
         event.preventDefault();
         event.target.className += " was-validated";
-        
+
         let moduleId = this.state.moduleId;
         if (!moduleId || !this.state.classGroupSelfEnrollmentOpenDateInput || !this.state.classGroupSelfEnrollmentCloseDateInput) {
             return;
@@ -419,19 +421,19 @@ class ModuleClassGroupsPage extends Component {
                     "Content-Type": "application/json"
                 }
             }).then((result) => {
-                    this.setState({
-                        ...this.state,
-                        modalAddClassGroup: false,
-                        classGroupNameInput: "",
-                        classGroupMaxEnrollmentInput: "",
-                        classGroupSelfEnrollmentOpenDateInput: "",
-                        classGroupSelfEnrollmentCloseDateInput: "",
-                        message: "Class group created successfully!",
-                        openSnackbar: true
-                    });
-                    //alert("Class group created successfully!")
-                    return this.initPage()
-                })
+                this.setState({
+                    ...this.state,
+                    modalAddClassGroup: false,
+                    classGroupNameInput: "",
+                    classGroupMaxEnrollmentInput: "",
+                    classGroupSelfEnrollmentOpenDateInput: "",
+                    classGroupSelfEnrollmentCloseDateInput: "",
+                    message: "Class group created successfully!",
+                    openSnackbar: true
+                });
+                //alert("Class group created successfully!")
+                return this.initPage()
+            })
                 .catch(error => {
                     this.setState({
                         status: "error",
@@ -480,135 +482,139 @@ class ModuleClassGroupsPage extends Component {
                     <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Class & Groups'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="discussionPage" />
                     <MDBContainer>
                         <MDBRow>
-                            <MDBCol>
-                                <h4 className="mb-4">{this.state.activeItem}</h4>
-                                <hr className="my-4" />
-                            </MDBCol>
-                        </MDBRow>
-                        <MDBNav className="nav-tabs">
-                            <MDBNavItem>
-                                <MDBNavLink
-                                    to={`/modules/${moduleId}/students/student-roster`}
-                                    active={this.state.activeItem === "Student Roster"}
-                                    onClick={this.toggle("Student Roster")}
-                                    role="tab"
-                                >
-                                    Student Roster
-                                </MDBNavLink>
-                            </MDBNavItem>
-                            <MDBNavItem>
-                                <MDBNavLink
-                                    to={`/modules/${moduleId}/students/class-groups`}
-                                    active={this.state.activeItem === "Class Groups"}
-                                    onClick={this.toggle("Class Groups")}
-                                    role="tab"
-                                >
-                                    Class Groups
-                                </MDBNavLink>
-                            </MDBNavItem>
-                            <MDBNavItem>
-                                <MDBNavLink
-                                    to={`/modules/${moduleId}/students/lecture-groups`}
-                                    active={this.state.activeItem === "Lecture Groups"}
-                                    onClick={this.toggle("Lecture Groups")}
-                                    role="tab"
-                                >
-                                    Lecture Groups
-                                </MDBNavLink>
-                            </MDBNavItem>
-                            <MDBNavItem>
-                                <MDBNavLink
-                                    to={`/modules/${moduleId}/students/tutorial-groups`}
-                                    active={this.state.activeItem === "Tutorial Groups"}
-                                    onClick={this.toggle("Tutorial Groups")}
-                                    role="tab"
-                                >
-                                    Tutorial Groups
-                                </MDBNavLink>
-                            </MDBNavItem>
-                        </MDBNav>
-                        <MDBTabContent activeItem={this.state.activeItem}>
-                            <MDBTabPane tabId="Student Roster" role="tabpanel">
-                                <div className="mb-2"></div>
-                                <MDBRow>
-                                    <MDBCol>
-                                        {
-                                            students.rows.length > 0 &&
-                                            <MDBDataTable striped bordered hover searching={true} data={students} />
-                                        }
-                                        {
-                                            students.rows.length == 0 &&
-                                            <div className="mt-5">No students enrolled in this module yet</div>
-                                        }
-                                    </MDBCol>
-                                </MDBRow>
-                            </MDBTabPane>
-
-                            <MDBTabPane tabId="Class Groups" role="tabpanel">
-                                <MDBRow className="mt-4">
-                                    {
-                                        this.state.accessRight == "Teacher" &&
+                            <MDBCol md="12" className="mt-3 mx-auto">
+                                <MDBJumbotron>
+                                    <MDBRow>
                                         <MDBCol>
-                                            <div style={{ "float": "right" }}>
-                                                <MDBBtn color="primary" className="mr-0" size="md" onClick={this.toggleModal("AddClassGroup")}>
-                                                    Add
-                                            </MDBBtn>
-                                            </div>
+                                            <h2 className="font-weight-bold">{this.state.activeItem}</h2>
+                                            <hr className="my-4" />
                                         </MDBCol>
-                                    }
-                                </MDBRow>
-                                <MDBRow>
-                                    <MDBCol>
-                                        {
-                                            classGroups.rows.length > 0 &&
-                                            <MDBCard><MDBCardBody>
-                                            <MDBDataTable striped bordered scrollX hover searching={false} sortable={true} paging={false} data={classGroups} className="mt-3" />
-                                            </MDBCardBody></MDBCard>
-                                        }
-                                        {
-                                            classGroups.rows.length == 0 &&
-                                            <div className="mt-3">No class groups created yet</div>
-                                        }
-                                    </MDBCol>
-                                </MDBRow>
+                                    </MDBRow>
+                                    <MDBNav className="nav-tabs">
+                                        <MDBNavItem>
+                                            <MDBNavLink
+                                                to={`/modules/${moduleId}/students/student-roster`}
+                                                active={this.state.activeItem === "Student Roster"}
+                                                onClick={this.toggle("Student Roster")}
+                                                role="tab"
+                                            >
+                                                Student Roster
+                                </MDBNavLink>
+                                        </MDBNavItem>
+                                        <MDBNavItem>
+                                            <MDBNavLink
+                                                to={`/modules/${moduleId}/students/class-groups`}
+                                                active={this.state.activeItem === "Class Groups"}
+                                                onClick={this.toggle("Class Groups")}
+                                                role="tab"
+                                            >
+                                                Class Groups
+                                </MDBNavLink>
+                                        </MDBNavItem>
+                                        <MDBNavItem>
+                                            <MDBNavLink
+                                                to={`/modules/${moduleId}/students/lecture-groups`}
+                                                active={this.state.activeItem === "Lecture Groups"}
+                                                onClick={this.toggle("Lecture Groups")}
+                                                role="tab"
+                                            >
+                                                Lecture Groups
+                                </MDBNavLink>
+                                        </MDBNavItem>
+                                        <MDBNavItem>
+                                            <MDBNavLink
+                                                to={`/modules/${moduleId}/students/tutorial-groups`}
+                                                active={this.state.activeItem === "Tutorial Groups"}
+                                                onClick={this.toggle("Tutorial Groups")}
+                                                role="tab"
+                                            >
+                                                Tutorial Groups
+                                </MDBNavLink>
+                                        </MDBNavItem>
+                                    </MDBNav>
+                                    <MDBTabContent activeItem={this.state.activeItem}>
+                                        <MDBTabPane tabId="Student Roster" role="tabpanel">
+                                            <div className="mb-2"></div>
+                                            <MDBRow>
+                                                <MDBCol>
+                                                    {
+                                                        students.rows.length > 0 &&
+                                                        <MDBDataTable striped bordered hover searching={true} data={students} />
+                                                    }
+                                                    {
+                                                        students.rows.length == 0 &&
+                                                        <div className="mt-5">No students enrolled in this module yet</div>
+                                                    }
+                                                </MDBCol>
+                                            </MDBRow>
+                                        </MDBTabPane>
 
-                                <MDBModal
-                                    isOpen={this.state.modalAddClassGroup}
-                                    toggle={this.toggleModal("AddClassGroup")}
-                                >
-                                    <MDBModalHeader className="text-center"
-                                        titleClass="w-100" 
-                                        toggle={this.toggleModal("AddClassGroup")}>
-                                        Add Class Group
+                                        <MDBTabPane tabId="Class Groups" role="tabpanel">
+                                            <MDBRow className="mt-4">
+                                                {
+                                                    this.state.accessRight == "Teacher" &&
+                                                    <MDBCol>
+                                                        <div style={{ "float": "right" }}>
+                                                            <MDBBtn color="primary" className="mr-0" size="md" onClick={this.toggleModal("AddClassGroup")}>
+                                                                Add
+                                            </MDBBtn>
+                                                        </div>
+                                                    </MDBCol>
+                                                }
+                                            </MDBRow>
+                                            <MDBRow>
+                                                <MDBCol>
+                                                    {
+                                                        classGroups.rows.length > 0 &&
+                                                        <MDBCard><MDBCardBody>
+                                                            <MDBDataTable striped bordered scrollX hover searching={false} sortable={true} paging={false} data={classGroups} className="mt-3" />
+                                                        </MDBCardBody></MDBCard>
+                                                    }
+                                                    {
+                                                        classGroups.rows.length == 0 &&
+                                                        <div className="mt-3">No class groups created yet</div>
+                                                    }
+                                                </MDBCol>
+                                            </MDBRow>
+
+                                            <MDBModal
+                                                isOpen={this.state.modalAddClassGroup}
+                                                toggle={this.toggleModal("AddClassGroup")}
+                                            >
+                                                <MDBModalHeader className="text-center"
+                                                    titleClass="w-100"
+                                                    toggle={this.toggleModal("AddClassGroup")}>
+                                                    Add Class Group
                                     </MDBModalHeader>
-                                    <form className="needs-validation" noValidate onSubmit={this.submitAddClassGroupHandler}>
-                                        <MDBModalBody>
-                                            <div className="form-row align-items-center mb-2">
-                                                <div className="col-12">
-                                                    <label className="mb-1">Name</label>
-                                                </div>
-                                                <div className="col-12">
-                                                    <input type="text" className="form-control" name="classGroupNameInput"
-                                                        value={this.state.classGroupNameInput}
-                                                        onChange={this.inputChangeHandler}
-                                                        required />
-                                                </div>
-                                            </div>
-                                            <div className="form-row align-items-center mb-2">
-                                                <div className="col-12">
-                                                    <label className="mb-1">Max Enrollment</label>
-                                                </div>
-                                                <div className="col-12">
-                                                    <input type="number" className="form-control" name="classGroupMaxEnrollmentInput"
-                                                        value={this.state.classGroupMaxEnrollmentInput}
-                                                        onChange={this.inputChangeHandler}
-                                                        min={1}
-                                                        required />
-                                                </div>
-                                            </div>
-                                            {/*
+                                                <form className="needs-validation" noValidate onSubmit={this.submitAddClassGroupHandler}>
+                                                    <MDBModalBody>
+                                                        <div className="form-row align-items-center mb-2">
+                                                            <div className="col-12">
+                                                                <label className="mb-1">Name</label>
+                                                            </div>
+                                                            <div className="col-12">
+                                                                <input type="text" className="form-control" name="classGroupNameInput"
+                                                                    value={this.state.classGroupNameInput}
+                                                                    onChange={this.inputChangeHandler}
+                                                                    required />
+                                                            </div>
+                                                        </div>
+                                                        <div className="form-row align-items-center mb-2">
+                                                            <div className="col-12">
+                                                                <label className="mb-1">Max Enrollment</label>
+                                                            </div>
+                                                            <div className="col-12">
+                                                                <input type="number" className="form-control" name="classGroupMaxEnrollmentInput"
+                                                                    value={this.state.classGroupMaxEnrollmentInput}
+                                                                    onChange={this.inputChangeHandler}
+                                                                    min={1}
+                                                                    required />
+                                                            </div>
+                                                        </div>
+                                                        {/*
                                             <div className="form-row align-items-center mb-2">
                                                 <div className="col-12">
                                                     <label className="mb-1">Self-Enroll</label>
@@ -624,93 +630,96 @@ class ModuleClassGroupsPage extends Component {
                                                     </select>
                                                 </div>
                                             </div>*/}
-                                            
-                                            <div className="form-row align-items-center mb-2">
-                                                <div className="col-12">
-                                                    <label className="mb-1">Self-Enroll Opening Date</label>
-                                                </div>
-                                                <div className="col-12">
-                                                    <input type="datetime-local" className="form-control" name="classGroupSelfEnrollmentOpenDateInput"
-                                                        value={this.state.classGroupSelfEnrollmentOpenDateInput}
-                                                        onChange={this.inputChangeHandler}
-                                                        required />
-                                                </div>
-                                            </div>
-                                            <div className="form-row align-items-center mb-2">
-                                                <div className="col-12">
-                                                    <label className="mb-1">Self-Enroll Closing Date</label>
-                                                </div>
-                                                <div className="col-12">
-                                                    <input type="datetime-local" className="form-control" name="classGroupSelfEnrollmentCloseDateInput"
-                                                        value={this.state.classGroupSelfEnrollmentCloseDateInput}
-                                                        onChange={this.inputChangeHandler}
-                                                        required />
-                                                </div>
-                                            </div>
-                                            
-                                        </MDBModalBody>
-                                        <MDBModalFooter>
-                                            <MDBBtn color="secondary" onClick={this.toggleModal("AddClassGroup")}>
-                                                Cancel
+
+                                                        <div className="form-row align-items-center mb-2">
+                                                            <div className="col-12">
+                                                                <label className="mb-1">Self-Enroll Opening Date</label>
+                                                            </div>
+                                                            <div className="col-12">
+                                                                <input type="datetime-local" className="form-control" name="classGroupSelfEnrollmentOpenDateInput"
+                                                                    value={this.state.classGroupSelfEnrollmentOpenDateInput}
+                                                                    onChange={this.inputChangeHandler}
+                                                                    required />
+                                                            </div>
+                                                        </div>
+                                                        <div className="form-row align-items-center mb-2">
+                                                            <div className="col-12">
+                                                                <label className="mb-1">Self-Enroll Closing Date</label>
+                                                            </div>
+                                                            <div className="col-12">
+                                                                <input type="datetime-local" className="form-control" name="classGroupSelfEnrollmentCloseDateInput"
+                                                                    value={this.state.classGroupSelfEnrollmentCloseDateInput}
+                                                                    onChange={this.inputChangeHandler}
+                                                                    required />
+                                                            </div>
+                                                        </div>
+
+                                                    </MDBModalBody>
+                                                    <MDBModalFooter>
+                                                        <MDBBtn color="secondary" onClick={this.toggleModal("AddClassGroup")}>
+                                                            Cancel
                                         </MDBBtn>
-                                            <MDBBtn color="primary" type="submit">Save</MDBBtn>
-                                        </MDBModalFooter>
-                                    </form>
-                                </MDBModal>
-                            </MDBTabPane>
+                                                        <MDBBtn color="primary" type="submit">Save</MDBBtn>
+                                                    </MDBModalFooter>
+                                                </form>
+                                            </MDBModal>
+                                        </MDBTabPane>
 
-                            <MDBTabPane tabId="Lecture Groups" role="tabpanel">
-                                <MDBRow><MDBCol><div className="mb-4"></div></MDBCol></MDBRow>
-                                <MDBRow className="mt-2">
-                                    <MDBCol>
-                                        {
-                                            lectureGroups.rows.length > 0 &&
-                                            <MDBDataTable striped bordered hover searching={false} sortable={true} paging={false} data={lectureGroups} />
-                                        }
-                                        {
-                                            lectureGroups.rows.length == 0 &&
-                                            <div>No lecture groups created yet</div>
-                                        }
-                                    </MDBCol>
-                                </MDBRow>
-                            </MDBTabPane>
+                                        <MDBTabPane tabId="Lecture Groups" role="tabpanel">
+                                            <MDBRow><MDBCol><div className="mb-4"></div></MDBCol></MDBRow>
+                                            <MDBRow className="mt-2">
+                                                <MDBCol>
+                                                    {
+                                                        lectureGroups.rows.length > 0 &&
+                                                        <MDBDataTable striped bordered hover searching={false} sortable={true} paging={false} data={lectureGroups} />
+                                                    }
+                                                    {
+                                                        lectureGroups.rows.length == 0 &&
+                                                        <div>No lecture groups created yet</div>
+                                                    }
+                                                </MDBCol>
+                                            </MDBRow>
+                                        </MDBTabPane>
 
-                            <MDBTabPane tabId="Tutorial Groups" role="tabpanel">
-                                <MDBRow><MDBCol><div className="mb-4"></div></MDBCol></MDBRow>
-                                <MDBRow className="mt-2">
-                                    <MDBCol>
-                                        {
-                                            tutorialGroups.rows.length > 0 &&
-                                            <MDBDataTable striped bordered hover searching={false} sortable={true} paging={false} data={tutorialGroups} />
-                                        }
-                                        {
-                                            tutorialGroups.rows.length == 0 &&
-                                            <div>No tutorial groups created yet</div>
-                                        }
-                                    </MDBCol>
-                                </MDBRow>
-                            </MDBTabPane>
-                        </MDBTabContent>
-                        <Snackbar
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            open={this.state.openSnackbar}
-                            autoHideDuration={6000}
-                            onClose={this.handleClose}
-                            ContentProps={{
-                                'aria-describedby': 'message-id',
-                            }}
-                            message={<span id="message-id">{this.state.message}</span>}
-                            action={[
-                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-                            ]}
-                        />
+                                        <MDBTabPane tabId="Tutorial Groups" role="tabpanel">
+                                            <MDBRow><MDBCol><div className="mb-4"></div></MDBCol></MDBRow>
+                                            <MDBRow className="mt-2">
+                                                <MDBCol>
+                                                    {
+                                                        tutorialGroups.rows.length > 0 &&
+                                                        <MDBDataTable striped bordered hover searching={false} sortable={true} paging={false} data={tutorialGroups} />
+                                                    }
+                                                    {
+                                                        tutorialGroups.rows.length == 0 &&
+                                                        <div>No tutorial groups created yet</div>
+                                                    }
+                                                </MDBCol>
+                                            </MDBRow>
+                                        </MDBTabPane>
+                                    </MDBTabContent>
+                                    <Snackbar
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'left',
+                                        }}
+                                        open={this.state.openSnackbar}
+                                        autoHideDuration={6000}
+                                        onClose={this.handleClose}
+                                        ContentProps={{
+                                            'aria-describedby': 'message-id',
+                                        }}
+                                        message={<span id="message-id">{this.state.message}</span>}
+                                        action={[
+                                            <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                                        ]}
+                                    />
+                                </MDBJumbotron>
+                            </MDBCol>
+                        </MDBRow>
                     </MDBContainer>
                 </div>
             </div>
-          );
+        );
     }
 }
 
@@ -968,7 +977,7 @@ export class ClassGroupDetails extends Component {
             ],
             rows: []
         },
-        allModuleStudents:{
+        allModuleStudents: {
             columns: [
                 {
                     label: "ID",
@@ -1034,7 +1043,7 @@ export class ClassGroupDetails extends Component {
                     Object.keys(students).forEach(function (key) {
                         let temp = {
                             studentName: students[key].firstName + " " + students[key].lastName,
-                            removeButton: (<MDBBtn size="sm" color="danger" onClick={e => {method(students[key].userId, students[key].firstName + " " + students[key].lastName)}}>Remove</MDBBtn>)
+                            removeButton: (<MDBBtn size="sm" color="danger" onClick={e => { method(students[key].userId, students[key].firstName + " " + students[key].lastName) }}>Remove</MDBBtn>)
                         }
                         arrTeacher.push(temp);
                         arrStudent.push({
@@ -1049,8 +1058,8 @@ export class ClassGroupDetails extends Component {
                         + this.twoDigits(today.getUTCDate()) + "T" + this.twoDigits(today.getHours())
                         + ":" + this.twoDigits(today.getMinutes()) + ":"
                         + this.twoDigits(today.getSeconds()) + timezone;
-                    
-                        let allowSignUp = false;
+
+                    let allowSignUp = false;
                     if (currentDate >= data.startTs && currentDate <= data.closeTs) {
                         allowSignUp = true;
                     }
@@ -1087,8 +1096,8 @@ export class ClassGroupDetails extends Component {
     }
 
     twoDigits(d) {
-        if(0 <= d && d < 10) return "0" + d.toString();
-        if(-10 < d && d < 0) return "-0" + (-1*d).toString();
+        if (0 <= d && d < 10) return "0" + d.toString();
+        if (-10 < d && d < 0) return "-0" + (-1 * d).toString();
         return d.toString();
     }
 
@@ -1103,10 +1112,10 @@ export class ClassGroupDetails extends Component {
     toggleModal = nr => () => {
         let modalNumber = "modal" + nr;
         this.setState({
-          ...this.state,
-          [modalNumber]: !this.state[modalNumber]
+            ...this.state,
+            [modalNumber]: !this.state[modalNumber]
         });
-      };
+    };
 
     removeStudent = (studentId, studentName) => {
         let classGroupId = this.state.classGroupId;
@@ -1151,7 +1160,7 @@ export class ClassGroupDetails extends Component {
                     let temp = {
                         studentId: data[key].userId,
                         studentName: data[key].firstName + data[key].lastName,
-                        addButton: (<MDBBtn size="sm" color="primary" onClick={e => {method(data[key].userId, data[key].firstName + " " + data[key].lastName)}}>Add</MDBBtn>)
+                        addButton: (<MDBBtn size="sm" color="primary" onClick={e => { method(data[key].userId, data[key].firstName + " " + data[key].lastName) }}>Add</MDBBtn>)
                     }
                     arr.push(temp);
                 });
@@ -1229,7 +1238,7 @@ export class ClassGroupDetails extends Component {
     confirmAddStudents = () => {
         let arr = []
         let selectedStudents = this.state.allModuleStudents.rows;
-        for (var i=0; i < selectedStudents.length; i++) {
+        for (var i = 0; i < selectedStudents.length; i++) {
             if (document.getElementById(selectedStudents[i].studentId).checked == true) {
                 arr.push(selectedStudents[i].studentId);
             }
@@ -1243,7 +1252,7 @@ export class ClassGroupDetails extends Component {
         let students = this.state.students;
         if (this.state.accessRight == "Student") {
             students = this.state.studentsStudentView;
-        } 
+        }
         else if (this.state.accessRight == "Teacher" || this.state.accessRight == "Admin") {
             students = this.state.students;
         }
@@ -1255,145 +1264,152 @@ export class ClassGroupDetails extends Component {
                     <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Class & Groups'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="discussionPage" />
                     <MDBContainer>
                         <MDBRow>
-                            <MDBCol>
-                                <h4 className="mb-4">{this.state.activeItem}
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" />{this.state.classGroupName}
-                                </h4>
-                                <hr className="my-4" />
+                            <MDBCol md="12" className="mt-3 mx-auto">
+                                <MDBJumbotron>
+                                    <MDBRow>
+                                        <MDBCol>
+                                            <h2 className="font-weight-bold">{this.state.activeItem}
+                                                <MDBIcon icon="angle-right" className="ml-4 mr-4" />{this.state.classGroupName}
+                                            </h2>
+                                            <hr className="my-4" />
+                                        </MDBCol>
+                                    </MDBRow>
+                                    <MDBNav className="nav-tabs">
+                                        <MDBNavItem>
+                                            <MDBNavLink
+                                                to={`/modules/${this.state.moduleId}/students/student-roster`}
+                                                active={this.state.activeItem === "Student Roster"}
+                                                onClick={this.toggle("Student Roster")}
+                                                role="tab"
+                                            >
+                                                Student Roster
+                                </MDBNavLink>
+                                        </MDBNavItem>
+                                        <MDBNavItem>
+                                            <MDBNavLink
+                                                to={`/modules/${this.state.moduleId}/students/class-groups`}
+                                                active={this.state.activeItem === "Class Groups"}
+                                                onClick={this.toggle("Class Groups")}
+                                                role="tab"
+                                            >
+                                                Class Groups
+                                </MDBNavLink>
+                                        </MDBNavItem>
+                                        <MDBNavItem>
+                                            <MDBNavLink
+                                                to={`/modules/${this.state.moduleId}/students/lecture-groups`}
+                                                active={this.state.activeItem === "Lecture Groups"}
+                                                onClick={this.toggle("Lecture Groups")}
+                                                role="tab"
+                                            >
+                                                Lecture Groups
+                                </MDBNavLink>
+                                        </MDBNavItem>
+                                        <MDBNavItem>
+                                            <MDBNavLink
+                                                to={`/modules/${this.state.moduleId}/students/tutorial-groups`}
+                                                active={this.state.activeItem === "Tutorial Groups"}
+                                                onClick={this.toggle("Tutorial Groups")}
+                                                role="tab"
+                                            >
+                                                Tutorial Groups
+                                </MDBNavLink>
+                                        </MDBNavItem>
+                                    </MDBNav>
+                                    <MDBTabContent activeItem={this.state.activeItem}>
+                                        <MDBTabPane tabId="Class Group" role="tabpanel">
+                                            <MDBRow className="mt-4">
+                                                <MDBCol>
+                                                    <div style={{ "float": "right" }}>
+                                                        {
+                                                            this.state.accessRight == "Teacher" &&
+                                                            <MDBBtn color="primary" className="mr-0 mb-3" size="md" onClick={e => { this.addStudentRetrieve() }}>
+                                                                Add
+                                                </MDBBtn>
+                                                        }
+                                                        {
+                                                            this.state.accessRight == "Student" &&
+                                                            <MDBBtn color="primary" className="mr-0 mb-3" size="md" onClick={e => { this.signUp() }} disabled={!this.state.allowSignUp}>
+                                                                Sign Up
+                                                </MDBBtn>
+                                                        }
+                                                    </div>
+                                                </MDBCol>
+                                            </MDBRow>
+
+                                            <MDBModal isOpen={this.state.modalAddStudent} toggle={this.toggleModal("AddStudent")}>
+                                                <MDBModalHeader
+                                                    className="text-center"
+                                                    titleClass="w-100 font-weight-bold"
+                                                    toggle={this.toggleModal("AddStudent")}
+                                                >
+                                                    Add Students
+                                    </MDBModalHeader>
+                                                <MDBModalBody>
+                                                    <form className="mx-3 grey-text">
+                                                        {
+                                                            allModuleStudents.rows.length > 0 &&
+                                                            <MDBTable bordered striped btn scrollY maxHeight="300px">
+                                                                <MDBTableHead columns={allModuleStudents.columns} />
+                                                                <MDBTableBody rows={allModuleStudents.rows} />
+                                                            </MDBTable>
+                                                        }
+                                                        {
+                                                            allModuleStudents.rows.length == 0 &&
+                                                            <div className="mt-2 mb-2">No students enrolled in module yet</div>
+                                                        }
+                                                    </form>
+                                                </MDBModalBody>
+
+                                            </MDBModal>
+
+                                            <MDBRow>
+                                                <MDBCol>
+                                                    {
+                                                        students.rows.length > 0 &&
+                                                        <MDBDataTable striped bordered hover searching={true} sortable={true} data={students} />
+                                                    }
+                                                    {
+                                                        students.rows.length == 0 &&
+                                                        <div>No students signed up yet</div>
+                                                    }
+                                                </MDBCol>
+                                            </MDBRow>
+                                            <MDBModal isOpen={this.state.modalRemoveConfirm} toggle={this.toggleModal("RemoveConfirm")}>
+                                                <MDBModalHeader toggle={this.toggleModal("RemoveConfirm")} className="text-center" titleClass="w-100">
+                                                    Remove {this.state.studentToRemove.studentNameToRemove}?
+                                    </MDBModalHeader>
+                                                <MDBModalFooter className="justify-content-center">
+                                                    <MDBBtn onClick={this.toggleModal("RemoveConfirm")}>
+                                                        Cancel
+                                        </MDBBtn>
+                                                    <MDBBtn color="danger" onClick={e => { this.confirmRemove() }}>Confirm</MDBBtn>
+                                                </MDBModalFooter>
+                                            </MDBModal>
+                                        </MDBTabPane>
+                                    </MDBTabContent>
+                                    <Snackbar
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'left',
+                                        }}
+                                        open={this.state.openSnackbar}
+                                        autoHideDuration={6000}
+                                        onClose={this.handleClose}
+                                        ContentProps={{
+                                            'aria-describedby': 'message-id',
+                                        }}
+                                        message={<span id="message-id">{this.state.message}</span>}
+                                        action={[
+                                            <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                                        ]}
+                                    />
+                                </MDBJumbotron>
                             </MDBCol>
                         </MDBRow>
-                        <MDBNav className="nav-tabs">
-                            <MDBNavItem>
-                                <MDBNavLink
-                                    to={`/modules/${this.state.moduleId}/students/student-roster`}
-                                    active={this.state.activeItem === "Student Roster"}
-                                    onClick={this.toggle("Student Roster")}
-                                    role="tab"
-                                >
-                                    Student Roster
-                                </MDBNavLink>
-                            </MDBNavItem>
-                            <MDBNavItem>
-                                <MDBNavLink
-                                    to={`/modules/${this.state.moduleId}/students/class-groups`}
-                                    active={this.state.activeItem === "Class Groups"}
-                                    onClick={this.toggle("Class Groups")}
-                                    role="tab"
-                                >
-                                    Class Groups
-                                </MDBNavLink>
-                            </MDBNavItem>
-                            <MDBNavItem>
-                                <MDBNavLink
-                                    to={`/modules/${this.state.moduleId}/students/lecture-groups`}
-                                    active={this.state.activeItem === "Lecture Groups"}
-                                    onClick={this.toggle("Lecture Groups")}
-                                    role="tab"
-                                >
-                                    Lecture Groups
-                                </MDBNavLink>
-                            </MDBNavItem>
-                            <MDBNavItem>
-                                <MDBNavLink
-                                    to={`/modules/${this.state.moduleId}/students/tutorial-groups`}
-                                    active={this.state.activeItem === "Tutorial Groups"}
-                                    onClick={this.toggle("Tutorial Groups")}
-                                    role="tab"
-                                >
-                                    Tutorial Groups
-                                </MDBNavLink>
-                            </MDBNavItem>
-                        </MDBNav>
-                        <MDBTabContent activeItem={this.state.activeItem}>
-                            <MDBTabPane tabId="Class Group" role="tabpanel">
-                                <MDBRow className="mt-4">
-                                    <MDBCol>
-                                        <div style={{ "float": "right" }}>
-                                            {
-                                                this.state.accessRight == "Teacher" &&
-                                                <MDBBtn color="primary" className="mr-0 mb-3" size="md" onClick={e => { this.addStudentRetrieve() }}>
-                                                    Add
-                                                </MDBBtn>
-                                            }
-                                            {
-                                                this.state.accessRight == "Student" &&
-                                                <MDBBtn color="primary" className="mr-0 mb-3" size="md" onClick={e => { this.signUp() }} disabled={!this.state.allowSignUp}>
-                                                    Sign Up
-                                                </MDBBtn>
-                                            }
-                                        </div>
-                                    </MDBCol>
-                                </MDBRow>
-
-                                <MDBModal isOpen={this.state.modalAddStudent} toggle={this.toggleModal("AddStudent")}>
-                                    <MDBModalHeader
-                                        className="text-center"
-                                        titleClass="w-100 font-weight-bold"
-                                        toggle={this.toggleModal("AddStudent")}
-                                    >
-                                        Add Students
-                                    </MDBModalHeader>
-                                    <MDBModalBody>
-                                        <form className="mx-3 grey-text">
-                                            {
-                                                allModuleStudents.rows.length > 0 &&
-                                                <MDBTable bordered striped btn scrollY maxHeight="300px">
-                                                    <MDBTableHead columns={allModuleStudents.columns} />
-                                                    <MDBTableBody rows={allModuleStudents.rows} />
-                                                </MDBTable>
-                                            }
-                                            {
-                                                allModuleStudents.rows.length == 0 &&
-                                                <div className="mt-2 mb-2">No students enrolled in module yet</div>
-                                            }
-                                        </form>
-                                    </MDBModalBody>
-                                    
-                                </MDBModal>
-
-                                <MDBRow>
-                                    <MDBCol>
-                                        {
-                                            students.rows.length > 0 &&
-                                            <MDBDataTable striped bordered hover searching={true} sortable={true} data={students} />
-                                        }
-                                        {
-                                            students.rows.length == 0 &&
-                                            <div>No students signed up yet</div>
-                                        }
-                                    </MDBCol>
-                                </MDBRow>
-                                <MDBModal isOpen={this.state.modalRemoveConfirm} toggle={this.toggleModal("RemoveConfirm")}>
-                                    <MDBModalHeader toggle={this.toggleModal("RemoveConfirm")} className="text-center" titleClass="w-100">
-                                        Remove {this.state.studentToRemove.studentNameToRemove}?
-                                    </MDBModalHeader>
-                                    <MDBModalFooter className="justify-content-center">
-                                        <MDBBtn onClick={this.toggleModal("RemoveConfirm")}>
-                                            Cancel
-                                        </MDBBtn>
-                                        <MDBBtn color="danger" onClick={e => {this.confirmRemove()}}>Confirm</MDBBtn>
-                                    </MDBModalFooter>
-                                </MDBModal>
-                            </MDBTabPane>
-                        </MDBTabContent>
-                        <Snackbar
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            open={this.state.openSnackbar}
-                            autoHideDuration={6000}
-                            onClose={this.handleClose}
-                            ContentProps={{
-                                'aria-describedby': 'message-id',
-                            }}
-                            message={<span id="message-id">{this.state.message}</span>}
-                            action={[
-                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-                            ]}
-                        />
                     </MDBContainer>
                 </div>
             </div>
@@ -1522,82 +1538,89 @@ class LectureGroupDetails extends Component {
                     <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Class & Groups'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="discussionPage" />
                     <MDBContainer>
                         <MDBRow>
-                            <MDBCol>
-                                <h4 className="mb-4">{this.state.activeItem}
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" />{this.state.lectureGroupName}
-                                </h4>
-                                <hr className="my-4" />
+                            <MDBCol md="12" className="mt-3 mx-auto">
+                                <MDBJumbotron>
+                                    <MDBRow>
+                                        <MDBCol>
+                                            <h2 className="font-weight-bold">{this.state.activeItem}
+                                                <MDBIcon icon="angle-right" className="ml-4 mr-4" />{this.state.lectureGroupName}
+                                            </h2>
+                                            <hr className="my-4" />
+                                        </MDBCol>
+                                    </MDBRow>
+                                    <MDBNav className="nav-tabs">
+                                        <MDBNavItem>
+                                            <MDBNavLink
+                                                to={`/modules/${this.state.moduleId}/students/student-roster`}
+                                                active={this.state.activeItem === "Student Roster"}
+                                                onClick={this.toggle("Student Roster")}
+                                                role="tab"
+                                            >
+                                                Student Roster
+                                </MDBNavLink>
+                                        </MDBNavItem>
+                                        <MDBNavItem>
+                                            <MDBNavLink
+                                                to={`/modules/${this.state.moduleId}/students/class-groups`}
+                                                active={this.state.activeItem === "Class Groups"}
+                                                onClick={this.toggle("Class Groups")}
+                                                role="tab"
+                                            >
+                                                Class Groups
+                                </MDBNavLink>
+                                        </MDBNavItem>
+                                        <MDBNavItem>
+                                            <MDBNavLink
+                                                to={`/modules/${this.state.moduleId}/students/lecture-groups`}
+                                                active={this.state.activeItem === "Lecture Groups"}
+                                                onClick={this.toggle("Lecture Groups")}
+                                                role="tab"
+                                            >
+                                                Lecture Groups
+                                </MDBNavLink>
+                                        </MDBNavItem>
+                                        <MDBNavItem>
+                                            <MDBNavLink
+                                                to={`/modules/${this.state.moduleId}/students/tutorial-groups`}
+                                                active={this.state.activeItem === "Tutorial Groups"}
+                                                onClick={this.toggle("Tutorial Groups")}
+                                                role="tab"
+                                            >
+                                                Tutorial Groups
+                                </MDBNavLink>
+                                        </MDBNavItem>
+                                    </MDBNav>
+                                    <MDBTabContent activeItem={this.state.activeItem}>
+                                        <MDBTabPane tabId="Lecture Groups" role="tabpanel">
+                                            <MDBRow className="mt-4">
+                                                <MDBCol>
+                                                    <MDBDataTable striped bordered hover searching={false} sortable={true} paging={false} data={students} />
+                                                </MDBCol>
+                                            </MDBRow>
+                                        </MDBTabPane>
+                                    </MDBTabContent>
+                                    <Snackbar
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'left',
+                                        }}
+                                        open={this.state.openSnackbar}
+                                        autoHideDuration={6000}
+                                        onClose={this.handleClose}
+                                        ContentProps={{
+                                            'aria-describedby': 'message-id',
+                                        }}
+                                        message={<span id="message-id">{this.state.message}</span>}
+                                        action={[
+                                            <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                                        ]}
+                                    />
+                                </MDBJumbotron>
                             </MDBCol>
                         </MDBRow>
-                        <MDBNav className="nav-tabs">
-                            <MDBNavItem>
-                                <MDBNavLink
-                                    to={`/modules/${this.state.moduleId}/students/student-roster`}
-                                    active={this.state.activeItem === "Student Roster"}
-                                    onClick={this.toggle("Student Roster")}
-                                    role="tab"
-                                >
-                                    Student Roster
-                                </MDBNavLink>
-                            </MDBNavItem>
-                            <MDBNavItem>
-                                <MDBNavLink
-                                    to={`/modules/${this.state.moduleId}/students/class-groups`}
-                                    active={this.state.activeItem === "Class Groups"}
-                                    onClick={this.toggle("Class Groups")}
-                                    role="tab"
-                                >
-                                    Class Groups
-                                </MDBNavLink>
-                            </MDBNavItem>
-                            <MDBNavItem>
-                                <MDBNavLink
-                                    to={`/modules/${this.state.moduleId}/students/lecture-groups`}
-                                    active={this.state.activeItem === "Lecture Groups"}
-                                    onClick={this.toggle("Lecture Groups")}
-                                    role="tab"
-                                >
-                                    Lecture Groups
-                                </MDBNavLink>
-                            </MDBNavItem>
-                            <MDBNavItem>
-                                <MDBNavLink
-                                    to={`/modules/${this.state.moduleId}/students/tutorial-groups`}
-                                    active={this.state.activeItem === "Tutorial Groups"}
-                                    onClick={this.toggle("Tutorial Groups")}
-                                    role="tab"
-                                >
-                                    Tutorial Groups
-                                </MDBNavLink>
-                            </MDBNavItem>
-                        </MDBNav>
-                        <MDBTabContent activeItem={this.state.activeItem}>
-                            <MDBTabPane tabId="Lecture Groups" role="tabpanel">
-                                <MDBRow className="mt-4">
-                                    <MDBCol>
-                                        <MDBDataTable striped bordered hover searching={false} sortable={true} paging={false} data={students} />
-                                    </MDBCol>
-                                </MDBRow>
-                            </MDBTabPane>
-                        </MDBTabContent>
-                        <Snackbar
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            open={this.state.openSnackbar}
-                            autoHideDuration={6000}
-                            onClose={this.handleClose}
-                            ContentProps={{
-                                'aria-describedby': 'message-id',
-                            }}
-                            message={<span id="message-id">{this.state.message}</span>}
-                            action={[
-                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-                            ]}
-                        />
                     </MDBContainer>
                 </div>
             </div>
@@ -1726,89 +1749,96 @@ export class TutorialGroupDetails extends Component {
                     <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Class & Groups'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="discussionPage" />
                     <MDBContainer>
                         <MDBRow>
-                            <MDBCol>
-                                <h4 className="mb-4">{this.state.activeItem}
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" />{"Tutorial " + this.state.tutorialId}
-                                </h4>
-                                <hr className="my-4" />
+                            <MDBCol md="12" className="mt-3 mx-auto">
+                                <MDBJumbotron>
+                                    <MDBRow>
+                                        <MDBCol>
+                                            <h2 className="font-weight-bold">{this.state.activeItem}
+                                                <MDBIcon icon="angle-right" className="ml-4 mr-4" />{"Tutorial " + this.state.tutorialId}
+                                            </h2>
+                                            <hr className="my-4" />
+                                        </MDBCol>
+                                    </MDBRow>
+                                    <MDBNav className="nav-tabs">
+                                        <MDBNavItem>
+                                            <MDBNavLink
+                                                to={`/modules/${this.state.moduleId}/students/student-roster`}
+                                                active={this.state.activeItem === "Student Roster"}
+                                                onClick={this.toggle("Student Roster")}
+                                                role="tab"
+                                            >
+                                                Student Roster
+                                </MDBNavLink>
+                                        </MDBNavItem>
+                                        <MDBNavItem>
+                                            <MDBNavLink
+                                                to={`/modules/${this.state.moduleId}/students/class-groups`}
+                                                active={this.state.activeItem === "Class Groups"}
+                                                onClick={this.toggle("Class Groups")}
+                                                role="tab"
+                                            >
+                                                Class Groups
+                                </MDBNavLink>
+                                        </MDBNavItem>
+                                        <MDBNavItem>
+                                            <MDBNavLink
+                                                to={`/modules/${this.state.moduleId}/students/lecture-groups`}
+                                                active={this.state.activeItem === "Lecture Groups"}
+                                                onClick={this.toggle("Lecture Groups")}
+                                                role="tab"
+                                            >
+                                                Lecture Groups
+                                </MDBNavLink>
+                                        </MDBNavItem>
+                                        <MDBNavItem>
+                                            <MDBNavLink
+                                                to={`/modules/${this.state.moduleId}/students/tutorial-groups`}
+                                                active={this.state.activeItem === "Tutorial Groups"}
+                                                onClick={this.toggle("Tutorial Groups")}
+                                                role="tab"
+                                            >
+                                                Tutorial Groups
+                                </MDBNavLink>
+                                        </MDBNavItem>
+                                    </MDBNav>
+                                    <MDBTabContent activeItem={this.state.activeItem}>
+                                        <MDBTabPane tabId="Tutorial Groups" role="tabpanel">
+                                            <MDBRow className="mt-4">
+                                                <MDBCol>
+                                                    {
+                                                        students.rows.length > 0 &&
+                                                        <MDBDataTable striped bordered hover searching={true} sortable={true} data={students} />
+                                                    }
+                                                    {
+                                                        students.rows.length == 0 &&
+                                                        <div>No student enrolled in this tutorial</div>
+                                                    }
+                                                </MDBCol>
+                                            </MDBRow>
+                                        </MDBTabPane>
+                                    </MDBTabContent>
+                                    <Snackbar
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'left',
+                                        }}
+                                        open={this.state.openSnackbar}
+                                        autoHideDuration={6000}
+                                        onClose={this.handleClose}
+                                        ContentProps={{
+                                            'aria-describedby': 'message-id',
+                                        }}
+                                        message={<span id="message-id">{this.state.message}</span>}
+                                        action={[
+                                            <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                                        ]}
+                                    />
+                                </MDBJumbotron>
                             </MDBCol>
                         </MDBRow>
-                        <MDBNav className="nav-tabs">
-                            <MDBNavItem>
-                                <MDBNavLink
-                                    to={`/modules/${this.state.moduleId}/students/student-roster`}
-                                    active={this.state.activeItem === "Student Roster"}
-                                    onClick={this.toggle("Student Roster")}
-                                    role="tab"
-                                >
-                                    Student Roster
-                                </MDBNavLink>
-                            </MDBNavItem>
-                            <MDBNavItem>
-                                <MDBNavLink
-                                    to={`/modules/${this.state.moduleId}/students/class-groups`}
-                                    active={this.state.activeItem === "Class Groups"}
-                                    onClick={this.toggle("Class Groups")}
-                                    role="tab"
-                                >
-                                    Class Groups
-                                </MDBNavLink>
-                            </MDBNavItem>
-                            <MDBNavItem>
-                                <MDBNavLink
-                                    to={`/modules/${this.state.moduleId}/students/lecture-groups`}
-                                    active={this.state.activeItem === "Lecture Groups"}
-                                    onClick={this.toggle("Lecture Groups")}
-                                    role="tab"
-                                >
-                                    Lecture Groups
-                                </MDBNavLink>
-                            </MDBNavItem>
-                            <MDBNavItem>
-                                <MDBNavLink
-                                    to={`/modules/${this.state.moduleId}/students/tutorial-groups`}
-                                    active={this.state.activeItem === "Tutorial Groups"}
-                                    onClick={this.toggle("Tutorial Groups")}
-                                    role="tab"
-                                >
-                                    Tutorial Groups
-                                </MDBNavLink>
-                            </MDBNavItem>
-                        </MDBNav>
-                        <MDBTabContent activeItem={this.state.activeItem}>
-                            <MDBTabPane tabId="Tutorial Groups" role="tabpanel">
-                                <MDBRow className="mt-4">
-                                    <MDBCol>
-                                        {
-                                            students.rows.length > 0 &&
-                                            <MDBDataTable striped bordered hover searching={true} sortable={true} data={students} />
-                                        }
-                                        {
-                                            students.rows.length == 0 &&
-                                            <div>No student enrolled in this tutorial</div>
-                                        }
-                                    </MDBCol>
-                                </MDBRow>
-                            </MDBTabPane>
-                        </MDBTabContent>
-                        <Snackbar
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            open={this.state.openSnackbar}
-                            autoHideDuration={6000}
-                            onClose={this.handleClose}
-                            ContentProps={{
-                                'aria-describedby': 'message-id',
-                            }}
-                            message={<span id="message-id">{this.state.message}</span>}
-                            action={[
-                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-                            ]}
-                        />
                     </MDBContainer>
                 </div>
             </div>
@@ -1846,7 +1876,7 @@ tbody + thead{
 
 export default styled(withRouter(ModuleClassGroupsPage))`
 .module-content{
-    margin-top: 40px;
+    margin-top: 0px;
 }
 @media screen and (min-width: 800px) {
     .module-content{

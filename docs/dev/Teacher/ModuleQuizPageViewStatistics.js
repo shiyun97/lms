@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBProgress, MDBBreadcrumb, MDBBreadcrumbItem, MDBCardBody } from "mdbreact";
+import { MDBDataTable, MDBContainer, MDBBtn, MDBCardHeader, MDBRow, MDBCol, MDBCard, MDBProgress, MDBBreadcrumb, MDBBreadcrumbItem, MDBCardBody, MDBIcon } from "mdbreact";
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
@@ -15,7 +15,7 @@ class ModuleQuizPageViewStatistics extends Component {
     title: "",
     description: "",
     attempts: 0,
-    questions: []
+    questions: [],
   }
 
   initPage() {
@@ -53,6 +53,9 @@ class ModuleQuizPageViewStatistics extends Component {
       <>
         <b>Question {index}</b>
         {question.question}
+        <br />
+        <br />
+        Correct Answer: {question.correctAnswer}
         <br />
         <br />
         {question.answers && question.answers.map((answer) => {

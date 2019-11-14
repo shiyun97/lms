@@ -6,6 +6,7 @@ import moment from 'moment';
 import styled from 'styled-components';
 import * as Survey from "survey-react";
 import ModuleSideNavigation from "../ModuleSideNavigation";
+import ModuleSideNavigationDropdown from "../ModuleSideNavigationDropdown";
 
 var pathname = location.pathname;
 pathname = pathname.split("/");
@@ -35,10 +36,6 @@ var json = {
           "number": 1,
           "title": "What is a MCQ question?",
           "isRequired": true,
-          // "level": 1, //only for adaptive,
-          //"explanation" : "Explanation/ Feedback of Question",
-          // "correctAnswer" : "Answer Choice 1",
-          // "points": 1,
           "choices": [
             {
               "text": "Answer Choice 1"
@@ -60,10 +57,6 @@ var json = {
           "number": 2,
           "title": "Do you ask questions?",
           "isRequired": true,
-          // "level": 1, //only for adaptive
-          //"explanation" : "Explanation/ Feedback of Question",
-          // "correctAnswer" : "Answer Choice 1",
-          // "points": 1,
           "choices": [
             {
               "text": "Answer Choice 1"
@@ -85,10 +78,6 @@ var json = {
           "number": 3,
           "title": "What is a multiple choice question?",
           "isRequired": true,
-          // "level": 1, //only for adaptive,
-          //"explanation" : "Explanation/ Feedback of Question",
-          // "correctAnswer" : "Answer Choice 1",
-          // "points" : 1
         }
       ]
     }
@@ -113,7 +102,6 @@ class ModuleQuizPagePreviewNormalQuiz extends Component {
   initPage() {
     var pathname = location.pathname;
     pathname = pathname.split("/");
-    // console.log(pathname[2])
     this.props.dataStore.setCurrModId(pathname[2]);
     this.props.dataStore.setCurrQuizId(pathname[4]);
   }
@@ -165,22 +153,6 @@ class ModuleQuizPagePreviewNormalQuiz extends Component {
 
   onComplete = (result) => {
     let userId = sessionStorage.getItem('userId');
-    // console.log(quizId)
-    // console.log(answers)
-    // axios
-    //   .post(`http://localhost:8080/LMS-war/webresources/Assessment/createQuizAttempt?userId=${userId}`, {
-    //     quizId: quizId,
-    //     questionAttempts: answers
-    //   })
-    //   .then(result => {
-    //     console.log("success")
-    //     // this.setState({ status: "done", quizzes: result.data.quizzes })
-    //   })
-    //   .catch(error => {
-    //     // this.setState({ status: "error" })
-    //     console.log("error")
-    //     console.error("error in axios " + error);
-    //   });
   }
 
   submitAnswers = () => {
@@ -194,53 +166,89 @@ class ModuleQuizPagePreviewNormalQuiz extends Component {
     var moduleId = this.props.dataStore.getCurrModId;
     if (this.state.start) {
       return (
-      <div className={this.props.className}>
-        <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
-        <div className="module-content">
-          <MDBContainer className="mt-3">
-            <MDBRow className="py-3">
-              <MDBCol md="12">
-                <MDBCard cascade className="my-3 grey lighten-4">
-                  {this.state.status === "done" &&
-                    <Survey.Survey
-                      model={model}
-                      onComplete={() => this.onComplete()}
-                      onValueChanged={this.onValueChanged}
-                    />
-                  }
-                  {this.state.status !== "done" && <h5 align="center" style={{ padding: 20 }}>Error in retrieving quiz. Please try again later.</h5>}
-                </MDBCard>
-              </MDBCol>
-            </MDBRow>
-          </MDBContainer>
+        <div className={this.props.className}>
+          <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+          <div className="module-navbar-small">
+            <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
+          </div>
+          <div className="module-content">
+            <MDBContainer className="mt-3">
+              <MDBRow className="py-3">
+                <MDBCol md="12">
+                  <MDBCard cascade className="my-3 grey lighten-4">
+                    {this.state.status === "done" &&
+                      <Survey.Survey
+                        model={model}
+                        onComplete={() => this.onComplete()}
+                        onValueChanged={this.onValueChanged}
+                      />
+                    }
+                    {this.state.status !== "done" && <h5 align="center" style={{ padding: 20 }}>Error in retrieving quiz. Please try again later.</h5>}
+                  </MDBCard>
+                </MDBCol>
+              </MDBRow>
+            </MDBContainer>
+          </div>
         </div>
-      </div>
-    );
-    
-  } else {
-    return (
-      <div className={this.props.className}>
-        <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
-        <div className="module-content">
-          <MDBContainer className="mt-3">
-            <MDBRow className="py-3">
-              <MDBCol md="12">
-                <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }}>
-                  <MDBBtn color="blue" onClick={() => { this.setState({ start: true }) }}><h4>Start Quiz</h4></MDBBtn>
-                </MDBCard>
-              </MDBCol>
-            </MDBRow>
-          </MDBContainer>
+      )
+    } else {
+      return (
+        <div className={this.props.className}>
+          <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+          <div className="module-navbar-small">
+            <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
+          </div>
+          <div className="module-content">
+            <MDBContainer className="mt-3">
+              <MDBRow className="py-3">
+                <MDBCol md="12">
+                  <MDBCard cascade className="my-3 grey lighten-4" style={{ padding: 20 }} align="center">
+                    <h3>{json.title}</h3>
+                    {json.description}
+                    <br />
+                    <br />
+                    Please read the questions carefully.
+                    <br />
+                    You have {json.maxTimeToFinish} minutes to complete the quiz.
+                    <br />
+                    You only have {json.noOfAttempts} attempts.
+                    <br />
+                    <br />
+                    <MDBBtn color="blue" onClick={() => { this.setState({ start: true }) }} style={{ maxWidth: 250 }}>
+                      Start Quiz
+                      </MDBBtn>
+                  </MDBCard>
+                </MDBCol>
+              </MDBRow>
+            </MDBContainer>
+          </div>
         </div>
-      </div>
-    )
-  }
+      )
+    }
   }
 }
 
 export default styled(ModuleQuizPagePreviewNormalQuiz)`
 .module-content{
-    margin-left: 270px;
     margin-top: 40px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
 }
 `;

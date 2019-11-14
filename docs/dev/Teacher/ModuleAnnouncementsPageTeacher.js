@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from 'styled-components';
 import {
     MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBModal, MDBModalHeader, MDBModalBody,
-    MDBModalFooter, MDBNav, MDBNavItem, MDBNavLink, MDBTabContent, MDBTabPane
+    MDBModalFooter, MDBNav, MDBNavItem, MDBNavLink, MDBTabContent, MDBTabPane, MDBEdgeHeader, MDBJumbotron
 } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import ModuleSideNavigationDropdown from "../ModuleSideNavigationDropdown";
@@ -437,144 +437,151 @@ class ModuleAnnouncementsPageTeacher extends Component {
                     <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Announcements'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="discussionPage" />
                     <MDBContainer>
                         <MDBRow>
-                            <MDBCol>
-                                {
-                                    this.state.activeItem == "active" &&
-                                    <h4>Announcements
+                            <MDBCol md="12" className="mt-3 mx-auto">
+                                <MDBJumbotron>
+                                    <MDBRow>
+                                        <MDBCol>
+                                            {
+                                                this.state.activeItem == "active" &&
+                                                <h2 className="font-weight-bold">Announcements
                                         <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Active
-                                    </h4>
-                                }
-                                {
-                                    this.state.activeItem == "upcoming" &&
-                                    <h4 className="mb-4">Announcements
+                                    </h2>
+                                            }
+                                            {
+                                                this.state.activeItem == "upcoming" &&
+                                                <h2 className="font-weight-bold mb-4">Announcements
                                         <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Upcoming
-                                    </h4>
-                                }
-                                {
-                                    this.state.activeItem == "expired" &&
-                                    <h4 className="mb-4">Announcements
+                                    </h2>
+                                            }
+                                            {
+                                                this.state.activeItem == "expired" &&
+                                                <h2 className="font-weight-bold mb-4">Announcements
                                         <MDBIcon icon="angle-right" className="ml-4 mr-4" /> Expired
-                                    </h4>
-                                }
-                                <hr className="my-3" />
+                                    </h2>
+                                            }
+                                            <hr className="my-3" />
+                                        </MDBCol>
+                                    </MDBRow>
+                                    <MDBNav className="nav-tabs">
+                                        <MDBNavItem>
+                                            <MDBNavLink
+                                                to={`/modules/${this.state.moduleId}/announcements/active`}
+                                                active={this.state.activeItem === "active"}
+                                                onClick={this.toggleTab("active")}
+                                                role="tab"
+                                            >
+                                                Active
+                                </MDBNavLink>
+                                        </MDBNavItem>
+                                        <MDBNavItem>
+                                            <MDBNavLink
+                                                to={`/modules/${this.state.moduleId}/announcements/upcoming`}
+                                                active={this.state.activeItem === "upcoming"}
+                                                onClick={this.toggleTab("upcoming")}
+                                                role="tab"
+                                            >
+                                                Upcoming
+                                </MDBNavLink>
+                                        </MDBNavItem>
+                                        <MDBNavItem>
+                                            <MDBNavLink
+                                                to={`/modules/${this.state.moduleId}/announcements/expired`}
+                                                active={this.state.activeItem === "expired"}
+                                                onClick={this.toggleTab("expired")}
+                                                role="tab"
+                                            >
+                                                Expired
+                                </MDBNavLink>
+                                        </MDBNavItem>
+                                    </MDBNav>
+                                    <MDBTabContent activeItem={this.state.activeItem}>
+                                        <MDBTabPane tabId="active" role="tabpanel">
+                                            <div className="mb-2"></div>
+                                            <div className="align-right">
+
+                                                {sessionStorage.getItem("accessRight") === "Teacher" &&
+                                                    <MDBBtn color="indigo" outline className="mr-0 mb-3" size="md" onClick={() => this.toggle(1)}>
+                                                        <MDBIcon icon="plus" className="mr-1" /> Add
+                                    </MDBBtn>
+                                                }
+                                            </div>
+                                            {
+                                                activeAnnouncements.length == 0 && <h6 style={{ paddingTop: 20 }}>No announcements found.</h6>
+                                            }
+                                            {
+                                                activeAnnouncements.length > 0 && activeAnnouncements.map((announcement) => (
+                                                    <AnnouncementListItem key={announcement.annoucementId}
+                                                        announcement={announcement}
+                                                        expired={false}
+                                                        edit={() => this.openEditAnnouncementModalBox(announcement.annoucementId, announcement)}
+                                                        delete={() => this.deleteAnnouncement(announcement.annoucementId)}>
+                                                    </AnnouncementListItem>
+                                                ))
+                                            }
+                                        </MDBTabPane>
+                                        <MDBTabPane tabId="upcoming" role="tabpanel">
+                                            <div className="mb-2"></div>
+                                            <div className="align-right">
+                                                {sessionStorage.getItem("accessRight") === "Teacher" &&
+                                                    <MDBBtn color="indigo" outline className="mr-0 mb-3" size="md" onClick={() => this.toggle(1)}>
+                                                        <MDBIcon icon="plus" className="mr-1" /> Add
+                                    </MDBBtn>
+                                                }
+                                            </div>
+                                            {
+                                                upcomingAnnouncements.length == 0 && <h6 style={{ paddingTop: 20 }}>No announcements found.</h6>
+                                            }
+                                            {
+                                                upcomingAnnouncements.length > 0 && upcomingAnnouncements.map((announcement) => (
+                                                    <AnnouncementListItem key={announcement.annoucementId}
+                                                        announcement={announcement}
+                                                        expired={false}
+                                                        edit={() => this.openEditAnnouncementModalBox(announcement.annoucementId, announcement)}
+                                                        delete={() => this.deleteAnnouncement(announcement.annoucementId)}>
+                                                    </AnnouncementListItem>
+                                                ))
+                                            }
+                                        </MDBTabPane>
+                                        <MDBTabPane tabId="expired" role="tabpanel">
+                                            <div className="mb-2"></div>
+                                            {
+                                                expiredAnnouncements.length == 0 && <h6 style={{ paddingTop: 20 }}>No announcements found.</h6>
+                                            }
+                                            {
+                                                expiredAnnouncements.length > 0 && expiredAnnouncements.map((announcement) => (
+                                                    <AnnouncementListItem key={announcement.annoucementId}
+                                                        announcement={announcement}
+                                                        expired={true}
+                                                        delete={() => this.deleteAnnouncement(announcement.annoucementId)}>
+                                                    </AnnouncementListItem>
+                                                ))
+                                            }
+                                        </MDBTabPane>
+                                    </MDBTabContent>
+                                    <Snackbar
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'left',
+                                        }}
+                                        open={this.state.openSnackbar}
+                                        autoHideDuration={6000}
+                                        onClose={this.handleClose}
+                                        ContentProps={{
+                                            'aria-describedby': 'message-id',
+                                        }}
+                                        message={<span id="message-id">{this.state.message}</span>}
+                                        action={[
+                                            <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                                        ]}
+                                    />
+                                    {this.renderCreateAnnouncementModalBox()}
+                                    {this.renderEditAnnouncementModalBox()}
+                                </MDBJumbotron>
                             </MDBCol>
                         </MDBRow>
-                        <MDBNav className="nav-tabs">
-                            <MDBNavItem>
-                                <MDBNavLink
-                                    to={`/modules/${this.state.moduleId}/announcements/active`}
-                                    active={this.state.activeItem === "active"}
-                                    onClick={this.toggleTab("active")}
-                                    role="tab"
-                                >
-                                    Active
-                                </MDBNavLink>
-                            </MDBNavItem>
-                            <MDBNavItem>
-                                <MDBNavLink
-                                    to={`/modules/${this.state.moduleId}/announcements/upcoming`}
-                                    active={this.state.activeItem === "upcoming"}
-                                    onClick={this.toggleTab("upcoming")}
-                                    role="tab"
-                                >
-                                    Upcoming
-                                </MDBNavLink>
-                            </MDBNavItem>
-                            <MDBNavItem>
-                                <MDBNavLink
-                                    to={`/modules/${this.state.moduleId}/announcements/expired`}
-                                    active={this.state.activeItem === "expired"}
-                                    onClick={this.toggleTab("expired")}
-                                    role="tab"
-                                >
-                                    Expired
-                                </MDBNavLink>
-                            </MDBNavItem>
-                        </MDBNav>
-                        <MDBTabContent activeItem={this.state.activeItem}>
-                            <MDBTabPane tabId="active" role="tabpanel">
-                                <div className="mb-2"></div>
-                                <div className="align-right">
-
-                                    {sessionStorage.getItem("accessRight") === "Teacher" &&
-                                        <MDBBtn color="indigo" outline className="mr-0 mb-3" size="md" onClick={() => this.toggle(1)}>
-                                            <MDBIcon icon="plus" className="mr-1" /> Add
-                                    </MDBBtn>
-                                    }
-                                </div>
-                                {
-                                    activeAnnouncements.length == 0 && <h6 style={{ paddingTop: 20 }}>No announcements found.</h6>
-                                }
-                                {
-                                    activeAnnouncements.length > 0 && activeAnnouncements.map((announcement) => (
-                                        <AnnouncementListItem key={announcement.annoucementId}
-                                            announcement={announcement}
-                                            expired={false}
-                                            edit={() => this.openEditAnnouncementModalBox(announcement.annoucementId, announcement)}
-                                            delete={() => this.deleteAnnouncement(announcement.annoucementId)}>
-                                        </AnnouncementListItem>
-                                    ))
-                                }
-                            </MDBTabPane>
-                            <MDBTabPane tabId="upcoming" role="tabpanel">
-                                <div className="mb-2"></div>
-                                <div className="align-right">
-                                    {sessionStorage.getItem("accessRight") === "Teacher" &&
-                                        <MDBBtn color="indigo" outline className="mr-0 mb-3" size="md" onClick={() => this.toggle(1)}>
-                                            <MDBIcon icon="plus" className="mr-1" /> Add
-                                    </MDBBtn>
-                                    }
-                                </div>
-                                {
-                                    upcomingAnnouncements.length == 0 && <h6 style={{ paddingTop: 20 }}>No announcements found.</h6>
-                                }
-                                {
-                                    upcomingAnnouncements.length > 0 && upcomingAnnouncements.map((announcement) => (
-                                        <AnnouncementListItem key={announcement.annoucementId}
-                                            announcement={announcement}
-                                            expired={false}
-                                            edit={() => this.openEditAnnouncementModalBox(announcement.annoucementId, announcement)}
-                                            delete={() => this.deleteAnnouncement(announcement.annoucementId)}>
-                                        </AnnouncementListItem>
-                                    ))
-                                }
-                            </MDBTabPane>
-                            <MDBTabPane tabId="expired" role="tabpanel">
-                                <div className="mb-2"></div>
-                                {
-                                    expiredAnnouncements.length == 0 && <h6 style={{ paddingTop: 20 }}>No announcements found.</h6>
-                                }
-                                {
-                                    expiredAnnouncements.length > 0 && expiredAnnouncements.map((announcement) => (
-                                        <AnnouncementListItem key={announcement.annoucementId}
-                                            announcement={announcement}
-                                            expired={true}
-                                            delete={() => this.deleteAnnouncement(announcement.annoucementId)}>
-                                        </AnnouncementListItem>
-                                    ))
-                                }
-                            </MDBTabPane>
-                        </MDBTabContent>
-                        <Snackbar
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            open={this.state.openSnackbar}
-                            autoHideDuration={6000}
-                            onClose={this.handleClose}
-                            ContentProps={{
-                                'aria-describedby': 'message-id',
-                            }}
-                            message={<span id="message-id">{this.state.message}</span>}
-                            action={[
-                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-                            ]}
-                        />
-                        {this.renderCreateAnnouncementModalBox()}
-                        {this.renderEditAnnouncementModalBox()}
                     </MDBContainer>
                 </div>
             </div>
@@ -612,8 +619,6 @@ class AnnouncementListItem extends Component {
                         }
                     </div>
                 }
-                {/* <MDBIcon icon="user" className="mr-2 fa-fw" /> */}
-                {/* by {announcement.createdBy}<br /> */}
                 <MDBIcon icon="calendar-alt" className="mr-2 fa-fw" />
                 on {moment(announcement.startDate).format('DD-MM-YYYY HH:mm:ss')}
                 <div className="mb-2"></div>
@@ -625,7 +630,7 @@ class AnnouncementListItem extends Component {
 
 export default styled(ModuleAnnouncementsPageTeacher)`
 .module-content{
-    margin-top: 40px;
+    margin-top: 0px;
 }
 @media screen and (min-width: 800px) {
     .module-content{

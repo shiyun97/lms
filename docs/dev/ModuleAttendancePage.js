@@ -7,37 +7,20 @@ import ModuleAttendancePageTeacher from "./Teacher/ModuleAttendancePageTeacher";
 import ModuleAttendancePageStudent from "./Student/ModuleAttendancePageStudent";
 import { observer, inject } from 'mobx-react'
 
-
-const API = "http://localhost:8080/LMS-war/webresources/"
-
 @inject('dataStore')
 @observer
 class ModuleAttendancePage extends Component {
 
-  state = {
-  }
-
-  componentDidMount() {
-    this.initPage()
-  }
-
-  initPage() {
-    let moduleId = this.props.match.params.moduleId;
-    if (moduleId) {
-      // console.log(moduleId);
-      // retrieve module & set state
-    }
-  }
-
   render() {
-    //TODO: remove the top bar
+    let moduleId = this.props.match.params.moduleId;
+
     return (
       <div className={this.props.className}>
-        <div className="module-sidebar-large"><ModuleSideNavigation moduleId={this.props.match.params.moduleId}></ModuleSideNavigation></div>
+        <div className="module-sidebar-large">
+          <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
         <div className="module-navbar-small">
-
-{/*           <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Attendance'}></ModuleSideNavigationDropdown>
- */}        </div>
+          <ModuleSideNavigationDropdown moduleId={moduleId}></ModuleSideNavigationDropdown>
+        </div>
         <div className="module-content">
           <MDBContainer className="mt-3">
             {this.props.dataStore.accessRight === "Teacher" && <ModuleAttendancePageTeacher moduleId={this.props.match.params.moduleId} />}
@@ -52,7 +35,33 @@ class ModuleAttendancePage extends Component {
 
 export default styled(ModuleAttendancePage)`
 .module-content{
-        margin - left: 270px;
-        margin-top: 40px;
+    margin-top: 0px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
     }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+}
+
+.new-paragraph{
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+.align-right{
+    float: right;
+}
 `;

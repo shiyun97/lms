@@ -1,19 +1,22 @@
 import React, { Component } from "react";
-import { MDBListGroup, MDBListGroupItem, MDBContainer, MDBIcon, MDBDataTable, MDBRow, MDBBtn, MDBCol, MDBTabContent, MDBTabPane, MDBNav, MDBNavItem, MDBNavLink, MDBModal, MDBModalHeader, MDBModalBody, MDBModalFooter } from "mdbreact";
+import { MDBIcon, MDBDataTable, MDBRow, MDBBtn, MDBCol, MDBTabContent, MDBTabPane, MDBNav, MDBNavItem, MDBNavLink, MDBModal, MDBModalHeader, MDBModalBody, MDBModalFooter, MDBContainer } from "mdbreact";
 import { observer, inject } from 'mobx-react'
-import CoursepackCertificatePdf from "../CoursepackCertificatePdf";
 import Dropzone from 'react-dropzone';
 import SectionContainer from "../../components/sectionContainer";
-import { Slide, Card, Dialog, DialogTitle, DialogContent, DialogContentText, ListItem, ListItemText, DialogActions, Button, List } from "@material-ui/core";
+import { Slide, Card, Dialog, DialogTitle, DialogContent, DialogContentText, ListItem, ListItemText, DialogActions, Button, List, Snackbar } from "@material-ui/core";
 import IconButton from '@material-ui/core/IconButton';
 import axios from "axios";
+import styled from 'styled-components';
+import MainSideNavDropdown from "../MainSideNavDropdown";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 const API = "http://localhost:8080/LMS-war/webresources/";
+const FILE_SERVER = "http://127.0.0.1:8887/";
 
 @inject('dataStore')
+@observer
 class CoursepackDashboardAdmin extends Component {
 
     state = {
@@ -21,11 +24,13 @@ class CoursepackDashboardAdmin extends Component {
         modalUploadMultimedia: false,
         showMultimediaDialog: false,
         uploadedMultimedia: [],
-        badgeName: "",
+        certName: "",
         toggleCertModal: false,
-        toggleEditBadgeModal: false,
-        certificates: ["HTML", "CSS", "JAVA"], //TODO:
-        badges: [{ title: 'Complete 5 courses', achieved: true }, { title: 'Complete 10 courses', achieved: false }, { title: 'Complete first course', achieved: false }]
+        certificates: [],
+        allBadges: [],
+        allCertificates: [],
+        openSnackbar: false,
+        message: ""
     }
 
     componentDidMount() {
@@ -33,12 +38,36 @@ class CoursepackDashboardAdmin extends Component {
     }
 
     initPage() {
+        // get all badges
+        axios.get(`${API}Gamification/getAllBadges`)
+            .then(result => {
+                this.setState({ allBadges: result.data.badgeList })
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
 
+        // get all certs
+        axios.get(`${API}Gamification/getAllCertifications`)
+            .then(result => {
+                this.setState({ allCertificates: result.data.certificationList })
+                console.log(this.state.allCertificates)
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
     }
 
-    handleChangeBadgeName = event => {
-        this.setState({ badgeName: event.target.value })
+    handleChangeCertName = event => {
+        this.setState({ certName: event.target.value })
     }
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        this.setState({ openSnackbar: false });
+    };
 
     toggle = tab => e => {
         if (this.state.activeItem !== tab) {
@@ -69,55 +98,46 @@ class CoursepackDashboardAdmin extends Component {
         this.setState({ toggleCertModal: !this.state.toggleCertModal })
     }
 
-    toggleEditBadgeModal = event => {
-        this.setState({ toggleEditBadgeModal: !this.state.toggleEditBadgeModal })
-    }
-
     disabled = (achieved) => {
         if (!achieved) {
             return "grey"
         }
     }
 
-    editBadgeName = badgeId => { //TODO:
-
-    }
-
-    deleteBadge = badgeId => { //TODO:
-
+    deleteBadge = badgeId => {
+        axios.delete(`${API}Gamification/deleteBadge?badgeId=${badgeId}`)
+            .then(result => {
+                this.setState({ message: `Badge deleted`, openSnackbar: true })
+                this.initPage()
+            })
+            .catch(error => {
+                this.setState({
+                    message: error.response.data,
+                    openSnackbar: true,
+                })
+                console.error("error in axios " + error);
+            });
     }
 
     showBadges = () => {
+        var location = ""
         return (
 
             <MDBRow style={{ paddingTop: 30 }}>
-                {this.state.badges && this.state.badges.map((badge, index) => {
+                {this.state.allBadges && this.state.allBadges.map((badge, index) => {
+                    location = badge.location
+                    let savedFileName = location.split('/')[5]; //FIXME:
+                    /* let savedFileName = location.split('\\')[1]; */
+                    let fullPath = FILE_SERVER + savedFileName;
+                    console.log(fullPath)
+
                     return (
                         <MDBCol size="3">
-                            <MDBCol align="center" size="12">
-                                <Card style={{ height: 120, color: this.disabled(badge.achieved) }} >
-                                    <div align="right">
-                                        <MDBIcon onClick={this.toggleEditBadgeModal} icon="edit" />
-                                        <MDBModal isOpen={this.state.toggleEditBadgeModal} toggle={this.toggleEditBadgeModal}>
-                                            <MDBModalHeader toggle={this.toggleEditBadgeModal}>Edit Badge Criteria</MDBModalHeader>
-                                            <MDBModalBody>
-                                                <input
-                                                    defaultValue={badge.title}
-                                                    name="badgeName"
-                                                    type="text"
-                                                    className="form-control"
-                                                    onChange={this.handleChangeBadgeName}
-                                                />
-                                            </MDBModalBody>
-                                            <MDBModalFooter>
-                                                <MDBBtn color="primary" onClick={() => this.editBadgeName(index)}>Save</MDBBtn>
-                                                <MDBBtn color="secondary" onClick={() => this.cancel(index)}>Cancel</MDBBtn>
-                                            </MDBModalFooter>
-                                        </MDBModal>
-                                        <MDBIcon onClick={this.deleteBadge} style={{ paddingLeft: 10, paddingRight: 5 }} icon="trash-alt" />
-                                    </div>
-                                    {badge.title}
+                            <MDBCol align="center" size="12" style={{ paddingBottom: 30 }}>
+                                <Card style={{ height: 180, color: this.disabled(badge.achieved) }} >
+                                    <img src={fullPath} alt={badge.title} style={{ maxWidth: 180 }} />
                                 </Card>
+                                <MDBIcon onClick={() => this.deleteBadge(badge.id)} icon="trash-alt" />
                             </MDBCol>
                         </MDBCol>
                     )
@@ -161,47 +181,46 @@ class CoursepackDashboardAdmin extends Component {
 
     tableRows = () => {
         let certs = []
-        this.state.certificates && this.state.certificates.map((cert, index) => {
+        this.state.allCertificates && this.state.allCertificates.map((cert) => {
             certs.push({
-                certificates: cert,
-                manage: this.showManageButton(),
-                clickEvent: () => this.handleRowClick(index) //TODO:
+                certificates: cert.title,
+                manage: this.showManageButton(cert.id),
             })
         })
         return certs
     }
 
-    showManageButton = () => {
+    showManageButton = (certId) => {
         return (
-            <MDBBtn size='sm'>Manage</MDBBtn>
+            <MDBBtn size="sm" onClick={() => this.showDetails(certId)} color="default" >View</MDBBtn>
         )
     }
 
-    handleRowClick = certIndex => {
-        //TODO: do a axios get function to get the list of coursepack and store in the datastore
+    showDetails = certIndex => {
+        this.props.history.push(`/coursepack/achievements/certificates/${certIndex}`)
+    }
 
-        //get created coursepack  
-        axios.get(`${API}Coursepack/getAllCoursepack`) //FIXME: [cert index]
+    addCert = event => {
+        axios.post(`${API}Gamification/createCertification`, { title: this.state.certName })
             .then(result => {
-                
+                this.setState({
+                    message: `Successfully created certificate`,
+                    openSnackbar: true,
+                    toggleCertModal: false
+                })
+                this.initPage()
             })
             .catch(error => {
-                this.setState({ message: error.response, openSnackbar: true })
+                this.setState({
+                    message: error.response.data,
+                    openSnackbar: true,
+                })
                 console.error("error in axios " + error);
             });
-
-        this.props.history.push(`/coursepack/achievements/certificates/${certIndex}`)
-        this.props.dataStore.setPath(`/coursepack/achievements/certificates/${certIndex}`);
-        console.log(this.props.dataStore.getPath)
     }
 
-    addCert = event => { //TODO:
-
-    }
-
-
-    cancel = event => { //TODO: clear the state of all selected/ init
-        this.setState({ toggleCertModal: false, toggleEditBadgeModal: false })
+    cancel = event => {
+        this.setState({ toggleCertModal: false, uploadMultimedia: [] })
     }
 
     uploadMultimedia = (e) => {
@@ -238,27 +257,17 @@ class CoursepackDashboardAdmin extends Component {
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
                         <div className="text-center mt-2">
-                            <input
-                                value={this.state.badgeName}
-                                name="badgeName"
-                                type="text"
-                                className="form-control"
-                                placeholder="Eg. Complete 10 courses"
-                                onChange={this.handleChangeBadgeName}
-                            />
-                            {this.state.uploadedMultimedia.length === 0 &&
-                                <Dropzone onDrop={this.onDrop} >
-                                    {({ getRootProps, getInputProps, isDragActive, isDragReject, rejectedFiles }) => (
-                                        <div {...getRootProps()}>
-                                            <input {...getInputProps()} />
-                                            <SectionContainer className="mb-0 p-5 mt-1">
-                                                <MDBIcon icon="upload" size="3x" className="mb-3 indigo-text"></MDBIcon><br></br>
-                                                Click to Upload or Drag & Drop
+                            <Dropzone onDrop={this.onDrop} multiple accept="image/*">
+                                {({ getRootProps, getInputProps, isDragActive, isDragReject, rejectedFiles }) => (
+                                    <div {...getRootProps()}>
+                                        <input {...getInputProps()} />
+                                        <SectionContainer className="mb-0 p-5 mt-1">
+                                            <MDBIcon icon="upload" size="3x" className="mb-3 indigo-text"></MDBIcon><br></br>
+                                            Click to Upload or Drag & Drop
                                     </SectionContainer>
-                                        </div>
-                                    )}
-                                </Dropzone>
-                            }
+                                    </div>
+                                )}
+                            </Dropzone>
                         </div>
 
                         <List style={{ width: "26rem", height: "auto", maxHeight: "120px", overflowY: "auto" }}>
@@ -285,18 +294,17 @@ class CoursepackDashboardAdmin extends Component {
         </Dialog>
     }
 
-    submitNewMultimediaHandler = event => { //TODO: add badge criteria and photo
+    submitNewMultimediaHandler = event => {
         event.preventDefault();
 
         // call api to send
         var files = this.state.uploadedMultimedia;
-        if (files.length > 0 && this.state.coursepackId && sessionStorage.getItem("userId")) {
+        if (files.length > 0) {
             const formData = new FormData();
             for (let i = 0; i < files.length; i++) {
                 formData.append('file', files[i]);
             }
-
-            /* fetch(`${API}/file/uploadMultipleMultimediaForCoursepack?coursepackId=${this.state.coursepackId}&userId=${sessionStorage.getItem("userId")}`, {
+            fetch(`${API}Gamification/uploadMultipleBadges`, {
                 method: 'post',
                 body: formData
             })
@@ -306,7 +314,7 @@ class CoursepackDashboardAdmin extends Component {
                             ...this.state,
                             modalUploadMultimedia: false,
                             uploadedMultimedia: [],
-                            message: "New files uploaded successfully!",
+                            message: "Badge uploaded!",
                             openSnackbar: true
                         })
                         return this.initPage();
@@ -317,12 +325,12 @@ class CoursepackDashboardAdmin extends Component {
                         ...this.state,
                         modalUploadMultimedia: false,
                         uploadedMultimedia: [],
-                        message: error.response.data.errorMessage,
+                        message: error.response.data,
                         openSnackbar: true
                     });
                     console.error("error in axios " + error);
                     return this.initPage();
-                }); */
+                });
         }
 
         this.setState({
@@ -365,11 +373,18 @@ class CoursepackDashboardAdmin extends Component {
                         <MDBModal isOpen={this.state.toggleCertModal} toggle={this.toggleCertModal}>
                             <MDBModalHeader toggle={this.toggleCertModal}>Add Certificate</MDBModalHeader>
                             <MDBModalBody>
-                                cert name
-                                </MDBModalBody>
+                                <input
+                                    value={this.state.certName}
+                                    name="certName"
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Eg. Diploma in Infocomm Technology"
+                                    onChange={this.handleChangeCertName}
+                                />
+                            </MDBModalBody>
                             <MDBModalFooter>
-                                <MDBBtn color="primary" onClick={this.addCert}>Create</MDBBtn>
                                 <MDBBtn color="secondary" onClick={this.cancel}>Cancel</MDBBtn>
+                                <MDBBtn color="primary" onClick={this.addCert}>Create</MDBBtn>
                             </MDBModalFooter>
                         </MDBModal>
                         {this.showCertTable()}
@@ -381,16 +396,69 @@ class CoursepackDashboardAdmin extends Component {
 
     render() {
         return (
-            <div style={{ paddingLeft: 150, paddingTop: 50, paddingRight: 50 }} >
-                <MDBCol>
-                    <h3><b>Coursepack Achievements Management</b></h3>
-                    <hr />
-                </MDBCol>
-                {this.showTabs()}
-                <CoursepackCertificatePdf />
-            </div >
+            <div className={this.props.className}>
+                <div className="module-navbar-small">
+                    <MainSideNavDropdown moduleId={this.props.moduleId} activeTab={'Achievements'}></MainSideNavDropdown>
+                </div>
+                <div className="module-content">
+                    <MDBContainer className="mt-3">
+                        <MDBCol style={{ paddingTop: 60 }}>
+                            <h2 className="font-weight-bold">Coursepack Achievements Management</h2>
+                            <hr />
+                        </MDBCol>
+                        {this.showTabs()}
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            open={this.state.openSnackbar}
+                            autoHideDuration={6000}
+                            onClose={this.handleClose}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">{this.state.message}</span>}
+                            action={[
+                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                            ]}
+                        />
+                    </MDBContainer>
+                </div>
+            </div>
         )
     }
 }
 
-export default CoursepackDashboardAdmin
+export default styled(CoursepackDashboardAdmin)`
+.module-content{
+    margin-top: 10px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 0px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+}
+
+.new-paragraph{
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+.align-right{
+    float: right;
+}
+`

@@ -3,25 +3,15 @@ import axios from "axios";
 import { NavLink } from 'react-router-dom';
 import {
   MDBContainer, MDBTabPane, MDBNavItem, MDBNavLink, MDBTabContent, MDBRow, MDBCol, MDBNav, MDBFormInline, MDBIcon,
-  MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBCardBody, MDBCardText, MDBCardImage, MDBCard, 
-  MDBCardTitle, MDBCardGroup, MDBJumbotron
+  MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBCardBody, MDBCardText, MDBCardImage, MDBCard,
+  MDBCardTitle, MDBCardGroup, MDBJumbotron, MDBProgress, MDBEdgeHeader
 } from "mdbreact";
-import Link from '@material-ui/core/Link';
-import Paper from '@material-ui/core/Paper';
-import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from "@material-ui/core";
-import Typography from '@material-ui/core/Typography';
+import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Card, CardActionArea, CardContent, CardMedia, Snackbar, TextField, Slide, Typography } from "@material-ui/core";
 import { Rating } from '@material-ui/lab';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Box from '@material-ui/core/Box';
-import Snackbar from '@material-ui/core/Snackbar';
-import TextField from '@material-ui/core/TextField';
-import Slide from '@material-ui/core/Slide';
 import CoursepackTopNav from "./CoursepackTopNav";
 import CoursepackCoursesTeacher from "./Teacher/CoursepackCoursesTeacher";
+import styled from 'styled-components';
+import MainSideNavDropdown from "./MainSideNavDropdown";
 
 const API = "http://localhost:8080/LMS-war/webresources/";
 
@@ -363,7 +353,7 @@ class CoursepackEnrolledCourses extends Component {
         });
     }
   }
- 
+
   editRating = (coursepack) => {
     console.log(coursepack)
     this.setState({
@@ -501,12 +491,12 @@ class CoursepackEnrolledCourses extends Component {
               <MDBCol size="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
                 <Card style={{ display: "flex" }}>
                   <CardActionArea>
-                  <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>
-                    <CardMedia
-                      style={{ height: 140 }}
-                      image={course.imageLocation}
-                      title={course.title}
-                    />
+                    <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>
+                      <CardMedia
+                        style={{ height: 140 }}
+                        image={course.imageLocation}
+                        title={course.title}
+                      />
                       <CardContent>
                         <Typography gutterBottom variant="h5" style={{ color: "#000000" }}>
                           {course.title}
@@ -514,7 +504,11 @@ class CoursepackEnrolledCourses extends Component {
                         <Typography variant="body2" color="textSecondary" component="p">
                           {course.assignedTeacher.firstName + " " + course.assignedTeacher.lastName}
                         </Typography>
-                        <Typography variant="body2" color="textSecondary" component="p">
+                        <Typography variant="body2" color="textSecondary">
+                          <MDBProgress value={course.progress * 100} className="my-2" height="5px" />
+                          {(course.progress * 100).toFixed(0) + "% complete"}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
                           <div style={{ width: 200, display: "flex", marginTop: 10 }}>
                             <Rating name="hover-side" value={course.ratingList.length > 0 && course.ratingList[0].rating} precision={0.1} readOnly size="small" />
                           </div>
@@ -571,9 +565,21 @@ class CoursepackEnrolledCourses extends Component {
   render() {
     if (sessionStorage.getItem("accessRight") === "Teacher") {
       return (
-        <MDBContainer style={{ paddingBottom: 240 }}>
-          <CoursepackCoursesTeacher />
-        </MDBContainer>
+        <div className={this.props.className}>
+          <div className="module-navbar-small">
+            <MainSideNavDropdown moduleId={this.props.moduleId} activeTab={'Coursepack'}></MainSideNavDropdown>
+          </div>
+          <MDBEdgeHeader color="red lighten-2" className="ideaPage" />
+          <MDBContainer style={{ paddingBottom: 240 }}>
+            <MDBRow>
+              <MDBCol md="12" className="mt-3 mx-auto">
+                <MDBJumbotron>
+                  <CoursepackCoursesTeacher />
+                </MDBJumbotron>
+              </MDBCol>
+            </MDBRow>
+          </MDBContainer>
+        </div>
       )
     } else {
       let cart = sessionStorage.getItem("cart");
@@ -605,4 +611,35 @@ class CoursepackEnrolledCourses extends Component {
   }
 }
 
-export default CoursepackEnrolledCourses;
+export default styled(CoursepackEnrolledCourses)`
+.module-content{
+    margin-top: 10px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 0px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+}
+
+.new-paragraph{
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+.align-right{
+    float: right;
+}
+`;

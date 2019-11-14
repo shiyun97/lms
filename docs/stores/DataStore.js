@@ -27,6 +27,7 @@ class DataStore {
   @observable currentQuizAttemptId = 0
   @observable currentGradeItemId = 0
   @observable currentCoursepackId = 0
+  @observable currentGradeItemName = "Choose..."
 
   //attendance
   @observable attendanceClassId = ""
@@ -42,8 +43,8 @@ class DataStore {
   @observable maxMarks = 0
   @observable attempted = false
 
-  // coursepack certification
-  @observable listOfCoursepacks = []
+  //coursepack assessment
+  @observable complete = []
 
   @action setSignInStatus(status, email, password, accessRight) {
     this.signInStatus = status;
@@ -142,6 +143,14 @@ class DataStore {
 
   @action setCurrGradeItemId(id) {
     this.currentGradeItemId = id;
+  }
+
+  @computed get getCurrGradeItemName() {
+    return this.currentGradeItemName;
+  }
+
+  @action setCurrGradeItemName(name) {
+    this.currentGradeItemName = name;
   }
 
   @computed get getCurrGradeItemId() {
@@ -279,15 +288,16 @@ class DataStore {
     return this.attempted;
   }
 
-  @action setListOfCoursepacks(coursepacks) {
-    this.listOfCoursepacks = coursepacks
+  @action setComplete(result) {
+    this.complete = result
+
   }
 
-  @computed get getListOfCoursepacks() {
-    return toJS(this.listOfCoursepacks);
+  @computed get getComplete() {
+    console.log("get")
+    console.log(this.complete)
+    return toJS(this.complete);
   }
-
-
 }
 
 export default DataStore;

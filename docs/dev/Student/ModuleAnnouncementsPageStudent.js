@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
 import {
-    MDBContainer, MDBRow, MDBCol, MDBIcon 
+    MDBContainer, MDBRow, MDBCol, MDBIcon, MDBEdgeHeader, MDBJumbotron
 } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import ModuleSideNavigationDropdown from "../ModuleSideNavigationDropdown";
@@ -79,30 +79,37 @@ class ModuleAnnouncementsPageStudent extends Component {
                     <ModuleSideNavigationDropdown moduleId={moduleId}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="discussionPage" />
                     <MDBContainer>
                         <MDBRow>
-                            <MDBCol>
-                                <h4>Announcements</h4>
-                                <hr className="my-3" />
+                            <MDBCol md="12" className="mt-3 mx-auto">
+                                <MDBJumbotron>
+                                    <MDBRow>
+                                        <MDBCol>
+                                            <h2 className="font-weight-bold">Announcements</h2>
+                                            <hr className="my-3" />
+                                        </MDBCol>
+                                    </MDBRow>
+                                    <div className="mb-2"></div>
+                                    <div className="align-right">
+
+                                    </div>
+                                    {
+                                        activeAnnouncements.length == 0 && <h6 style={{ paddingTop: 20 }}>No announcements found.</h6>
+                                    }
+                                    {
+                                        activeAnnouncements.length > 0 && activeAnnouncements.map((announcement) => (
+                                            <AnnouncementListItem key={announcement.announcementId}
+                                                announcement={announcement}
+                                                expired={false}
+                                                edit={() => this.openEditAnnouncementModalBox(announcement.announcementId)}
+                                                delete={() => this.openDeleteAnnouncementModalBox(announcement.announcementId)}>
+                                            </AnnouncementListItem>
+                                        ))
+                                    }
+                                </MDBJumbotron>
                             </MDBCol>
                         </MDBRow>
-                                <div className="mb-2"></div>
-                                <div className="align-right">
-
-                                </div>
-                                {
-                                    activeAnnouncements.length == 0 && <h6 style={{ paddingTop: 20 }}>No announcements found.</h6>
-                                }
-                                {
-                                    activeAnnouncements.length > 0 && activeAnnouncements.map((announcement) => (
-                                        <AnnouncementListItem key={announcement.announcementId}
-                                            announcement={announcement}
-                                            expired={false}
-                                            edit={() => this.openEditAnnouncementModalBox(announcement.announcementId)}
-                                            delete={() => this.openDeleteAnnouncementModalBox(announcement.announcementId)}>
-                                        </AnnouncementListItem>
-                                    ))
-                                }
                     </MDBContainer>
                 </div>
             </div>
@@ -154,7 +161,7 @@ class AnnouncementListItem extends Component {
 
 export default styled(ModuleAnnouncementsPageStudent)`
 .module-content{
-    margin-top: 40px;
+    margin-top: 0px;
 }
 @media screen and (min-width: 800px) {
     .module-content{

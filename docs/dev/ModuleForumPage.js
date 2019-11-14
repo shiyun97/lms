@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
-import { 
-    MDBContainer, 
-    MDBRow, 
-    MDBCol, 
+import {
+    MDBContainer,
+    MDBRow,
+    MDBCol,
     MDBDataTable,
     MDBIcon,
     MDBBtn,
@@ -12,9 +12,8 @@ import {
     MDBModalHeader,
     MDBModalBody,
     MDBModalFooter,
-    MDBCard,
-    MDBCardBody,
-    MDBNavLink 
+    MDBEdgeHeader,
+    MDBJumbotron
 } from "mdbreact";
 import axios from "axios";
 import 'babel-polyfill';
@@ -179,7 +178,7 @@ class ModuleForumPage extends Component {
         // api to create new thread
         axios
             .put(`${API_URL}/Forum/createThread?forumTopicId=${this.state.topicId}&userId=${sessionStorage.getItem('userId')}`,
-            request)
+                request)
             .then((result) => {
                 console.log(result);
                 this.setState({
@@ -287,60 +286,67 @@ class ModuleForumPage extends Component {
                     <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Forum'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="discussionPage" />
                     <MDBContainer>
                         <MDBRow>
-                            <MDBCol>
-                                <h4 className="font-weight-bold mb-4">Forum</h4>
-                                <hr className="my-4" />
+                            <MDBCol md="12" className="mt-3 mx-auto">
+                                <MDBJumbotron>
+                                    <MDBRow>
+                                        <MDBCol>
+                                            <h2 className="font-weight-bold">Forum</h2>
+                                            <hr className="my-4" />
+                                        </MDBCol>
+                                    </MDBRow>
+                                    <MDBRow>
+                                        <MDBCol>
+                                            <MDBBtn className="ml-0 mb-4" color="primary" block onClick={e => { this.newThread() }}>Start New Thread</MDBBtn>
+                                            {
+                                                forumThreads.length > 0 && forumThreads.map((forumThread) => (
+                                                    <ForumThreadListItem key={forumThread.forumPostId}
+                                                        forumThread={forumThread}
+                                                        moduleId={this.props.moduleId}
+                                                        delete={e => { this.deleteForumThread(forumThread.forumPostId) }}
+                                                        enterForumThread={e => { this.enterForumThread(forumThread.forumPostId) }}>
+                                                    </ForumThreadListItem>
+                                                ))
+                                            }
+                                            {
+                                                forumThreads.length == 0 &&
+                                                <div>No forum threads available</div>
+                                            }
+                                        </MDBCol>
+                                    </MDBRow>
+                                    {this.renderAddModal()}
+                                    {this.renderDeleteDialog()}
+                                    <Snackbar
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'left',
+                                        }}
+                                        open={this.state.openSnackbar}
+                                        autoHideDuration={6000}
+                                        onClose={this.handleClose}
+                                        ContentProps={{
+                                            'aria-describedby': 'message-id',
+                                        }}
+                                        message={<span id="message-id">{this.state.message}</span>}
+                                        action={[
+                                            <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                                        ]}
+                                    />
+                                </MDBJumbotron>
                             </MDBCol>
                         </MDBRow>
-                        <MDBRow>
-                            <MDBCol>
-                                <MDBBtn className="ml-0 mb-4" color="primary" block onClick={e => {this.newThread()}}>Start New Thread</MDBBtn>
-                                {
-                                    forumThreads.length > 0 && forumThreads.map((forumThread) => (
-                                        <ForumThreadListItem key={forumThread.forumPostId} 
-                                        forumThread={forumThread}
-                                        moduleId={this.props.moduleId}
-                                        delete={e => {this.deleteForumThread(forumThread.forumPostId)}}
-                                        enterForumThread={e => {this.enterForumThread(forumThread.forumPostId)}}>
-                                        </ForumThreadListItem>
-                                    ))
-                                }
-                                {
-                                    forumThreads.length == 0 &&
-                                    <div>No forum threads available</div>
-                                }
-                            </MDBCol>
-                        </MDBRow>
-                        {this.renderAddModal()}
-                        {this.renderDeleteDialog()}
-                        <Snackbar
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            open={this.state.openSnackbar}
-                            autoHideDuration={6000}
-                            onClose={this.handleClose}
-                            ContentProps={{
-                                'aria-describedby': 'message-id',
-                            }}
-                            message={<span id="message-id">{this.state.message}</span>}
-                            action={[
-                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-                            ]}
-                        />
                     </MDBContainer>
                 </div>
             </div>
-          );
+        );
     }
 }
 
 export default styled(ModuleForumPage)`
 .module-content{
-    margin-top: 40px;
+    margin-top: 0px;
 }
 @media screen and (min-width: 800px) {
     .module-content{
@@ -386,32 +392,34 @@ class ForumThreadListItem extends Component {
         let forumThread = this.props.forumThread;
         return <div className="container-fluid section border p-3 justify-content d-flex mb-2">
             <MDBCol sm="2" md="2" lg="1">
-                <div style={{verticalAlign: "middle"}}>
-                <MDBIcon icon="user-circle" size="3x" className="ml-0 mt-3" style={{ color: "#808080" }} />
+                <div style={{ verticalAlign: "middle" }}>
+                    <MDBIcon icon="user-circle" size="3x" className="ml-0 mt-3" style={{ color: "#808080" }} />
                 </div>
             </MDBCol>
             <MDBCol sm="10" md="10" lg="11">
                 <MDBRow>
-                    <div className="mb-2 mt-0 ml-0" 
-                            style={{ color: "#2F79B9", fontWeight: "600", fontSize: "16px", lineHeight: "1.2", cursor: "pointer", 
-                            textDecoration: "underline", overflow: "hidden" }}>
-                            <span onClick={this.props.enterForumThread}>{forumThread.title}</span>
-                            {
-                                forumThread.owner.userId == sessionStorage.getItem('userId') &&
-                                <MDBIcon icon="trash-alt" className="indigo-text mt-2 ml-3" size="md" onClick={this.props.delete} />
-                            }
-                        </div>
+                    <div className="mb-2 mt-0 ml-0"
+                        style={{
+                            color: "#2F79B9", fontWeight: "600", fontSize: "16px", lineHeight: "1.2", cursor: "pointer",
+                            textDecoration: "underline", overflow: "hidden"
+                        }}>
+                        <span onClick={this.props.enterForumThread}>{forumThread.title}</span>
+                        {
+                            forumThread.owner.userId == sessionStorage.getItem('userId') &&
+                            <MDBIcon icon="trash-alt" className="indigo-text mt-2 ml-3" size="md" onClick={this.props.delete} />
+                        }
+                    </div>
                 </MDBRow>
                 <MDBRow>
                     <MDBCol>
                         <MDBRow>
                             <MDBIcon icon="user" className="mr-2 fa-fw mt-1" />
-                            <div style={{ fontSize: "0.9rem", color: "#909090"}}>
-                            by {forumThread.owner.firstName + " " + forumThread.owner.lastName + " on " + new Date(forumThread.createTs).toLocaleString()  + " (Updated on " + new Date(forumThread.updateTs).toLocaleString() + ")"}
+                            <div style={{ fontSize: "0.9rem", color: "#909090" }}>
+                                by {forumThread.owner.firstName + " " + forumThread.owner.lastName + " on " + new Date(forumThread.createTs).toLocaleString() + " (Updated on " + new Date(forumThread.updateTs).toLocaleString() + ")"}
                             </div>
                         </MDBRow>
                         <MDBRow>
-                            <MDBIcon far icon="comments" className="mr-2 mt-1" /><div style={{ fontSize: "0.9rem"}}>{forumThread.replies.length + " Replies"}</div>
+                            <MDBIcon far icon="comments" className="mr-2 mt-1" /><div style={{ fontSize: "0.9rem" }}>{forumThread.replies.length + " Replies"}</div>
                         </MDBRow>
                     </MDBCol>
                 </MDBRow>
@@ -422,39 +430,39 @@ class ForumThreadListItem extends Component {
 
 
 class RichTextEditor extends Component {
-	constructor(props) {
-		super(props);
+    constructor(props) {
+        super(props);
 
-		this.modules = {
-			toolbar: [
-		      [{ 'font': [] }],
-		      [{ 'size': ['small', false, 'large', 'huge'] }],
-		      ['bold', 'italic', 'underline'],
-		      [{'list': 'ordered'}, {'list': 'bullet'}],
-		      [{ 'align': [] }],
-		      [{ 'color': [] }, { 'background': [] }],
-		      ['clean']
-		    ]
-		};
+        this.modules = {
+            toolbar: [
+                [{ 'font': [] }],
+                [{ 'size': ['small', false, 'large', 'huge'] }],
+                ['bold', 'italic', 'underline'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                [{ 'align': [] }],
+                [{ 'color': [] }, { 'background': [] }],
+                ['clean']
+            ]
+        };
 
-		this.formats = [
-		    'font',
-		    'size',
-		    'bold', 'italic', 'underline',
-		    'list', 'bullet',
-		    'align',
-		    'color', 'background'
-	  	];
+        this.formats = [
+            'font',
+            'size',
+            'bold', 'italic', 'underline',
+            'list', 'bullet',
+            'align',
+            'color', 'background'
+        ];
 
-	  	this.state = {
+        this.state = {
             comments: this.props.initial
-		}
+        }
 
-		this.rteChange = this.rteChange.bind(this);
-	}
+        this.rteChange = this.rteChange.bind(this);
+    }
 
-	rteChange = (content, delta, source, editor) => {
-		//console.log(editor.getHTML()); // rich text
+    rteChange = (content, delta, source, editor) => {
+        //console.log(editor.getHTML()); // rich text
         //console.log(editor.getText()); // plain text
         //var text = editor.getHTML();
         this.setState({

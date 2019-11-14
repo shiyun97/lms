@@ -193,7 +193,7 @@ class CoursepackArrangementPage extends Component {
         }
     }
 
-    moveUpOutline = currentOutlineId => { //TODO: check if first/last
+    moveUpOutline = currentOutlineId => {
         var currentIndex = this.state.listOfOutlineId.indexOf(currentOutlineId)
         var previousOutlineId = this.state.listOfOutlineId[currentIndex - 1]
 
@@ -229,7 +229,7 @@ class CoursepackArrangementPage extends Component {
     }
 
 
-    moveUpLessonOrder = currentOutlineId => { //TODO: check if first/last
+    moveUpLessonOrder = currentOutlineId => {
         var currentIndex = this.state.listOfLessonOrderId.indexOf(currentOutlineId)
         var previousOutlineId = this.state.listOfLessonOrderId[currentIndex - 1]
 

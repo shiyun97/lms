@@ -1,18 +1,21 @@
 import React, { Component } from "react";
-import { NavLink, MDBListGroup, MDBListGroupItem, MDBContainer, MDBIcon, MDBDataTable, MDBRow, MDBBtn, MDBCol, MDBTabContent, MDBTabPane, MDBNav, MDBNavItem, MDBNavLink, MDBModal, MDBModalHeader, MDBModalBody, MDBModalFooter } from "mdbreact";
+import { NavLink, MDBDataTable, MDBRow, MDBBtn, MDBCol, MDBTabContent, MDBTabPane, MDBNav, MDBNavItem, MDBNavLink } from "mdbreact";
 import { observer, inject } from 'mobx-react'
-import Dropzone from 'react-dropzone';
-import { Slide, Card, Dialog, DialogTitle, DialogContent, DialogContentText, ListItem, ListItemText, DialogActions, Button, List } from "@material-ui/core";
-import IconButton from '@material-ui/core/IconButton';
 import axios from "axios";
+import CoursepackAchievementsCertificate from './CoursepackAchievementsCertificate'
+import SwipeableViews from 'react-swipeable-views';
+import { AppBar, Tabs, Tab, Paper, Card, Typography } from '@material-ui/core';
+import CoursepackAchievementsTranscript from "./CoursepackAchievementsTranscript";
 
 const API = "http://localhost:8080/LMS-war/webresources/";
+const FILE_SERVER = "http://127.0.0.1:8887/";
 
 @inject('dataStore')
 @observer
 class CoursepackAchievementsPage extends Component {
 
     state = {
+        value: 0,
         activeItem: "1",
         modalUploadMultimedia: false,
         showMultimediaDialog: false,
@@ -20,8 +23,10 @@ class CoursepackAchievementsPage extends Component {
         badgeName: "",
         toggleCertModal: false,
         toggleEditBadgeModal: false,
-        certificates: ["HTML", "CSS", "JAVA"], //TODO:
-        badges: [{ title: 'Complete 5 courses', achieved: true }, { title: 'Complete 10 courses', achieved: false }, { title: 'Complete first course', achieved: false }]
+        allCertificates: [],
+        allBadges: "",
+        achievedBadges: [],
+        attainedCerts: ""
     }
 
     componentDidMount() {
@@ -29,7 +34,41 @@ class CoursepackAchievementsPage extends Component {
     }
 
     initPage() {
+        //show all certs
+        axios.get(`${API}Gamification/getAllCertifications`)
+            .then(result => {
+                this.setState({ allCertificates: result.data.certificationList })
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
 
+        // get all badges
+        axios.get(`${API}Gamification/getAllBadges`)
+            .then(result => {
+                this.setState({ allBadges: result.data.badgeList })
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
+
+        // get all badges of user
+        axios.get(`${API}Gamification/getAllUserBadges?userId=${sessionStorage.getItem("userId")}`)
+            .then(result => {
+                this.setState({ achievedBadges: result.data.badgeList })
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
+
+        // get user's certs
+        axios.get(`${API}Gamification/getAllUserCertifications?userId=${sessionStorage.getItem("userId")}`)
+            .then(result => {
+                this.setState({ attainedCerts: result.data.certificationList })
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
     }
 
     toggle = tab => e => {
@@ -40,6 +79,13 @@ class CoursepackAchievementsPage extends Component {
         }
     };
 
+    handleChange = (event, value) => {
+        this.setState({ value });
+    };
+
+    handleChangeIndex = index => {
+        this.setState({ value: index });
+    };
 
     disabled = (achieved) => {
         if (!achieved) {
@@ -47,18 +93,30 @@ class CoursepackAchievementsPage extends Component {
         }
     }
 
-
+    checkAchieved = badgeId => {
+        if (this.state.achievedBadges.find(x => x.id === badgeId)) {
+            return 1
+        }
+        return 0.4
+    }
 
     showBadges = () => {
+        var location = ""
         return (
 
-            <MDBRow style={{ paddingTop: 30 }}>
-                {this.state.badges && this.state.badges.map((badge, index) => {
+            <MDBRow >
+                {this.state.allBadges && this.state.allBadges.map((badge, index) => {
+                    location = badge.location
+                    let savedFileName = location.split('/')[5]; //FIXME:
+                    /* let savedFileName = location.split('\\')[1]; */
+                    let fullPath = FILE_SERVER + savedFileName;
+                    console.log(fullPath)
+
                     return (
                         <MDBCol size="3">
-                            <MDBCol align="center" size="12">
-                                <Card style={{ height: 120, color: this.disabled(badge.achieved) }} >
-                                    {badge.title}
+                            <MDBCol align="center" size="12" style={{ paddingBottom: 30 }}>
+                                <Card style={{ height: 180, color: this.disabled(badge.achieved) }} >
+                                    <img src={fullPath} style={{ opacity: this.checkAchieved(badge.id), maxWidth: 180 }} alt={badge.title} />
                                 </Card>
                             </MDBCol>
                         </MDBCol>
@@ -103,31 +161,19 @@ class CoursepackAchievementsPage extends Component {
 
     tableRows = () => {
         let certs = []
-        this.state.certificates && this.state.certificates.map((cert, index) => {
+        this.state.allCertificates && this.state.allCertificates.map((cert) => {
             certs.push({
-                certificates: cert,
-                view: this.showViewButton(index),
+                certificates: cert.title,
+                view: this.showViewButton(cert.id),
             })
         })
         return certs
     }
 
-    getCoursepacks = index => {
-        axios.get(`${API}Coursepack/getAllCoursepack`) //FIXME:
-            .then(result => {
-                console.log(result.data.coursepack)
-                this.props.dataStore.setListOfCoursepacks(result.data.coursepack) //TODO: coursepack name?
-            })
-            .catch(error => {
-                this.setState({ message: error.response, openSnackbar: true })
-                console.error("error in axios " + error);
-            });
-    }
-
     showViewButton = (index) => {
         return (
-            <NavLink to={`/coursepack/achievements/certificates/${index}`}>
-                <MDBBtn color="primary" onClick={() => this.getCoursepacks(index)} >View</MDBBtn>
+            <NavLink to={`/coursepack/achievements/certificates/view/${index}`}>
+                <MDBBtn size="sm" color="primary" >View</MDBBtn>
             </NavLink>
         )
     }
@@ -135,20 +181,49 @@ class CoursepackAchievementsPage extends Component {
     showTabs = () => {
         return (
             <div>
-                <MDBNav className="nav-tabs mt-5">
+                <MDBNav className="nav-tabs mt-5" >
                     <MDBNavItem>
-                        <MDBNavLink to="#" active={this.state.activeItem === "1"} onClick={this.toggle("1")} role="tab" >Badges</MDBNavLink>
+                        <MDBNavLink to="/coursepack/achievements/view/badges" active={this.state.activeItem === "1"} onClick={this.toggle("1")} role="tab" >Badges</MDBNavLink>
                     </MDBNavItem>
                     <MDBNavItem>
-                        <MDBNavLink to="#" active={this.state.activeItem === "2"} onClick={this.toggle("2")} role="tab" >Certificates</MDBNavLink>
+                        <MDBNavLink to="/coursepack/achievements/view/certificates" active={this.state.activeItem === "2"} onClick={this.toggle("2")} role="tab" >Certificates</MDBNavLink>
                     </MDBNavItem>
+                    <MDBCol align="right">
+                            <CoursepackAchievementsTranscript /> 
+                    </MDBCol>
+
+
                 </MDBNav>
-                <MDBTabContent activeItem={this.state.activeItem} >
+                <MDBTabContent style={{ paddingTop: 30 }} activeItem={this.state.activeItem} >
                     <MDBTabPane tabId="1" role="tabpanel">
                         {this.showBadges()}
                     </MDBTabPane>
-                    <MDBTabPane tabId="2" role="tabpanel">
-                        {this.showCertTable()}
+                    <MDBTabPane tabId="2" role="tabpanel" >
+                        <AppBar position="static" color="default">
+                            <Tabs
+                                value={this.state.value}
+                                onChange={this.handleChange}
+                                indicatorColor="primary"
+                                textColor="primary"
+                                variant="fullWidth"
+                                aria-label="full width tabs example"
+                            >
+                                <Tab label="My Certificates" />
+                                <Tab label="All Certificates" />
+                            </Tabs>
+                        </AppBar>
+                        <Paper>
+                            <SwipeableViews
+                                axis={"x-reverse"}
+                                index={this.state.value}
+                                onChangeIndex={this.handleChangeIndex}
+                            >
+                                <Typography component="div">
+                                    <CoursepackAchievementsCertificate attainedCerts={this.state.attainedCerts} />
+                                </Typography>
+                                <Typography component="div">{this.showCertTable()}</Typography>
+                            </SwipeableViews>
+                        </Paper>
                     </MDBTabPane>
                 </MDBTabContent>
             </div >
@@ -163,8 +238,7 @@ class CoursepackAchievementsPage extends Component {
                     <hr />
                 </MDBCol>
                 {this.showTabs()}
-                {/*                 <CoursepackCertificatePdf />
- */}            </div >
+            </div >
         )
     }
 }

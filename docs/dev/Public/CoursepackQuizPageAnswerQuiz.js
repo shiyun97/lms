@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBBtn } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBBtn, MDBIcon } from "mdbreact";
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
@@ -21,12 +21,13 @@ class CoursepackQuizPageAnswerQuiz extends Component {
     email: "",
     moduleId: 0,
     message: "",
-    status: "retrieving"
+    status: "retrieving",
+    quizId: ""
   }
 
   initPage() {
-    console.log(this.props.currentQuiz)
-    this.props.dataStore.setCurrQuizId(this.props.currentQuiz);
+/*     console.log(this.props.currentQuiz)
+ */    this.props.dataStore.setCurrQuizId(this.props.currentQuiz);
   }
 
   componentDidMount() {
@@ -37,15 +38,17 @@ class CoursepackQuizPageAnswerQuiz extends Component {
   getCoursepackQuiz = () => {
     let userId = sessionStorage.getItem('userId');
     let quizId = this.props.dataStore.getCurrQuizId;
+
+    console.log(quizId)
+    console.log(userId)
     axios
       .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveCoursepackQuiz/${quizId}?userId=${userId}`)
       .then(result => {
-        // console.log(result.data)
         var newJson = result.data;
         newJson['completedHtml'] = "<p><h4>You have completed the quiz!</h4></p>";
         newJson['showTimerPanel'] = "none";
         json = newJson
-        this.setState({ status: "done" })
+        this.setState({ status: "done", userId: userId, quizId: quizId })
         this.props.dataStore.setMaxMarks(result.data.maxMarks)
       })
       .catch(error => {
@@ -97,11 +100,14 @@ class CoursepackQuizPageAnswerQuiz extends Component {
     this.props.dataStore.attempted = true;
     if (this.props.dataStore.getCurrScore === this.props.dataStore.getMaxMarks) {
       axios
-        .post(`http://localhost:8080/LMS-war/webresources/Assessment/completeCoursepackQuiz?quizId=157&userId=${userId}`, {})
+        .post(`http://localhost:8080/LMS-war/webresources/Assessment/completeCoursepackQuiz?userId=${userId}&quizId=${this.state.quizId}`)
         .then(result => {
-          console.log("Unlocked next quiz!")
+          console.log("Completed quiz!")
+          this.props.dataStore.setComplete(result.data)
+          console.log(result.data)
         })
         .catch(error => {
+          console.log(error.message)
           console.log("Error in unlocking next quiz.")
         });
     }
@@ -130,6 +136,8 @@ class CoursepackQuizPageAnswerQuiz extends Component {
   }
 
   renderQuizResults = () => {
+    var complete = this.props.dataStore.getComplete
+
     return (
       <MDBContainer className="mt-3" align="left">
         <MDBRow className="py-3">
@@ -157,8 +165,37 @@ class CoursepackQuizPageAnswerQuiz extends Component {
             {
               this.props.dataStore.getCurrScore === this.props.dataStore.getMaxMarks &&
               <div>
-                <center>You have unlocked the next quiz!</center>
-                <center><MDBBtn>Proceed</MDBBtn></center>
+                {this.props.length !== this.props.index + 1 &&
+                  <div>
+                    <center>You have unlocked the next quiz!</center>
+                    <center><MDBBtn onClick={this.props.proceed}>Proceed</MDBBtn></center>
+                  </div>
+                }
+                {this.props.length === this.props.index + 1 &&
+                  <center>
+                    <MDBIcon icon="check" style={{ color: "green" }} />
+                    You have come to the end of the coursepack.
+                  </center>
+                }
+                {complete !== undefined && complete.completeCoursepack === true &&
+                  <center><MDBIcon icon="check" style={{ color: "green" }} />You have fully completed the coursepack.</center>
+                }
+                {complete !== undefined && complete.completeCoursepack === false &&
+                  <center><MDBIcon icon="times" style={{ color: "red" }} />You have fully completed the coursepack.</center>
+                }
+                {complete !== undefined && complete.unlockBadge === true &&
+                  <center><MDBIcon icon="check" style={{ color: "green" }} />You have achieved a new badge.</center>
+                }
+                {complete !== undefined && complete.unlockBadge === false &&
+                  <center><MDBIcon icon="times" style={{ color: "red" }} />You have achieved a new badge.</center>
+                }
+                {complete !== undefined && complete.unlockCertificate === true &&
+                  <center><MDBIcon icon="check" style={{ color: "green" }} />You have achieved a new certificate.</center>
+                }
+                {complete !== undefined && complete.unlockCertificate === false &&
+                  <center><MDBIcon icon="times" style={{ color: "red" }} />You have achieved a new certificate.</center>
+                }
+
               </div>
             }
           </MDBCol>

@@ -1,4 +1,5 @@
 import React, { Component, useState, useRef, useEffect } from "react";
+import { observer, inject } from 'mobx-react'
 import axios from "axios";
 import {
     MDBContainer,
@@ -13,17 +14,25 @@ import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import CoursepackTopNav from "./CoursepackTopNav";
 import cprog from './img/cprog.jpg';
 import paypalLogo from './img/paypalLogo.jpg';
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 
+@inject('dataStore')
+@observer
 class CoursepackCheckoutPage extends Component {
 
     state = {
         cartObjs: [],
-        stripe: null
+        dialogOpen: false
     }
 
     componentDidMount() {
@@ -38,6 +47,41 @@ class CoursepackCheckoutPage extends Component {
                 cartObjs: cartObjs
             })
         }
+    }
+
+    paymentCompleted = (e) => {
+        this.setState({
+            dialogOpen: true
+        })
+        this.initPage()
+    }
+
+    handleClose = () => {
+        this.props.dataStore.setPath(`/coursepack/myCourses`);
+        this.props.history.push(`/coursepack/myCourses`);
+    }
+
+    showDialog = () => {
+        return (
+            <Dialog
+                open={this.state.dialogOpen}
+                onClose={this.handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Success"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        You have enrolled into this coursepack.
+                </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleClose} color="primary">
+                        View My Courses
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        )
     }
 
     showBreadcrumb = () => {
@@ -147,7 +191,7 @@ class CoursepackCheckoutPage extends Component {
                                                 <div className="mb-4" />
                                                 <MDBRow>
                                                     <MDBCol>
-                                                        <PaypalButtonComponent/>
+                                                        <PaypalButtonComponent paymentCompleted={this.paymentCompleted}/>
                                                     </MDBCol>
                                                 </MDBRow>
                                             </MDBCol>
@@ -156,6 +200,7 @@ class CoursepackCheckoutPage extends Component {
                                 </MDBRow>
                             </MDBCol>
                         </MDBRow>
+                        {this.showDialog()}
                     </MDBContainer>
                 </MDBContainer>
             </div>
@@ -165,7 +210,7 @@ class CoursepackCheckoutPage extends Component {
 
 export default CoursepackCheckoutPage;
 
-function PaypalButtonComponent() {
+const PaypalButtonComponent = (props) => {
 
     const [paidFor, setPaidFor] = useState(false);
     const [loaded, setLoaded] = useState(false); 
@@ -212,6 +257,7 @@ function PaypalButtonComponent() {
     const goToMyCourses = () => {
         console.log("completed payment")
         let boughtItems = JSON.parse(sessionStorage.getItem("cart"))
+        let error = false;
         for (var i=0; i<boughtItems.length; i++) {
             axios
                 .put(`${API}CoursepackEnrollment/enrollCoursepack?userId=${sessionStorage.getItem("userId")}&coursepackId=${boughtItems[i].coursepackId}`)
@@ -220,18 +266,19 @@ function PaypalButtonComponent() {
                     sessionStorage.setItem("cart", JSON.stringify([]))
                     setPaidFor(false)
                     setLoaded(false)
-                    document.getElementById("goToMyCourses").click();
+                    //document.getElementById("goToMyCourses").click();
+                    document.getElementById("buttonComplete").click();
                 })
                 .catch(error => {
                     console.error("error in axios " + error);
                 });
         }
     }
-
     let cartObjs = JSON.parse(sessionStorage.getItem("cart"))
     if (cartObjs > 0) {
         setPaidFor(false);
     }
+    
     return (
         <div>
         {
@@ -243,7 +290,9 @@ function PaypalButtonComponent() {
                 </div>
             )
         }
-        <div><a href="/coursepack/myCourses" id="goToMyCourses" style={{display: "none"}} /></div>
+        <div>
+            <a href="/coursepack/myCourses" id="goToMyCourses" style={{display: "none"}} /></div>
+            <button id="buttonComplete" onClick={e => props.paymentCompleted()} style={{display: "none"}}></button>
         </div>
     )
 }

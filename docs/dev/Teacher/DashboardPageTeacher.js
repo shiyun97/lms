@@ -123,7 +123,7 @@ class DashboardPageTeacher extends Component {
   renderAnnouncementSet = (announcement) => {
     return (
       <>
-        <MDBRow key={announcement.announcementId}>
+        <MDBRow tag="div" key={announcement.annoucementId}>
           <MDBCol md="6">
             <h6 style={{ fontWeight: "bold" }}>{announcement.title}</h6>
           </MDBCol>
@@ -278,92 +278,93 @@ class DashboardPageTeacher extends Component {
     var quizPercentage = quizAttempts / classSize * 100
     var forumPercentage = forumContributions / classSize * 100
     return (
-      <MDBCard className="mb-5">
-        <MDBCardBody id="breadcrumb" className="d-flex align-items-center justify-content-between">
-          <MDBRow className="mb-4">
-            <MDBCol md="12">
-              <MDBBreadcrumb>
-                <MDBBreadcrumbItem>{module.moduleCode + " " + module.moduleTitle}</MDBBreadcrumbItem>
-                <MDBBreadcrumbItem active>Analytics</MDBBreadcrumbItem>
-              </MDBBreadcrumb>
-              <br />
-              <br />
-            </MDBCol>
-            <MDBCol xl="3" md="6" className="mb-r">
-              <MDBCard className="cascading-admin-card">
-                <div className="admin-up">
-                  <a href={`/modules/${module.moduleId}/attendance`}><MDBIcon icon="calendar-check" className="primary-color" /></a>
-                  <div className="data">
-                    <p>ATTENDANCE</p>
-                    <h4>
-                      <strong>{lectureAttendance}/{classSize}</strong>
-                    </h4>
-                  </div>
+      <div key={module.moduleId}>
+        <MDBRow className="mb-4">
+          <MDBCol md="12">
+            <MDBBreadcrumb>
+              <MDBBreadcrumbItem>{module.moduleCode + " " + module.moduleTitle}</MDBBreadcrumbItem>
+              <MDBBreadcrumbItem active>Analytics</MDBBreadcrumbItem>
+            </MDBBreadcrumb>
+            <br />
+          </MDBCol>
+        </MDBRow>
+        <MDBRow className="mb-4">
+          <MDBCol xl="3" md="6" className="mb-r">
+            <MDBCard className="cascading-admin-card">
+              <div className="admin-up">
+                <a href={`/modules/${module.moduleId}/attendance`}><MDBIcon icon="calendar-check" className="primary-color" /></a>
+                <div className="data">
+                  <p tag="div">ATTENDANCE</p>
+                  <h4>
+                    <strong>{lectureAttendance}/{classSize}</strong>
+                  </h4>
                 </div>
-                <MDBCardBody>
-                  <MDBProgress value={attendancePercentage} color="blue" />
-                  <MDBCardText>Attendance of Latest Lecture</MDBCardText>
-                </MDBCardBody>
-              </MDBCard>
-            </MDBCol>
-            <MDBCol xl="3" md="6" className="mb-r">
-              <MDBCard className="cascading-admin-card">
-                <div className="admin-up">
-                  <a href={`/modules/${module.moduleId}/consultation`}><MDBIcon icon="calendar-alt" className="warning-color" /></a>
-                  <div className="data">
-                    <p>CONSULTATIONS</p>
-                    <h4>
-                      <strong>{bookedConsultations}/{totalConsultations}</strong>
-                    </h4>
-                  </div>
+              </div>
+              <MDBCardBody>
+                <MDBProgress value={attendancePercentage} color="blue" />
+                <MDBCardText>Attendance of Latest Lecture</MDBCardText>
+              </MDBCardBody>
+            </MDBCard>
+          </MDBCol>
+          <MDBCol xl="3" md="6" className="mb-r">
+            <MDBCard className="cascading-admin-card">
+              <div className="admin-up">
+                <a href={`/modules/${module.moduleId}/consultation`}><MDBIcon icon="calendar-alt" className="warning-color" /></a>
+                <div className="data">
+                  <p>CONSULTATIONS</p>
+                  <h4>
+                    <strong>{bookedConsultations}/{totalConsultations}</strong>
+                  </h4>
                 </div>
-                <MDBCardBody>
-                  <MDBProgress value={consultationsPercentage} color="warning" />
-                  <MDBCardText>Booked Consultations</MDBCardText>
-                </MDBCardBody>
-              </MDBCard>
-            </MDBCol>
-            <MDBCol xl="3" md="6" className="mb-r">
-              <MDBCard className="cascading-admin-card">
-                <div className="admin-up">
-                  <a href={`/modules/${module.moduleId}/quiz`}><MDBIcon icon="star" className="green lighten-1" /></a>
-                  <div className="data">
-                    <p>QUIZ</p>
-                    <h4>
-                      <strong>{quizAttempts}/{classSize}</strong>
-                    </h4>
-                  </div>
+              </div>
+              <MDBCardBody>
+                <MDBProgress value={consultationsPercentage} color="warning" />
+                <MDBCardText>Booked Consultations</MDBCardText>
+              </MDBCardBody>
+            </MDBCard>
+          </MDBCol>
+          <MDBCol xl="3" md="6" className="mb-r">
+            <MDBCard className="cascading-admin-card">
+              <div className="admin-up">
+                <a href={`/modules/${module.moduleId}/quiz`}><MDBIcon icon="star" className="green lighten-1" /></a>
+                <div className="data">
+                  <p>QUIZ</p>
+                  <h4>
+                    <strong>{quizAttempts}/{classSize}</strong>
+                  </h4>
                 </div>
-                <MDBCardBody>
-                  <MDBProgress value={quizPercentage} color="success" />
-                  <MDBCardText>Attempts for Latest Quiz</MDBCardText>
-                </MDBCardBody>
-              </MDBCard>
-            </MDBCol>
-            <MDBCol xl="3" md="6" className="mb-r">
-              <MDBCard className="cascading-admin-card">
-                <div className="admin-up">
-                  <a href={`/modules/${module.moduleId}/forum/topics`}><MDBIcon icon="comments" className="red accent-2" /></a>
-                  <div className="data">
-                    <p>FORUM</p>
-                    <h4>
-                      <strong>{forumContributions}/{classSize}</strong>
-                    </h4>
-                  </div>
+              </div>
+              <MDBCardBody>
+                <MDBProgress value={quizPercentage} color="success" />
+                <MDBCardText>Attempts for Latest Quiz</MDBCardText>
+              </MDBCardBody>
+            </MDBCard>
+          </MDBCol>
+          <MDBCol xl="3" md="6" className="mb-r">
+            <MDBCard className="cascading-admin-card">
+              <div className="admin-up">
+                <a href={`/modules/${module.moduleId}/forum/topics`}><MDBIcon icon="comments" className="red accent-2" /></a>
+                <div className="data">
+                  <p>FORUM</p>
+                  <h4>
+                    <strong>{forumContributions}/{classSize}</strong>
+                  </h4>
                 </div>
-                <MDBCardBody>
-                  <MDBProgress value={forumPercentage} color="danger" />
-                  <MDBCardText>Students Contributed</MDBCardText>
-                </MDBCardBody>
-              </MDBCard>
-            </MDBCol>
-            <MDBCol md="12" className="mb-r" align="center">
-              <br />
-              <MDBBtn color="grey" href={`/modules/${module.moduleId}/analytics`}>View Detailed Analytics</MDBBtn>
-            </MDBCol>
-          </MDBRow>
-        </MDBCardBody>
-      </MDBCard>
+              </div>
+              <MDBCardBody>
+                <MDBProgress value={forumPercentage} color="danger" />
+                <MDBCardText>Students Contributed</MDBCardText>
+              </MDBCardBody>
+            </MDBCard>
+          </MDBCol>
+          <MDBCol md="12" className="mb-r" align="center">
+            <br />
+            <MDBBtn color="grey" href={`/modules/${module.moduleId}/analytics`}>View Detailed Analytics</MDBBtn>
+          </MDBCol>
+        </MDBRow>
+        <br />
+        <br />
+      </div>
     )
   }
 
@@ -389,7 +390,7 @@ class DashboardPageTeacher extends Component {
                       <MDBAnimation reveal type="fadeInUp">
                         <NavLink to={`/modules/${mod.moduleId}/`} onClick={() => this.setCurrModuleId(mod.moduleId)} activeClassName="activeClass">
                           <MDBCard cascade className="my-3 grey lighten-4">
-                            <MDBCardBody cascade>
+                            <MDBCardBody tag="div" cascade>
                               <h6>{mod.code}</h6>
                               <MDBCardTitle>{mod.title}</MDBCardTitle>
                               <MDBCardText style={{ paddingTop: 40 }}>
@@ -418,7 +419,7 @@ class DashboardPageTeacher extends Component {
                           </Fab>
                         </MDBCol>
                       </MDBRow>
-                      <MDBCardText style={{ paddingTop: 40 }}>
+                      <MDBCardText tag="h6" style={{ paddingTop: 40 }}>
                         {this.state.annoucementList.map((announcement) => this.renderAnnouncementSet(announcement))}
                       </MDBCardText>
                     </MDBCardBody>
