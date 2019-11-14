@@ -407,6 +407,7 @@ class CoursepackDetailsStudent extends Component {
             this.state.lessonOrder && this.state.lessonOrder.map((lessons, index) => {
                 return (
                     <MDBCol key={index} size="12">
+                        {order[index].title}
                         {order[index].name}
                     </MDBCol>
                 )
@@ -697,7 +698,7 @@ class CoursepackDetailsStudent extends Component {
                             <MDBContainer>
                                 {this.showDescriptions()}
                             </MDBContainer>
-                          
+
                         </div>
                     </div>
                     <div style={{ paddingTop: 50, marginRight: 450, paddingRight: 30, paddingLeft: 30 }}>

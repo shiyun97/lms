@@ -30,7 +30,7 @@ class CoursepackDetailsTeacher extends Component {
         coursepackId: "",
         ratings: [],
         averageRating: 0,
-        ratingSpread: [0,0,0,0,0],
+        ratingSpread: [0, 0, 0, 0, 0],
         ratingValues: [5, 4, 3, 2, 1],
         message: "",
         openSnackbar: false,
@@ -68,7 +68,6 @@ class CoursepackDetailsTeacher extends Component {
                     courseOutline: result.data.outlineList.sort((a, b) => (a.number - b.number)),
                     listOfOutlineId: this.getListOfOutlineId(result.data.outlineList)
                 })
-                console.log(this.state.courseDetails)
             })
             .catch(error => {
                 console.error("error in axios " + error);
@@ -98,20 +97,20 @@ class CoursepackDetailsTeacher extends Component {
     showDescriptions = () => {
         return (
             <MDBContainer style={{ paddingTop: 20 }}>
-            <MDBRow>
-                <MDBCol size="8" className="text-white">
-                    <h2 style={{ paddingBottom: 20, paddingTop: 20, fontWeight: "bold" }}>{this.state.courseDetails.title}</h2>
-                    <h5 style={{ paddingBottom: 20 }}> {this.state.courseDetails.description}</h5>
-                    {/*<h6> SGD {this.state.courseDetails.price}</h6>*/}
+                <MDBRow>
+                    <MDBCol size="8" className="text-white">
+                        <h2 style={{ paddingBottom: 20, paddingTop: 20, fontWeight: "bold" }}>{this.state.courseDetails.title}</h2>
+                        <h5 style={{ paddingBottom: 20 }}> {this.state.courseDetails.description}</h5>
+                        {/*<h6> SGD {this.state.courseDetails.price}</h6>*/}
 
-                    {/*<MDBCol align="right">
+                        {/*<MDBCol align="right">
                         <NavLink to={`/coursepack/${this.state.coursepackId}/assessments`}>
                             <MDBBtn color="primary" >View Course</MDBBtn>
                         </NavLink>
                     </MDBCol>*/}
-                </MDBCol>
-                <MDBCol size="1" />
-                <MDBCol size="3">
+                    </MDBCol>
+                    <MDBCol size="1" />
+                    <MDBCol size="3">
                         <MDBCard style={{ width: "20rem", minHeight: "12rem", marginTop: 20 }}>
                             <MDBMedia object src={this.state.courseDetails && this.state.courseDetails.imageLocation} className="img-fluid" alt="" style={{ minHeight: "120px" }} />
                             <div style={{ padding: 20 }}>
@@ -127,10 +126,10 @@ class CoursepackDetailsTeacher extends Component {
                                     </Button>
                                 </MDBCol></MDBRow>
                             </div>
-                        </MDBCard> 
-                </MDBCol>
-            </MDBRow>
-        </MDBContainer>)
+                        </MDBCard>
+                    </MDBCol>
+                </MDBRow>
+            </MDBContainer>)
     }
 
     getLessonOrder = outlineId => {
@@ -157,6 +156,7 @@ class CoursepackDetailsTeacher extends Component {
             this.state.lessonOrder && this.state.lessonOrder.map((lessons, index) => {
                 return (
                     <MDBCol key={index} size="12">
+                        {order[index].title}
                         {order[index].name}
                     </MDBCol>
                 )
@@ -401,7 +401,7 @@ class CoursepackDetailsTeacher extends Component {
                                     ))}
                                 </div>
                             }
-                            
+
                         </MDBCol>
                     </MDBRow>
                 </MDBContainer>
