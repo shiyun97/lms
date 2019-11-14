@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MDBRow, MDBCol, MDBBtn, MDBModal, MDBModalBody, MDBModalFooter, } from "mdbreact";
+import { MDBRow, MDBCol, MDBBtn, MDBModal, MDBModalBody, MDBModalFooter, MDBIcon } from "mdbreact";
 import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
 import { List, ListItem, ListSubheader } from '@material-ui/core/';
@@ -177,7 +177,7 @@ class CoursepackAssessmentPage extends Component {
             axios.post(`http://localhost:8080/LMS-war/webresources/Assessment/completeCoursepackFile?userId=${sessionStorage.getItem("userId")}&fileId=${currentFile}`)
                 .then(result => {
                     console.log("Completed current video!")
-                    this.props.dataStore.setCompleteStatus(true)
+                    this.props.dataStore.setComplete(result.data)
                 })
                 .catch(error => {
                     console.log(error.message)
@@ -235,10 +235,21 @@ class CoursepackAssessmentPage extends Component {
     }
 
     modal = () => {
+        var complete = this.props.dataStore.getComplete
         return (
             <MDBModal isOpen={this.state.modal} toggle={this.toggle}>
+
                 <MDBModalBody>
                     <center>You have come to the end of the coursepack.</center>
+                    {complete !== undefined && complete.completeCoursepack === true &&
+                        <center><MDBIcon icon="check" style={{ color: "green"}} />You have comepleted the coursepack.</center>
+                    }
+                    {complete !== undefined && complete.unlockBadge === true &&
+                        <center><MDBIcon icon="check" style={{ color: "green"}} />You have achieved a new badges.</center>
+                    }
+                    {complete !== undefined && complete.unlockCertificate === true &&
+                        <center><MDBIcon icon="check" style={{ color: "green"}} />You have achieved a new certicate.</center>
+                    }
                 </MDBModalBody>
 
                 <MDBModalFooter>

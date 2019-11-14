@@ -46,7 +46,7 @@ export default function CoursepackAchievementsTranscript(props) {
                 <Button color="primary">
                     <PDFDownloadLink
                         document={<PdfDocument cert={certDetails} coursepack={coursepackDetails} />}
-                        fileName={`${sessionStorage.getItem("firstName")}_${sessionStorage.getItem("lastName")}.pdf`}
+                        fileName={`${sessionStorage.getItem("firstName")}_${sessionStorage.getItem("lastName")}_transcript.pdf`}
                     >
                         {({ blob, url, loading, error }) =>
                             loading ? "Loading document..." : "Download Transcript"

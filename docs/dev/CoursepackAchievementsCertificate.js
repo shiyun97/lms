@@ -50,8 +50,8 @@ export default function CoursepackAchievementsCertificate(props) {
 
                         <PDFDownloadLink
                             document={<PdfDocument data={certDetails} />}
-                            fileName="certificate.pdf"
-                        >
+                            fileName={`${sessionStorage.getItem("firstName")}_${sessionStorage.getItem("lastName")}_${certDetails.title}.pdf`}
+                            >
                             {({ blob, url, loading, error }) =>
                                 loading ? "Loading document..." : "Download Certificate"
                             }

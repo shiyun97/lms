@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBBtn } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBBtn, MDBIcon } from "mdbreact";
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
@@ -103,6 +103,8 @@ class CoursepackQuizPageAnswerQuiz extends Component {
         .post(`http://localhost:8080/LMS-war/webresources/Assessment/completeCoursepackQuiz?userId=${userId}&quizId=${this.state.quizId}`)
         .then(result => {
           console.log("Completed quiz!")
+          this.props.dataStore.setComplete(result.data)
+          console.log(result.data)
         })
         .catch(error => {
           console.log(error.message)
@@ -134,6 +136,8 @@ class CoursepackQuizPageAnswerQuiz extends Component {
   }
 
   renderQuizResults = () => {
+    var complete = this.props.dataStore.getComplete
+
     return (
       <MDBContainer className="mt-3" align="left">
         <MDBRow className="py-3">
@@ -168,8 +172,21 @@ class CoursepackQuizPageAnswerQuiz extends Component {
                   </div>
                 }
                 {this.props.length === this.props.index + 1 &&
-                  <center>You have come to the end of the coursepack.</center>
+                  <center>
+                    <MDBIcon icon="check" style={{ color: "green"}} />
+                    You have come to the end of the coursepack.
+                  </center>
                 }
+                {complete !== undefined && complete.completeCoursepack === true &&
+                  <center><MDBIcon icon="check" style={{ color: "green"}} />You have comepleted the coursepack.</center>
+                }
+                {complete !== undefined && complete.unlockBadge === true &&
+                  <center><MDBIcon icon="check" style={{ color: "green"}} />You have achieved a new badges.</center>
+                }
+                {complete !== undefined && complete.unlockCertificate === true &&
+                  <center><MDBIcon icon="check" style={{ color: "green"}} />You have achieved a new certicate.</center>
+                }
+
               </div>
             }
           </MDBCol>
