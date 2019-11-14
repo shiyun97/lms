@@ -37,7 +37,7 @@ class CoursepackDetailsTeacher extends Component {
     }
 
     componentDidMount() {
-
+        window.scrollTo(0, 0)
         let coursepackId = this.props.coursepackId;
         let accessRight = sessionStorage.getItem("accessRight");
         if (coursepackId) {
@@ -100,8 +100,8 @@ class CoursepackDetailsTeacher extends Component {
                 <MDBRow>
                     <MDBCol size="8" className="text-white">
                         <h2 style={{ paddingBottom: 20, paddingTop: 20, fontWeight: "bold" }}>{this.state.courseDetails.title}</h2>
-                        <h5 style={{ paddingBottom: 20 }}> {this.state.courseDetails.description}</h5>
-                        {/*<h6> SGD {this.state.courseDetails.price}</h6>*/}
+                        <h5 style={{ paddingBottom: 60 }}> {this.state.courseDetails.description}</h5>
+                        <h7>*Complete all videos and/ or quizzes to get badges/ certificates</h7>
 
                         {/*<MDBCol align="right">
                         <NavLink to={`/coursepack/${this.state.coursepackId}/assessments`}>

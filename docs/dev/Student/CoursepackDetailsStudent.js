@@ -80,6 +80,7 @@ class CoursepackDetailsStudent extends Component {
     }
 
     initPage() {
+        window.scrollTo(0, 0)
         // get cart items if any
         let cart = sessionStorage.getItem("cart");
         let cartNum = 0;
@@ -278,7 +279,7 @@ class CoursepackDetailsStudent extends Component {
                 <MDBRow>
                     <MDBCol size="8" className="text-white">
                         <h2 style={{ paddingBottom: 20, paddingTop: 20, fontWeight: "bold" }}>{this.state.courseDetails.title}</h2>
-                        <h5 style={{ paddingBottom: 80 }}> {this.state.courseDetails.description}</h5>
+                        <h5 style={{ paddingBottom: 60 }}> {this.state.courseDetails.description}</h5>
                         <h7>*Complete all videos and/ or quizzes to get badges/ certificates</h7>
                         {/*<h6> SGD {this.state.courseDetails.price}</h6>*/}
 

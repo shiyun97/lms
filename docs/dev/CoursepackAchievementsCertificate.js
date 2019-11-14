@@ -3,7 +3,7 @@ import axios from "axios";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { PdfDocument } from "./CoursepackAchievementsCertificatePdf";
 import { MDBContainer, MDBCol, MDBBtn } from "mdbreact";
-
+import { Button } from "@material-ui/core";
 
 export default function CoursepackAchievementsCertificate(props) {
 
@@ -23,15 +23,15 @@ export default function CoursepackAchievementsCertificate(props) {
     };
 
     if (props.attainedCerts.length === 0) {
-        return <div align="center" style={{paddingTop: 30}}>No certificate attained</div>
+        return <div align="center" style={{ paddingTop: 30 }}>No certificate attained</div>
     } else {
         var attainedCerts = props.attainedCerts
         return (
-            <MDBContainer style={{paddingTop: 30}} align="center">
+            <MDBContainer style={{ paddingTop: 30 }} align="center">
                 <MDBCol size="12">
-                    <h5>Select a certificate</h5>
+                    <h5>Select a Certificate</h5>
                 </MDBCol>
-                <MDBCol size="12">
+                <MDBCol size="12" style={{paddingBottom: 20}}>
                     <select className="browser-default custom-select" onChange={fetchCert}>
                         <option defaultValue="">
                             Select an option
@@ -46,18 +46,16 @@ export default function CoursepackAchievementsCertificate(props) {
                     </select>
                 </MDBCol>
                 {show && (
-                    <MDBBtn>
-
+                    <Button variant="outlined" color="primary" >
                         <PDFDownloadLink
                             document={<PdfDocument data={certDetails} />}
                             fileName={`${sessionStorage.getItem("firstName")}_${sessionStorage.getItem("lastName")}_${certDetails.title}.pdf`}
-                            >
+                        >
                             {({ blob, url, loading, error }) =>
                                 loading ? "Loading document..." : "Download Certificate"
                             }
                         </PDFDownloadLink>
-                    </MDBBtn>
-
+                    </Button>
                 )}
             </MDBContainer>
         )

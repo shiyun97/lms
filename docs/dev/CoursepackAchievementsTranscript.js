@@ -35,15 +35,15 @@ export default function CoursepackAchievementsTranscript(props) {
 
 
     return (
-        <MDBContainer style={{ paddingTop: 30 }} align="center">
+        <MDBContainer >
             {show === false &&
                 <MDBCol size="12">
-                    <Button color="primary" onClick={fetchCert}>Get Transcript</Button>
+                    <Button variant="outlined" color="primary" onClick={fetchCert}>Get Transcript</Button>
                 </MDBCol>
             }
 
             {show && (
-                <Button color="primary">
+                <Button color="primary" variant="outlined">
                     <PDFDownloadLink
                         document={<PdfDocument cert={certDetails} coursepack={coursepackDetails} />}
                         fileName={`${sessionStorage.getItem("firstName")}_${sessionStorage.getItem("lastName")}_transcript.pdf`}

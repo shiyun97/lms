@@ -173,7 +173,7 @@ class CoursepackAchievementsPage extends Component {
     showViewButton = (index) => {
         return (
             <NavLink to={`/coursepack/achievements/certificates/view/${index}`}>
-                <MDBBtn color="primary" >View</MDBBtn>
+                <MDBBtn size="sm" color="primary" >View</MDBBtn>
             </NavLink>
         )
     }
@@ -188,9 +188,11 @@ class CoursepackAchievementsPage extends Component {
                     <MDBNavItem>
                         <MDBNavLink to="/coursepack/achievements/view/certificates" active={this.state.activeItem === "2"} onClick={this.toggle("2")} role="tab" >Certificates</MDBNavLink>
                     </MDBNavItem>
-                    <MDBNavItem>
-                        <MDBNavLink to="/coursepack/achievements/view/transcript" active={this.state.activeItem === "3"} onClick={this.toggle("3")} role="tab" >Transcripts</MDBNavLink>
-                    </MDBNavItem> 
+                    <MDBCol align="right">
+                            <CoursepackAchievementsTranscript /> 
+                    </MDBCol>
+
+
                 </MDBNav>
                 <MDBTabContent style={{ paddingTop: 30 }} activeItem={this.state.activeItem} >
                     <MDBTabPane tabId="1" role="tabpanel">
@@ -222,9 +224,6 @@ class CoursepackAchievementsPage extends Component {
                                 <Typography component="div">{this.showCertTable()}</Typography>
                             </SwipeableViews>
                         </Paper>
-                    </MDBTabPane>
-                    <MDBTabPane tabId="3" role="tabpanel">
-                        <CoursepackAchievementsTranscript />
                     </MDBTabPane>
                 </MDBTabContent>
             </div >

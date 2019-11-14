@@ -253,9 +253,9 @@ class Routes extends React.Component {
         <Route exact path="/coursepack/dashboard/admin/" component={CoursepackDashboardAdmin} />
         <Route exact path="/coursepacks" component={CoursepackViewAllPage} />
         <Route exact path="/coursepacks/:categoryId" component={CoursepackViewAllPage} />
+        <Route exact path="/coursepack/achievements/view/" component={CoursepackAchievementsPage} />
         <Route exact path="/coursepack/achievements/view/certificates" component={CoursepackAchievementsPage} />
         <Route exact path="/coursepack/achievements/view/badges" component={CoursepackAchievementsPage} />
-        <Route exact path="/coursepack/achievements/view/transcript" component={CoursepackAchievementsPage} />
         <Route exact path="/coursepack/achievements/certificates/view/:certId" component={CoursepackAchievementsPageView} />
 
         {/* FREE Templates */}
