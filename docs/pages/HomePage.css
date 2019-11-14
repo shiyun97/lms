@@ -105,6 +105,23 @@ a.border.nav-link.border-light.rounded.mr-1:hover {
   filter: opacity(.5);
 }
 
+.ideaPage {
+  position: relative;
+  top: 0px;
+  margin-bottom: -125px;
+}
+
+.ideaPage::after {
+  content: '';
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background: url('../dev/img/idea-banner.jpg');
+  background-position: center center;
+  background-size: cover;
+  filter: opacity(.5);
+}
+
 .multimediaPage {
   position: relative;
   top: 0px;
