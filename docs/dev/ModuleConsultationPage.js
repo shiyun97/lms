@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer } from "mdbreact";
+import { MDBContainer, MDBEdgeHeader } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
 import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
 import ModuleConsultationPageTeacher from "./Teacher/ModuleConsultationPageTeacher";
@@ -30,7 +30,8 @@ class ModuleConsultationPage extends Component {
                     <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Consultation'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
-                    <MDBContainer className="mt-3">
+                    <MDBEdgeHeader color="indigo darken-3" className="discussionPage" />
+                    <MDBContainer>
                         {this.props.dataStore.accessRight === "Teacher" && <ModuleConsultationPageTeacher />}
                         {this.props.dataStore.accessRight === "Student" && <ModuleConsultationPageStudent />}
                     </MDBContainer>
@@ -42,7 +43,7 @@ class ModuleConsultationPage extends Component {
 
 export default styled(ModuleConsultationPage)`
 .module-content{
-    margin-top: 40px;
+    margin-top: 0px;
 }
 @media screen and (min-width: 800px) {
     .module-content{

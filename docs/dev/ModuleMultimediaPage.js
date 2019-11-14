@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { observer, inject } from 'mobx-react'
+import { observer, inject } from 'mobx-react';
 import { NavLink, withRouter } from "react-router-dom";
 import styled from 'styled-components';
 import {
