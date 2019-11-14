@@ -265,9 +265,7 @@ class UsersManagementPage extends Component {
                             <MDBCol md="6">
                                 <input type="text" className="form-control" onChange={this.handleChange} disabled value={this.state.password} />
                             </MDBCol>
-                            <MDBCol md="6" align="right">
-                                {/* <MDBBtn onClick={() => this.generatePwd()} outline size="sm" color="primary">Reset Password</MDBBtn> */}
-                            </MDBCol>
+                            <MDBCol md="6" align="right"> </MDBCol>
                             <MDBCol md="12" className="mt-4">
                                 <MDBInputGroup
                                     style={{ paddingTop: 32 }}
@@ -425,7 +423,7 @@ class UsersManagementPage extends Component {
                     <MDBCol md={6}><MDBIcon onClick={() => this.toggle(1, row[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
                     <MDBCol md={6}><MDBIcon onClick={() => this.deleteUser(row[i].userId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
                 </MDBRow>,
-                                achievements: <MDBCol align="center" md={6}><MDBBtn size="sm" onClick={() => this.viewUserAchievements(row[i].userId)}>View</MDBBtn></MDBCol>,
+                                achievements: <MDBCol align="center" md={6}><MDBBtn color="deep-orange" size="sm" onClick={() => this.viewUserAchievements(row[i].userId)}>View</MDBBtn></MDBCol>,
             })
         }
         const data = () => ({ columns: this.state.columns, rows: newRows })

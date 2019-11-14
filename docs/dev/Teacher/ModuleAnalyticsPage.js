@@ -568,7 +568,7 @@ class ModuleAnalyticsPage extends Component {
       newRows.push({
         user: row[i].firstName + " " + row[i].lastName,
         email: row[i].email,
-        button: <center><MDBBtn color="primary" outline size="sm">Plan Consultation</MDBBtn></center>
+        button: <center><MDBBtn color="primary" outline size="sm" href={`mailto:${row[i].email}`}>Send Mail</MDBBtn></center>
       })
     }
     const data = () => ({ columns: this.state.gradeColumns, rows: newRows })
