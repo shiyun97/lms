@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBCardBody, MDBCard, MDBDataTable, MDBCardHeader } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBCardBody, MDBCard, MDBDataTable, MDBCardHeader, MDBEdgeHeader } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import ModuleSideNavigationDropdown from "../ModuleSideNavigationDropdown";
 import axios from 'axios';
@@ -232,8 +232,9 @@ class ModuleGradebookPageStudent extends Component {
                     <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Gradebook'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }}>
+                        <MDBRow>
                             <MDBCol md="8">
                                 <h2 className="font-weight-bold">
                                     Gradebook
@@ -278,7 +279,8 @@ class ModuleGradebookPageStudent extends Component {
                 </div>
                 <div className="module-content">
                     <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }}>
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
+                        <MDBRow>
                             <MDBCol md="8">
                                 <h2 className="font-weight-bold">
                                     Gradebook
@@ -314,8 +316,9 @@ class ModuleGradebookPageStudent extends Component {
                     <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Gradebook'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }} align="center">
+                        <MDBRow align="center">
                             <MDBCol md="12">
                                 <div className="spinner-border text-primary" role="status">
                                     <span className="sr-only">Loading...</span>
@@ -331,7 +334,6 @@ class ModuleGradebookPageStudent extends Component {
     initPage() {
         var pathname = location.pathname;
         pathname = pathname.split("/");
-        // console.log(pathname[2])
         this.props.dataStore.setCurrModId(pathname[2]);
     }
 
@@ -348,7 +350,7 @@ class ModuleGradebookPageStudent extends Component {
 }
 export default styled(ModuleGradebookPageStudent)`
 .module-content{
-    margin-top: 40px;
+    margin-top: 0px;
 }
 @media screen and (min-width: 800px) {
     .module-content{

@@ -246,7 +246,7 @@ class ModuleAnalyticsPage extends Component {
           this.setState({ attendanceStatus: "Empty Data" })
         } else {
           result.data.items.map((item, index) => {
-            if (item.startDate !== null && item.startDate !== undefined) {
+            // if (item.startDate !== null && item.startDate !== undefined) {
               present.push({
                 label: "Week " + (index + 1) + " - Lecture",
                 y: item.presentLecture,
@@ -267,7 +267,7 @@ class ModuleAnalyticsPage extends Component {
                 y: item.absentTutorial,
                 click: () => this.routeChange(`/modules/${moduleId}/attendance`)
               })
-            }
+            // }
           })
           this.setState({
             presentData: present,
@@ -445,8 +445,6 @@ class ModuleAnalyticsPage extends Component {
         reversed: true
       },
       legend: {
-        verticalAlign: "center",
-        horizontalAlign: "right",
         reversed: true,
         cursor: "pointer",
       },

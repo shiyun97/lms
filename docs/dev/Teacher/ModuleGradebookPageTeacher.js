@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable, MDBCardHeader, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader, MDBInputGroup } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBEdgeHeader, MDBDataTable, MDBCardHeader, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader, MDBInputGroup } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
 import ModuleSideNavigationDropdown from "../ModuleSideNavigationDropdown";
 import { Snackbar } from '@material-ui/core';
@@ -672,8 +672,9 @@ class ModuleGradebookPageTeacher extends Component {
                     <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Gradebook'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }}>
+                        <MDBRow>
                             <MDBCol md="4">
                                 <h2 className="font-weight-bold">
                                     Gradebook
@@ -760,8 +761,9 @@ class ModuleGradebookPageTeacher extends Component {
                     <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Gradebook'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }}>
+                        <MDBRow>
                             <MDBCol md="4">
                                 <h2 className="font-weight-bold">
                                     Gradebook
@@ -808,8 +810,9 @@ class ModuleGradebookPageTeacher extends Component {
                     <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Gradebook'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }} align="center">
+                        <MDBRow align="center">
                             <MDBCol md="12">
                                 <div className="spinner-border text-primary" role="status">
                                     <span className="sr-only">Loading...</span>
@@ -861,7 +864,7 @@ class ModuleGradebookPageTeacher extends Component {
             newRows.push({
                 user: row[i].student.firstName + " " + row[i].student.lastName,
                 email: row[i].student.email,
-                button: <center><MDBBtn color="primary" outline size="sm" href={`mailto:${row[i].student.email}`}>Send Mail</MDBBtn></center>
+                button: <center><MDBBtn color="primary" outline size="sm" href={`mailto:${row[i].student.email}`}>Plan Consultation</MDBBtn></center>
             })
         }
         const data = () => ({ columns: this.state.gradeColumns, rows: newRows })
@@ -908,7 +911,7 @@ class ModuleGradebookPageTeacher extends Component {
 }
 export default styled(ModuleGradebookPageTeacher)`
 .module-content{
-    margin-top: 40px;
+    margin-top: 0px;
 }
 @media screen and (min-width: 800px) {
     .module-content{

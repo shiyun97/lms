@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import { observer, inject } from 'mobx-react'
 import { NavLink, withRouter } from "react-router-dom";
 import styled from 'styled-components';
-import { 
-    MDBContainer, 
-    MDBRow, 
-    MDBCol, 
-    MDBIcon, 
+import {
+    MDBContainer,
+    MDBRow,
+    MDBCol,
+    MDBIcon,
     MDBDataTable,
     MDBBtn,
     MDBModal,
@@ -14,7 +14,9 @@ import {
     MDBModalBody,
     MDBModalFooter,
     MDBListGroup,
-    MDBListGroupItem 
+    MDBListGroupItem,
+    MDBEdgeHeader,
+    MDBJumbotron
 } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
 import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
@@ -129,14 +131,14 @@ class ModuleMultimediaPage extends Component {
                     const method = this.clickMultimedia;
                     const deleteMethod = this.deleteMultimedia;
                     Object.keys(data).forEach(function (key) {
-                        let dateCreatedDt = data[key].createdDt ? data[key].createdDt.substring(0,10) : "";
-                        let timeCreatedDt = data[key].createdDt ? data[key].createdDt.substring(11,16) : "";
+                        let dateCreatedDt = data[key].createdDt ? data[key].createdDt.substring(0, 10) : "";
+                        let timeCreatedDt = data[key].createdDt ? data[key].createdDt.substring(11, 16) : "";
                         let temp = {
                             name: data[key].name,
                             createdDt: dateCreatedDt + " " + timeCreatedDt,
                             uploadedBy: data[key].uploader.firstName + " " + data[key].uploader.lastName,
                             action: (<div><MDBBtn size="sm" onClick={e => method(data[key].fileId)}>View</MDBBtn>
-                                    <MDBBtn size="sm" color="danger" onClick={e => deleteMethod(data[key].fileId)}>Delete</MDBBtn></div>)
+                                <MDBBtn size="sm" color="danger" onClick={e => deleteMethod(data[key].fileId)}>Delete</MDBBtn></div>)
                         }
                         arr.push(temp);
 
@@ -159,7 +161,7 @@ class ModuleMultimediaPage extends Component {
                         multimediaStudentView: {
                             ...this.state.multimediaStudentView,
                             rows: arrStudentView
-                        } 
+                        }
                     });
                 })
                 .catch(error => {
@@ -189,12 +191,12 @@ class ModuleMultimediaPage extends Component {
         var selectAll = document.getElementById("multimediaCheckboxAll");
         if (selectAll.checked == true) {
             var checkboxes = document.getElementsByName("multimediaCheckbox");
-            for (var i=0; i<checkboxes.length; i++) {
+            for (var i = 0; i < checkboxes.length; i++) {
                 (checkboxes[i]).checked = true;
             }
         } else {
             var checkboxes = document.getElementsByName("multimediaCheckbox");
-            for (var i=0; i<checkboxes.length; i++) {
+            for (var i = 0; i < checkboxes.length; i++) {
                 (checkboxes[i]).checked = false;
             }
         }
@@ -268,7 +270,7 @@ class ModuleMultimediaPage extends Component {
             for (let i = 0; i < files.length; i++) {
                 formData.append('file', files[i]);
             }
-            
+
             fetch(`${API_URL}/file/uploadMultiple?moduleId=${this.state.moduleId}&type=multimedia&userId=${sessionStorage.getItem("userId")}`, {
                 method: 'post',
                 body: formData
@@ -287,17 +289,17 @@ class ModuleMultimediaPage extends Component {
                 })
                 .catch(error => {
                     this.setState({
-                    ...this.state,
-                    modalUploadMultimedia: false,
-                    uploadedMultimedia: [],
-                    message: error.response.data.errorMessage,
-                    openSnackbar: true
+                        ...this.state,
+                        modalUploadMultimedia: false,
+                        uploadedMultimedia: [],
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    });
+                    console.error("error in axios " + error);
+                    return this.initPage();
                 });
-                console.error("error in axios " + error);
-                return this.initPage();
-            });
         }
-        
+
         this.setState({
             ...this.state,
             modalUploadMultimedia: false,
@@ -306,7 +308,7 @@ class ModuleMultimediaPage extends Component {
     }
 
     removeMultimediaUpload = (file) => {
-        var array = this.state.uploadedMultimedia.filter(function(item) {
+        var array = this.state.uploadedMultimedia.filter(function (item) {
             return item !== file
         });
         console.log(array)
@@ -322,7 +324,7 @@ class ModuleMultimediaPage extends Component {
 
     uploadFileOnChange = () => {
         var file = this.fileUpload.files[0];
-        
+
         if (file != null) {
             const formData = new FormData();
             formData.append('file', file)
@@ -330,23 +332,23 @@ class ModuleMultimediaPage extends Component {
                 method: 'post',
                 body: formData
             })
-            .then((result) => {
-                this.setState({
-                    ...this.state,
-                    message: "New multimedia file uploaded successfully!",
-                    openSnackbar: true,
-                    modalUploadMultimedia: false
+                .then((result) => {
+                    this.setState({
+                        ...this.state,
+                        message: "New multimedia file uploaded successfully!",
+                        openSnackbar: true,
+                        modalUploadMultimedia: false
+                    })
+                    return this.initPage();
                 })
-                return this.initPage();
-            })
-            .catch(error => {
-                this.setState({
-                    modalUploadMultimedia: false,
-                    message: error.response.data.errorMessage,
-                    openSnackbar: true
-                })
-                console.error("error in axios " + error);
-            });
+                .catch(error => {
+                    this.setState({
+                        modalUploadMultimedia: false,
+                        message: error.response.data.errorMessage,
+                        openSnackbar: true
+                    })
+                    console.error("error in axios " + error);
+                });
         }
     }
 
@@ -366,115 +368,122 @@ class ModuleMultimediaPage extends Component {
                     <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Multimedia'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer>
                         <MDBRow>
-                            <MDBCol>
-                                <h4 className="mb-4">Multimedia</h4>
-                                <hr className="my-4" />
-                            </MDBCol>
-                        </MDBRow>
-                        <MDBRow className="mb-3">
-                            <MDBCol>
-                                <div className="align-right">
-                                    {
-                                        this.state.accessRight == "Teacher" &&
-                                        <MDBBtn color="primary lighten-2" outline className="mr-0" size="md" onClick={e => this.uploadMultimedia()}>
-                                            Upload
+                            <MDBCol md="12" className="mt-3 mx-auto">
+                                <MDBJumbotron>
+                                    <MDBRow>
+                                        <MDBCol md={10}>
+                                        <h2 className="font-weight-bold">Multimedia</h2>
+                                        </MDBCol>
+                                        <MDBCol md={2}>
+                                            <div className="align-right">
+                                                {
+                                                    this.state.accessRight == "Teacher" &&
+                                                    <MDBBtn color="primary lighten-2" outline className="mr-0" size="md" onClick={e => this.uploadMultimedia()}>
+                                                        Upload
                                         </MDBBtn>
-                                    }
-                                </div>
-                            </MDBCol>
-                        </MDBRow>
+                                                }
+                                            </div>
+                                        </MDBCol>
+                                        <MDBCol md={12}>
+                                            <hr className="my-4" />
+                                        </MDBCol>
+                                    </MDBRow>
 
-                        <MDBModal
-                            isOpen={this.state.modalUploadMultimedia}
-                            toggle={this.toggleModal("UploadMultimedia")}
-                        >
-                            <MDBModalHeader className="text-center"
-                                titleClass="w-100"
-                                toggle={this.toggleModal("UploadMultimedia")}>
-                                Upload Files
+                                    <MDBModal
+                                        isOpen={this.state.modalUploadMultimedia}
+                                        toggle={this.toggleModal("UploadMultimedia")}
+                                    >
+                                        <MDBModalHeader className="text-center"
+                                            titleClass="w-100"
+                                            toggle={this.toggleModal("UploadMultimedia")}>
+                                            Upload Files
                             </MDBModalHeader>
-                            <form className="needs-validation" noValidate onSubmit={this.submitNewMultimediaHandler}>
-                                <MDBModalBody>
-                                    <div className="text-center mt-2">
-                                        {/*
+                                        <form className="needs-validation" noValidate onSubmit={this.submitNewMultimediaHandler}>
+                                            <MDBModalBody>
+                                                <div className="text-center mt-2">
+                                                    {/*
                                         <SectionContainer className="mb-0 p-5 mt-1">
                                             <div onClick={e => this.upload()}>
                                                 <MDBIcon icon="upload" size="3x" className="mb-3 indigo-text"></MDBIcon><br></br>
                                                 Click to Upload Multimedia
                                             </div>
                                         </SectionContainer>*/}
-                                        
-                                        <Dropzone onDrop={this.onDrop} multiple accept=".mp4">
-                                            {({ getRootProps, getInputProps, isDragActive, isDragReject, rejectedFiles }) => (
-                                                <div {...getRootProps()}>
-                                                    <input {...getInputProps()} />
-                                                    <SectionContainer className="mb-0 p-5 mt-1">
-                                                        <MDBIcon icon="upload" size="3x" className="mb-3 indigo-text"></MDBIcon><br></br>
-                                                        Click to Upload or Drag & Drop
+
+                                                    <Dropzone onDrop={this.onDrop} multiple accept=".mp4">
+                                                        {({ getRootProps, getInputProps, isDragActive, isDragReject, rejectedFiles }) => (
+                                                            <div {...getRootProps()}>
+                                                                <input {...getInputProps()} />
+                                                                <SectionContainer className="mb-0 p-5 mt-1">
+                                                                    <MDBIcon icon="upload" size="3x" className="mb-3 indigo-text"></MDBIcon><br></br>
+                                                                    Click to Upload or Drag & Drop
                                                     </SectionContainer>
+                                                            </div>
+                                                        )}
+                                                    </Dropzone>
                                                 </div>
-                                            )}
-                                        </Dropzone>
-                                    </div>
-                                    <input id="multimediaInput" type="file" value="" ref={(ref) => this.fileUpload = ref} style={{display: 'none'}} onChange={e => this.uploadFileOnChange()} accept=".mp4" />
+                                                <input id="multimediaInput" type="file" value="" ref={(ref) => this.fileUpload = ref} style={{ display: 'none' }} onChange={e => this.uploadFileOnChange()} accept=".mp4" />
 
-                                    <MDBListGroup className="my-4 mx-4" style={{width: "26rem", height:"auto", maxHeight: "120px", overflowY: "auto"}}>
-                                        {uploadedMultimedia.length > 0 && uploadedMultimedia.map((uploadedFile, index) => (
-                                            <MDBListGroupItem key={index}>
-                                                <MDBIcon icon="times" className="mr-3" onClick={e => this.removeMultimediaUpload(uploadedFile)}></MDBIcon>{uploadedFile.name}
-                                            </MDBListGroupItem>
-                                        ))}
-                                    </MDBListGroup>
-                                </MDBModalBody>
-                                <MDBModalFooter>
-                                    <MDBBtn color="secondary" onClick={this.toggleModal("UploadMultimedia")}>
-                                        Cancel
+                                                <MDBListGroup className="my-4 mx-4" style={{ width: "26rem", height: "auto", maxHeight: "120px", overflowY: "auto" }}>
+                                                    {uploadedMultimedia.length > 0 && uploadedMultimedia.map((uploadedFile, index) => (
+                                                        <MDBListGroupItem key={index}>
+                                                            <MDBIcon icon="times" className="mr-3" onClick={e => this.removeMultimediaUpload(uploadedFile)}></MDBIcon>{uploadedFile.name}
+                                                        </MDBListGroupItem>
+                                                    ))}
+                                                </MDBListGroup>
+                                            </MDBModalBody>
+                                            <MDBModalFooter>
+                                                <MDBBtn color="secondary" onClick={this.toggleModal("UploadMultimedia")}>
+                                                    Cancel
                                         </MDBBtn>
-                                    <MDBBtn color="primary" type="submit" disabled={this.state.uploadedMultimedia.length == 0}>Save</MDBBtn>
-                                </MDBModalFooter>
-                            </form>
-                        </MDBModal>
+                                                <MDBBtn color="primary" type="submit" disabled={this.state.uploadedMultimedia.length == 0}>Save</MDBBtn>
+                                            </MDBModalFooter>
+                                        </form>
+                                    </MDBModal>
 
-                        <MDBRow>
-                            <MDBCol>
-                                {
-                                    multimedia.rows.length > 0 &&
-                                    <MDBDataTable striped bordered hover searching={true} sortable={true} data={multimedia} />
-                                }
-                                {
-                                    multimedia.rows.length == 0 &&
-                                    <div>No multimedia uploaded yet</div>
-                                }
+                                    <MDBRow>
+                                        <MDBCol>
+                                            {
+                                                multimedia.rows.length > 0 &&
+                                                <MDBDataTable striped bordered hover searching={true} sortable={true} data={multimedia} />
+                                            }
+                                            {
+                                                multimedia.rows.length == 0 &&
+                                                <div>No multimedia uploaded yet</div>
+                                            }
+                                        </MDBCol>
+                                    </MDBRow>
+                                    <Snackbar
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'left',
+                                        }}
+                                        open={this.state.openSnackbar}
+                                        autoHideDuration={6000}
+                                        onClose={this.handleClose}
+                                        ContentProps={{
+                                            'aria-describedby': 'message-id',
+                                        }}
+                                        message={<span id="message-id">{this.state.message}</span>}
+                                        action={[
+                                            <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                                        ]}
+                                    />
+                                </MDBJumbotron>
                             </MDBCol>
                         </MDBRow>
-                        <Snackbar
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            open={this.state.openSnackbar}
-                            autoHideDuration={6000}
-                            onClose={this.handleClose}
-                            ContentProps={{
-                                'aria-describedby': 'message-id',
-                            }}
-                            message={<span id="message-id">{this.state.message}</span>}
-                            action={[
-                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-                            ]}
-                        />
                     </MDBContainer>
                 </div>
             </div>
-          );
+        );
     }
 }
 
 export default styled(withRouter(ModuleMultimediaPage))`
 .module-content{
-    margin-top: 40px;
+    margin-top: 0px;
 }
 @media screen and (min-width: 800px) {
     .module-content{
@@ -565,40 +574,47 @@ class ModuleMultimediaDetailsPage extends Component {
                     <ModuleSideNavigationDropdown moduleId={this.props.match.params.moduleId} activeTab={'Multimedia'}></ModuleSideNavigationDropdown>
                 </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer>
                         <MDBRow>
-                            <MDBCol>
-                                <MDBRow className="ml-1">
-                                    <div style={{ color:"#007bff", fontWeight:"300", fontSize:"1.5rem", lineHeight:"1.2", marginBlockStart:"1.33em", cursor:"pointer", textDecoration:"underline" }} 
-                                        onClick={e => this.goToMultimediaMain()}>
-                                            Multimedia
+                            <MDBCol md="12" className="mt-3 mx-auto">
+                                <MDBJumbotron>
+                                    <MDBRow>
+                                        <MDBCol>
+                                            <MDBRow className="ml-1">
+                                                <div style={{ color: "#007bff", fontWeight: "300", fontSize: "1.5rem", lineHeight: "1.2", marginBlockStart: "1.33em", cursor: "pointer", textDecoration: "underline" }}
+                                                    onClick={e => this.goToMultimediaMain()}>
+                                                    Multimedia
                                     </div>
-                                    
-                                    <MDBIcon icon="angle-right" className="ml-4 mr-4" style={{ fontSize:"1.5rem", lineHeight:"1.2", marginBlockStart:"1.33em"}} />
-                                    <div style={{ fontWeight:"300", fontSize:"1.5rem", lineHeight:"1.2", marginBlockStart:"1.33em" }}>
-                                        {this.state.multimedia.name.split(".")[0]}
-                                    </div>
-                                </MDBRow>
-                                <hr className="my-4" />
-                            </MDBCol>
-                        </MDBRow>
-                        <MDBRow>
-                            <MDBCol>
-                                <video controls controlsList="nodownload" height="500px" id="multimediaToShow" >
-                                </video>
-                                <div className="mb-4" />
+
+                                                <MDBIcon icon="angle-right" className="ml-4 mr-4" style={{ fontSize: "1.5rem", lineHeight: "1.2", marginBlockStart: "1.33em" }} />
+                                                <div style={{ fontWeight: "300", fontSize: "1.5rem", lineHeight: "1.2", marginBlockStart: "1.33em" }}>
+                                                    {this.state.multimedia.name.split(".")[0]}
+                                                </div>
+                                            </MDBRow>
+                                            <hr className="my-4" />
+                                        </MDBCol>
+                                    </MDBRow>
+                                    <MDBRow>
+                                        <MDBCol>
+                                            <video controls controlsList="nodownload" height="500px" id="multimediaToShow" >
+                                            </video>
+                                            <div className="mb-4" />
+                                        </MDBCol>
+                                    </MDBRow>
+                                </MDBJumbotron>
                             </MDBCol>
                         </MDBRow>
                     </MDBContainer>
                 </div>
             </div>
-          );
+        );
     }
 }
 
 export const ModuleMultimediaDetailsPageStyled = styled(ModuleMultimediaDetailsPage)`
 .module-content{
-    margin-top: 40px;
+    margin-top: 0px;
 }
 @media screen and (min-width: 800px) {
     .module-content{
