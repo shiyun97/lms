@@ -246,7 +246,7 @@ class ModuleClassGroupsPage extends Component {
                             maxEnrollment: classGroupsArr[i].maxMember,
                             startTs: dateStart + " " + timeStart,
                             closeTs: dateClose + " " + timeClose,
-                            viewButton: (<MDBBtn size="sm" onClick={e => method(classGroupId)}>View</MDBBtn>)
+                            viewButton: (<MDBBtn size="sm" color="blue" onClick={e => method(classGroupId)}>View</MDBBtn>)
                         }
                         arr.push(temp);
                     }
@@ -277,7 +277,7 @@ class ModuleClassGroupsPage extends Component {
                     rows: [{
                         name: "Lecture 1",
                         currentEnrollment: moduleEnrollment,
-                        viewButton: (<MDBBtn size="sm" onClick={e => this.goToLectureGroup()} disabled={!moduleEnrollment}>View</MDBBtn>)
+                        viewButton: (<MDBBtn size="sm" color="blue" onClick={e => this.goToLectureGroup()} disabled={!moduleEnrollment}>View</MDBBtn>)
                     }]
                 }
             });
@@ -296,7 +296,7 @@ class ModuleClassGroupsPage extends Component {
                         let temp = {
                             name: "Tutorial " + tutorialsArr[i].tutorialId,
                             currentEnrollment: currentEnrollmentArr[i],
-                            viewButton: (<MDBBtn size="sm" onClick={e => method(tutorialId)}>View</MDBBtn>)
+                            viewButton: (<MDBBtn size="sm" color="blue" onClick={e => method(tutorialId)}>View</MDBBtn>)
                         }
                         arr.push(temp);
                     }
@@ -335,7 +335,7 @@ class ModuleClassGroupsPage extends Component {
                         maxEnrollment: classGroupsArr[i].maxMember,
                         startTs: classGroupsArr[i].openTs,
                         closeTs: classGroupsArr[i].closeTs,
-                        viewButton: (<MDBBtn size="sm" onClick={e => method(classGroupId)}>View</MDBBtn>)
+                        viewButton: (<MDBBtn size="sm" color="blue" onClick={e => method(classGroupId)}>View</MDBBtn>)
                     }
                     arr.push(temp);
                 }
@@ -570,7 +570,7 @@ class ModuleClassGroupsPage extends Component {
                                                     {
                                                         classGroups.rows.length > 0 &&
                                                         <MDBCard><MDBCardBody>
-                                                            <MDBDataTable striped bordered scrollX hover searching={false} sortable={true} paging={false} data={classGroups} className="mt-3" />
+                                                            <MDBDataTable scrollX striped bordered hover searching={false} sortable={true} paging={false} data={classGroups} className="mt-3" />
                                                         </MDBCardBody></MDBCard>
                                                     }
                                                     {
@@ -671,7 +671,7 @@ class ModuleClassGroupsPage extends Component {
                                                 <MDBCol>
                                                     {
                                                         lectureGroups.rows.length > 0 &&
-                                                        <MDBDataTable striped bordered hover searching={false} sortable={true} paging={false} data={lectureGroups} />
+                                                        <MDBDataTable scrollX striped bordered hover searching={false} sortable={true} paging={false} data={lectureGroups} />
                                                     }
                                                     {
                                                         lectureGroups.rows.length == 0 &&
@@ -687,7 +687,7 @@ class ModuleClassGroupsPage extends Component {
                                                 <MDBCol>
                                                     {
                                                         tutorialGroups.rows.length > 0 &&
-                                                        <MDBDataTable striped bordered hover searching={false} sortable={true} paging={false} data={tutorialGroups} />
+                                                        <MDBDataTable scrollX striped bordered hover searching={false} sortable={true} paging={false} data={tutorialGroups} />
                                                     }
                                                     {
                                                         tutorialGroups.rows.length == 0 &&
@@ -1370,7 +1370,7 @@ export class ClassGroupDetails extends Component {
                                                 <MDBCol>
                                                     {
                                                         students.rows.length > 0 &&
-                                                        <MDBDataTable striped bordered hover searching={true} sortable={true} data={students} />
+                                                        <MDBDataTable scrollX striped bordered hover searching={true} sortable={true} data={students} />
                                                     }
                                                     {
                                                         students.rows.length == 0 &&
@@ -1422,7 +1422,7 @@ tbody + thead{
     display: none;
 }
 .module-content{
-    margin-top: 40px;
+    margin-top: 0px;
 }
 @media screen and (min-width: 800px) {
     .module-content{
@@ -1597,7 +1597,7 @@ class LectureGroupDetails extends Component {
                                         <MDBTabPane tabId="Lecture Groups" role="tabpanel">
                                             <MDBRow className="mt-4">
                                                 <MDBCol>
-                                                    <MDBDataTable striped bordered hover searching={false} sortable={true} paging={false} data={students} />
+                                                    <MDBDataTable scrollX striped bordered hover searching={false} sortable={true} paging={false} data={students} />
                                                 </MDBCol>
                                             </MDBRow>
                                         </MDBTabPane>
@@ -1630,7 +1630,7 @@ class LectureGroupDetails extends Component {
 
 export const LectureGroupDetailsStyled = styled(LectureGroupDetails)`
 .module-content{
-    margin-top: 40px;
+    margin-top: 0px;
 }
 @media screen and (min-width: 800px) {
     .module-content{
@@ -1810,7 +1810,7 @@ export class TutorialGroupDetails extends Component {
                                                 <MDBCol>
                                                     {
                                                         students.rows.length > 0 &&
-                                                        <MDBDataTable striped bordered hover searching={true} sortable={true} data={students} />
+                                                        <MDBDataTable scrollX striped bordered hover searching={true} sortable={true} data={students} />
                                                     }
                                                     {
                                                         students.rows.length == 0 &&
@@ -1848,7 +1848,7 @@ export class TutorialGroupDetails extends Component {
 
 export const TutorialGroupDetailsStyled = styled(TutorialGroupDetails)`
 .module-content{
-    margin-top: 40px;
+    margin-top: 0px;
 }
 @media screen and (min-width: 800px) {
     .module-content{
