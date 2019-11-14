@@ -43,8 +43,6 @@ class DataStore {
   @observable maxMarks = 0
   @observable attempted = false
 
-  // coursepack assessment
-  @observable completeStatus = []
 
   @action setSignInStatus(status, email, password, accessRight) {
     this.signInStatus = status;
@@ -286,14 +284,6 @@ class DataStore {
 
   @computed get getCoursepackQuizAttempt() {
     return this.attempted;
-  }
-
-  @action setCompleteStatus(status) {
-    this.completeStatus.push(status)
-  }
-
-  @computed get getCompleteStatus() {
-    return toJS(this.completeStatus)
   }
 
 }

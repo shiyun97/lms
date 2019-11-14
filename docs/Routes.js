@@ -128,6 +128,7 @@ import CoursepackAchievementsPage from "./dev/CoursepackAchievementsPage";
 import ModuleQuizPageViewStatistics from "./dev/Teacher/ModuleQuizPageViewStatistics";
 import ModuleFeedbackPageViewStatistics from "./dev/Teacher/ModuleFeedbackPageViewStatistics";
 import CoursepackAchievementsPageView from "./dev/CoursepackAchievementsPageView";
+import UsersManagementAchievements from "./dev/Admin/UsersManagementAchievements";
 
 @inject('dataStore')
 @observer
@@ -171,6 +172,7 @@ class Routes extends React.Component {
         {/* LMS PAGES - Admin */}
         <Route exact path="/admin" component={AdminLoginPage} />
         <Route exact path="/coursepack/users" component={UsersManagementPage} />
+        <Route exact path="/coursepack/users/achievements/:userId" component={UsersManagementAchievements} />
         <Route exact path="/dashboard/active" component={DashboardPageAdmin} />
         <Route exact path="/dashboard/upcoming" component={DashboardPageAdmin} />
         <Route exact path="/dashboard/expired" component={DashboardPageAdmin} />

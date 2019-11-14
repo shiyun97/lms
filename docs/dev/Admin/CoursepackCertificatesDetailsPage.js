@@ -14,6 +14,7 @@ class CoursepackCertificatesDetailsPage extends Component {
         message: "",
         openSnackbar: false,
         modal: false,
+        modalEdit: false,
         modalDelete: false,
         coursepackList: "",
         certId: 0,
@@ -44,15 +45,18 @@ class CoursepackCertificatesDetailsPage extends Component {
             .catch(error => {
                 console.error("error in axios " + error);
             });
-
     }
 
     toggleModal = event => {
         this.setState({ modal: !this.state.modal })
     }
 
+    toggleEdit = event => {
+        this.setState({ modalEdit: !this.state.modalEdit })
+    }
+
     toggleDelete = event => {
-        this.setState({ modalDelete: !this.state.modal })
+        this.setState({ modalDelete: !this.state.modalDelete })
     }
 
     handleClose = (event, reason) => {
@@ -63,7 +67,7 @@ class CoursepackCertificatesDetailsPage extends Component {
     };
 
     cancel = event => {
-        this.setState({ modalDelete: false })
+        this.setState({ modalDelete: false, modalEdit: false })
     }
 
     showTable = () => {
@@ -150,6 +154,12 @@ class CoursepackCertificatesDetailsPage extends Component {
         this.setState({ selectedCoursepack: event.target.value }, () => event)
     }
 
+    handleChange = event => {
+        event.preventDefault();
+        this.setState({ title: event.target.value });
+        // console.log(event.target.value)
+    }
+
     addCoursepack = event => {
         this.setState({ modal: false })
         axios.put(`${API}Gamification/assignCoursepackToCert?certificationId=${this.state.certId}&coursepackId=${this.state.selectedCoursepack}`)
@@ -170,6 +180,25 @@ class CoursepackCertificatesDetailsPage extends Component {
             });
     }
 
+    saveCertName = event => {
+        axios.put(`${API}Gamification/updateCertification?certificationId=${this.state.certId}`, {title: this.state.title})
+            .then(result => {
+                this.setState({
+                    message: "Certificate name updated",
+                    openSnackbar: true,
+                    modalEdit: false
+                })
+                this.initPage()
+            })
+            .catch(error => {
+                this.setState({
+                    message: error.response,
+                    openSnackbar: true
+                })
+                console.error("error in axios " + error);
+            })
+    }
+
     removeCert = event => {
         axios.delete(`${API}Gamification/deleteCertification?certificationId=${this.state.certId}`)
             .then(result => {
@@ -187,7 +216,7 @@ class CoursepackCertificatesDetailsPage extends Component {
     }
 
     select = () => {
-    
+
         return (
             <select onChange={this.handleSelectedCoursepack} className="browser-default custom-select">
                 <option>Choose a coursepack</option>
@@ -206,6 +235,16 @@ class CoursepackCertificatesDetailsPage extends Component {
                     <MDBCol size="8">
                         <h2 className="font-weight-bold" style={{ paddingTop: 50 }}>
                             {this.state.title}
+                            <MDBIcon style={{ paddingLeft: 20 }} onClick={this.toggleEdit} icon="edit" />
+                            <MDBModal isOpen={this.state.modalEdit} toggle={this.toggleEdit}>
+                                <MDBModalHeader toggle={this.toggleEdit}>Edit Certificate Name</MDBModalHeader>
+                                <MDBModalBody>
+                                    <input type="text" name="title" onChange={this.handleChange} defaultValue={this.state.title} className="form-control" />
+                                </MDBModalBody>
+                                <MDBModalFooter>
+                                    <MDBBtn color="secondary" onClick={this.saveCertName}>Save</MDBBtn>
+                                </MDBModalFooter>
+                            </MDBModal>
                         </h2>
                     </MDBCol>
                     <MDBCol size="4" align="right" style={{ paddingTop: 40, paddingRight: 30 }}>

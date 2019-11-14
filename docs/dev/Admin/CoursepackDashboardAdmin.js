@@ -135,7 +135,7 @@ class CoursepackDashboardAdmin extends Component {
                         <MDBCol size="3">
                             <MDBCol align="center" size="12" style={{ paddingBottom: 30 }}>
                                 <Card style={{ height: 180, color: this.disabled(badge.achieved) }} >
-                                    <img src={fullPath} alt={badge.title} style={{maxWidth: 180}} />
+                                    <img src={fullPath} alt={badge.title} style={{ maxWidth: 180 }} />
                                 </Card>
                                 <MDBIcon onClick={() => this.deleteBadge(badge.id)} icon="trash-alt" />
                             </MDBCol>
@@ -192,7 +192,7 @@ class CoursepackDashboardAdmin extends Component {
 
     showManageButton = (certId) => {
         return (
-            <MDBBtn onClick={() => this.showDetails(certId)} color="default" >View</MDBBtn>
+            <MDBBtn size="sm" onClick={() => this.showDetails(certId)} color="default" >View</MDBBtn>
         )
     }
 
@@ -383,8 +383,8 @@ class CoursepackDashboardAdmin extends Component {
                                 />
                             </MDBModalBody>
                             <MDBModalFooter>
-                                <MDBBtn color="primary" onClick={this.addCert}>Create</MDBBtn>
                                 <MDBBtn color="secondary" onClick={this.cancel}>Cancel</MDBBtn>
+                                <MDBBtn color="primary" onClick={this.addCert}>Create</MDBBtn>
                             </MDBModalFooter>
                         </MDBModal>
                         {this.showCertTable()}

@@ -68,7 +68,12 @@ class UsersManagementPage extends Component {
                 "label": "",
                 "field": "",
                 "width": 100
-            }
+            },
+            {
+                "label": "Achievements",
+                "field": "achievenemts",
+                "width": 100
+            },
         ],
         rows: [{ label: "Retrieving data..." }],
         status: "retrieving",
@@ -401,6 +406,10 @@ class UsersManagementPage extends Component {
         )
     }
 
+    viewUserAchievements = (userId) => {
+        this.props.history.push(`/coursepack/users/achievements/${userId}`)
+    }
+
     render() {
         var newRows = []
         const row = this.state.rows
@@ -415,7 +424,8 @@ class UsersManagementPage extends Component {
                 editButton: <MDBRow align="center">
                     <MDBCol md={6}><MDBIcon onClick={() => this.toggle(1, row[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
                     <MDBCol md={6}><MDBIcon onClick={() => this.deleteUser(row[i].userId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
-                </MDBRow>
+                </MDBRow>,
+                                achievements: <MDBCol align="center" md={6}><MDBBtn size="sm" onClick={() => this.viewUserAchievements(row[i].userId)}>View</MDBBtn></MDBCol>,
             })
         }
         const data = () => ({ columns: this.state.columns, rows: newRows })

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MDBRow, MDBCol, MDBBtn, MDBIcon } from "mdbreact";
+import { MDBRow, MDBCol, MDBBtn, MDBIcon, MDBModal, MDBModalHeader, MDBModalBody, MDBModalFooter, } from "mdbreact";
 import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
 import { List, ListItem, ListSubheader, Snackbar } from '@material-ui/core/';
@@ -29,9 +29,8 @@ class CoursepackAssessmentPage extends Component {
         currentLessonOrder: [],
         isFull: false,
         lastItem: "",
-        openSnackbar: false,
-        message: "",
-        hasIncomplete: false
+        modal: false,
+        open: false
     }
 
     componentDidMount() {
@@ -109,8 +108,6 @@ class CoursepackAssessmentPage extends Component {
         var location = ""
         var currentFile = this.state.currentLessonOrder && this.state.currentLessonOrder.file ? this.state.currentLessonOrder.file.fileId : null
         var currentQuiz = this.state.currentLessonOrder && this.state.currentLessonOrder.quiz ? this.state.currentLessonOrder.quiz.quizId : null
-        var currentStatus = this.state.currentLessonOrder.status
-        console.log(this.state.currentLessonOrder)
 
         if (currentFile) { //video 
             return (
@@ -144,7 +141,12 @@ class CoursepackAssessmentPage extends Component {
                                 height: window.screen.height,
                                 overflow: 'scroll',
                             }}>
-                                <CoursepackQuizPageAnswerQuiz proceed={this.ended} currentQuiz={currentQuiz} />
+                                <CoursepackQuizPageAnswerQuiz
+                                    proceed={this.ended}
+                                    currentQuiz={currentQuiz}
+                                    index={this.state.listOfLessonOrder.findIndex(x => x.lessonOrderId === this.state.currentLessonOrder.lessonOrderId)}
+                                    length={this.state.listOfLessonOrder.length}
+                                />
                             </Element>
 
                         </Fullscreen>
@@ -155,13 +157,15 @@ class CoursepackAssessmentPage extends Component {
                     </MDBCol>
                 </div>
             )
-        } else if (this.state.hasIncomplete) {
-            return (<div>You are not eligible for badge/ certificate as you did not complete all videos and/ or quizzes</div>)
         }
     }
 
     goFull = event => {
         this.setState({ isFull: true });
+    }
+
+    toggle = event => {
+        this.setState({ modal: !this.state.modal })
     }
 
     ended = event => {
@@ -187,8 +191,8 @@ class CoursepackAssessmentPage extends Component {
 
         if (this.state.listOfLessonOrder.length !== index + 1) {
             this.setState({ currentLessonOrder: this.state.listOfLessonOrder[index + 1] })
-        } else  if (this.state.listOfLessonOrder.length!==this.props.dataStore.getCompleteStatus+1) {
-            this.setState({hasIncomplete: true})
+        } else {
+            this.setState({ modal: !this.state.modal })
         }
     }
 
@@ -224,24 +228,17 @@ class CoursepackAssessmentPage extends Component {
         )
     }
 
-    renderSnackbar = () => {
+    modal = () => {
         return (
-            <Snackbar
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                open={this.state.openSnackbar}
-                autoHideDuration={6000}
-                onClose={this.handleClose}
-                ContentProps={{
-                    'aria-describedby': 'message-id',
-                }}
-                message={<span id="message-id">{this.state.message}</span>}
-                action={[
-                    <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-                ]}
-            />
+            <MDBModal isOpen={this.state.modal} toggle={this.toggle}>
+                <MDBModalBody>
+                    <center>You have come to the end of the coursepack.</center>
+                </MDBModalBody>
+
+                <MDBModalFooter>
+                    <MDBBtn color="secondary" onClick={this.toggle}>Close</MDBBtn>
+                </MDBModalFooter>
+            </MDBModal>
         )
     }
 
@@ -274,7 +271,7 @@ class CoursepackAssessmentPage extends Component {
                         </MDBRow>
                     </SectionContainer>
                 </div>
-                {this.renderSnackbar()}
+                {this.modal()}
             </div>
         )
     }

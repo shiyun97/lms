@@ -40,7 +40,7 @@ class CoursepackQuizPageAnswerQuiz extends Component {
     let quizId = this.props.dataStore.getCurrQuizId;
 
     console.log(quizId)
-    console.log(userId) 
+    console.log(userId)
     axios
       .get(`http://localhost:8080/LMS-war/webresources/Assessment/retrieveCoursepackQuiz/${quizId}?userId=${userId}`)
       .then(result => {
@@ -48,7 +48,7 @@ class CoursepackQuizPageAnswerQuiz extends Component {
         newJson['completedHtml'] = "<p><h4>You have completed the quiz!</h4></p>";
         newJson['showTimerPanel'] = "none";
         json = newJson
-        this.setState({ status: "done",  userId: userId, quizId: quizId})
+        this.setState({ status: "done", userId: userId, quizId: quizId })
         this.props.dataStore.setMaxMarks(result.data.maxMarks)
       })
       .catch(error => {
@@ -161,8 +161,15 @@ class CoursepackQuizPageAnswerQuiz extends Component {
             {
               this.props.dataStore.getCurrScore === this.props.dataStore.getMaxMarks &&
               <div>
-                <center>You have unlocked the next quiz!</center> 
-                <center><MDBBtn onClick={this.props.proceed}>Proceed</MDBBtn></center>
+                {this.props.length !== this.props.index + 1 &&
+                  <div>
+                    <center>You have unlocked the next quiz!</center>
+                    <center><MDBBtn onClick={this.props.proceed}>Proceed</MDBBtn></center>
+                  </div>
+                }
+                {this.props.length === this.props.index + 1 &&
+                  <center>You have come to the end of the coursepack.</center>
+                }
               </div>
             }
           </MDBCol>
