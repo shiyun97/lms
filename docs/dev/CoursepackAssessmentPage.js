@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { MDBRow, MDBCol, MDBBtn, MDBIcon, MDBModal, MDBModalHeader, MDBModalBody, MDBModalFooter, } from "mdbreact";
+import { MDBRow, MDBCol, MDBBtn, MDBModal, MDBModalBody, MDBModalFooter, } from "mdbreact";
 import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
-import { List, ListItem, ListSubheader, Snackbar } from '@material-ui/core/';
+import { List, ListItem, ListSubheader } from '@material-ui/core/';
 import ReactPlayer from 'react-player'
 import CoursepackQuizPageAnswerQuiz from './Public/CoursepackQuizPageAnswerQuiz'
 import Fullscreen from "react-full-screen";
@@ -208,15 +208,21 @@ class CoursepackAssessmentPage extends Component {
                     {this.state.outlineList && this.state.outlineList.map((outline) => (
                         <li key={outline.outlineId} style={{ backgroundColor: 'inherit' }}>
                             <ul style={{ backgroundColor: 'inherit' }}>
-                                <ListSubheader align="center">{outline.name}</ListSubheader>
+                                <ListSubheader align="center"><b>{outline.name}</b></ListSubheader>
                                 {outline.lessonOrder.sort((a, b) => (a.number - b.number)) && outline.lessonOrder.sort((a, b) => (a.number - b.number)).map((lesson) => {
                                     if (lesson.file) {
                                         return (
-                                            <ListItem selected={this.state.currentLessonOrder.lessonOrderId === lesson.lessonOrderId} onClick={() => this.clickLessonOrder(lesson)} key={lesson.lessonOrderId}>{lesson.file.name.slice(0, -4)}</ListItem>
+                                            <div>
+                                                <ListItem selected={this.state.currentLessonOrder.lessonOrderId === lesson.lessonOrderId} onClick={() => this.clickLessonOrder(lesson)} key={lesson.lessonOrderId}>{lesson.file.name.slice(0, -4)}</ListItem>
+                                                <hr />
+                                            </div>
                                         )
                                     } else {
                                         return (
-                                            <ListItem selected={this.state.currentLessonOrder.lessonOrderId === lesson.lessonOrderId} onClick={() => this.clickLessonOrder(lesson)} key={lesson.lessonOrderId}>{lesson.quiz.title}</ListItem>
+                                            <div>
+                                                <ListItem selected={this.state.currentLessonOrder.lessonOrderId === lesson.lessonOrderId} onClick={() => this.clickLessonOrder(lesson)} key={lesson.lessonOrderId}>{lesson.quiz.title}</ListItem>
+                                                <hr />
+                                            </div>
                                         )
                                     }
                                 })}
