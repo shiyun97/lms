@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBIcon, MDBInputGroup } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBIcon, MDBInputGroup, MDBEdgeHeader } from "mdbreact";
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import ModuleSideNavigation from "./../ModuleSideNavigation";
+import ModuleSideNavigationDropdown from './../ModuleSideNavigationDropdown';
 import { Stepper, Step, StepLabel, TextField, Typography, Snackbar, Checkbox } from '@material-ui/core';
 import axios from 'axios';
 import { Redirect } from "react-router-dom";
@@ -377,7 +378,7 @@ class ModuleQuizPageCreateQuiz extends Component {
         switch (stepIndex) {
             case 0:
                 return (
-                    <div style={{ padding: 60 }}>
+                    <div className="create-quiz-form">
                         <h4 className="text-center">
                             Quiz Configuration
                         </h4>
@@ -487,7 +488,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                 );
             case 1:
                 return (
-                    <div style={{ padding: 60 }}>
+                    <div className="create-quiz-form">
                         <h4 className="text-center">
                             Build Quiz
                     </h4>
@@ -501,7 +502,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                                 <>
                                     <MDBCol md="12" className="mt-4" align="center">
                                         <MDBInputGroup
-                                            style={{ paddingTop: 22, width: 350 }}
+                                            style={{ paddingTop: 22, maxWidth: 350 }}
                                             containerClassName="mb-3"
                                             prepend="Question Type"
                                             required
@@ -529,18 +530,19 @@ class ModuleQuizPageCreateQuiz extends Component {
     render() {
         const { steps, activeStep } = this.state;
         var moduleId = this.props.dataStore.getCurrModId;
-        // console.log(this.state.elements)
-        // var test = this.props.dataStore.getQuestions
-        // console.log(test[0])
         if (this.state.redirect) {
             return <Redirect to={`/modules/${moduleId}/quiz`} />
         }
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }}>
+                        <MDBRow>
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
                                     <a href={`/modules/${moduleId}/quiz`}>Quiz</a>
@@ -550,7 +552,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                         </MDBRow>
                         <MDBRow className="py-3">
                             <MDBCol md="12">
-                                <MDBCard cascade className="grey lighten-4" style={{ padding: 50 }}>
+                                <MDBCard cascade className="grey lighten-4 create-quiz-form">
                                     <ul className="list-unstyled example-components-list">
                                         <form name="quiz-form">
                                             <Stepper activeStep={activeStep} alternativeLabel>
@@ -562,7 +564,7 @@ class ModuleQuizPageCreateQuiz extends Component {
                                             </Stepper>
                                             <div>
                                                 {activeStep === steps.length ? (
-                                                    <div style={{ padding: 60 }}>
+                                                    <div className="create-quiz-form">
                                                         <h5 className="text-center">
                                                             You have completed all steps to create the quiz. <br />
                                                             Ensure that all fields are correct before submitting.
@@ -622,7 +624,31 @@ class ModuleQuizPageCreateQuiz extends Component {
 
 export default styled(ModuleQuizPageCreateQuiz)`
 .module-content{
-    margin-left: 270px;
-    margin-top: 40px;
+    margin-top: 0px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+    .create-quiz-form {
+        padding: 50px;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+    .create-quiz-form {
+        padding: 5px;
+    }
 }
 `;
