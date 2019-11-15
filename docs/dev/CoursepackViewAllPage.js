@@ -245,7 +245,7 @@ class CoursepackViewAllPage extends Component {
     showCoursepacks = () => {
         let coursepacks = this.state.coursepacks;
         return (
-            <MDBRow middle>
+            <MDBRow>
                 <MDBCol>
                     <MDBRow>
                         <MDBRow>
@@ -282,7 +282,7 @@ class CoursepackViewAllPage extends Component {
                                         <MDBRow>
                                             <b style={{ color: "#f44336", fontSize: "18px" }}>
                                                 {
-                                                    (sessionStorage.getItem("accessRight") === "Public" || !sessionStorage.getItem("accessRight")) && <span>S${coursepack.price.toFixed(2)}</span>
+                                                    (sessionStorage.getItem("accessRight") === "Public" || !sessionStorage.getItem("accessRight")) && <span>S${coursepack.price && coursepack.price.toFixed(2)}</span>
                                                 }
                                                 {
                                                     sessionStorage.getItem("accessRight") === "Student" && <span>FREE</span>
@@ -292,7 +292,7 @@ class CoursepackViewAllPage extends Component {
                                         <div className="mb-2" />
                                         <MDBRow>
                                             <Rating name="hover-side" value={coursepack.rating} precision={0.1} readOnly size="small" />
-                                            <Box ml={2} style={{ fontSize: "14px" }}>{coursepack.rating.toFixed(1)}</Box>
+                                            <Box ml={2} style={{ fontSize: "14px" }}>{coursepack.rating && coursepack.rating.toFixed(1)}</Box>
                                         </MDBRow>
                                         <MDBRow>
                                             <Typography variant="body2" color="textSecondary">{" (" + coursepack.ratingList.length + " ratings)"}</Typography>
@@ -371,7 +371,7 @@ class CoursepackViewAllPage extends Component {
         return (
             <div className={this.props.className}>
                 <CoursepackTopNav cartNum={this.state.cartNum} />
-                <MDBJumbotron style={{ paddingLeft: 260, paddingBottom: 40, height: 10, marginBottom: 0, float: "center" }} className="categoryBar">
+                <MDBJumbotron style={{ paddingLeft: 260, paddingBottom: 40, height: 10, marginBottom: 0, float: "center", backgroundColor: "#f0f0f0" }} className="categoryBar">
                     <div>
                         <MDBNav>
                             {

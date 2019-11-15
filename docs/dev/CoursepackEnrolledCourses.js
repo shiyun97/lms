@@ -595,7 +595,7 @@ class CoursepackEnrolledCourses extends Component {
               <MDBCol className="py-3">
                 <MDBCardTitle className="h1-responsive pt-5 m-3 ml-5 px-5">
                   <MDBRow></MDBRow>
-                  <MDBRow>My Courses</MDBRow>
+                  <MDBRow>My Coursepacks</MDBRow>
                 </MDBCardTitle>
               </MDBCol>
             </MDBCol>
