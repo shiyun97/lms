@@ -5,6 +5,7 @@ import { MDBContainer, MDBCol, MDBBtn, MDBRow, MDBIcon, MDBProgress, MDBCard, MD
 import axios from "axios";
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
 import CoursepackSideNavigation from "../CoursepackSideNavigation";
+import CoursepackSideNavigationDropdown from "../CoursepackSideNavigationDropdown";
 import SectionContainer from "../../components/sectionContainer";
 import { Snackbar } from '@material-ui/core';
 import 'babel-polyfill';
@@ -324,8 +325,8 @@ class CoursepackDetailsTeacher extends Component {
         let ratings = this.state.ratings;
         return (
             <div className={this.props.className}>
-                {sessionStorage.getItem('accessRight') === 'Teacher' ? <CoursepackSideNavigation courseId={this.props.coursepackId} /> : null}
-                {/*                 <CoursepackSideNavigation courseId={this.props.coursepackId} />
+                {/* {sessionStorage.getItem('accessRight') === 'Teacher' ? <CoursepackSideNavigation courseId={this.props.coursepackId} /> : null}
+                                <CoursepackSideNavigation courseId={this.props.coursepackId} />
  */}
                 <MDBContainer style={{ paddingTop: 20 }}>
                     {sessionStorage.getItem('accessRight') !== 'Teacher' ? (
@@ -411,9 +412,16 @@ class CoursepackDetailsTeacher extends Component {
 
     render() {
         return (
-
+            <div className={this.props.className}>
+                {sessionStorage.getItem('accessRight') === 'Teacher' ?
+                    <div>
+                        <div className="module-sidebar-large"><CoursepackSideNavigation courseId={this.props.coursepackId} /></div>
+                        <div className="module-navbar-small">
+                            <CoursepackSideNavigationDropdown courseId={this.props.coursepackId} />
+                        </div>
+                    </div>
+                : null}
             <div className="module-content" style={{ paddingTop: 20 }}>
-                <CoursepackSideNavigation courseId={this.props.coursepackId} />
                 <div style={{ backgroundColor: '#505763', minHeight: 250, maxHeight: 250 }}>
                     <div>
                         <MDBContainer>
@@ -460,6 +468,7 @@ class CoursepackDetailsTeacher extends Component {
                     ]}
                 />
             </div >
+            </div>
         )
     }
 }
@@ -468,5 +477,24 @@ class CoursepackDetailsTeacher extends Component {
 export default styled(CoursepackDetailsTeacher)`
 module-content{
     margin-top: 40px;
-},
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+}
 `;

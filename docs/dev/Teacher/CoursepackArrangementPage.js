@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import styled from 'styled-components';
 import CoursepackSideNavigation from '../CoursepackSideNavigation';
+import CoursepackSideNavigationDropdown from '../CoursepackSideNavigationDropdown';
 import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBIcon, MDBModal, MDBModalHeader, MDBModalBody, MDBModalFooter } from "mdbreact";
 import axios from "axios";
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
@@ -518,12 +520,20 @@ class CoursepackArrangementPage extends Component {
 
     render() {
         return (
+            <div className={this.props.className}>
+            {sessionStorage.getItem('accessRight') === 'Teacher' ?
+                <div>
+                    <div className="module-sidebar-large"><CoursepackSideNavigation /></div>
+                    <div className="module-navbar-small">
+                        <CoursepackSideNavigationDropdown />
+                    </div>
+                </div>
+            : null}
             <div className="module-content">
-                <CoursepackSideNavigation /* coursepackId={this.props.match.params.coursepackId} */ />
                 <MDBContainer className="mt-5" >
                     <h4>Outlines</h4> <hr />
                     <MDBCol align="right">
-                        <MDBBtn onClick={this.toggleAddOutline}>
+                        <MDBBtn color="deep-orange" onClick={this.toggleAddOutline}>
                             Add Outline
                         </MDBBtn>
                     </MDBCol>
@@ -570,8 +580,29 @@ class CoursepackArrangementPage extends Component {
                     ]}
                 />
             </div>
+            </div>
         )
     }
 }
 
-export default CoursepackArrangementPage;
+export default styled(CoursepackArrangementPage)`
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+}
+`;

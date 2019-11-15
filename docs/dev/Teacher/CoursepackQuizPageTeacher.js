@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import styled from 'styled-components';
 import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable, NavLink } from "mdbreact";
 import CoursepackSideNavigation from "../CoursepackSideNavigation";
+import CoursepackSideNavigationDropdown from "../CoursepackSideNavigationDropdown";
 import { Snackbar } from '@material-ui/core';
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
@@ -163,7 +164,14 @@ class CoursepackQuizPageTeacher extends Component {
 
         return (
             <div className={this.props.className}>
-                <CoursepackSideNavigation courseId={coursepackId}></CoursepackSideNavigation>
+                {sessionStorage.getItem('accessRight') === 'Teacher' ?
+                    <div>
+                        <div className="module-sidebar-large"><CoursepackSideNavigation courseId={coursepackId} /></div>
+                        <div className="module-navbar-small">
+                            <CoursepackSideNavigationDropdown courseId={coursepackId} />
+                        </div>
+                    </div>
+                : null}
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
@@ -219,7 +227,14 @@ class CoursepackQuizPageTeacher extends Component {
         }
         return (
             <div className={this.props.className}>
-                <CoursepackSideNavigation courseId={coursepackId}></CoursepackSideNavigation>
+                {sessionStorage.getItem('accessRight') === 'Teacher' ?
+                    <div>
+                        <div className="module-sidebar-large"><CoursepackSideNavigation courseId={coursepackId} /></div>
+                        <div className="module-navbar-small">
+                            <CoursepackSideNavigationDropdown courseId={coursepackId} />
+                        </div>
+                    </div>
+                : null}
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
@@ -248,7 +263,14 @@ class CoursepackQuizPageTeacher extends Component {
         var coursepackId = this.props.dataStore.getCurrCoursepackId;
         return (
             <div className={this.props.className}>
-                <CoursepackSideNavigation courseId={coursepackId}></CoursepackSideNavigation>
+                {sessionStorage.getItem('accessRight') === 'Teacher' ?
+                    <div>
+                        <div className="module-sidebar-large"><CoursepackSideNavigation courseId={coursepackId} /></div>
+                        <div className="module-navbar-small">
+                            <CoursepackSideNavigationDropdown courseId={coursepackId} />
+                        </div>
+                    </div>
+                : null}
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }} align="center">
@@ -277,8 +299,23 @@ class CoursepackQuizPageTeacher extends Component {
 }
 
 export default styled(CoursepackQuizPageTeacher)`
-.module-content{
-    margin-left: 270px;
-    margin-top: 40px;
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
 }
 `;

@@ -16,6 +16,7 @@ import axios from "axios";
 import 'babel-polyfill';
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails, List, ListItem, ListItemText } from "@material-ui/core";
 import CoursepackSideNavigation from "./CoursepackSideNavigation";
+import CoursepackSideNavigationDropdown from "./CoursepackSideNavigationDropdown";
 import Dropzone from 'react-dropzone';
 import Snackbar from '@material-ui/core/Snackbar';
 import AppBar from '@material-ui/core/AppBar';
@@ -417,8 +418,16 @@ class CoursepackMultimediaPage extends Component {
         let availableMultimedia = this.state.availableMultimedia;
         let multimediaToShow = this.state.multimediaToShow;
         return (
+            <div className={this.props.className}>
+                {sessionStorage.getItem('accessRight') === 'Teacher' ?
+                    <div>
+                        <div className="module-sidebar-large"><CoursepackSideNavigation courseId={this.props.match.params.coursepackId} /></div>
+                        <div className="module-navbar-small">
+                            <CoursepackSideNavigationDropdown courseId={this.props.match.params.coursepackId} />
+                        </div>
+                    </div>
+                : null}
             <div className="module-content">
-                <CoursepackSideNavigation courseId={this.props.match.params.coursepackId} />
 
                 <MDBContainer style={{ paddingTop: 50 }}>
                     <MDBRow>
@@ -429,7 +438,7 @@ class CoursepackMultimediaPage extends Component {
                     <MDBRow>
                         <MDBCol>
                             <div style={{ float: 'right' }}>
-                                <MDBBtn color="default lighten-2" outline className="mr-0" size="md" onClick={e => this.uploadMultimedia()}>
+                                <MDBBtn color="deep-orange" className="mr-0" size="md" onClick={e => this.uploadMultimedia()}>
                                     Upload
                             </MDBBtn>
                             </div>
@@ -471,13 +480,30 @@ class CoursepackMultimediaPage extends Component {
                 {this.fullScreenMultimediaDialog()}
                 {this.confirmDeleteDialog()}
             </div >
+            </div>
         )
     }
 }
 
 
 export default styled(CoursepackMultimediaPage)`
-module-content{
-    margin-left: 270px;
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
 }
 `;

@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBIcon } from "mdbreact";
 import SectionContainer from "../../components/sectionContainer";
 import axios from "axios";
+import styled from 'styled-components';
 import CoursepackSideNavigation from '../CoursepackSideNavigation';
+import CoursepackSideNavigationDropdown from '../CoursepackSideNavigationDropdown';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
 import { Snackbar } from '@material-ui/core';
 import { observer, inject } from 'mobx-react';
@@ -233,8 +235,16 @@ class CoursePackEditPage extends Component {
 
     render() {
         return (
+            <div className={this.props.className}>
+                {sessionStorage.getItem('accessRight') === 'Teacher' ?
+                    <div>
+                        <div className="module-sidebar-large"><CoursepackSideNavigation /></div>
+                        <div className="module-navbar-small">
+                            <CoursepackSideNavigationDropdown />
+                        </div>
+                    </div>
+                : null}
             <div className="module-content">
-                <CoursepackSideNavigation /* coursepackId={this.props.coursepackId} */ />
 
                 <MDBContainer className="mt-5" >
                     <h3><b>Edit Coursepack</b></h3>
@@ -275,7 +285,28 @@ class CoursePackEditPage extends Component {
                     ]}
                 />
             </div >
+            </div>
         );
     }
 }
-export default CoursePackEditPage
+export default styled(CoursePackEditPage)`
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+}
+`;

@@ -19,6 +19,7 @@ import {
 import axios from "axios";
 import 'babel-polyfill';
 import CoursepackSideNavigation from "./CoursepackSideNavigation";
+import CoursepackSideNavigationDropdown from "./CoursepackSideNavigationDropdown";
 import SectionContainer from "../components/sectionContainer";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -396,8 +397,15 @@ class CoursepackForumTopicsPage extends Component {
         let topics = this.state.topics;
         return (
             <div className={this.props.className}>
+                {sessionStorage.getItem('accessRight') === 'Teacher' ?
+                    <div>
+                        <div className="module-sidebar-large"><CoursepackSideNavigation courseId={this.props.match.params.coursepackId} /></div>
+                        <div className="module-navbar-small">
+                            <CoursepackSideNavigationDropdown courseId={this.props.match.params.coursepackId} />
+                        </div>
+                    </div>
+                : null}
                 <div className="module-content">
-                    <CoursepackSideNavigation courseId={this.props.match.params.coursepackId} />
                     <MDBContainer>
                         <MDBRow>
                             <MDBCol>
@@ -407,7 +415,7 @@ class CoursepackForumTopicsPage extends Component {
                         </MDBRow>
                         <MDBRow>
                             <MDBCol>
-                                <MDBBtn className="ml-0 mb-4" color="primary" block onClick={e => {this.newTopic()}}>Add New Discussion Category</MDBBtn>
+                                <MDBBtn className="ml-0 mb-4" color="deep-orange" block onClick={e => {this.newTopic()}}>Add New Discussion Category</MDBBtn>
                                 {
                                     topics.length > 0 && topics.map((topic) => (
                                         <TopicListItem key={topic.forumTopicId} 

@@ -87,7 +87,7 @@ class CoursepackTopNav extends Component {
         let categories = this.state.categories;
         return (
             <div className={this.props.className}>
-                <MDBNavbar style={{ background: '#F1948A' }} dark expand="md" fixed="top">
+                <MDBNavbar style={{ background: "#fb6d63"}} dark expand="md" fixed="top">
                     <MDBNavbarBrand href="/coursepack/dashboard" className="Navbar-coursepack-title">
                         <strong>Coursepack</strong>
                     </MDBNavbarBrand>

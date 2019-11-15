@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import 'babel-polyfill';
 import CoursepackSideNavigation from "./CoursepackSideNavigation";
+import CoursepackSideNavigationDropdown from "./CoursepackSideNavigationDropdown";
 import {RichTextEditorStyled} from "./ModuleForumPage";
 import SectionContainer from "../components/sectionContainer";
 import Snackbar from '@material-ui/core/Snackbar';
@@ -393,8 +394,15 @@ class CoursepackForumDetailsPage extends Component {
         let forumThread = this.state.forumThread;
         return (
             <div className={this.props.className}>
+                {sessionStorage.getItem('accessRight') === 'Teacher' ?
+                    <div>
+                        <div className="module-sidebar-large"><CoursepackSideNavigation courseId={this.props.match.params.coursepackId} /></div>
+                        <div className="module-navbar-small">
+                            <CoursepackSideNavigationDropdown courseId={this.props.match.params.coursepackId} />
+                        </div>
+                    </div>
+                : null}
                 <div className="module-content">
-                    <CoursepackSideNavigation courseId={this.props.match.params.coursepackId} />
                     <MDBContainer>
                         <MDBRow>
                             <MDBCol>
