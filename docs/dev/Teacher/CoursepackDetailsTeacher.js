@@ -247,79 +247,13 @@ class CoursepackDetailsTeacher extends Component {
             </div>
         )
     }
-    // for adding rating
-    toggleModal = nr => () => {
-        let modalNumber = "modal" + nr;
-        if (nr == "UploadMultimedia") {
-            this.setState({
-                ...this.state,
-                uploadedMultimedia: [],
-                [modalNumber]: !this.state[modalNumber]
-            })
-        }
-        else {
-            this.setState({
-                ...this.state,
-                [modalNumber]: !this.state[modalNumber]
-            });
-        }
-    };
 
     proceedToCourseDetails = () => {
         this.props.dataStore.setPath(`/coursepack/${this.state.coursepackId}/assessments`);
         this.props.history.push(`/coursepack/${this.state.coursepackId}/assessments`);
     }
 
-    showAddRatingDialog() {
-        return <Dialog
-            open={this.state.modalAddRating}
-            onClose={this.toggleModal("AddRating")}
-            TransitionComponent={Transition}
-            keepMounted
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-            fullWidth="80px"
-            className={this.props.className}
-        >
-            <DialogTitle id="alert-dialog-title">
-                Add Rating
-        </DialogTitle>
-            <form className="needs-validation" noValidate onSubmit={this.submitHandler}>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description" style={{ maxWidth: "100%" }}>
-                        <MDBContainer>
-                            <Rating name="simple-controlled"
-                                value={this.state.ratingStarsInput}
-                                precision={1}
-                                size="large"
-                                onChange={(event, newValue) => {
-                                    this.setValue(newValue);
-                                }} />
-                            <TextField
-                                name="ratingCommentInput"
-                                label="Share your opinion of this course."
-                                multiline
-                                fullWidth
-                                rows="4"
-                                margin="normal"
-                                variant="outlined"
-                                value={this.state.ratingCommentInput}
-                                onChange={this.inputChangeHandler}
-                            /></MDBContainer>
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button color="secondary" onClick={this.toggleModal("AddRating")}>
-                        Cancel
-                </Button>
-                    <Button color="primary" type="submit">Save</Button>
-                </DialogActions>
-            </form>
-        </Dialog>
-    }
-
     getFeedback = () => {
-        console.log(this.state)
         let ratingSpread = this.state.ratingSpread;
         let ratingValues = this.state.ratingValues;
         let ratings = this.state.ratings;
@@ -329,20 +263,10 @@ class CoursepackDetailsTeacher extends Component {
                                 <CoursepackSideNavigation courseId={this.props.coursepackId} />
  */}
                 <MDBContainer style={{ paddingTop: 20 }}>
-                    {sessionStorage.getItem('accessRight') !== 'Teacher' ? (
-                        <div>
-                            <MDBBtn onClick={e => this.addRating()} color="primary">Rate</MDBBtn>
-                            {this.showAddRatingDialog()}
-                        </div>
-                    )
-                        : null
-                    }
-                    {/* <MDBBtn onClick={e => this.addRating()} color="primary">Rate</MDBBtn>
-                    {this.showAddRatingDialog()} */}
                     <MDBRow>
-                        <MDBCol className="col-md-3">
+                        <MDBCol md="3">
                             <MDBRow>
-                                <div style={{ fontSize: "4rem" }}>{this.state.averageRating.toFixed(1)}</div>
+                                <div style={{ fontSize: "4rem" }}>{this.state.averageRating && this.state.averageRating.toFixed(1)}</div>
                             </MDBRow>
                             <MDBRow>
                                 <Rating value={this.state.averageRating} readOnly precision={0.1} />
@@ -351,18 +275,18 @@ class CoursepackDetailsTeacher extends Component {
                                 <div className="mt-1" style={{ color: "#808080" }}>Average Rating</div>
                             </MDBRow>
                         </MDBCol>
-                        <MDBCol className="col-md-6">
+                        <MDBCol md="6">
                             {ratingSpread.map((rating, index) => (
                                 <MDBProgress value={rating} className="my-2" key={index} />
                             ))}
                         </MDBCol>
-                        <MDBCol className="col-md-2">
+                        <MDBCol md="2">
                             <div className="mt-1" />
                             {ratingValues.map((ratingValue, index) => (
                                 <Rating value={ratingValue} key={index} precision={0.1} readOnly size="small" />
                             ))}
                         </MDBCol>
-                        <MDBCol className="col-md-1">
+                        <MDBCol md="1">
                             {ratingSpread.map((rating, index) => (
                                 <div className="my-2" key={index} style={{ fontSize: "11px" }}>
                                     <span>{rating} %</span>
@@ -410,6 +334,89 @@ class CoursepackDetailsTeacher extends Component {
         )
     }
 
+    getFeedbackSmall = () => {
+        let ratingSpread = this.state.ratingSpread;
+        let ratingValues = this.state.ratingValues;
+        let ratings = this.state.ratings;
+        return (
+            <div className={this.props.className}>
+                {sessionStorage.getItem('accessRight') === 'Teacher' ? <CoursepackSideNavigation courseId={this.props.coursepackId} /> : null}
+
+                <MDBContainer>
+                    <MDBRow>
+                        <MDBCol>
+                            <MDBRow>
+                                <div style={{ fontSize: "4rem" }}>{this.state.averageRating && this.state.averageRating.toFixed(1)}</div>
+                            </MDBRow>
+                            <MDBRow>
+                                <Rating value={this.state.averageRating} readOnly precision={0.1} />
+                            </MDBRow>
+                            <MDBRow>
+                                <div className="mt-1" style={{ color: "#808080" }}>Average Rating</div>
+                                <br/>
+                            </MDBRow>
+                        </MDBCol>
+                    </MDBRow>
+                    <div className="mt-4" />
+                    <MDBRow>
+                        <MDBCol>
+                            <MDBRow><h5>Reviews</h5></MDBRow>
+                        </MDBCol>
+                    </MDBRow>
+                    <MDBRow className="mt-2">
+                        <MDBCol>
+                            {
+                                ratings.length == 0 && <div>No reviews to show</div>
+                            }
+                            {
+                                ratings.length > 0 && <div>
+                                    {ratings.map((rating, index) => (
+                                        <div>
+                                            <MDBRow>
+                                                <MDBCol className="col-md-1">
+                                                    <MDBIcon icon="user-circle" size="3x" style={{ color: "#808080" }} />
+                                                </MDBCol>
+                                                <MDBCol className="col-md-3">
+                                                    {rating.user.firstName + " " + rating.user.lastName}
+                                                </MDBCol>
+                                                <MDBCol className="col-md-8">
+                                                    <Rating value={rating.rating} readOnly precision={0.1} /><br />
+                                                    {rating.comment}
+                                                </MDBCol>
+                                            </MDBRow>
+                                            <div className="mb-5" />
+                                        </div>
+                                    ))}
+                                </div>
+                            }
+                        </MDBCol>
+                    </MDBRow>
+                </MDBContainer>
+            </div>
+        )
+    }
+
+    renderSnackbar = () => {
+        return (
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                open={this.state.openSnackbar}
+                autoHideDuration={6000}
+                onClose={this.handleClose}
+                ContentProps={{
+                    'aria-describedby': 'message-id',
+                }}
+                message={<span id="message-id">{this.state.message}</span>}
+                action={[
+                    <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                ]}
+            />
+        )
+    }
+
     render() {
         return (
             <div className={this.props.className}>
@@ -420,54 +427,42 @@ class CoursepackDetailsTeacher extends Component {
                             <CoursepackSideNavigationDropdown courseId={this.props.coursepackId} />
                         </div>
                     </div>
-                : null}
-            <div className="module-content" style={{ paddingTop: 20 }}>
-                <div style={{ backgroundColor: '#505763', minHeight: 250, maxHeight: 250 }}>
-                    <div>
-                        <MDBContainer>
-                            {this.showDescriptions()}
-                        </MDBContainer>
-                    </div>
-                </div>
-                <div style={{ paddingTop: 50, paddingRight: 30, paddingLeft: 20, marginRight: 330, }}>
-                    <SectionContainer>
-                        <MDBContainer>
-                            <h4>Course Outline</h4>
-                            <hr />
-                            {this.showCoursepackOutline()}
-                        </MDBContainer>
-                    </SectionContainer>
-                    <SectionContainer>
-                        <MDBContainer>
-                            <h4>Student Feedback</h4>
-                            <hr />
-                            {this.getFeedback()}
-                        </MDBContainer>
-                    </SectionContainer>
-                    <SectionContainer>
-                        <MDBContainer>
-                            {this.showTeacherBackground()}
-                        </MDBContainer>
+                    : null}
+                <div className="description-large">
+                    <div className="module-content" style={{ paddingTop: 0 }}>
+                        <div style={{ backgroundColor: '#505763', minHeight: 250, maxHeight: 250 }}>
+                            <div>
+                                <MDBContainer>
+                                    {this.showDescriptions()}
+                                </MDBContainer>
+                            </div>
+                        </div>
+                        <div style={{ paddingTop: 50, paddingRight: 30, paddingLeft: 20, marginRight: 330, }}>
+                            <SectionContainer>
+                                <MDBContainer>
+                                    <h4>Course Outline</h4>
+                                    <hr />
+                                    {this.showCoursepackOutline()}
+                                </MDBContainer>
+                            </SectionContainer>
+                            <SectionContainer>
+                                <MDBContainer>
+                                    <h4>Student Feedback</h4>
+                                    <hr />
+                                    {this.getFeedback()}
+                                </MDBContainer>
+                            </SectionContainer>
+                            <SectionContainer>
+                                <MDBContainer>
+                                    {this.showTeacherBackground()}
+                                </MDBContainer>
 
-                    </SectionContainer>
+                            </SectionContainer>
+                        </div>
+                    </div>
+                    
                 </div>
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    open={this.state.openSnackbar}
-                    autoHideDuration={6000}
-                    onClose={this.handleClose}
-                    ContentProps={{
-                        'aria-describedby': 'message-id',
-                    }}
-                    message={<span id="message-id">{this.state.message}</span>}
-                    action={[
-                        <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-                    ]}
-                />
-            </div >
+                {this.renderSnackbar()}
             </div>
         )
     }
@@ -475,18 +470,22 @@ class CoursepackDetailsTeacher extends Component {
 
 
 export default styled(CoursepackDetailsTeacher)`
-module-content{
-    margin-top: 40px;
-}
 @media screen and (min-width: 800px) {
-    .module-content{
-        margin-left: 270px;
+    .module-content {
+        margin-left: 240px;
+        margin-top: 0px;
     }
-    .module-navbar-small{
+    .module-navbar-small {
         display: none;
     }
-    .module-sidebar-large{
+    .module-sidebar-large {
         display: block;
+    }
+    .description-large {
+        padding-left: 70px;
+    }
+    .description-small {
+        display: none;
     }
 }
 @media screen and (max-width: 800px) {
@@ -496,5 +495,12 @@ module-content{
     .module-navbar-small{
         display: block;
     }
+    .description-card-small {
+        display: none;
+    }
+    .description-small {
+        padding-top: 40px;
+    }
+    
 }
 `;
