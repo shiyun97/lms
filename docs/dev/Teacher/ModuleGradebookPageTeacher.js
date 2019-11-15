@@ -675,12 +675,23 @@ class ModuleGradebookPageTeacher extends Component {
                     <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
                         <MDBRow>
-                            <MDBCol md="4">
+                            {/* desktop view */}
+                            <MDBCol md="4" className="module-sidebar-large">
                                 <h2 className="font-weight-bold">
                                     Gradebook
                 </h2>
                             </MDBCol>
-                            <MDBCol md="8" align="right">
+                            <MDBCol md="8" align="right" className="module-sidebar-large">
+                                <MDBBtn color="primary" size="sm" onClick={() => this.toggle(1)}>Create Grade Item</MDBBtn>
+                                <MDBBtn color="primary" size="sm" onClick={() => this.toggle(3)}>Create Quiz Grade Item</MDBBtn>
+                            </MDBCol>
+                            {/* mobile view */}
+                            <MDBCol md="4" className="module-navbar-small" align="center">
+                                <h2 className="font-weight-bold">
+                                    Gradebook
+                </h2>
+                            </MDBCol>
+                            <MDBCol md="8" align="center" className="module-navbar-small">
                                 <MDBBtn color="primary" size="sm" onClick={() => this.toggle(1)}>Create Grade Item</MDBBtn>
                                 <MDBBtn color="primary" size="sm" onClick={() => this.toggle(3)}>Create Quiz Grade Item</MDBBtn>
                             </MDBCol>
@@ -764,19 +775,30 @@ class ModuleGradebookPageTeacher extends Component {
                     <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
                         <MDBRow>
-                            <MDBCol md="4">
+                            {/* desktop view */}
+                            <MDBCol md="4" className="module-sidebar-large">
                                 <h2 className="font-weight-bold">
                                     Gradebook
                 </h2>
                             </MDBCol>
-                            <MDBCol md="8" align="right">
+                            <MDBCol md="8" align="right" className="module-sidebar-large">
                                 <MDBBtn color="primary" size="sm" onClick={() => this.toggle(1)}>Create Grade Item</MDBBtn>
                                 <MDBBtn color="primary" size="sm" onClick={() => this.toggle(3)}>Create Quiz Grade Item</MDBBtn>
                             </MDBCol>
-                            {this.renderCreateQuizGradeItemModalBox()}
-                            {this.renderCreateGradeItemModalBox()}
-                            {this.renderEditGradeItemModalBox()}
+                            {/* mobile view */}
+                            <MDBCol md="4" className="module-navbar-small" align="center">
+                                <h2 className="font-weight-bold">
+                                    Gradebook
+                </h2>
+                            </MDBCol>
+                            <MDBCol md="8" align="center" className="module-navbar-small">
+                                <MDBBtn color="primary" size="sm" onClick={() => this.toggle(1)}>Create Grade Item</MDBBtn>
+                                <MDBBtn color="primary" size="sm" onClick={() => this.toggle(3)}>Create Quiz Grade Item</MDBBtn>
+                            </MDBCol>
                         </MDBRow>
+                        {this.renderCreateQuizGradeItemModalBox()}
+                        {this.renderCreateGradeItemModalBox()}
+                        {this.renderEditGradeItemModalBox()}
                         <MDBRow className="py-3">
                             <MDBCol md="12">
                                 <MDBCard>

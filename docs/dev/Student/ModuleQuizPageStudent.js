@@ -277,7 +277,12 @@ class ModuleQuizPageStudent extends Component {
                     <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
                         <MDBRow>
-                            <MDBCol md="8">
+                            <MDBCol md="8" className="module-sidebar-large">
+                                <h2 className="font-weight-bold">
+                                    Quiz
+                </h2>
+                            </MDBCol>
+                            <MDBCol md="8" align="center" className="module-navbar-small">
                                 <h2 className="font-weight-bold">
                                     Quiz
                 </h2>
@@ -340,7 +345,12 @@ class ModuleQuizPageStudent extends Component {
                     <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
                         <MDBRow>
-                            <MDBCol md="8">
+                            <MDBCol md="8" className="module-sidebar-large">
+                                <h2 className="font-weight-bold">
+                                    Quiz
+                </h2>
+                            </MDBCol>
+                            <MDBCol md="8" align="center" className="module-navbar-small">
                                 <h2 className="font-weight-bold">
                                     Quiz
                 </h2>

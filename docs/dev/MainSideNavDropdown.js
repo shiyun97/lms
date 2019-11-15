@@ -154,6 +154,7 @@ class MainSideNavDropdown extends Component {
             <MDBNavbar color="indigo" dark>
                 <MDBContainer>
                     <MDBNavbarBrand className="white-text">
+                        <strong>FlipIt</strong>
                     </MDBNavbarBrand>
                     <MDBNavbarToggler className="white-text" onClick={this.toggleCollapse('navbarCollapse1')} />
                     <MDBCollapse id="navbarCollapse1" isOpen={this.state.collapseID} navbar>
