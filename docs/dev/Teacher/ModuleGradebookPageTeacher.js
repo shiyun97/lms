@@ -703,7 +703,7 @@ class ModuleGradebookPageTeacher extends Component {
                                 <MDBCard>
                                     <MDBCardHeader>
                                         Students Below 25th Percentile
-                </MDBCardHeader>
+                                    </MDBCardHeader>
                                     <div style={{ paddingLeft: 20, paddingRight: 20 }}>
                                         <MDBInputGroup
                                             style={{ paddingTop: 22 }}
@@ -788,12 +788,6 @@ class ModuleGradebookPageTeacher extends Component {
                             <MDBCol md="12" className="mt-3">
                                 {this.renderNoCardSection()}
                             </MDBCol>
-                            {/* <MDBCard>
-                <MDBCardHeader>
-                    Students Below 25th Percentile
-                </MDBCardHeader>
-                                {this.renderPercentileTable()}
-                </MDBCard> */}
                         </MDBRow>
                     </MDBContainer>
                 </div>

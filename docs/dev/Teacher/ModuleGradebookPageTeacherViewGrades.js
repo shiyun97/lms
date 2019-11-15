@@ -91,7 +91,7 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
             this.setState({
                 gradeEntryId: row.gradeEntryId,
                 marks: row.marks === null ? 0 : row.marks,
-                remarks: row.remarks === null ? "": row.remarks
+                remarks: row.remarks === null ? "" : row.remarks
             })
         }
     };
@@ -188,14 +188,13 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
     renderGradebookTable = () => {
         var item = this.state.gradeEntries;
         var moduleId = this.props.dataStore.getCurrModId;
-        // console.log(quiz)
         if (this.state.gradeEntries.length !== 0) {
             var tempgradeEntries = []
             for (let i = 0; i < this.state.gradeEntries.length; i++) {
                 tempgradeEntries.push({
                     studentName: item[i].student.firstName + " " + item[i].student.lastName,
                     gradeEntryId: item[i].gradeEntryId,
-                    score: item[i].marks === null ? "-" : item[i].marks,
+                    score: item[i].marks === null ? "-" : item[i].marks.toFixed(1),
                     remarks: item[i].remarks === null ? "-" : item[i].remarks,
                     viewButton: <center><MDBIcon onClick={() => this.toggle(1, item[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></center>
                 })
@@ -326,7 +325,6 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
     initPage() {
         var pathname = location.pathname;
         pathname = pathname.split("/");
-        // console.log(pathname[2])
         this.props.dataStore.setCurrModId(pathname[2]);
         this.props.dataStore.setCurrGradeItemId(pathname[4]);
     }
