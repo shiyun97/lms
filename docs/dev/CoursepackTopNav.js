@@ -139,7 +139,18 @@ class CoursepackTopNav extends Component {
                                             </MDBNavLink>
                                     </MDBNavItem>
                                 }
-
+                                {
+                                    (this.props.dataStore.getPath.includes("/coursepacks") || this.props.dataStore.getPath.includes("/coursepack/dashboard")) &&
+                                    categories && categories.map((category, index) => {
+                                        return (
+                                            <MDBNavItem>
+                                                <MDBNavLink exact to={`/coursepacks/${category.categoryId}`} onClick={() => this.updatePath(`/coursepacks/${category.categoryId}`)}>
+                                                    <span className="ml-4">{category.name}</span>
+                                                </MDBNavLink>
+                                            </MDBNavItem>
+                                        )
+                                    })
+                                }
                             </div>
                             {
                                 sessionStorage.getItem("accessRight") === "Public" &&

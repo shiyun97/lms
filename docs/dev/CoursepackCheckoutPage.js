@@ -10,6 +10,7 @@ import {
     MDBCardTitle,
     MDBIcon
 } from "mdbreact";
+import styled from 'styled-components';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
@@ -111,22 +112,32 @@ class CoursepackCheckoutPage extends Component {
         let currency = 'SGD';
         let total = totalPrice;
         return (
-            <div>
+            <div className={this.props.className}>
                 <CoursepackTopNav cartNum={cartObjs.length} />
-                <MDBJumbotron style={{ padding: 0, backgroundColor: "#505763", width: "100%" }}>
-                    <MDBCol className="text-white">
-                        <MDBCol className="py-3">
-                            <MDBCardTitle className="h1-responsive pt-5 m-3 ml-5 px-5">
-                                { this.showBreadcrumb()}
-                                <MDBRow>Checkout</MDBRow>
-                            </MDBCardTitle>
+                <div className="coursepack-breadcrumb-large">
+                    <MDBJumbotron style={{ padding: 0, backgroundColor: "#505763", width: "100%" }}>
+                        <MDBCol className="text-white">
+                            <MDBCol className="py-3">
+                                <MDBCardTitle className="h1-responsive pt-5 m-3 ml-5 px-5">
+                                    {this.showBreadcrumb()}
+                                    <MDBRow>Checkout</MDBRow>
+                                </MDBCardTitle>
                         </MDBCol>
                     </MDBCol>
                 </MDBJumbotron>
+                </div>
+                <div className="coursepack-breadcrumb-small">
+                    <MDBRow style={{ backgroundColor: "#505763", color: "#fff" }}>
+                        <MDBCardTitle className="h1-responsive pt-5 m-3 px-5">
+                            {this.showBreadcrumb()}
+                            <MDBRow>Checkout</MDBRow>
+                        </MDBCardTitle>
+                    </MDBRow>
+                </div>
                 <MDBContainer style={{ paddingBottom: 240 }}>
                     <MDBContainer style={{ paddingTop: 17 }} >
                         <MDBRow>
-                            <MDBCol md="5" lg="5">
+                            <MDBCol md="5" lg="5" sm="12">
                                 <MDBRow>
                                     <MDBCol>
                                         <h5 className="mb-3">{"Your Item (" + cartObjs.length + ")"}</h5>
@@ -156,7 +167,7 @@ class CoursepackCheckoutPage extends Component {
                                     ))
                                 }
                             </MDBCol>
-                            <MDBCol md="7" lg="7" className="px-5">
+                            <MDBCol sm="12" md="7" lg="7" className="px-5">
                                 <MDBRow>
                                     <div style={{ fontSize: "36px", fontWeight: 600, marginLeft: 12 }}>
                                         Total: S${totalPrice.toFixed(2)}
@@ -208,7 +219,18 @@ class CoursepackCheckoutPage extends Component {
     }
 }
 
-export default CoursepackCheckoutPage;
+export default styled(CoursepackCheckoutPage)`
+@media screen and (min-width: 800px) {
+    .coursepack-breadcrumb-small{
+        display: none;
+    }
+}
+@media screen and (max-width: 800px) {
+    .coursepack-breadcrumb-large{
+        display: none;
+    }
+}
+`;
 
 const PaypalButtonComponent = (props) => {
 
