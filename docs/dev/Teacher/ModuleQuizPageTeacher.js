@@ -338,14 +338,26 @@ class ModuleQuizPageTeacher extends Component {
                     <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
                         <MDBRow>
-                            <MDBCol md="8">
+                            {/* desktop view */}
+                            <MDBCol md="8" className="module-sidebar-large">
                                 <h2 className="font-weight-bold">
                                     Quiz
-                </h2>
+  </h2>
                             </MDBCol>
-                            <MDBCol md="4" align="right">
+                            <MDBCol md="4" align="right" className="module-sidebar-large">
                                 <MDBBtn href={`/modules/${moduleId}/quiz/create`} color="primary">Create Quiz</MDBBtn>
                             </MDBCol>
+                            {/*  */}
+                            {/* mobile view */}
+                            <MDBCol md="8" className="module-navbar-small" align="center">
+                                <h2 className="font-weight-bold">
+                                    Quiz
+  </h2>
+                            </MDBCol>
+                            <MDBCol md="4" align="center" className="module-navbar-small">
+                                <MDBBtn href={`/modules/${moduleId}/quiz/create`} color="primary">Create Quiz</MDBBtn>
+                            </MDBCol>
+                            {/*  */}
                         </MDBRow>
                         <MDBRow className="py-3">
                             <MDBCol md="12">
@@ -401,11 +413,26 @@ class ModuleQuizPageTeacher extends Component {
                     <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
                         <MDBRow>
-                            <MDBCol md="12">
+                            {/* desktop view */}
+                            <MDBCol md="8" className="module-sidebar-large">
                                 <h2 className="font-weight-bold">
                                     Quiz
-                                </h2>
+  </h2>
                             </MDBCol>
+                            <MDBCol md="4" align="right" className="module-sidebar-large">
+                                <MDBBtn href={`/modules/${moduleId}/quiz/create`} color="primary">Create Quiz</MDBBtn>
+                            </MDBCol>
+                            {/*  */}
+                            {/* mobile view */}
+                            <MDBCol md="8" className="module-navbar-small" align="center">
+                                <h2 className="font-weight-bold">
+                                    Quiz
+  </h2>
+                            </MDBCol>
+                            <MDBCol md="4" align="center" className="module-navbar-small">
+                                <MDBBtn href={`/modules/${moduleId}/quiz/create`} color="primary">Create Quiz</MDBBtn>
+                            </MDBCol>
+                            {/*  */}
                         </MDBRow>
                         <MDBRow className="py-3">
                             <MDBCol md="12">

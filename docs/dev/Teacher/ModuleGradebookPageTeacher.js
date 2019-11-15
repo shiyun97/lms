@@ -685,6 +685,7 @@ class ModuleGradebookPageTeacher extends Component {
                                 <MDBBtn color="primary" size="sm" onClick={() => this.toggle(1)}>Create Grade Item</MDBBtn>
                                 <MDBBtn color="primary" size="sm" onClick={() => this.toggle(3)}>Create Quiz Grade Item</MDBBtn>
                             </MDBCol>
+                            {/*  */}
                             {/* mobile view */}
                             <MDBCol md="4" className="module-navbar-small" align="center">
                                 <h2 className="font-weight-bold">
@@ -695,6 +696,7 @@ class ModuleGradebookPageTeacher extends Component {
                                 <MDBBtn color="primary" size="sm" onClick={() => this.toggle(1)}>Create Grade Item</MDBBtn>
                                 <MDBBtn color="primary" size="sm" onClick={() => this.toggle(3)}>Create Quiz Grade Item</MDBBtn>
                             </MDBCol>
+                            {/*  */}
                         </MDBRow>
                         {this.renderCreateQuizGradeItemModalBox()}
                         {this.renderCreateGradeItemModalBox()}
@@ -785,6 +787,7 @@ class ModuleGradebookPageTeacher extends Component {
                                 <MDBBtn color="primary" size="sm" onClick={() => this.toggle(1)}>Create Grade Item</MDBBtn>
                                 <MDBBtn color="primary" size="sm" onClick={() => this.toggle(3)}>Create Quiz Grade Item</MDBBtn>
                             </MDBCol>
+                            {/*  */}
                             {/* mobile view */}
                             <MDBCol md="4" className="module-navbar-small" align="center">
                                 <h2 className="font-weight-bold">
@@ -795,6 +798,7 @@ class ModuleGradebookPageTeacher extends Component {
                                 <MDBBtn color="primary" size="sm" onClick={() => this.toggle(1)}>Create Grade Item</MDBBtn>
                                 <MDBBtn color="primary" size="sm" onClick={() => this.toggle(3)}>Create Quiz Grade Item</MDBBtn>
                             </MDBCol>
+                            {/*  */}
                         </MDBRow>
                         {this.renderCreateQuizGradeItemModalBox()}
                         {this.renderCreateGradeItemModalBox()}
