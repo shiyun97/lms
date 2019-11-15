@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { NavLink, MDBDataTable, MDBRow, MDBBtn, MDBCol, MDBTabContent, MDBTabPane, MDBNav, MDBNavItem, MDBNavLink } from "mdbreact";
+import { NavLink, MDBDataTable, MDBRow, MDBBtn, MDBCol, MDBTabContent, MDBTabPane, MDBNav, MDBNavItem, MDBNavLink, MDBJumbotron, MDBCardTitle } from "mdbreact";
 import { observer, inject } from 'mobx-react'
 import axios from "axios";
 import CoursepackAchievementsCertificate from './CoursepackAchievementsCertificate'
@@ -247,6 +247,16 @@ class CoursepackAchievementsPage extends Component {
         return (
             <div>
                 <CoursepackTopNav cartNum={this.state.cartNum} />
+                <MDBJumbotron style={{ padding: 0, backgroundColor: "#505763", width: "100%" }}>
+                    <MDBCol className="text-white">
+                        <MDBCol className="py-3">
+                            <MDBCardTitle className="h1-responsive pt-5 m-3 ml-5 px-5">
+                                <MDBRow></MDBRow>
+                                <MDBRow>Coursepack Achievements</MDBRow>
+                            </MDBCardTitle>
+                        </MDBCol>
+                    </MDBCol>
+                </MDBJumbotron>
                 <div style={{ paddingLeft: 150, paddingTop: 50, paddingRight: 50 }} >
                     <MDBCol>
                         <h3><b>Coursepack Achievements</b></h3>
