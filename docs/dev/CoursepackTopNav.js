@@ -10,25 +10,12 @@ import {
     MDBNav,
     MDBNavLink,
     MDBCollapse,
-    MDBNavItem,
-    MDBIcon,
-    MDBDropdown,
-    MDBDropdownMenu,
-    MDBDropdownItem,
-    MDBDropdownToggle,
-    MDBBtn,
-    NavbarNav,
-    MDBInput, 
-    MDBRow
+    MDBNavItem
 } from "mdbreact";
 import Badge from '@material-ui/core/Badge';
 import Tooltip from '@material-ui/core/Tooltip';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import SearchIcon from '@material-ui/icons/Search';
-import IconButton from '@material-ui/core/IconButton';
-import Paper from '@material-ui/core/Paper';
-import InputBase from '@material-ui/core/InputBase';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import styled from 'styled-components';
 
 const API = "http://localhost:8080/LMS-war/webresources/Coursepack"
 
@@ -91,13 +78,13 @@ class CoursepackTopNav extends Component {
         const { collapseID } = this.state;
         let categories = this.state.categories;
         return (
-            <div>
+            <div className={this.props.className}>
                 <MDBNavbar style={{ background: '#F1948A' }} dark expand="md" fixed="top">
-                    <MDBNavbarBrand href="/coursepack/dashboard" style={{ paddingLeft: 80 }}>
+                    <MDBNavbarBrand href="/coursepack/dashboard" className="Navbar-coursepack-title">
                         <strong>Coursepack</strong>
                     </MDBNavbarBrand>
                     <MDBNavbarToggler onClick={this.toggleCollapse("mainNavbarCollapse")} />
-                    <MDBCollapse isOpen={this.state.collapseID} navbar>
+                    <MDBCollapse id="mainNavbarCollapse" isOpen={this.state.collapseID} navbar>
                         {/*<MDBNavbarNav left>
                             <MDBNavItem>
                                 <MDBDropdown>
@@ -137,28 +124,29 @@ class CoursepackTopNav extends Component {
                             </MDBNavbarNav>*/}
                         {
                             sessionStorage.getItem("accessRight") === "Public" &&
-                            <NavbarNav right>
+                            <MDBNavbarNav right>
                                 <MDBNavItem>
                                     {
-                                        this.props.cartNum > 0 &&
+                                        this.props.cartNum > 0 && <MDBNavLink exact to="/coursepack/cart" onClick={this.closeCollapse("mainNavbarCollapse")}>
                                         <Tooltip title="Cart">
                                             <span className="mr-2">
                                                 <Badge badgeContent={itemsInCart} color="secondary">
-                                                    <ShoppingCartIcon style={{ color: "white" }} aria-label="add" onClick={e => this.goToCart()} />
+                                                    <ShoppingCartIcon style={{ color: "white" }} aria-label="add" />
                                                 </Badge>
                                             </span>
-                                        </Tooltip>
+                                        </Tooltip></MDBNavLink>
                                     }
                                     {
-                                        this.props.cartNum == 0 &&
+                                        this.props.cartNum == 0 && <MDBNavLink exact to="/coursepack/cart" onClick={this.closeCollapse("mainNavbarCollapse")}>
                                         <Tooltip title="Empty Cart!">
                                             <span className="mr-2">
                                                 <ShoppingCartIcon style={{ color: "white" }} aria-label="add" />
+                                                <span className="showCartWord ml-2">Cart</span>
                                             </span>
-                                        </Tooltip>
+                                        </Tooltip></MDBNavLink>
                                     }
                                 </MDBNavItem>
-                            </NavbarNav>
+                            </MDBNavbarNav>
                         }
                     </MDBCollapse>
                 </MDBNavbar>
@@ -208,4 +196,14 @@ export class CategoryTopNav extends Component {
     }
 }
 
-export default withRouter(CoursepackTopNav);
+export default styled(withRouter(CoursepackTopNav))`
+@media screen and (min-width: 800px) {
+    .Navbar-coursepack-title {
+        padding-left: 80px;
+    }
+
+    .showCartWord {
+        display: none;
+    }
+}
+`;

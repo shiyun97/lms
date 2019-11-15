@@ -25,6 +25,7 @@ import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
 import CoursepackTopNav from "./CoursepackTopNav";
 import cprog from './img/cprog.jpg';
+import styled from 'styled-components';
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 
@@ -368,9 +369,9 @@ class CoursepackViewAllPage extends Component {
         let coursepacks = this.state.coursepacks;
         let categories = this.state.categories;
         return (
-            <div>
+            <div className={this.props.className}>
                 <CoursepackTopNav cartNum={this.state.cartNum} />
-                <MDBJumbotron style={{ paddingLeft: 260, paddingBottom: 40, height: 10, marginBottom: 0, float: "center" }}>
+                <MDBJumbotron style={{ paddingLeft: 260, paddingBottom: 40, height: 10, marginBottom: 0, float: "center" }} className="categoryBar">
                     <div>
                         <MDBNav>
                             {
@@ -389,7 +390,7 @@ class CoursepackViewAllPage extends Component {
                     </div>
                 </MDBJumbotron>
 
-                <MDBJumbotron style={{ padding: 0, backgroundColor: "#505763", width: "100%" }}>
+                <MDBJumbotron style={{ padding: 0, backgroundColor: "#505763", width: "100%" }} className="jumbotronPaddingTop">
                     <MDBCol className="text-white">
                         <MDBCol className="py-3">
                             <MDBCardTitle className="h1-responsive pt-2 m-3 ml-5 px-5">
@@ -424,4 +425,14 @@ class CoursepackViewAllPage extends Component {
     }
 }
 
-export default CoursepackViewAllPage;
+export default styled(CoursepackViewAllPage)`
+@media screen and (max-width: 800px) {
+    .categoryBar {
+        display: none;
+    }
+
+    .jumbotronPaddingTop {
+        margin-top: 50px;
+    }
+  }
+`;

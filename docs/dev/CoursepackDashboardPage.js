@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { observer, inject } from 'mobx-react'
+import { observer, inject } from 'mobx-react';
 import {
   MDBContainer,
   MDBCarouselInner,
@@ -34,6 +34,7 @@ import Box from '@material-ui/core/Box';
 import Snackbar from '@material-ui/core/Snackbar';
 import styled from 'styled-components';
 import MainSideNavDropdown from "./MainSideNavDropdown";
+
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 const FILE_SERVER = "http://127.0.0.1:8887/";
@@ -478,9 +479,9 @@ class CoursepackDashboardPage extends Component {
   render() {
     let categories = this.state.categories;
     return (
-      <>
+      <div className={this.props.className}>
         <CoursepackTopNav cartNum={this.state.cartNum} />
-        <MDBJumbotron style={{ paddingLeft: 260, paddingBottom: 40, height: 10, marginBottom: 0, float: "center", backgroundColor: "#f0f0f0" }}>
+        <MDBJumbotron style={{ paddingLeft: 260, paddingBottom: 40, maxHeight: 10, marginBottom: 0, float: "center", backgroundColor: "#f0f0f0"}} className="categoryBar">
           <div>
             <MDBNav>
               {
@@ -498,7 +499,7 @@ class CoursepackDashboardPage extends Component {
             </MDBNav>
           </div>
         </MDBJumbotron>
-        <MDBContainer style={{ paddingBottom: 240 }}>
+        <MDBContainer style={{ paddingBottom: 240 }} className="bannerPaddingTop">
           {/*this.mediaCarousel()*/}
           <img
             src={coursepackBanner}
@@ -512,8 +513,18 @@ class CoursepackDashboardPage extends Component {
           {this.courseRecommendation()}
           {this.renderSnackbar()}
         </MDBContainer>
-      </>
+      </div>
     );
   }
 }
-export default CoursepackDashboardPage;
+export default styled(CoursepackDashboardPage)`
+@media screen and (max-width: 800px) {
+  .categoryBar {
+    display: none;
+  }
+
+  .bannerPaddingTop {
+    margin-top: 50px;
+  }
+}
+`;
