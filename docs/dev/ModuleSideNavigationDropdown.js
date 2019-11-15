@@ -19,6 +19,10 @@ class ModuleSideNavigationDropdown extends Component {
         collapseID: ''
     }
 
+    logOutUser = () => {
+        this.props.dataStore.setSignOutStatus();
+    }
+
     toggleCollapse = collapseID => () => {
         this.setState(prevState => ({ collapseID: (prevState.collapseID !== collapseID ? collapseID : '') }));
     }
@@ -77,6 +81,11 @@ class ModuleSideNavigationDropdown extends Component {
                                 <MDBNavLink exact={true} to={`/modules/${moduleId}/analytics`}>Analytics</MDBNavLink>
                             </MDBNavItem>
                         }
+                        <MDBNavItem>
+                            <MDBNavLink exact={true} onClick={() => this.logOutUser()} to="/login">
+                                Logout
+                        </MDBNavLink>
+                        </MDBNavItem>
                     </NavbarNav>
                 </MDBCollapse>
             </MDBContainer>

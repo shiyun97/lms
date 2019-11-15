@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBProgress, MDBBreadcrumb, MDBBreadcrumbItem, MDBCardBody } from "mdbreact";
+import { MDBContainer, MDBEdgeHeader, MDBRow, MDBCol, MDBCard, MDBProgress, MDBBreadcrumb, MDBBreadcrumbItem, MDBCardBody } from "mdbreact";
 import axios from 'axios';
 import 'babel-polyfill';
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import ModuleSideNavigation from "../ModuleSideNavigation";
+import ModuleSideNavigationDropdown from "../ModuleSideNavigationDropdown";
 
 @inject('dataStore')
 @observer
@@ -127,8 +128,12 @@ class ModuleFeedbackPageViewStatistics extends Component {
         var moduleId = this.props.dataStore.getCurrModId;
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Gradebook'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="analyticsPage" />
                     <MDBContainer className="mt-3">
                         <MDBRow className="py-3">
                             <MDBCol md="12">
@@ -154,7 +159,25 @@ class ModuleFeedbackPageViewStatistics extends Component {
 
 export default styled(ModuleFeedbackPageViewStatistics)`
 .module-content{
-    margin-left: 270px;
-    margin-top: 40px;
+    margin-top: 0px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
 }
 `;

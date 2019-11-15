@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBEdgeHeader, MDBCard, MDBDataTable, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
+import ModuleSideNavigationDropdown from "../ModuleSideNavigationDropdown";
 import { Snackbar } from '@material-ui/core';
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
@@ -216,10 +217,14 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
 
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Gradebook'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }}>
+                        <MDBRow>
                             <MDBCol md="8">
                                 <h2 className="font-weight-bold">
                                     <a href={`/modules/${moduleId}/gradebook`}>Gradebook</a>
@@ -273,10 +278,14 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
         }
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Gradebook'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }}>
+                        <MDBRow>
                             <MDBCol md="8">
                                 <h2 className="font-weight-bold">
                                     <a href={`/modules/${moduleId}/gradebook`}>Gradebook</a>
@@ -306,10 +315,14 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
         var moduleId = this.props.dataStore.getCurrModId;
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Gradebook'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }} align="center">
+                        <MDBRow align="center">
                             <MDBCol md="12">
                                 <div className="spinner-border text-primary" role="status">
                                     <span className="sr-only">Loading...</span>
@@ -342,10 +355,25 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
 }
 export default styled(ModuleGradebookPageTeacherViewGrades)`
 .module-content{
-    margin-left: 270px;
-    margin-top: 40px;
+    margin-top: 0px;
 }
-.align-right{
-    float: right;
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
 }
 `;

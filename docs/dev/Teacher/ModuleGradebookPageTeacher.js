@@ -681,8 +681,8 @@ class ModuleGradebookPageTeacher extends Component {
                 </h2>
                             </MDBCol>
                             <MDBCol md="8" align="right">
-                                <MDBBtn color="primary" onClick={() => this.toggle(1)}>Create Grade Item</MDBBtn>
-                                <MDBBtn color="primary" onClick={() => this.toggle(3)}>Create Quiz Grade Item</MDBBtn>
+                                <MDBBtn color="primary" size="sm" onClick={() => this.toggle(1)}>Create Grade Item</MDBBtn>
+                                <MDBBtn color="primary" size="sm" onClick={() => this.toggle(3)}>Create Quiz Grade Item</MDBBtn>
                             </MDBCol>
                         </MDBRow>
                         {this.renderCreateQuizGradeItemModalBox()}
@@ -770,8 +770,8 @@ class ModuleGradebookPageTeacher extends Component {
                 </h2>
                             </MDBCol>
                             <MDBCol md="8" align="right">
-                                <MDBBtn color="primary" onClick={() => this.toggle(1)}>Create Grade Item</MDBBtn>
-                                <MDBBtn color="primary" onClick={() => this.toggle(3)}>Create Quiz Grade Item</MDBBtn>
+                                <MDBBtn color="primary" size="sm" onClick={() => this.toggle(1)}>Create Grade Item</MDBBtn>
+                                <MDBBtn color="primary" size="sm" onClick={() => this.toggle(3)}>Create Quiz Grade Item</MDBBtn>
                             </MDBCol>
                             {this.renderCreateQuizGradeItemModalBox()}
                             {this.renderCreateGradeItemModalBox()}
