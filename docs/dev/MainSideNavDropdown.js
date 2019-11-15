@@ -71,7 +71,7 @@ class MainSideNavDropdown extends Component {
                                             </MDBNavLink>
                                         </MDBNavItem>
                                     }
-                                    {this.props.dataStore.accessRight !== "Admin" &&
+                                    {(this.props.dataStore.accessRight !== "Admin" && this.props.dataStore.accessRight !== "Teacher") &&
                                         <MDBNavItem active={activeTab == "My Achievements"}>
                                             <MDBNavLink exact={true} to={`/coursepack/achievements/view/badges`} onClick={() => this.updatePath("/coursepack/achievements/view/badges")}>
                                                 My Achievements

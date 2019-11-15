@@ -303,26 +303,26 @@ class CoursepackDetailsStudent extends Component {
                                     <br />
                                     {
                                         this.state.studentEnrolled === true &&
-                                        <Button variant="contained" color="secondary" style={{ height: "55px" }} fullWidth onClick={e => this.proceedToCourseDetails()}>
+                                        <Button variant="contained" style={{ backgroundColor: "#fb6d63", height: "55px" }} fullWidth onClick={e => this.proceedToCourseDetails()}>
                                             Proceed to Course
                                         </Button>
                                     }
                                     {
                                         this.state.studentEnrolled === false && sessionStorage.getItem("accessRight") == "Public" &&
-                                        <Button variant="contained" color="secondary" style={{ height: "55px" }} fullWidth onClick={e => this.addToCart(this.state.courseDetails)}>
+                                        <Button variant="contained" style={{ backgroundColor: "#fb6d63", height: "55px" }} fullWidth onClick={e => this.addToCart(this.state.courseDetails)}>
                                             Add To Cart
                                         </Button>
                                     }
                                     {
                                         this.state.studentEnrolled === false && sessionStorage.getItem("accessRight") == "Student" &&
-                                        <Button variant="contained" color="secondary" style={{ height: "55px" }} fullWidth onClick={e => this.enrollCourse(this.state.courseDetails)}>
+                                        <Button variant="contained" style={{ backgroundColor: "#fb6d63", height: "55px" }} fullWidth onClick={e => this.enrollCourse(this.state.courseDetails)}>
                                             Enroll Now
                                         </Button>
                                     }
                                     {
                                         this.state.studentEnrolled === false && !sessionStorage.getItem("userId") && <div>
                                             <Typography variant="body2" color="textSecondary" component="p" style={{ fontSize: "18px", marginBottom: "10px" }}>Please login to purchase</Typography>
-                                            <Button variant="contained" color="secondary" style={{ height: "55px" }} fullWidth onClick={e => this.proceedToLogin()}>
+                                            <Button variant="contained" style={{ backgroundColor: "#fb6d63", height: "55px" }} fullWidth onClick={e => this.proceedToLogin()}>
                                                 Proceed to Login
                                             </Button>
                                         </div>
@@ -544,10 +544,10 @@ class CoursepackDetailsStudent extends Component {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button color="secondary" onClick={this.toggleModal("AddRating")}>
+                    <Button color="default" onClick={this.toggleModal("AddRating")}>
                         Cancel
                 </Button>
-                    <Button color="primary" type="submit">Save</Button>
+                    <Button style={{ backgroundColor: "#fb6d63" }} type="submit">Save</Button>
                 </DialogActions>
             </form>
         </Dialog>

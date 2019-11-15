@@ -55,6 +55,9 @@ class ModuleQuizPageViewStatistics extends Component {
         {question.question}
         <br />
         <br />
+        Correct Answer: {question.correctAnswer}
+        <br />
+        <br />
         {question.answers && question.answers.map((answer) => {
           const count = answer.count;
           var answerPercentage = (count / this.state.attempts * 100).toFixed(2)

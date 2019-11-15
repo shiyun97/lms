@@ -2,16 +2,16 @@ import React, { Component } from "react";
 import { observer, inject } from 'mobx-react';
 import { NavLink, NavItem } from 'react-router-dom';
 import {
-  MDBContainer, 
-  MDBJumbotron,
-  MDBBtn, 
-  MDBCol, 
-  MDBRow,
-  MDBCardTitle,
-  MDBIcon,
-  MDBNav,
-  MDBNavItem,
-  MDBNavLink
+    MDBContainer,
+    MDBJumbotron,
+    MDBBtn,
+    MDBCol,
+    MDBRow,
+    MDBCardTitle,
+    MDBIcon,
+    MDBNav,
+    MDBNavItem,
+    MDBNavLink
 } from "mdbreact";
 import axios from "axios";
 import { Rating } from '@material-ui/lab';
@@ -87,13 +87,13 @@ class CoursepackViewAllPage extends Component {
         // have a category id
         if (categoryId) {
             categoryId = pathname[2]
-            
+
             axios.get(`${API}Coursepack/getCategoryById?categoryId=${categoryId}`)
                 .then(result => {
-                    this.setState({ 
+                    this.setState({
                         categoryId: categoryId,
                         categoryName: result.data.name,
-                        coursepacks: result.data.coursepackList 
+                        coursepacks: result.data.coursepackList
                     })
                 })
                 .catch(error => {
@@ -301,13 +301,13 @@ class CoursepackViewAllPage extends Component {
                                         <MDBRow>
                                             {
                                                 sessionStorage.getItem("accessRight") === "Public" &&
-                                                <Button variant="contained" color="secondary" onClick={e => this.addToCart(coursepack)}>
+                                                <Button variant="contained" style={{ backgroundColor: "#fb6d63" }} onClick={e => this.addToCart(coursepack)}>
                                                     Add To Cart
                                                 </Button>
                                             }
                                             {
                                                 sessionStorage.getItem("accessRight") === "Student" &&
-                                                <Button variant="contained" color="secondary" onClick={e => this.enrollCourse(coursepack)}>
+                                                <Button variant="contained" style={{ backgroundColor: "#fb6d63" }} onClick={e => this.enrollCourse(coursepack)}>
                                                     Enroll Now
                                                 </Button>
                                             }
@@ -346,24 +346,24 @@ class CoursepackViewAllPage extends Component {
     renderSnackbar = () => {
         console.log("snackbar")
         return (
-          <Snackbar
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-            open={this.state.openSnackbar}
-            autoHideDuration={6000}
-            onClose={this.handleClose}
-            ContentProps={{
-              'aria-describedby': 'message-id',
-            }}
-            message={<span id="message-id">{this.state.message}</span>}
-            action={[
-              <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-            ]}
-          />
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                open={this.state.openSnackbar}
+                autoHideDuration={6000}
+                onClose={this.handleClose}
+                ContentProps={{
+                    'aria-describedby': 'message-id',
+                }}
+                message={<span id="message-id">{this.state.message}</span>}
+                action={[
+                    <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                ]}
+            />
         )
-      }
+    }
 
     render() {
         let coursepacks = this.state.coursepacks;
@@ -394,7 +394,7 @@ class CoursepackViewAllPage extends Component {
                     <MDBCol className="text-white">
                         <MDBCol className="py-3">
                             <MDBCardTitle className="h1-responsive pt-2 m-3 ml-5 px-5">
-                                { this.showBreadcrumb()}
+                                {this.showBreadcrumb()}
                                 <MDBRow>
                                     {
                                         this.state.categoryName && <span>All {this.state.categoryName} Coursepacks</span>

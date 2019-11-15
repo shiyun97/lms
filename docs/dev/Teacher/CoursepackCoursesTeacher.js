@@ -1,13 +1,8 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBBtn, MDBCard, MDBCardBody, MDBCardText, MDBCardTitle, MDBRow, MDBCol } from "mdbreact";
+import { MDBContainer, MDBBtn, MDBRow, MDBCol } from "mdbreact";
 import axios from "axios";
 import { NavLink } from 'react-router-dom'
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Typography from '@material-ui/core/Typography';
+import { Card, CardActionArea, CardActions, CardContent, CardMedia, Typography } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
 
 const API_MOCK = "http://localhost:3001"
@@ -52,41 +47,40 @@ class CoursepackCoursesTeacher extends Component {
             )
         }
 
-        return (<div className={this.props.className}>
+        return (
             <MDBRow>
-              {coursepackList && coursepackList.map((course, index) => {
-                return (
-                  <MDBCol md="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
-                    <Card style={{ display: "flex" }}>
-                      <CardActionArea>
-                      <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>
-                        <CardMedia
-                          style={{ height: 140 }}
-                          image={course.imageLocation}
-                          title={course.title}
-                        />
-                          <CardContent>
-                            <Typography gutterBottom variant="h5" style={{ color: "#000000" }}>
-                              {course.title}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary" component="p">
-                              {course.assignedTeacher.firstName + " " + course.assignedTeacher.lastName}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              <div style={{ width: 200, display: "flex", marginTop: 10 }}>
-                                <Rating name="hover-side" value={course.rating} precision={0.1} readOnly size="small" /><span className="ml-2">{course.rating.toFixed(1)}</span>
-                              </div>
-                            </Typography>
-                          </CardContent>
-                        </NavLink>
-                      </CardActionArea>
-                    </Card>
-                  </MDBCol>
-                )
-              })}
+                {coursepackList && coursepackList.map((course, index) => {
+                    return (
+                        <MDBCol md="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
+                            <Card style={{ display: "flex" }}>
+                                <CardActionArea>
+                                    <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>
+                                        <CardMedia
+                                            style={{ height: 140 }}
+                                            image={course.imageLocation}
+                                            title={course.title}
+                                        />
+                                        <CardContent>
+                                            <Typography gutterBottom variant="h5" style={{ color: "#000000" }}>
+                                                {course.title}
+                                            </Typography>
+                                            <Typography variant="body2" color="textSecondary" component="p">
+                                                {course.assignedTeacher.firstName + " " + course.assignedTeacher.lastName}
+                                            </Typography>
+                                            <Typography variant="body2" color="textSecondary">
+                                                <div style={{ width: 200, display: "flex", marginTop: 10 }}>
+                                                    <Rating name="hover-side" value={course.rating} precision={0.1} readOnly size="small" /><span className="ml-2">{course.rating.toFixed(1)}</span>
+                                                </div>
+                                            </Typography>
+                                        </CardContent>
+                                    </NavLink>
+                                </CardActionArea>
+                            </Card>
+                        </MDBCol>
+                    )
+                })}
             </MDBRow>
-          </div>)
-
+        )
         /*return (
             <MDBContainer>
                 <MDBRow>
@@ -127,15 +121,15 @@ class CoursepackCoursesTeacher extends Component {
     render() {
         return (
             <MDBContainer style={{ paddingBottom: 240 }}>
-                <MDBRow size="12" >
-                    <MDBCol size="8">
+                <MDBRow md="12" >
+                    <MDBCol md="8">
                         <h2 className="font-weight-bold" style={{ paddingTop: 50 }}>
                             Coursepack
                         </h2>
                     </MDBCol>
-                    <MDBCol size="4" align="right" style={{paddingTop:40, paddingRight: 30}}>
+                    <MDBCol md="4" align="right" style={{ paddingTop: 40, paddingRight: 30 }}>
                         <NavLink to="/coursepack/create/" style={{ color: 'white' }}>
-                            <MDBBtn color="primary">Create</MDBBtn>
+                            <MDBBtn color="deep-orange">Create</MDBBtn>
                         </NavLink>
                     </MDBCol>
 
