@@ -6,7 +6,7 @@ import {
   MDBDropdown, MDBDropdownItem, MDBDropdownMenu, MDBDropdownToggle, MDBCardBody, MDBCardText, MDBCardImage, MDBCard,
   MDBCardTitle, MDBCardGroup, MDBJumbotron, MDBProgress, MDBEdgeHeader
 } from "mdbreact";
-import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Card, CardActionArea, CardContent, CardMedia, Snackbar, TextField, Slide, Typography } from "@material-ui/core";
+import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Card, CardActionArea, CardActions, CardContent, CardMedia, Snackbar, TextField, Slide, Typography } from "@material-ui/core";
 import { Rating } from '@material-ui/lab';
 import CoursepackTopNav from "./CoursepackTopNav";
 import CoursepackCoursesTeacher from "./Teacher/CoursepackCoursesTeacher";
@@ -516,20 +516,20 @@ class CoursepackEnrolledCourses extends Component {
                       </CardContent>
                     </NavLink>
                     {
-                      course.ratingList.length > 0 && <div>
-                        <Button variant="contained" color="primary" onClick={e => this.editRating(course)}>
+                      course.ratingList.length > 0 && <CardActions>
+                        <Button variant="contained" style={{ backgroundColor: "#fb6d63" }} onClick={e => this.editRating(course)}>
                           Edit rating
                         </Button>
                         {this.showEditRatingDialog()}
-                      </div>
+                      </CardActions>
                     }
                     {
-                      course.ratingList.length == 0 && <div>
-                        <Button variant="contained" color="primary" onClick={e => this.addRating(course.coursepackId)}>
+                      course.ratingList.length == 0 && <CardActions>
+                        <Button variant="contained" style={{ backgroundColor: "#fb6d63" }} onClick={e => this.addRating(course.coursepackId)}>
                           Leave rating
                         </Button>
                         {this.showAddRatingDialog()}
-                      </div>
+                      </CardActions>
                     }
                   </CardActionArea>
                 </Card>
@@ -588,18 +588,30 @@ class CoursepackEnrolledCourses extends Component {
         cartObjs = JSON.parse(cart);
       }
       return (
-        <div>
+        <div className={this.props.className}>
           <CoursepackTopNav cartNum={cartObjs.length} />
-          <MDBJumbotron style={{ padding: 0, backgroundColor: "#505763", width: "100%" }}>
-            <MDBCol className="text-white">
-              <MDBCol className="py-3">
-                <MDBCardTitle className="h1-responsive pt-5 m-3 ml-5 px-5">
-                  <MDBRow></MDBRow>
-                  <MDBRow>My Coursepacks</MDBRow>
-                </MDBCardTitle>
+          <div className="coursepack-topbar-large">
+            <MDBJumbotron style={{ padding: 0, backgroundColor: "#505763", width: "100%" }}>
+              <MDBCol className="text-white">
+                <MDBCol className="py-3">
+                  <MDBCardTitle className="h1-responsive pt-5 m-3 ml-5 px-5">
+                    <MDBRow></MDBRow>
+                    <MDBRow>My Coursepacks</MDBRow>
+                  </MDBCardTitle>
+                </MDBCol>
               </MDBCol>
-            </MDBCol>
-          </MDBJumbotron>
+            </MDBJumbotron>
+          </div>
+
+          <div className="coursepack-topbar-small">
+                <MDBRow className="py-3" style={{ backgroundColor: "#505763", color: "#fff" }}>
+                  <MDBCardTitle className="h1-responsive pt-5 m-3 ml-0 px-5">
+                    <MDBRow></MDBRow>
+                    <MDBRow>My Coursepacks</MDBRow>
+                  </MDBCardTitle>
+                </MDBRow>
+          </div>
+
           <MDBContainer style={{ paddingBottom: 240 }}>
             <br />
             {this.showMyCoursepacks()}
@@ -625,6 +637,9 @@ export default styled(CoursepackEnrolledCourses)`
     .module-sidebar-large{
         display: block;
     }
+    .coursepack-topbar-small{
+      display: none;
+    }
 }
 @media screen and (max-width: 800px) {
     .module-sidebar-large{
@@ -632,6 +647,9 @@ export default styled(CoursepackEnrolledCourses)`
     }
     .module-navbar-small{
         display: block;
+    }
+    .coursepack-topbar-large{
+      display: none;
     }
 }
 
