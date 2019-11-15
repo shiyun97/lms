@@ -656,7 +656,7 @@ class ModuleClassGroupsPage extends Component {
 
                                                     </MDBModalBody>
                                                     <MDBModalFooter>
-                                                        <MDBBtn color="secondary" onClick={this.toggleModal("AddClassGroup")}>
+                                                        <MDBBtn color="grey" onClick={this.toggleModal("AddClassGroup")}>
                                                             Cancel
                                         </MDBBtn>
                                                         <MDBBtn color="primary" type="submit">Save</MDBBtn>

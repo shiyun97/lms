@@ -864,7 +864,7 @@ class ModuleGradebookPageTeacher extends Component {
             newRows.push({
                 user: row[i].student.firstName + " " + row[i].student.lastName,
                 email: row[i].student.email,
-                button: <center><MDBBtn color="primary" outline size="sm" href={`mailto:${row[i].student.email}`}>Plan Consultation</MDBBtn></center>
+                button: <center><MDBBtn color="primary" outline size="sm" href={`mailto:${row[i].student.email}`}>SEND EMAIL</MDBBtn></center>
             })
         }
         const data = () => ({ columns: this.state.gradeColumns, rows: newRows })

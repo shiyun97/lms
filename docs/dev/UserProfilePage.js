@@ -26,6 +26,7 @@ class UserProfilePage extends Component {
         userRole: "",
         username: "",
         status: "",
+        hidden: true,
         modal1: false,
         modal2: false
     }
@@ -122,7 +123,7 @@ class UserProfilePage extends Component {
         this.updateUserState();
     };
 
-    renderEditUserModalBox = () => {
+    renderDeleteUserModalBox = () => {
         return (
             <MDBModal isOpen={this.state.modal2} toggle={() => this.toggle(2)}>
                 <MDBModalHeader
@@ -150,7 +151,7 @@ class UserProfilePage extends Component {
         )
     }
 
-    renderDeleteUserModalBox = () => {
+    renderEditUserModalBox = () => {
         return (
             <MDBModal isOpen={this.state.modal1} toggle={() => this.toggle(1)}>
                 <MDBModalHeader
@@ -194,8 +195,11 @@ class UserProfilePage extends Component {
                                     Password
                                         </label>
                             </MDBCol>
-                            <MDBCol md="12">
-                                <input type="text" className="form-control" onChange={this.handleChange} defaultValue={this.state.password} name="password" />
+                            <MDBCol md="10">
+                                <input type={this.state.hidden ? "password" : "text"} className="form-control" onChange={this.handleChange} defaultValue={this.state.password} name="password" />
+                            </MDBCol>
+                            <MDBCol md="2">
+                                <span onClick={() => this.setState({ hidden: !this.state.hidden })} className="fa fa-fw fa-eye field-icon toggle-password"></span>
                             </MDBCol>
                             <MDBCol md="12" className="mt-4">
                                 <MDBInputGroup
