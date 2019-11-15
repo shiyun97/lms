@@ -43,7 +43,8 @@ class MainSideNavDropdown extends Component {
         return (
             <MDBNavbar style={{ backgroundColor: "#fb6d63" }} dark>
                 <MDBContainer>
-                    <MDBNavbarBrand className="white-text">
+                    <MDBNavbarBrand href="/coursepack/dashboard" className="Navbar-coursepack-title">
+                        <strong>Coursepack</strong>
                     </MDBNavbarBrand>
                     <MDBNavbarToggler className="white-text" onClick={this.toggleCollapse('navbarCollapse1')} />
                     <MDBCollapse id="navbarCollapse1" isOpen={this.state.collapseID} navbar>
@@ -104,11 +105,27 @@ class MainSideNavDropdown extends Component {
                                             Account
                                             </MDBNavLink>
                                     </MDBNavItem>
-                                    <MDBNavItem>
-                                        <MDBNavLink exact={true} onClick={() => this.logOutUser()} to="/coursepack/login">
-                                            Logout
+                                    {(this.props.dataStore.accessRight === "Student" || this.props.dataStore.accessRight === "Teacher") &&
+                                        <MDBNavItem>
+                                            <MDBNavLink exact={true} onClick={() => this.logOutUser()} to="/login">
+                                                Logout
                                     </MDBNavLink>
-                                    </MDBNavItem>
+                                        </MDBNavItem>
+                                    }
+                                    {this.props.dataStore.accessRight === "Admin" &&
+                                        <MDBNavItem>
+                                            <MDBNavLink exact={true} onClick={() => this.logOutUser()} to="/admin">
+                                                Logout
+            </MDBNavLink>
+                                        </MDBNavItem>
+                                    }
+                                    {this.props.dataStore.accessRight === "Public" &&
+                                        <MDBNavItem>
+                                            <MDBNavLink exact={true} onClick={() => this.logOutUser()} to="/coursepack/login">
+                                                Logout
+                                    </MDBNavLink>
+                                        </MDBNavItem>
+                                    }
                                 </>
                                 :
                                 <MDBNavItem active={activeTab == "Login"}>
@@ -179,11 +196,20 @@ class MainSideNavDropdown extends Component {
                                     Account
                                     </MDBNavLink>
                             </MDBNavItem>
-                            <MDBNavItem>
-                                <MDBNavLink exact={true} onClick={() => this.logOutUser()} to="/login">
-                                    Logout
+                            {(this.props.dataStore.accessRight === "Student" || this.props.dataStore.accessRight === "Teacher") &&
+                                <MDBNavItem>
+                                    <MDBNavLink exact={true} onClick={() => this.logOutUser()} to="/login">
+                                        Logout
                                     </MDBNavLink>
-                            </MDBNavItem>
+                                </MDBNavItem>
+                            }
+                            {this.props.dataStore.accessRight === "Admin" &&
+                                <MDBNavItem>
+                                    <MDBNavLink exact={true} onClick={() => this.logOutUser()} to="/admin">
+                                        Logout
+            </MDBNavLink>
+                                </MDBNavItem>
+                            }
                         </NavbarNav>
                     </MDBCollapse>
                 </MDBContainer>

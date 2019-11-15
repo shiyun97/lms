@@ -87,7 +87,7 @@ class CoursepackTopNav extends Component {
         let categories = this.state.categories;
         return (
             <div className={this.props.className}>
-                <MDBNavbar style={{ background: "#fb6d63"}} dark expand="md" fixed="top">
+                <MDBNavbar style={{ background: "#fb6d63" }} dark expand="md" fixed="top">
                     <MDBNavbarBrand href="/coursepack/dashboard" className="Navbar-coursepack-title">
                         <strong>Coursepack</strong>
                     </MDBNavbarBrand>
@@ -139,7 +139,7 @@ class CoursepackTopNav extends Component {
                                             </MDBNavLink>
                                     </MDBNavItem>
                                 }
-                                
+
                             </div>
                             {
                                 sessionStorage.getItem("accessRight") === "Public" &&
@@ -167,7 +167,7 @@ class CoursepackTopNav extends Component {
                                 </MDBNavItem>
                             }
                             <div className="show-main-nav">
-                            {(this.props.dataStore.accessRight !== "Admin" && this.props.dataStore.accessRight !== "Public") &&
+                                {(this.props.dataStore.accessRight !== "Admin" && this.props.dataStore.accessRight !== "Public") &&
                                     <MDBNavItem>
                                         <MDBNavLink exact={true} to={`/modules`} onClick={() => this.updatePath("/modules")}>
                                             Module
@@ -214,11 +214,27 @@ class CoursepackTopNav extends Component {
                                         Account
                                             </MDBNavLink>
                                 </MDBNavItem>
-                                <MDBNavItem>
-                                    <MDBNavLink exact={true} onClick={() => this.logOutUser()} to="/coursepack/login">
-                                        Logout
+                                {(this.props.dataStore.accessRight === "Student" || this.props.dataStore.accessRight === "Teacher") &&
+                                    <MDBNavItem>
+                                        <MDBNavLink exact={true} onClick={() => this.logOutUser()} to="/login">
+                                            Logout
                                     </MDBNavLink>
-                                </MDBNavItem>
+                                    </MDBNavItem>
+                                }
+                                {this.props.dataStore.accessRight === "Admin" &&
+                                    <MDBNavItem>
+                                        <MDBNavLink exact={true} onClick={() => this.logOutUser()} to="/admin">
+                                            Logout
+                                    </MDBNavLink>
+                                    </MDBNavItem>
+                                }
+                                {this.props.dataStore.accessRight === "Public" &&
+                                    <MDBNavItem>
+                                        <MDBNavLink exact={true} onClick={() => this.logOutUser()} to="/coursepack/login">
+                                            Logout
+                                    </MDBNavLink>
+                                    </MDBNavItem>
+                                }
                             </div>
                         </MDBNavbarNav>
                     </MDBCollapse>
@@ -258,11 +274,11 @@ export class CategoryTopNav extends Component {
         return (
             <div>
                 <MDBNav style={{ marginTop: '16px' }} dark expand="lg" fixed="top" className="justify-content-center">
-                        {this.state.category && this.state.category.map((category, index) => {
-                            return (
-                                <MDBNavItem><MDBNavLink to={`/coursepack/${category}/list`}>{category}</MDBNavLink></MDBNavItem>
-                            )
-                        })}
+                    {this.state.category && this.state.category.map((category, index) => {
+                        return (
+                            <MDBNavItem><MDBNavLink to={`/coursepack/${category}/list`}>{category}</MDBNavLink></MDBNavItem>
+                        )
+                    })}
                 </MDBNav>
             </div>
         )
