@@ -192,7 +192,7 @@ class CoursepackDashboardAdmin extends Component {
 
     showManageButton = (certId) => {
         return (
-            <MDBBtn size="sm" onClick={() => this.showDetails(certId)} color="default" >View</MDBBtn>
+            <MDBBtn size="sm" onClick={() => this.showDetails(certId)} color="deep-orange" >View</MDBBtn>
         )
     }
 
@@ -361,14 +361,14 @@ class CoursepackDashboardAdmin extends Component {
                 <MDBTabContent activeItem={this.state.activeItem} >
                     <MDBTabPane tabId="1" role="tabpanel">
                         <MDBCol align='right'>
-                            <MDBBtn onClick={this.uploadMultimedia} color="primary">Add New Badge</MDBBtn>
+                            <MDBBtn onClick={this.uploadMultimedia} color="deep-orange">Add New Badge</MDBBtn>
                         </MDBCol>
                         {this.showUploadModal()}
                         {this.showBadges()}
                     </MDBTabPane>
                     <MDBTabPane tabId="2" role="tabpanel">
                         <MDBCol align='right'>
-                            <MDBBtn onClick={this.toggleCertModal} color="primary">Add New Certificate</MDBBtn>
+                            <MDBBtn onClick={this.toggleCertModal} color="deep-orange">Add New Certificate</MDBBtn>
                         </MDBCol>
                         <MDBModal isOpen={this.state.toggleCertModal} toggle={this.toggleCertModal}>
                             <MDBModalHeader toggle={this.toggleCertModal}>Add Certificate</MDBModalHeader>
@@ -383,8 +383,8 @@ class CoursepackDashboardAdmin extends Component {
                                 />
                             </MDBModalBody>
                             <MDBModalFooter>
-                                <MDBBtn color="secondary" onClick={this.cancel}>Cancel</MDBBtn>
-                                <MDBBtn color="primary" onClick={this.addCert}>Create</MDBBtn>
+                                <MDBBtn color="grey" onClick={this.cancel}>Cancel</MDBBtn>
+                                <MDBBtn color="deep-orange" onClick={this.addCert}>Create</MDBBtn>
                             </MDBModalFooter>
                         </MDBModal>
                         {this.showCertTable()}

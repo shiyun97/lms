@@ -74,9 +74,11 @@ class DataStore {
   @action setSignOutStatus() {
     this.signInStatus = false;
     if (this.accessRight === "Public")
-      this.path = "/coursepack/dashboard"
+      this.path = "/coursepack/login"
+    else if (this.accessRight === "Admin")
+      this.path = "/admin"
     else
-      this.path = "/dashboard"
+      this.path = "/login"
     this.email = "";
     this.password = "";
     this.accessRight = "";

@@ -23,7 +23,6 @@ class ModuleSideNavigation extends Component {
         let activeTab = this.props.activeTab;
         return (
             <div className="sidebar-module-fixed position-fixed" style={{ backgroundColor: "#F5F5F5" }}>
-
                 <MDBListGroup className="list-group-flush">
                     <NavLink exact={true} to={`/modules/${moduleId}/`} activeClassName="activeClass" onClick={() => this.updatePath(`/modules/${moduleId}/`)}>
                         <MDBListGroupItem style={{ backgroundColor: "#F5F5F5" }}>
