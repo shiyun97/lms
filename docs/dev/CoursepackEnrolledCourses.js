@@ -488,7 +488,7 @@ class CoursepackEnrolledCourses extends Component {
         <MDBRow>
           {coursepackList && coursepackList.map((course, index) => {
             return (
-              <MDBCol size="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
+              <MDBCol md="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
                 <Card style={{ display: "flex" }}>
                   <CardActionArea>
                     <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>

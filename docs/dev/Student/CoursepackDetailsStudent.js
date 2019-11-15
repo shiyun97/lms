@@ -563,22 +563,22 @@ class CoursepackDetailsStudent extends Component {
                 {/*                 <CoursepackSideNavigation courseId={this.props.coursepackId} />
  */}
                 <MDBContainer style={{ paddingTop: 20 }}>
-                    {sessionStorage.getItem('accessRight') !== 'Teacher' ? (
+                    {/*{sessionStorage.getItem('accessRight') !== 'Teacher' ? (
                         <MDBRow>
                             <MDBCol>
                                 <div style={{ float: "right" }}>
-                                    {/*<MDBBtn onClick={e => this.addRating()} color="primary">Rate</MDBBtn>
-                                    {this.showAddRatingDialog()}*/}
+                                    <MDBBtn onClick={e => this.addRating()} color="primary">Rate</MDBBtn>
+                                    {this.showAddRatingDialog()}
                                 </div>
                             </MDBCol>
                         </MDBRow>
                     )
                         : null
                     }
-                    {/* <MDBBtn onClick={e => this.addRating()} color="primary">Rate</MDBBtn>
+                    <MDBBtn onClick={e => this.addRating()} color="primary">Rate</MDBBtn>
                     {this.showAddRatingDialog()} */}
                     <MDBRow>
-                        <MDBCol className="col-md-3">
+                        <MDBCol md="3">
                             <MDBRow>
                                 <div style={{ fontSize: "4rem" }}>{this.state.averageRating.toFixed(1)}</div>
                             </MDBRow>
@@ -589,18 +589,18 @@ class CoursepackDetailsStudent extends Component {
                                 <div className="mt-1" style={{ color: "#808080" }}>Average Rating</div>
                             </MDBRow>
                         </MDBCol>
-                        <MDBCol className="col-md-6">
+                        <MDBCol md="6">
                             {ratingSpread.map((rating, index) => (
                                 <MDBProgress value={rating} className="my-2" key={index} />
                             ))}
                         </MDBCol>
-                        <MDBCol className="col-md-2">
+                        <MDBCol md="2">
                             <div className="mt-1" />
                             {ratingValues.map((ratingValue, index) => (
                                 <Rating value={ratingValue} key={index} precision={0.1} readOnly size="small" />
                             ))}
                         </MDBCol>
-                        <MDBCol className="col-md-1">
+                        <MDBCol md="1">
                             {ratingSpread.map((rating, index) => (
                                 <div className="my-2" key={index} style={{ fontSize: "11px" }}>
                                     <span>{rating} %</span>
@@ -672,9 +672,9 @@ class CoursepackDetailsStudent extends Component {
         let cartNum = this.state.cartNum;
         let categories = this.state.categories;
         return (
-            <div>
+            <div className={this.props.className}>
                 <CoursepackTopNav cartNum={cartNum} />
-                <MDBJumbotron style={{ paddingLeft: 260, paddingBottom: 40, height: 10, marginBottom: 0, float: "center", backgroundColor: "#f0f0f0" }}>
+                <MDBJumbotron style={{ paddingLeft: 260, paddingBottom: 40, height: 10, marginBottom: 0, float: "center", backgroundColor: "#f0f0f0" }} className="categoryBar">
                     <div>
                         <MDBNav>
                             {
@@ -733,7 +733,13 @@ class CoursepackDetailsStudent extends Component {
 
 export default styled(CoursepackDetailsStudent)`
 module-content{
-    margin - left: 270px;
+    margin-left: 270px;
     margin-top: 40px;
-},
+}
+
+@media screen and (max-width: 800px) {
+    .categoryBar {
+      display: none;
+    }
+}
 `;

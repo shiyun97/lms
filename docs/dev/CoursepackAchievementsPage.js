@@ -6,6 +6,7 @@ import CoursepackAchievementsCertificate from './CoursepackAchievementsCertifica
 import SwipeableViews from 'react-swipeable-views';
 import { AppBar, Tabs, Tab, Paper, Card, Typography } from '@material-ui/core';
 import CoursepackAchievementsTranscript from "./CoursepackAchievementsTranscript";
+import CoursepackTopNav from "./CoursepackTopNav";
 
 const API = "http://localhost:8080/LMS-war/webresources/";
 const FILE_SERVER = "http://127.0.0.1:8887/";
@@ -26,7 +27,8 @@ class CoursepackAchievementsPage extends Component {
         allCertificates: [],
         allBadges: "",
         achievedBadges: [],
-        attainedCerts: ""
+        attainedCerts: "",
+        cartNum: 0
     }
 
     componentDidMount() {
@@ -69,6 +71,17 @@ class CoursepackAchievementsPage extends Component {
             .catch(error => {
                 console.error("error in axios " + error);
             });
+
+        // get cart items if any
+        let cart = sessionStorage.getItem("cart");
+        let cartNum = 0;
+        if (cart != undefined && cart != null) {
+            let cartObjs = JSON.parse(cart);
+            cartNum = cartObjs.length;
+        }
+        this.setState({
+            cartNum: cartNum
+        })
     }
 
     toggle = tab => e => {
@@ -232,13 +245,16 @@ class CoursepackAchievementsPage extends Component {
 
     render() {
         return (
-            <div style={{ paddingLeft: 150, paddingTop: 50, paddingRight: 50 }} >
-                <MDBCol>
-                    <h3><b>Coursepack Achievements</b></h3>
-                    <hr />
-                </MDBCol>
-                {this.showTabs()}
-            </div >
+            <div>
+                <CoursepackTopNav cartNum={this.state.cartNum} />
+                <div style={{ paddingLeft: 150, paddingTop: 50, paddingRight: 50 }} >
+                    <MDBCol>
+                        <h3><b>Coursepack Achievements</b></h3>
+                        <hr />
+                    </MDBCol>
+                    {this.showTabs()}
+                </div >
+            </div>
         )
     }
 }

@@ -22,7 +22,7 @@ import biz from './img/biz.jpg'
 import design from './img/design.jpg'
 import cprog from './img/cprog.jpg'
 import coursepackBanner from './img/coursepack-banner.jpg';
-import CoursepackTopNav, { CategoryTopNav } from "./CoursepackTopNav";
+import CoursepackTopNav from "./CoursepackTopNav";
 import { Rating } from '@material-ui/lab';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
