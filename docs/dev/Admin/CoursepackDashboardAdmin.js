@@ -126,8 +126,8 @@ class CoursepackDashboardAdmin extends Component {
             <MDBRow style={{ paddingTop: 30 }}>
                 {this.state.allBadges && this.state.allBadges.map((badge, index) => {
                     location = badge.location
-                    let savedFileName = location.split('/')[5]; //FIXME:
-                    /* let savedFileName = location.split('\\')[1]; */
+                    //let savedFileName = location.split('/')[5]; //FIXME:
+                    let savedFileName = location.split('\\')[1];
                     let fullPath = FILE_SERVER + savedFileName;
                     console.log(fullPath)
 

@@ -117,8 +117,8 @@ class CoursepackAssessmentPage extends Component {
                 this.state.allMultimedia && this.state.allMultimedia.map((eachMultimedia) => {
                     if (eachMultimedia.fileId === currentFile) {
                         location = eachMultimedia.location
-                        let savedFileName = location.split('/')[5]; //FIXME:
-                        /* let savedFileName = location.split('\\')[1]; */
+                        //let savedFileName = location.split('/')[5]; //FIXME:
+                        let savedFileName = location.split('\\')[1];
                         let fullPath = FILE_SERVER + savedFileName;
                         console.log(fullPath)
                         return (

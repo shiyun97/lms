@@ -7,6 +7,7 @@ import SwipeableViews from 'react-swipeable-views';
 import { AppBar, Tabs, Tab, Paper, Card, Typography } from '@material-ui/core';
 import CoursepackAchievementsTranscript from "./CoursepackAchievementsTranscript";
 import CoursepackTopNav from "./CoursepackTopNav";
+import styled from 'styled-components';
 
 const API = "http://localhost:8080/LMS-war/webresources/";
 const FILE_SERVER = "http://127.0.0.1:8887/";
@@ -120,8 +121,8 @@ class CoursepackAchievementsPage extends Component {
             <MDBRow >
                 {this.state.allBadges && this.state.allBadges.map((badge, index) => {
                     location = badge.location
-                    let savedFileName = location.split('/')[5]; //FIXME:
-                    /* let savedFileName = location.split('\\')[1]; */
+                   // let savedFileName = location.split('/')[5]; //FIXME:
+                    let savedFileName = location.split('\\')[1];
                     let fullPath = FILE_SERVER + savedFileName;
                     console.log(fullPath)
 
@@ -245,18 +246,30 @@ class CoursepackAchievementsPage extends Component {
 
     render() {
         return (
-            <div>
+            <div className={this.props.className}>
                 <CoursepackTopNav cartNum={this.state.cartNum} />
-                <MDBJumbotron style={{ padding: 0, backgroundColor: "#505763", width: "100%" }}>
-                    <MDBCol className="text-white">
-                        <MDBCol className="py-3">
-                            <MDBCardTitle className="h1-responsive pt-5 m-3 ml-5 px-5">
-                                <MDBRow></MDBRow>
-                                <MDBRow>Coursepack Achievements</MDBRow>
-                            </MDBCardTitle>
+                <div className="coursepack-topbar-large">
+                    <MDBJumbotron style={{ padding: 0, backgroundColor: "#505763", width: "100%" }}>
+                        <MDBCol className="text-white">
+                            <MDBCol className="py-3">
+                                <MDBCardTitle className="h1-responsive pt-5 m-3 ml-5 px-5">
+                                    <MDBRow></MDBRow>
+                                    <MDBRow>Coursepack Achievements</MDBRow>
+                                </MDBCardTitle>
+                            </MDBCol>
                         </MDBCol>
-                    </MDBCol>
-                </MDBJumbotron>
+                    </MDBJumbotron>
+                </div>
+
+                <div className="coursepack-topbar-small">
+                    <MDBRow className="py-3" style={{ backgroundColor: "#505763", color: "#fff" }}>
+                        <MDBCardTitle className="h1-responsive pt-5 m-3 ml-0 px-5">
+                            <MDBRow></MDBRow>
+                            <MDBRow>Coursepack Achievements</MDBRow>
+                        </MDBCardTitle>
+                    </MDBRow>
+                </div>
+
                 <div style={{ paddingLeft: 150, paddingRight: 50 }} >
                     {this.showTabs()}
                 </div >
@@ -265,4 +278,15 @@ class CoursepackAchievementsPage extends Component {
     }
 }
 
-export default CoursepackAchievementsPage;
+export default styled(CoursepackAchievementsPage)`
+@media screen and (min-width: 800px) {
+    .coursepack-topbar-small{
+      display: none;
+    }
+}
+@media screen and (max-width: 800px) {
+    .coursepack-topbar-large{
+      display: none;
+    }
+}
+`;

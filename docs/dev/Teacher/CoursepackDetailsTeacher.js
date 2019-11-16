@@ -99,10 +99,23 @@ class CoursepackDetailsTeacher extends Component {
         return (
             <MDBContainer style={{ paddingTop: 20 }}>
                 <MDBRow>
-                    <MDBCol size="8" className="text-white">
+                    <MDBCol md="8" sm="12" className="text-white">
                         <h2 style={{ paddingBottom: 20, paddingTop: 20, fontWeight: "bold" }}>{this.state.courseDetails.title}</h2>
-                        <h5 style={{ paddingBottom: 60 }}> {this.state.courseDetails.description}</h5>
-                        <h7>*Complete all videos and/ or quizzes to get badges/ certificates</h7>
+                        <h5 style={{ paddingBottom: 30 }}> {this.state.courseDetails.description}</h5>
+                        <span style={{ fontSize: "1rem" }}>*Complete all videos and/ or quizzes to get badges/ certificates</span>
+
+                        <div className="description-button-small">
+                            <br/>
+                            <span style={{ fontSize: "35px", fontWeight: "bold" }}>
+                                {this.state.courseDetails.price && "S$ " + this.state.courseDetails.price.toFixed(2)}
+                            </span>
+                            <br />
+                            <Button variant="contained" style={{ backgroundColor: "#fb6d63", height: "55px" }} fullWidth onClick={e => this.proceedToCourseDetails()} disabled>
+                                Proceed to Course
+                            </Button>
+
+                            <br />
+                        </div>
 
                         {/*<MDBCol align="right">
                         <NavLink to={`/coursepack/${this.state.coursepackId}/assessments`}>
@@ -110,8 +123,8 @@ class CoursepackDetailsTeacher extends Component {
                         </NavLink>
                     </MDBCol>*/}
                     </MDBCol>
-                    <MDBCol size="1" />
-                    <MDBCol size="3">
+                    <MDBCol md="1" />
+                    <MDBCol md="3" sm="0"  className="description-card-small">
                         <MDBCard style={{ width: "20rem", minHeight: "12rem", marginTop: 20 }}>
                             <MDBMedia object src={this.state.courseDetails && this.state.courseDetails.imageLocation} className="img-fluid" alt="" style={{ minHeight: "120px" }} />
                             <div style={{ padding: 20 }}>
@@ -122,8 +135,8 @@ class CoursepackDetailsTeacher extends Component {
                                 </MDBCol></MDBRow>
                                 <MDBRow><MDBCol>
                                     <br />
-                                    <Button variant="contained" color="secondary" style={{ height: "55px" }} fullWidth onClick={e => this.proceedToCourseDetails()}>
-                                        Proceed to Course
+                                    <Button variant="contained" style={{ height: "55px", backgroundColor: "#fb6d63" }} fullWidth disabled onClick={e => this.proceedToCourseDetails()}>
+                                        Proceed to Coursepack
                                     </Button>
                                 </MDBCol></MDBRow>
                             </div>
@@ -340,7 +353,7 @@ class CoursepackDetailsTeacher extends Component {
         let ratings = this.state.ratings;
         return (
             <div className={this.props.className}>
-                {sessionStorage.getItem('accessRight') === 'Teacher' ? <CoursepackSideNavigation courseId={this.props.coursepackId} /> : null}
+                {/*sessionStorage.getItem('accessRight') === 'Teacher' ? <CoursepackSideNavigation courseId={this.props.coursepackId} /> : null*/}
 
                 <MDBContainer>
                     <MDBRow>
@@ -462,6 +475,42 @@ class CoursepackDetailsTeacher extends Component {
                     </div>
                     
                 </div>
+
+                <div className="description-small">
+                    <div style={{ paddingTop: 0, marginTop: 0 }}>
+                        <div style={{ backgroundColor: '#505763', minHeight: 375, maxHeight: 375 }}>
+                            <div>
+                                <MDBContainer>
+                                    {this.showDescriptions()}
+                                </MDBContainer>
+                            </div>
+                        </div>
+                        <div style={{ paddingTop: 50 }}>
+                            <SectionContainer>
+                                <MDBContainer>
+                                    <h4>Course Outline</h4>
+                                    <hr />
+                                    {this.showCoursepackOutline()}
+                                </MDBContainer>
+                            </SectionContainer>
+                            <SectionContainer>
+                                <MDBContainer>
+                                    <h4>Student Feedback</h4>
+                                    <hr />
+                                    {this.getFeedbackSmall()}
+                                </MDBContainer>
+                            </SectionContainer>
+                            <SectionContainer>
+                                <MDBContainer>
+                                    {this.showTeacherBackground()}
+                                </MDBContainer>
+
+                            </SectionContainer>
+                        </div>
+                    </div>
+                    
+                </div>
+
                 {this.renderSnackbar()}
             </div>
         )
@@ -472,7 +521,7 @@ class CoursepackDetailsTeacher extends Component {
 export default styled(CoursepackDetailsTeacher)`
 @media screen and (min-width: 800px) {
     .module-content {
-        margin-left: 240px;
+        margin-left: 180px;
         margin-top: 0px;
     }
     .module-navbar-small {
@@ -487,6 +536,9 @@ export default styled(CoursepackDetailsTeacher)`
     .description-small {
         display: none;
     }
+    .description-button-small {
+        display: none;
+    }
 }
 @media screen and (max-width: 800px) {
     .module-sidebar-large{
@@ -499,8 +551,10 @@ export default styled(CoursepackDetailsTeacher)`
         display: none;
     }
     .description-small {
-        padding-top: 40px;
+        margin-top: 0px;
     }
-    
+    .description-large {
+        display: none;
+    }
 }
 `;

@@ -38,18 +38,18 @@ export default function CoursepackAchievementsTranscript(props) {
         <MDBContainer >
             {show === false &&
                 <MDBCol size="12">
-                    <Button variant="outlined" color="primary" onClick={fetchCert}>Get Transcript</Button>
+                    <Button variant="outlined" style={{ color: "#fb6d63", borderColor: "#fb6d63" }} onClick={fetchCert}>Get Transcript</Button>
                 </MDBCol>
             }
 
             {show && (
-                <Button color="primary" variant="outlined">
+                <Button style={{ color: "#fb6d63", borderColor: "#fb6d63" }} variant="outlined">
                     <PDFDownloadLink
                         document={<PdfDocument cert={certDetails} coursepack={coursepackDetails} />}
                         fileName={`${sessionStorage.getItem("firstName")}_${sessionStorage.getItem("lastName")}_transcript.pdf`}
                     >
                         {({ blob, url, loading, error }) =>
-                            loading ? "Loading document..." : "Download Transcript"
+                            loading ? "Loading document..." : <span style={{color: "#fb6d63"}}>Download Transcript</span>
                         }
                     </PDFDownloadLink>
 
