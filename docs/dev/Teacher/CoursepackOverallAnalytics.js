@@ -7,6 +7,7 @@ import SwipeableViews from 'react-swipeable-views';
 import { AppBar, Typography, Tabs, Tab, Paper } from '@material-ui/core';
 import { observer, inject } from 'mobx-react';
 import MainSideNavDropdown from '../MainSideNavDropdown';
+import styled from 'styled-components';
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 
@@ -173,4 +174,41 @@ class CoursepackOverallAnalytics extends Component {
 
 }
 
-export default CoursepackOverallAnalytics
+export default styled(CoursepackOverallAnalytics)`
+.module-content{
+    margin-top: 10px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 0px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+    .coursepack-topbar-small{
+      display: none;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+    .coursepack-topbar-large{
+      display: none;
+    }
+}
+
+.new-paragraph{
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+.align-right{
+    float: right;
+}
+`;
