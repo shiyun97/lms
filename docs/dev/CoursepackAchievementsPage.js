@@ -257,11 +257,7 @@ class CoursepackAchievementsPage extends Component {
                         </MDBCol>
                     </MDBCol>
                 </MDBJumbotron>
-                <div style={{ paddingLeft: 150, paddingTop: 50, paddingRight: 50 }} >
-                    <MDBCol>
-                        <h3><b>Coursepack Achievements</b></h3>
-                        <hr />
-                    </MDBCol>
+                <div style={{ paddingLeft: 150, paddingRight: 50 }} >
                     {this.showTabs()}
                 </div >
             </div>

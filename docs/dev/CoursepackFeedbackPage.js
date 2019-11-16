@@ -245,7 +245,7 @@ class CoursepackFeedbackPage extends Component {
                     </div>
                 : null}
                 <div className="module-content">
-                <MDBContainer style={{ paddingTop: 50 }}>
+                <MDBContainer style={{ paddingTop: 10 }}>
                     {sessionStorage.getItem('accessRight') !== 'Teacher' ? (
                         <div>
                             <MDBBtn onClick={e => this.addRating()} color="primary">Rate</MDBBtn>
@@ -258,7 +258,9 @@ class CoursepackFeedbackPage extends Component {
                     {this.showAddRatingDialog()} */}
                     <MDBRow>
                         <MDBCol>
-                            <h5>Student Feedback</h5>
+                        <h2 className="font-weight-bold" >Student Feedback</h2>
+                        <hr/>
+
                         </MDBCol>
                     </MDBRow>
                     <MDBRow>

@@ -409,7 +409,8 @@ class CoursepackForumTopicsPage extends Component {
                     <MDBContainer>
                         <MDBRow>
                             <MDBCol>
-                                <h4 className="font-weight-bold mb-4">Forum</h4>
+                            <h2 className="font-weight-bold" >Forum</h2>
+                            
                                 <hr className="my-4" />
                             </MDBCol>
                         </MDBRow>

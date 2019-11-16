@@ -220,7 +220,7 @@ class CoursepackDetailsTeacher extends Component {
     }
 
     showLessonOrder = (outline) => {
-        if (outline.lessonOrder === "") { //FIXME:
+        if (outline.lessonOrder === "") { 
             return <h4>No lesson order</h4>
         }
         else {
@@ -238,7 +238,7 @@ class CoursepackDetailsTeacher extends Component {
         }
     }
 
-    showTeacherBackground = () => {//FIXME: teacher's background
+    showTeacherBackground = () => {
         return (
             <div>
                 <h4> Teacher's Background</h4>

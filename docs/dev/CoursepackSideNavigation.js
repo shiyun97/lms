@@ -62,6 +62,12 @@ class CoursepackSideNavigation extends Component {
                             Forum
                         </MDBListGroupItem>
                     </NavLink>
+                    <NavLink to={`/coursepack/${courseId}/analytics`} activeClassName="activeClass-coursepack" style={{ color: "#fb6d63" }}>
+                        <MDBListGroupItem style={{ backgroundColor: "#F5F5F5" }}>
+                            <MDBIcon icon="chart-line" className="mr-3 fa-fw" />
+                            Analytics
+                        </MDBListGroupItem>
+                    </NavLink>
                 </MDBListGroup>
 
             </div>

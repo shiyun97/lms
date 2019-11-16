@@ -174,11 +174,10 @@ class CoursepackQuizPageTeacher extends Component {
                 : null}
                 <div className="module-content">
                     <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }}>
+                        <MDBRow style={{ paddingTop: 10 }}>
                             <MDBCol md="8">
-                                <h2 className="font-weight-bold">
-                                    Quiz
-                </h2>
+                            <h2 className="font-weight-bold" >Quiz</h2>
+<hr/>
                             </MDBCol>
                             <MDBCol md="4" align="right">
                                 <MDBBtn href={`/coursepack/${coursepackId}/quiz/create`} color="deep-orange">Create Quiz</MDBBtn>

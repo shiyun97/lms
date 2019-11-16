@@ -1,4 +1,5 @@
 import { action, computed, observable, toJS } from "mobx"
+import axios from "axios";
 
 class DataStore {
   @observable signInStatus = false
@@ -45,6 +46,12 @@ class DataStore {
 
   //coursepack assessment
   @observable complete = []
+
+   //coursepack analytics
+   @observable coursepacks = []
+   @observable totalRevenue = []
+   @observable title = []
+   @observable totalEnrollment = []
 
   @action setSignInStatus(status, email, password, accessRight) {
     this.signInStatus = status;
@@ -296,10 +303,39 @@ class DataStore {
   }
 
   @computed get getComplete() {
-    console.log("get")
-    console.log(this.complete)
     return toJS(this.complete);
   }
+
+  @action setCoursepacks(coursepacks) {
+    this.coursepacks = coursepacks
+    var title = []
+    coursepacks && coursepacks.map((eachCoursepack) => {
+      title.push(eachCoursepack.title)
+      axios.get(`http://localhost:8080/LMS-war/webresources/CoursepackEnrollment/getNumberOfUsersEnrolled?coursepackId=${eachCoursepack.id}`)
+        .then(result => {
+          this.totalRevenue.push(result.data.totalRevenue)
+          this.totalEnrollment.push(result.data.items.length)
+        })
+        .catch(error => {
+          console.error("error in axios " + error);
+        });
+    })
+
+    this.title = toJS(title)
+  }
+
+  @computed get getTotalRevenue() {
+    return toJS(this.totalRevenue);
+  }
+
+  @computed get getTitle() {
+    return this.title;
+  }
+
+  @computed get getTotalEnrollment() {
+    return toJS(this.totalEnrollment);
+  }
+
 }
 
 export default DataStore;
