@@ -36,7 +36,7 @@ class CoursepackSideNavigationDropdown extends Component {
 
     render() {
         var courseId = this.props.dataStore.getCurrCoursepackId;
-        return <MDBNavbar dark style={{backgroundColor: "#fb6d63"}}>
+        return <MDBNavbar dark style={{ backgroundColor: "#fb6d63" }}>
             <MDBContainer>
                 <MDBNavbarBrand className="white-text">
                 </MDBNavbarBrand>
@@ -67,6 +67,11 @@ class CoursepackSideNavigationDropdown extends Component {
                         <MDBNavItem>
                             <MDBNavLink to={`/coursepack/${courseId}/forum/topics`}>Forum</MDBNavLink>
                         </MDBNavItem>
+                        {sessionStorage.getItem("accessRight") === "Teacher" &&
+                            <MDBNavItem>
+                                <MDBNavLink to={`/coursepack/${courseId}/analytics`}>Analytics</MDBNavLink>
+                            </MDBNavItem>
+                        }
                         <MDBNavItem>
                             <MDBNavLink exact={true} onClick={() => this.logOutUser()} to="/login">
                                 Logout

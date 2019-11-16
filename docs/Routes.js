@@ -129,6 +129,8 @@ import ModuleQuizPageViewStatistics from "./dev/Teacher/ModuleQuizPageViewStatis
 import ModuleFeedbackPageViewStatistics from "./dev/Teacher/ModuleFeedbackPageViewStatistics";
 import CoursepackAchievementsPageView from "./dev/CoursepackAchievementsPageView";
 import UsersManagementAchievements from "./dev/Admin/UsersManagementAchievements";
+import CoursepackAnalyticsPage from "./dev/Teacher/CoursepackAnalyticsPage";
+import CoursepackOverallAnalytics from "./dev/Teacher/CoursepackOverallAnalytics";
 
 @inject('dataStore')
 @observer
@@ -248,6 +250,8 @@ class Routes extends React.Component {
         <Route exact path="/coursepack/:coursepackId/forum/topics/:topicId" component={CoursepackForumPage} />
         <Route exact path="/coursepack/:coursepackId/forum/topics/:topicId/:forumId" component={CoursepackForumDetailsPage} />
         <Route exact path="/coursepack/:coursepackId/feedback" component={CoursepackFeedbackPage} />
+        <Route exact path="/coursepack/:coursepackId/analytics" component={CoursepackAnalyticsPage} />
+        <Route exact path="/coursepack/analytics/overall" component={CoursepackOverallAnalytics} />
         <Route exact path="/coursepack/:coursepackId/quiz" component={CoursepackQuizPage} />
         <Route exact path="/coursepack/achievements/certificates/:certId" component={CoursepackCertificatesDetailsPage} />
         <Route exact path="/coursepack/dashboard/admin/" component={CoursepackDashboardAdmin} />

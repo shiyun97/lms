@@ -447,7 +447,7 @@ class CoursepackDetailsStudent extends Component {
         )
     }
 
-    showTeacherBackground = () => {//FIXME: teacher's background
+    showTeacherBackground = () => {
         return (
             <div>
                 <h4> Teacher's Background</h4>

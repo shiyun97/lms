@@ -293,8 +293,8 @@ class ModuleForumPage extends Component {
                                 <MDBJumbotron>
                                     <MDBRow>
                                         <MDBCol>
-                                            <h2 className="font-weight-bold">Forum</h2>
-                                            <hr className="my-4" />
+                                        <h1 className="font-weight-bold" >Forum</h1>
+                                            <hr />
                                         </MDBCol>
                                     </MDBRow>
                                     <MDBRow>

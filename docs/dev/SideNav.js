@@ -67,10 +67,18 @@ class SideNav extends Component {
                                     </MDBListGroupItem>
                                 </NavLink>
                             }
+                            {this.props.dataStore.accessRight === "Teacher" &&
+                                <NavLink to="/coursepack/analytics/overall" activeClassName="activeClass-coursepack" onClick={() => this.updatePath("/coursepack/analytics/overall")} style={{ color: "#fb6d63" }}>
+                                    <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
+                                        <MDBIcon icon="book" />
+                                        <br /> <p style={{ fontSize: "10px" }}>Overall<br />Analytics</p>
+                                    </MDBListGroupItem>
+                                </NavLink>
+                            }
                             {this.props.dataStore.accessRight === "Admin" &&
                                 <NavLink to="/coursepack/dashboard/admin" activeClassName="activeClass-coursepack" onClick={() => this.updatePath("/coursepack/dashboard/admin")} style={{ color: "#fb6d63" }}>
                                     <MDBListGroupItem style={{ backgroundColor: "#000", padding: "0px", paddingTop: "10px", paddingBottom: "2px", textAlign: "center" }}>
-                                        <MDBIcon icon="book" />
+                                        <MDBIcon icon="trophy" />
                                         <br /> <p style={{ fontSize: "10px" }}>Achievements</p>
                                     </MDBListGroupItem>
                                 </NavLink>

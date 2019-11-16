@@ -79,6 +79,13 @@ class MainSideNavDropdown extends Component {
                                             </MDBNavLink>
                                         </MDBNavItem>
                                     }
+                                    {(this.props.dataStore.accessRight === "Teacher") &&
+                                        <MDBNavItem active={activeTab == "Analytics"}>
+                                            <MDBNavLink exact={true} to={`/coursepack/analytics/overall`} onClick={() => this.updatePath("/coursepack/analytics/overall")}>
+                                                Analytics
+                                            </MDBNavLink>
+                                        </MDBNavItem>
+                                    }
                                     {this.props.dataStore.accessRight === "Admin" &&
                                         <MDBNavItem active={activeTab == "Achievements"}>
                                             <MDBNavLink exact={true} to={`/coursepack/dashboard/admin`} onClick={() => this.updatePath("/coursepack/dashboard/admin")}>

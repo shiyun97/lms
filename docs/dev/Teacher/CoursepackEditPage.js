@@ -247,7 +247,7 @@ class CoursePackEditPage extends Component {
             <div className="module-content">
 
                 <MDBContainer className="mt-5" >
-                    <h3><b>Edit Coursepack</b></h3>
+                <h2 className="font-weight-bold" >Edit Coursepack</h2>
                     <hr />
                     <br />
                     {this.form()}

@@ -65,14 +65,14 @@ class CoursepackArrangementPage extends Component {
 
         //get created coursepack quiz 
         axios.get(`${API}Assessment/retrieveAllCoursepackQuiz/${coursepackId}?userId=${sessionStorage.getItem('userId')}`)
-        .then(result => {
-            this.setState({ quizzes: result.data.quizzes })
-            console.log(result.data.quizzes)
-        })
-        .catch(error => {
-            this.setState({ message: error.response, openSnackbar: true })
-            console.error("error in axios " + error);
-        });
+            .then(result => {
+                this.setState({ quizzes: result.data.quizzes })
+                console.log(result.data.quizzes)
+            })
+            .catch(error => {
+                this.setState({ message: error.response, openSnackbar: true })
+                console.error("error in axios " + error);
+            });
 
     }
 
@@ -521,65 +521,67 @@ class CoursepackArrangementPage extends Component {
     render() {
         return (
             <div className={this.props.className}>
-            {sessionStorage.getItem('accessRight') === 'Teacher' ?
-                <div>
-                    <div className="module-sidebar-large"><CoursepackSideNavigation /></div>
-                    <div className="module-navbar-small">
-                        <CoursepackSideNavigationDropdown />
+                {sessionStorage.getItem('accessRight') === 'Teacher' ?
+                    <div>
+                        <div className="module-sidebar-large"><CoursepackSideNavigation /></div>
+                        <div className="module-navbar-small">
+                            <CoursepackSideNavigationDropdown />
+                        </div>
                     </div>
-                </div>
-            : null}
-            <div className="module-content">
-                <MDBContainer className="mt-5" >
-                    <h4>Outlines</h4> <hr />
-                    <MDBCol align="right">
-                        <MDBBtn color="deep-orange" onClick={this.toggleAddOutline}>
-                            Add Outline
+                    : null}
+                <div className="module-content">
+                    <MDBContainer className="mt-5" >
+                        <h2 className="font-weight-bold" >Arrangements</h2>
+                        <hr />
+
+                        <MDBCol align="right">
+                            <MDBBtn color="deep-orange" onClick={this.toggleAddOutline}>
+                                Add Outline
                         </MDBBtn>
-                    </MDBCol>
-                    <MDBModal isOpen={this.state.modalAddOutline} toggle={this.toggleAddOutline}>
-                        <MDBModalHeader toggle={this.toggleAddOutline}>Add Outline</MDBModalHeader>
-                        <MDBModalBody>
-                            <MDBRow>
-                                <MDBCol sm="4">Outline Name: </MDBCol>
-                                <MDBCol sm="8">
-                                    <input
-                                        value={this.state.outlineName}
-                                        name="outlineName"
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="Eg. Introduction"
-                                        onChange={this.handleOnChange}
-                                    />
-                                </MDBCol>
-                            </MDBRow>
-                        </MDBModalBody>
+                        </MDBCol>
+                        <MDBModal isOpen={this.state.modalAddOutline} toggle={this.toggleAddOutline}>
+                            <MDBModalHeader toggle={this.toggleAddOutline}>Add Outline</MDBModalHeader>
+                            <MDBModalBody>
+                                <MDBRow>
+                                    <MDBCol sm="4">Outline Name: </MDBCol>
+                                    <MDBCol sm="8">
+                                        <input
+                                            value={this.state.outlineName}
+                                            name="outlineName"
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Eg. Introduction"
+                                            onChange={this.handleOnChange}
+                                        />
+                                    </MDBCol>
+                                </MDBRow>
+                            </MDBModalBody>
 
-                        <MDBModalFooter>
-                            <MDBBtn color="secondary" onClick={this.addOutline}>Add</MDBBtn>
-                        </MDBModalFooter>
-                    </MDBModal>
+                            <MDBModalFooter>
+                                <MDBBtn color="secondary" onClick={this.addOutline}>Add</MDBBtn>
+                            </MDBModalFooter>
+                        </MDBModal>
 
-                    {this.showOutline()}
+                        {this.showOutline()}
 
-                </MDBContainer>
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    open={this.state.openSnackbar}
-                    autoHideDuration={6000}
-                    onClose={this.handleClose}
-                    ContentProps={{
-                        'aria-describedby': 'message-id',
-                    }}
-                    message={<span id="message-id">{this.state.message}</span>}
-                    action={[
-                        <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-                    ]}
-                />
-            </div>
+                    </MDBContainer>
+                    <Snackbar
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                        }}
+                        open={this.state.openSnackbar}
+                        autoHideDuration={6000}
+                        onClose={this.handleClose}
+                        ContentProps={{
+                            'aria-describedby': 'message-id',
+                        }}
+                        message={<span id="message-id">{this.state.message}</span>}
+                        action={[
+                            <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                        ]}
+                    />
+                </div>
             </div>
         )
     }
