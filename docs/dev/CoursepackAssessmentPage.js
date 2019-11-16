@@ -248,7 +248,7 @@ class CoursepackAssessmentPage extends Component {
 
                 <MDBModalBody>
                     <center>You have come to the end of the coursepack.</center>
-                    {complete !== undefined && complete.completeCoursepack === true &&
+                   {/*  {complete !== undefined && complete.completeCoursepack === true &&
                         <center><MDBIcon icon="check" style={{ color: "green" }} />You have fully completed the coursepack.</center>
                     }
                     {complete !== undefined && complete.completeCoursepack === false &&
@@ -265,7 +265,7 @@ class CoursepackAssessmentPage extends Component {
                     }
                     {complete !== undefined && complete.unlockCertificate === false &&
                         <center><MDBIcon icon="times" style={{ color: "red" }} />You have achieved a new certificate.</center>
-                    }
+                    } */}
                 </MDBModalBody>
 
                 <MDBModalFooter>

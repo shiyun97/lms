@@ -177,7 +177,7 @@ class CoursepackQuizPageAnswerQuiz extends Component {
                     You have come to the end of the coursepack.
                   </center>
                 }
-                {this.props.length === this.props.index + 1 && complete !== undefined && complete.completeCoursepack === true &&
+                {/* {this.props.length === this.props.index + 1 && complete !== undefined && complete.completeCoursepack === true &&
                   <center><MDBIcon icon="check" style={{ color: "green" }} />You have fully completed the coursepack.</center>
                 }
                 {this.props.length === this.props.index + 1 && complete !== undefined && complete.completeCoursepack === false &&
@@ -194,7 +194,7 @@ class CoursepackQuizPageAnswerQuiz extends Component {
                 }
                 {this.props.length === this.props.index + 1 && complete !== undefined && complete.unlockCertificate === false &&
                   <center><MDBIcon icon="times" style={{ color: "red" }} />You have achieved a new certificate.</center>
-                }
+                } */}
 
               </div>
             }
