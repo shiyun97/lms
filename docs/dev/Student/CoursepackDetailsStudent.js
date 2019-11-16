@@ -283,6 +283,10 @@ class CoursepackDetailsStudent extends Component {
                         <span style={{ fontSize: "1rem" }}>*Complete all videos and/ or quizzes to get badges/ certificates</span>
                         <div className="description-button-small">
                             <br/>
+                            <span style={{ fontSize: "35px", fontWeight: "bold" }}>
+                                {this.state.courseDetails.price && "S$ " + this.state.courseDetails.price.toFixed(2)}
+                            </span>
+                            <br />
                             {
                                 this.state.studentEnrolled === true &&
                                 <Button variant="contained" style={{ backgroundColor: "#fb6d63", height: "55px" }} fullWidth onClick={e => this.proceedToCourseDetails()}>
@@ -805,7 +809,7 @@ class CoursepackDetailsStudent extends Component {
 
                 <div className="description-small">
 
-                    <div style={{ backgroundColor: '#505763', minHeight: 360, maxHeight: 360 }}>
+                    <div style={{ backgroundColor: '#505763', minHeight: 375, maxHeight: 375 }}>
                         <div>
                             <MDBContainer>
                                 {this.showDescriptions()}

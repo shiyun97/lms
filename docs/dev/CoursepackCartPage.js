@@ -98,7 +98,7 @@ class CoursepackCartPage extends Component {
                                             </MDBCol>
                                             <MDBCol md="2" lg="2">
                                                 <MDBRow>
-                                                    <b style={{ color: "#f44336" }}>S${cartObj.price.toFixed(2)}<MDBIcon icon="tag" className="red-text pl-2" /></b>
+                                                    <b style={{ color: "#f44336" }}>S${cartObj.price && cartObj.price.toFixed(2)}<MDBIcon icon="tag" className="red-text pl-2" /></b>
                                                 </MDBRow>
                                             </MDBCol>
                                         </div>
@@ -111,7 +111,7 @@ class CoursepackCartPage extends Component {
                                 <span style={{ fontSize: "20px", color: "#686f7a" }}>Total:</span>
                             </MDBRow>
                             <MDBRow>
-                                <span style={{ fontSize: "36px", fontWeight: 500 }}>S${totalPrice.toFixed(2)}</span>
+                                <span style={{ fontSize: "36px", fontWeight: 500 }}>S${totalPrice && totalPrice.toFixed(2)}</span>
                             </MDBRow>
                             <div className="mb-4" />
                             <MDBRow>
@@ -145,7 +145,7 @@ class CoursepackCartPage extends Component {
                                                     {"By " + cartObj.assignedTeacher.firstName + " " + cartObj.assignedTeacher.lastName}
                                                 </Typography>
                                                 <Typography gutterBottom variant="h6" component="h2" style={{ color: "#000000", marginTop: 10 }}>
-                                                    <b style={{ color: "#f44336" }}>S${cartObj.price.toFixed(2)}<MDBIcon icon="tag" className="red-text pl-2" /></b>
+                                                    <b style={{ color: "#f44336" }}>S${cartObj.price && cartObj.price.toFixed(2)}<MDBIcon icon="tag" className="red-text pl-2" /></b>
                                                 </Typography>
                                             </CardContent>
                                         </CardActionArea>
@@ -160,7 +160,7 @@ class CoursepackCartPage extends Component {
                     </MDBCol>
                     <MDBCol md="12" style={{ paddingTop: 20 }}>
                         <span style={{ fontSize: "20px", color: "#686f7a" }}>Total:</span><br />
-                        <span style={{ fontSize: "36px", fontWeight: 500 }}>S${totalPrice.toFixed(2)}</span><br />
+                        <span style={{ fontSize: "36px", fontWeight: 500 }}>S${totalPrice && totalPrice.toFixed(2)}</span><br />
                         <Link href="/coursepack/cart/checkout">
                             <MDBBtn size="lg" className="ml-0" style={{ width: "100%" }} color="deep-orange">Checkout</MDBBtn>
                         </Link>

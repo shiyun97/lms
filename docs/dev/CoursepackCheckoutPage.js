@@ -159,7 +159,7 @@ class CoursepackCheckoutPage extends Component {
                                                         {"By " + cartObj.assignedTeacher.firstName + " " + cartObj.assignedTeacher.lastName}
                                                     </MDBRow>
                                                     <MDBRow>
-                                                        <b style={{ color: "#f44336" }}>S${cartObj.price.toFixed(2)}</b>
+                                                        <b style={{ color: "#f44336" }}>S${cartObj.price && cartObj.price.toFixed(2)}</b>
                                                     </MDBRow>
                                                 </MDBCol>
                                             </div>
@@ -170,7 +170,7 @@ class CoursepackCheckoutPage extends Component {
                             <MDBCol sm="12" md="7" lg="7" className="px-5">
                                 <MDBRow>
                                     <div style={{ fontSize: "36px", fontWeight: 600, marginLeft: 12 }}>
-                                        Total: S${totalPrice.toFixed(2)}
+                                        Total: S${totalPrice && totalPrice.toFixed(2)}
                                     </div>
                                 </MDBRow>
                                 <div className="mb-4" />

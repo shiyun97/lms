@@ -351,11 +351,11 @@ class CoursepackViewAllPage extends Component {
                                                         <Typography variant="body2" color="textSecondary" component="p">
                                                             <div style={{ width: 200, display: "flex", marginTop: 10 }}>
                                                                 <Rating name="hover-side" value={course.rating} precision={0.1} readOnly size="small" />
-                                                                <Box ml={2}>{course.rating.toFixed(1) + " (" + course.ratingList.length + ")"}</Box>
+                                                                <Box ml={2}>{course.rating && course.rating.toFixed(1) + " (" + course.ratingList.length + ")"}</Box>
                                                             </div>
                                                         </Typography>
                                                         <Typography gutterBottom variant="h6" component="h2" style={{ color: "#000000", marginTop: 10 }}>
-                                                            {sessionStorage.getItem("accessRight") === "Student" ? "FREE" : "S$" + course.price.toFixed(2)}
+                                                            {sessionStorage.getItem("accessRight") === "Student" ? "FREE" : "S$" + course.price && course.price.toFixed(2)}
                                                         </Typography>
                                                     </CardContent>
                                                 </NavLink>
@@ -456,7 +456,7 @@ class CoursepackViewAllPage extends Component {
                     <MDBJumbotron style={{ padding: 0, backgroundColor: "#505763", width: "100%" }}>
                         <MDBCol className="text-white">
                             <MDBCol className="py-3">
-                                <MDBCardTitle className="h1-responsive pt-5 m-3 ml-5 px-5">
+                                <MDBCardTitle className="h1-responsive pt-2 m-3 ml-5 px-5">
                                     {this.showBreadcrumb()}
                                     <MDBRow>
                                     {

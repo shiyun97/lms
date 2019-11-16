@@ -69,7 +69,7 @@ class CoursepackCoursesTeacher extends Component {
                                             </Typography>
                                             <Typography variant="body2" color="textSecondary">
                                                 <div style={{ width: 200, display: "flex", marginTop: 10 }}>
-                                                    <Rating name="hover-side" value={course.rating} precision={0.1} readOnly size="small" /><span className="ml-2">{course.rating.toFixed(1)}</span>
+                                                    <Rating name="hover-side" value={course.rating} precision={0.1} readOnly size="small" /><span className="ml-2">{course.rating && course.rating.toFixed(1)}</span>
                                                 </div>
                                             </Typography>
                                         </CardContent>

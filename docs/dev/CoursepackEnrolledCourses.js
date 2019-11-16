@@ -506,7 +506,7 @@ class CoursepackEnrolledCourses extends Component {
                         </Typography>
                         <Typography variant="body2" color="textSecondary">
                           <MDBProgress value={course.progress * 100} className="my-2" height="5px" />
-                          {(course.progress * 100).toFixed(0) + "% complete"}
+                          {course.progress ? (course.progress * 100).toFixed(0) + "% complete" : "0% complete"}
                         </Typography>
                         <Typography variant="body2" color="textSecondary">
                           <div style={{ width: 200, display: "flex", marginTop: 10 }}>
