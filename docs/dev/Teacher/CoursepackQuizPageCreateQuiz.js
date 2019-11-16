@@ -3,6 +3,7 @@ import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBIcon, MDBInputGroup }
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import CoursepackSideNavigation from "../CoursepackSideNavigation";
+import CoursepackSideNavigationDropdown from "../CoursepackSideNavigationDropdown";
 import { Stepper, Step, StepLabel, TextField, Typography, Snackbar, Checkbox } from '@material-ui/core';
 import axios from 'axios';
 import { Redirect } from "react-router-dom";
@@ -351,7 +352,14 @@ class CoursepackQuizPageCreateQuiz extends Component {
         }
         return (
             <div className={this.props.className}>
-                <CoursepackSideNavigation courseId={coursepackId}></CoursepackSideNavigation>
+                {sessionStorage.getItem('accessRight') === 'Teacher' ?
+                    <div>
+                        <div className="module-sidebar-large"><CoursepackSideNavigation courseId={coursepackId} /></div>
+                        <div className="module-navbar-small">
+                            <CoursepackSideNavigationDropdown courseId={coursepackId} />
+                        </div>
+                    </div>
+                : null}
                 <div className="module-content">
                     <MDBContainer className="mt-3">
                         <MDBRow style={{ paddingTop: 60 }}>
@@ -436,7 +444,25 @@ class CoursepackQuizPageCreateQuiz extends Component {
 
 export default styled(CoursepackQuizPageCreateQuiz)`
 .module-content{
-    margin-left: 270px;
     margin-top: 40px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
 }
 `;

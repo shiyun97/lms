@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { MDBRow, MDBCol, MDBBtn, MDBModal, MDBModalBody, MDBModalFooter, MDBIcon } from "mdbreact";
 import SectionContainer from "../components/sectionContainer";
 import axios from "axios";
-import { List, ListItem, ListSubheader } from '@material-ui/core/';
+import { List, ListItem, ListSubheader, Snackbar } from '@material-ui/core/';
 import ReactPlayer from 'react-player'
 import CoursepackQuizPageAnswerQuiz from './Public/CoursepackQuizPageAnswerQuiz'
 import Fullscreen from "react-full-screen";
@@ -30,7 +30,9 @@ class CoursepackAssessmentPage extends Component {
         isFull: false,
         lastItem: "",
         modal: false,
-        open: false
+        open: false,
+        openSnackbar: false,
+        message: "",
     }
 
     componentDidMount() {
@@ -108,14 +110,15 @@ class CoursepackAssessmentPage extends Component {
         var location = ""
         var currentFile = this.state.currentLessonOrder && this.state.currentLessonOrder.file ? this.state.currentLessonOrder.file.fileId : null
         var currentQuiz = this.state.currentLessonOrder && this.state.currentLessonOrder.quiz ? this.state.currentLessonOrder.quiz.quizId : null
+        var currentStatus = this.state.currentLessonOrder && this.state.currentLessonOrder.status
 
         if (currentFile) { //video 
             return (
                 this.state.allMultimedia && this.state.allMultimedia.map((eachMultimedia) => {
                     if (eachMultimedia.fileId === currentFile) {
                         location = eachMultimedia.location
-                        let savedFileName = location.split('/')[5]; //FIXME:
-                        /* let savedFileName = location.split('\\')[1]; */
+                        //let savedFileName = location.split('/')[5]; //FIXME:
+                        let savedFileName = location.split('\\')[1];
                         let fullPath = FILE_SERVER + savedFileName;
                         console.log(fullPath)
                         return (
@@ -196,31 +199,34 @@ class CoursepackAssessmentPage extends Component {
         }
     }
 
-
     clickLessonOrder = lessonOrderId => {
+        if (lessonOrderId.status!=="Completed") {
+            this.setState({openSnackbar: true, message: "Previous lesson skipped and is not completed. You will not be able to earn a badge/ certificate"})
+            this.setState({ currentLessonOrder: lessonOrderId })
+        }
         this.setState({ currentLessonOrder: lessonOrderId })
     }
 
     showOutline = () => {
         return (
             <SectionContainer style={{ height: 370 }}>
-                <List style={{ width: "100%", maxWidth: 360, position: "relative", overflow: "auto", maxHeight: 400 }} subheader={<li />}>
+                <List style={{ width: "100%", maxWidth: 360, position: "relative", overflow: "auto", maxHeight: 350 }} subheader={<li />}>
                     {this.state.outlineList && this.state.outlineList.map((outline) => (
                         <li key={outline.outlineId} style={{ backgroundColor: 'inherit' }}>
                             <ul style={{ backgroundColor: 'inherit' }}>
-                                <ListSubheader align="center"><b>{outline.name}</b></ListSubheader>
+                                <ListSubheader style={{background: "white"}} align="center"><b>{outline.name}</b></ListSubheader>
                                 {outline.lessonOrder.sort((a, b) => (a.number - b.number)) && outline.lessonOrder.sort((a, b) => (a.number - b.number)).map((lesson) => {
                                     if (lesson.file) {
                                         return (
                                             <div>
-                                                <ListItem selected={this.state.currentLessonOrder.lessonOrderId === lesson.lessonOrderId} onClick={() => this.clickLessonOrder(lesson)} key={lesson.lessonOrderId}>{lesson.file.name.slice(0, -4)}</ListItem>
+                                                <ListItem selected={this.state.currentLessonOrder.lessonOrderId === lesson.lessonOrderId} onClick={() => this.clickLessonOrder(lesson)} key={lesson.lessonOrderId}><MDBIcon icon="video" style={{paddingRight: 8}} />{lesson.file.name.slice(0, -4)}</ListItem>
                                                 <hr />
                                             </div>
                                         )
                                     } else {
                                         return (
                                             <div>
-                                                <ListItem selected={this.state.currentLessonOrder.lessonOrderId === lesson.lessonOrderId} onClick={() => this.clickLessonOrder(lesson)} key={lesson.lessonOrderId}>{lesson.quiz.title}</ListItem>
+                                                <ListItem selected={this.state.currentLessonOrder.lessonOrderId === lesson.lessonOrderId} onClick={() => this.clickLessonOrder(lesson)} key={lesson.lessonOrderId}><MDBIcon icon="pen" style={{paddingRight: 8}}/>{lesson.quiz.title}</ListItem>
                                                 <hr />
                                             </div>
                                         )
@@ -236,12 +242,13 @@ class CoursepackAssessmentPage extends Component {
 
     modal = () => {
         var complete = this.props.dataStore.getComplete
+        console.log(complete)
         return (
             <MDBModal isOpen={this.state.modal} toggle={this.toggle}>
 
                 <MDBModalBody>
                     <center>You have come to the end of the coursepack.</center>
-                    {complete !== undefined && complete.completeCoursepack === true &&
+                   {/*  {complete !== undefined && complete.completeCoursepack === true &&
                         <center><MDBIcon icon="check" style={{ color: "green" }} />You have fully completed the coursepack.</center>
                     }
                     {complete !== undefined && complete.completeCoursepack === false &&
@@ -258,13 +265,33 @@ class CoursepackAssessmentPage extends Component {
                     }
                     {complete !== undefined && complete.unlockCertificate === false &&
                         <center><MDBIcon icon="times" style={{ color: "red" }} />You have achieved a new certificate.</center>
-                    }
+                    } */}
                 </MDBModalBody>
 
                 <MDBModalFooter>
                     <MDBBtn color="secondary" onClick={this.toggle}>Close</MDBBtn>
                 </MDBModalFooter>
             </MDBModal>
+        )
+    }
+    renderSnackbar = () => {
+        return (
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                open={this.state.openSnackbar}
+                autoHideDuration={6000}
+                onClose={this.handleClose}
+                ContentProps={{
+                    'aria-describedby': 'message-id',
+                }}
+                message={<span id="message-id">{this.state.message}</span>}
+                action={[
+                    <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                ]}
+            />
         )
     }
 
@@ -298,7 +325,8 @@ class CoursepackAssessmentPage extends Component {
                     </SectionContainer>
                 </div>
                 {this.modal()}
-            </div>
+                {this.renderSnackbar()}
+            </div >
         )
     }
 }

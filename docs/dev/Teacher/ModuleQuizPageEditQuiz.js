@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBIcon, MDBInputGroup, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBCard, MDBIcon, MDBEdgeHeader, MDBInputGroup, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
 import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import ModuleSideNavigation from "../ModuleSideNavigation";
+import ModuleSideNavigationDropdown from './../ModuleSideNavigationDropdown';
 import { Stepper, Step, StepLabel, TextField, Typography, Snackbar, Checkbox } from '@material-ui/core';
 import axios from 'axios';
 import { Redirect } from "react-router-dom";
@@ -225,21 +226,21 @@ class ModuleQuizPageEditQuiz extends Component {
         //     questionId: questionId,
         // })
         axios
-                .delete(`${API_URL()}/LMS-war/webresources/Assessment/deleteQuestion?userId=${userId}&quizId=${quizId}&questionId=${questionId}`)
-                .then(result => {
-                    this.setState({
-                        message: "Deleted question successfully!",
-                        openSnackbar: true,
-                        recallQuiz: true
-                    });
-                })
-                .catch(error => {
-                    this.setState({
-                        message: "Error has occured in deleting question. Please try again later.",
-                        openSnackbar: true
-                    });
-                    console.error("error in axios " + error);
+            .delete(`${API_URL()}/LMS-war/webresources/Assessment/deleteQuestion?userId=${userId}&quizId=${quizId}&questionId=${questionId}`)
+            .then(result => {
+                this.setState({
+                    message: "Deleted question successfully!",
+                    openSnackbar: true,
+                    recallQuiz: true
                 });
+            })
+            .catch(error => {
+                this.setState({
+                    message: "Error has occured in deleting question. Please try again later.",
+                    openSnackbar: true
+                });
+                console.error("error in axios " + error);
+            });
     }
 
     updateQuestion = () => {
@@ -762,7 +763,7 @@ class ModuleQuizPageEditQuiz extends Component {
         switch (stepIndex) {
             case 0:
                 return (
-                    <div style={{ padding: 60 }}>
+                    <div className="create-quiz-form">
                         <h2 className="text-center"> Quiz Configuration </h2>
                         <br />
                         <label className="grey-text">  Quiz Title </label>
@@ -864,7 +865,7 @@ class ModuleQuizPageEditQuiz extends Component {
                 );
             case 1:
                 return (
-                    <div style={{ padding: 60 }}>
+                    <div className="create-quiz-form">
                         <h4 className="text-center">
                             Edit Quiz Build
                     </h4>
@@ -878,7 +879,7 @@ class ModuleQuizPageEditQuiz extends Component {
                                 <>
                                     <MDBCol md="12" className="mt-4" align="center">
                                         <MDBInputGroup
-                                            style={{ paddingTop: 22, width: 350 }}
+                                            style={{ paddingTop: 22, maxWidth: 350 }}
                                             containerClassName="mb-3"
                                             prepend="Question Type"
                                             required
@@ -912,10 +913,14 @@ class ModuleQuizPageEditQuiz extends Component {
         }
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Quiz'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }}>
+                        <MDBRow>
                             <MDBCol md="12">
                                 <h2 className="font-weight-bold">
                                     <a href={`/modules/${moduleId}/quiz`}>Quiz</a>
@@ -925,7 +930,7 @@ class ModuleQuizPageEditQuiz extends Component {
                         </MDBRow>
                         <MDBRow className="py-3">
                             <MDBCol md="12">
-                                <MDBCard cascade className="grey lighten-4" style={{ padding: 50 }}>
+                                <MDBCard cascade className="grey lighten-4 create-quiz-form">
                                     <ul className="list-unstyled example-components-list">
                                         <form name="quiz-form">
 
@@ -938,7 +943,7 @@ class ModuleQuizPageEditQuiz extends Component {
                                             </Stepper>
                                             <div>
                                                 {activeStep === steps.length ? (
-                                                    <div style={{ padding: 60 }}>
+                                                    <div className="create-quiz-form">
                                                         <h5 className="text-center">
                                                             You have completed all steps to edit the quiz. <br />
                                                             Ensure that all fields are correct before submitting.
@@ -998,7 +1003,31 @@ class ModuleQuizPageEditQuiz extends Component {
 
 export default styled(ModuleQuizPageEditQuiz)`
 .module-content{
-    margin-left: 270px;
-    margin-top: 40px;
+    margin-top: 0px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+    .create-quiz-form {
+        padding: 50px;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+    .create-quiz-form {
+        padding: 5px;
+    }
 }
 `;

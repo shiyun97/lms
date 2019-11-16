@@ -259,16 +259,28 @@ class ModuleConsultationPageTeacher extends Component {
         return (
             <>
                 <MDBRow>
-                    <MDBCol md="8">
+                    {/* desktop view */}
+                    <MDBCol md="8" className="module-sidebar-large">
                         <h2 className="font-weight-bold">
                             Consultation Slots
   </h2>
                     </MDBCol>
-                    <MDBCol md="4" align="right">
+                    <MDBCol md="4" align="right" className="module-sidebar-large">
                         <MDBBtn onClick={() => this.toggle(1)} color="primary">Create Consultation Slot</MDBBtn>
                     </MDBCol>
-                    {this.renderCreateConsultationModalBox()}
+                    {/*  */}
+                    {/* mobile view */}
+                    <MDBCol md="8" className="module-navbar-small" align="center">
+                        <h2 className="font-weight-bold">
+                            Consultation Slots
+  </h2>
+                    </MDBCol>
+                    <MDBCol md="4" align="center" className="module-navbar-small">
+                        <MDBBtn size="sm" onClick={() => this.toggle(1)} color="primary">Create Consultation Slot</MDBBtn>
+                    </MDBCol>
+                    {/*  */}
                 </MDBRow>
+                {this.renderCreateConsultationModalBox()}
                 <MDBRow className="py-3">
                     <MDBCol md="12">
                         <MDBCard>
@@ -301,7 +313,25 @@ class ModuleConsultationPageTeacher extends Component {
 
 export default styled(ModuleConsultationPageTeacher)`
 .module-content{
-    margin-left: 270px;
-    margin-top: 40px;
+    margin-top: 0px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
 }
 `;

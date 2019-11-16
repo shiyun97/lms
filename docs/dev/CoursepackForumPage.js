@@ -19,6 +19,7 @@ import {
 import axios from "axios";
 import 'babel-polyfill';
 import CoursepackSideNavigation from "./CoursepackSideNavigation";
+import CoursepackSideNavigationDropdown from "./CoursepackSideNavigationdropdown";
 import SectionContainer from "../components/sectionContainer";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -279,8 +280,15 @@ class CoursepackForumPage extends Component {
         let forumThreads = this.state.forumThreads;
         return (
             <div className={this.props.className}>
+                {sessionStorage.getItem('accessRight') === 'Teacher' ?
+                    <div>
+                        <div className="module-sidebar-large"><CoursepackSideNavigation courseId={this.props.match.params.coursepackId} /></div>
+                        <div className="module-navbar-small">
+                            <CoursepackSideNavigationDropdown courseId={this.props.match.params.coursepackId} />
+                        </div>
+                    </div>
+                : null}
                 <div className="module-content">
-                    <CoursepackSideNavigation courseId={this.props.match.params.coursepackId} />
                     <MDBContainer>
                         <MDBRow>
                             <MDBCol>
@@ -290,7 +298,7 @@ class CoursepackForumPage extends Component {
                         </MDBRow>
                         <MDBRow>
                             <MDBCol>
-                                <MDBBtn className="ml-0 mb-4" color="primary" block onClick={e => {this.newThread()}}>Start New Thread</MDBBtn>
+                                <MDBBtn className="ml-0 mb-4" color="deep-orange" block onClick={e => {this.newThread()}}>Start New Thread</MDBBtn>
                                 {
                                     forumThreads.length > 0 && forumThreads.map((forumThread) => (
                                         <ForumThreadListItem key={forumThread.forumPostId} 

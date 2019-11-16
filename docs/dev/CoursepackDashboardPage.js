@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { observer, inject } from 'mobx-react'
+import { observer, inject } from 'mobx-react';
 import {
   MDBContainer,
   MDBAnimation,
@@ -22,7 +22,7 @@ import biz from './img/biz.jpg'
 import design from './img/design.jpg'
 import cprog from './img/cprog.jpg'
 import coursepackBanner from './img/coursepack-banner.jpg';
-import CoursepackTopNav, { CategoryTopNav } from "./CoursepackTopNav";
+import CoursepackTopNav from "./CoursepackTopNav";
 import { Rating } from '@material-ui/lab';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -35,6 +35,7 @@ import Box from '@material-ui/core/Box';
 import Snackbar from '@material-ui/core/Snackbar';
 import styled from 'styled-components';
 import MainSideNavDropdown from "./MainSideNavDropdown";
+
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 const FILE_SERVER = "http://127.0.0.1:8887/";
@@ -349,11 +350,11 @@ class CoursepackDashboardPage extends Component {
                           <Typography variant="body2" color="textSecondary" component="p">
                             <div style={{ width: 200, display: "flex", marginTop: 10 }}>
                               <Rating name="hover-side" value={course.rating} precision={0.1} readOnly size="small" />
-                              <Box ml={2}>{course.rating.toFixed(1) + " (" + course.ratingList.length + ")"}</Box>
+                              <Box ml={2}>{course.rating && course.rating.toFixed(1) + " (" + course.ratingList.length + ")"}</Box>
                             </div>
                           </Typography>
                           <Typography gutterBottom variant="h6" component="h2" style={{ color: "#000000", marginTop: 10 }}>
-                            {sessionStorage.getItem("accessRight") === "Student" ? "FREE" : "S$" + course.price.toFixed(2)}
+                            {sessionStorage.getItem("accessRight") === "Student" ? "FREE" : "S$" + course.price && course.price.toFixed(2)}
                           </Typography>
                         </CardContent>
                       </NavLink>
@@ -420,7 +421,7 @@ class CoursepackDashboardPage extends Component {
                             </div>
                           </Typography>
                           <Typography gutterBottom variant="h6" component="h2" style={{ color: "#000000", marginTop: 10 }}>
-                            {sessionStorage.getItem("accessRight") === "Student" ? "FREE" : "S$" + course.price.toFixed(2)}
+                            {sessionStorage.getItem("accessRight") === "Student" ? "FREE" : "S$" + course.price && course.price.toFixed(2)}
                           </Typography>
                         </CardContent>
                       </NavLink>
@@ -483,9 +484,9 @@ class CoursepackDashboardPage extends Component {
   render() {
     let categories = this.state.categories;
     return (
-      <>
+      <div className={this.props.className}>
         <CoursepackTopNav cartNum={this.state.cartNum} />
-        <MDBJumbotron style={{ paddingLeft: 260, paddingBottom: 40, height: 10, marginBottom: 0, float: "center", backgroundColor: "#f0f0f0" }}>
+        <MDBJumbotron style={{ paddingLeft: 260, paddingBottom: 40, maxHeight: 10, marginBottom: 0, float: "center", backgroundColor: "#f0f0f0"}} className="categoryBar">
           <div>
             <MDBNav>
               {
@@ -503,7 +504,7 @@ class CoursepackDashboardPage extends Component {
             </MDBNav>
           </div>
         </MDBJumbotron>
-        <MDBContainer style={{ paddingBottom: 240 }}>
+        <MDBContainer style={{ paddingBottom: 240 }} className="bannerPaddingTop">
           {/*this.mediaCarousel()*/}
           <MDBAnimation type="zoomIn" duration="500ms">
             <img
@@ -519,8 +520,18 @@ class CoursepackDashboardPage extends Component {
           {this.courseRecommendation()}
           {this.renderSnackbar()}
         </MDBContainer>
-      </>
+      </div>
     );
   }
 }
-export default CoursepackDashboardPage;
+export default styled(CoursepackDashboardPage)`
+@media screen and (max-width: 800px) {
+  .categoryBar {
+    display: none;
+  }
+
+  .bannerPaddingTop {
+    margin-top: 50px;
+  }
+}
+`;

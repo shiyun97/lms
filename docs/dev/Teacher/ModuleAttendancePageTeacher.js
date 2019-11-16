@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBInput, MDBDataTable, MDBContainer, MDBModal, MDBModalHeader, MDBRow, MDBModalBody, MDBModalFooter, MDBCol, MDBBtn, MDBIcon } from "mdbreact";
+import { MDBDataTable, MDBContainer, MDBModal, MDBModalHeader, MDBRow, MDBModalBody, MDBModalFooter, MDBCol, MDBBtn, MDBIcon } from "mdbreact";
 import { Dialog, DialogTitle, DialogContent, DialogActions, AppBar, Tabs, Tab, Typography, Paper, Checkbox } from '@material-ui/core';
 import axios from "axios";
 import SwipeableViews from 'react-swipeable-views';
@@ -98,7 +98,7 @@ class ModuleAttendancePageTeacher extends Component {
     return (
       <MDBCol align="center">
         {/* <QRCode value="http://172.17.43.255:3100" size={450} /> */}
-        {<QRCode value={qrcode_url} size={450} />}
+        {<QRCode value={qrcode_url} size={400} />}
       </MDBCol>
     )
   }
@@ -701,11 +701,11 @@ class ModuleAttendancePageTeacher extends Component {
       <div>
         <MDBContainer>
           <MDBRow>
-            <MDBCol size="8">
+            <MDBCol md="8">
               <h2 className="font-weight-bold"> Attendance </h2>
               <hr />
             </MDBCol>
-            <MDBCol align="right" size="4">
+            <MDBCol align="right"  md="4">
               <MDBBtn onClick={this.toggle} color="primary" >Create Attendance</MDBBtn>
             </MDBCol>
           </MDBRow>

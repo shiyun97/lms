@@ -247,26 +247,26 @@ class ModuleAnalyticsPage extends Component {
         } else {
           result.data.items.map((item, index) => {
             // if (item.startDate !== null && item.startDate !== undefined) {
-              present.push({
-                label: "Week " + (index + 1) + " - Lecture",
-                y: item.presentLecture,
-                click: () => this.routeChange(`/modules/${moduleId}/attendance`)
-              })
-              present.push({
-                label: "Week " + (index + 1) + " - Tutorial",
-                y: item.presentTutorial,
-                click: () => this.routeChange(`/modules/${moduleId}/attendance`)
-              })
-              absent.push({
-                label: "Week " + (index + 1) + " - Lecture",
-                y: item.absentLecture,
-                click: () => this.routeChange(`/modules/${moduleId}/attendance`)
-              })
-              absent.push({
-                label: "Week " + (index + 1) + " - Tutorial",
-                y: item.absentTutorial,
-                click: () => this.routeChange(`/modules/${moduleId}/attendance`)
-              })
+            present.push({
+              label: "Week " + (index + 1) + " - Lecture",
+              y: item.presentLecture,
+              click: () => this.routeChange(`/modules/${moduleId}/attendance`)
+            })
+            present.push({
+              label: "Week " + (index + 1) + " - Tutorial",
+              y: item.presentTutorial,
+              click: () => this.routeChange(`/modules/${moduleId}/attendance`)
+            })
+            absent.push({
+              label: "Week " + (index + 1) + " - Lecture",
+              y: item.absentLecture,
+              click: () => this.routeChange(`/modules/${moduleId}/attendance`)
+            })
+            absent.push({
+              label: "Week " + (index + 1) + " - Tutorial",
+              y: item.absentTutorial,
+              click: () => this.routeChange(`/modules/${moduleId}/attendance`)
+            })
             // }
           })
           this.setState({
@@ -566,7 +566,7 @@ class ModuleAnalyticsPage extends Component {
       newRows.push({
         user: row[i].firstName + " " + row[i].lastName,
         email: row[i].email,
-        button: <center><MDBBtn color="primary" outline size="sm" href={`mailto:${row[i].email}`}>Send Mail</MDBBtn></center>
+        button: <center><MDBBtn color="primary" outline size="sm" href={`mailto:${row[i].email}`}>SEND EMAIL</MDBBtn></center>
       })
     }
     const data = () => ({ columns: this.state.gradeColumns, rows: newRows })
@@ -650,7 +650,7 @@ class ModuleAnalyticsPage extends Component {
           <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Analytics'}></ModuleSideNavigationDropdown>
         </div>
         <div className="module-content">
-              <MDBEdgeHeader color="indigo darken-3" className="analyticsPage" />
+          <MDBEdgeHeader color="indigo darken-3" className="analyticsPage" />
           <MDBContainer style={{ paddingBottom: 240, paddingTop: 60 }}>
             {this.renderBreadcrumbSection()}
             {this.state.barStatus === "done" ? this.renderCardSection() : this.renderNoCardSection("bar")}

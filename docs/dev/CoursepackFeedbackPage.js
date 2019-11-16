@@ -17,6 +17,7 @@ import {
     MDBProgress
 } from "mdbreact";
 import CoursepackSideNavigation from "./CoursepackSideNavigation";
+import CoursepackSideNavigationDropdown from "./CoursepackSideNavigationDropdown";
 import axios from "axios";
 import 'babel-polyfill';
 import { Rating } from '@material-ui/lab';
@@ -234,11 +235,17 @@ class CoursepackFeedbackPage extends Component {
         let ratingValues = this.state.ratingValues;
         let ratings = this.state.ratings;
         return (
-            <div className="module-content">
-                {sessionStorage.getItem('accessRight') === 'Teacher' ? <CoursepackSideNavigation courseId={this.props.coursepackId} /> : null}
-                {/*                 <CoursepackSideNavigation courseId={this.props.coursepackId} />
- */}
-                <MDBContainer style={{ paddingTop: 50 }}>
+            <div className={this.props.className}>
+                {sessionStorage.getItem('accessRight') === 'Teacher' ?
+                    <div>
+                        <div className="module-sidebar-large"><CoursepackSideNavigation courseId={this.props.coursepackId} /></div>
+                        <div className="module-navbar-small">
+                            <CoursepackSideNavigationDropdown courseId={this.props.coursepackId} />
+                        </div>
+                    </div>
+                : null}
+                <div className="module-content">
+                <MDBContainer style={{ paddingTop: 10 }}>
                     {sessionStorage.getItem('accessRight') !== 'Teacher' ? (
                         <div>
                             <MDBBtn onClick={e => this.addRating()} color="primary">Rate</MDBBtn>
@@ -251,7 +258,9 @@ class CoursepackFeedbackPage extends Component {
                     {this.showAddRatingDialog()} */}
                     <MDBRow>
                         <MDBCol>
-                            <h5>Student Feedback</h5>
+                        <h2 className="font-weight-bold" >Student Feedback</h2>
+                        <hr/>
+
                         </MDBCol>
                     </MDBRow>
                     <MDBRow>
@@ -314,12 +323,29 @@ class CoursepackFeedbackPage extends Component {
                     </MDBRow>
                 </MDBContainer>
             </div>
+            </div>
         )
     }
 }
 
 export default styled(CoursepackFeedbackPage)`
-module-content{
-    margin-left: 270px;
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
 }
 `

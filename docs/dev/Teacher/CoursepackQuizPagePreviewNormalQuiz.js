@@ -5,6 +5,7 @@ import { observer, inject } from 'mobx-react';
 import styled from 'styled-components';
 import * as Survey from "survey-react";
 import CoursepackSideNavigation from "../CoursepackSideNavigation";
+import CoursepackSideNavigationDropdown from "../CoursepackSideNavigationDropdown";
 
 var pathname = location.pathname;
 pathname = pathname.split("/");
@@ -95,7 +96,14 @@ class CoursepackQuizPagePreviewNormalQuiz extends Component {
     if (this.state.start) {
       return (
         <div className={this.props.className}>
-          <CoursepackSideNavigation courseId={coursepackId}></CoursepackSideNavigation>
+          {sessionStorage.getItem('accessRight') === 'Teacher' ?
+            <div>
+              <div className="module-sidebar-large"><CoursepackSideNavigation courseId={coursepackId} /></div>
+              <div className="module-navbar-small">
+                <CoursepackSideNavigationDropdown courseId={coursepackId} />
+              </div>
+            </div>
+            : null}
           <div className="module-content">
             <MDBContainer className="mt-3">
               <MDBRow className="py-3">
@@ -120,7 +128,14 @@ class CoursepackQuizPagePreviewNormalQuiz extends Component {
     } else {
       return (
         <div className={this.props.className}>
-          <CoursepackSideNavigation courseId={coursepackId}></CoursepackSideNavigation>
+          {sessionStorage.getItem('accessRight') === 'Teacher' ?
+            <div>
+              <div className="module-sidebar-large"><CoursepackSideNavigation courseId={coursepackId} /></div>
+              <div className="module-navbar-small">
+                <CoursepackSideNavigationDropdown courseId={coursepackId} />
+              </div>
+            </div>
+            : null}
           <div className="module-content">
             <MDBContainer className="mt-3">
               <MDBRow className="py-3">
@@ -140,7 +155,25 @@ class CoursepackQuizPagePreviewNormalQuiz extends Component {
 
 export default styled(CoursepackQuizPagePreviewNormalQuiz)`
 .module-content{
-    margin-left: 270px;
     margin-top: 40px;
+}
+@media screen and (min-width: 800px) {
+  .module-content{
+      margin-left: 270px;
+  }
+  .module-navbar-small{
+      display: none;
+  }
+  .module-sidebar-large{
+      display: block;
+  }
+}
+@media screen and (max-width: 800px) {
+  .module-sidebar-large{
+      display: none;
+  }
+  .module-navbar-small{
+      display: block;
+  }
 }
 `;

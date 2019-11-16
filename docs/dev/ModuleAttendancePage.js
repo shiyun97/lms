@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer } from "mdbreact";
+import { MDBContainer, MDBEdgeHeader, MDBRow, MDBCol, MDBJumbotron } from "mdbreact";
 import ModuleSideNavigation from "./ModuleSideNavigation";
 import ModuleSideNavigationDropdown from "./ModuleSideNavigationDropdown";
 import ModuleAttendancePageTeacher from "./Teacher/ModuleAttendancePageTeacher";
@@ -22,10 +22,21 @@ class ModuleAttendancePage extends Component {
           <ModuleSideNavigationDropdown moduleId={moduleId}></ModuleSideNavigationDropdown>
         </div>
         <div className="module-content">
-          <MDBContainer className="mt-3">
-            {this.props.dataStore.accessRight === "Teacher" && <ModuleAttendancePageTeacher moduleId={this.props.match.params.moduleId} />}
-            {this.props.dataStore.accessRight === "Student" && <ModuleAttendancePageStudent moduleId={this.props.match.params.moduleId} />}
+          <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
 
+          <MDBContainer >
+            <MDBRow>
+              <MDBCol md="12" className="mt-3 mx-auto">
+                <MDBJumbotron>
+                  <MDBRow>
+                    <MDBCol>
+                      {this.props.dataStore.accessRight === "Teacher" && <ModuleAttendancePageTeacher moduleId={this.props.match.params.moduleId} />}
+                      {this.props.dataStore.accessRight === "Student" && <ModuleAttendancePageStudent moduleId={this.props.match.params.moduleId} />}
+                    </MDBCol>
+                  </MDBRow>
+                </MDBJumbotron>
+              </MDBCol>
+            </MDBRow>
           </MDBContainer>
         </div>
       </div>

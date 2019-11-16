@@ -375,9 +375,10 @@ class ModuleMultimediaPage extends Component {
                                 <MDBJumbotron>
                                     <MDBRow>
                                         <MDBCol md={10}>
-                                        <h2 className="font-weight-bold">Multimedia</h2>
+                                            <h2 className="font-weight-bold">Multimedia</h2>
                                         </MDBCol>
-                                        <MDBCol md={2}>
+                                        {/* desktop view */}
+                                        <MDBCol md={2} className="module-sidebar-large">
                                             <div className="align-right">
                                                 {
                                                     this.state.accessRight == "Teacher" &&
@@ -387,6 +388,19 @@ class ModuleMultimediaPage extends Component {
                                                 }
                                             </div>
                                         </MDBCol>
+                                        {/*  */}
+                                        {/* mobile view */}
+                                        <MDBCol md={2} className="module-navbar-small" align="left">
+                                            <div>
+                                                {
+                                                    this.state.accessRight == "Teacher" &&
+                                                    <MDBBtn color="primary lighten-2" outline className="mr-0" size="md" onClick={e => this.uploadMultimedia()}>
+                                                        Upload
+                                        </MDBBtn>
+                                                }
+                                            </div>
+                                        </MDBCol>
+                                        {/*  */}
                                         <MDBCol md={12}>
                                             <hr className="my-4" />
                                         </MDBCol>

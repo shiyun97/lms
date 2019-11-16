@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBIcon } from "mdbreact";
 import SectionContainer from "../../components/sectionContainer";
 import axios from "axios";
+import styled from 'styled-components';
 import CoursepackSideNavigation from '../CoursepackSideNavigation';
+import CoursepackSideNavigationDropdown from '../CoursepackSideNavigationDropdown';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, ExpansionPanel, ExpansionPanelSummary, Typography, ExpansionPanelDetails } from "@material-ui/core";
 import { Snackbar } from '@material-ui/core';
 import { observer, inject } from 'mobx-react';
@@ -19,8 +21,11 @@ class CoursePackEditPage extends Component {
         courseCode: "",
         courseTitle: "",
         courseDescription: "",
+        imageLocation: "",
+        retrievedCategories: [],
         categories: ["Computer Science", "Information System", "Information Security", "Business Management", "Engineering"],
         category: "",
+        categoryId: "",
         price: "",
         disabled: true,
         editSave: "Edit",
@@ -43,9 +48,20 @@ class CoursePackEditPage extends Component {
                     courseCode: result.data.code,
                     courseTitle: result.data.title,
                     courseDescription: result.data.description,
-                    category: result.data.category,
+                    categoryId: result.data.category.categoryId,
+                    imageLocation: result.data.imageLocation,
                     price: result.data.price,
                 })
+            })
+            .catch(error => {
+                console.error("error in axios " + error);
+            });
+
+        // get all categories
+        axios.get(`${API}Coursepack/getAllCategories`)
+            .then(result => {
+                this.setState({ retrievedCategories: result.data.categories })
+                console.log(result.data)
             })
             .catch(error => {
                 console.error("error in axios " + error);
@@ -83,7 +99,7 @@ class CoursePackEditPage extends Component {
     }
 
     handleSelectCategory = event => {
-        this.setState({ category: event.target.value }, () => event);
+        this.setState({ categoryId: event.target.value }, () => event);
     }
 
     editSave = event => {
@@ -95,12 +111,13 @@ class CoursePackEditPage extends Component {
         this.setState({ disabled: false, editSave: "Save" })
         if (this.state.editSave === "Save") {
             this.setState({ disabled: true })
-            const { courseCode, courseTitle, courseDescription, category, price } = this.state
+            const { courseCode, courseTitle, courseDescription, categoryId, imageLocation, price } = this.state
             axios.post(`${API}Coursepack/updateCoursepack?coursepackId=${coursepackId}`, {
                 code: courseCode,
                 title: courseTitle,
                 description: courseDescription,
-                category: category,
+                categoryId: categoryId,
+                imageLocation: imageLocation,
                 price: price
             })
                 .then(result => {
@@ -170,14 +187,14 @@ class CoursePackEditPage extends Component {
                     <MDBRow style={{ paddingTop: "20px" }}>
                         <MDBCol sm="4">Category: </MDBCol>
                         <MDBCol sm="8">
-                            <select value={this.state.category}
+                            <select value={this.state.categoryId}
                                 onChange={this.handleSelectCategory}
                                 className="browser-default custom-select"
                                 disabled={this.state.disabled}
                             >
                                 <option>Choose a category</option>
-                                {this.state.categories && this.state.categories.map(
-                                    (category, index) => <option key={index} value={category}>{category}</option>)
+                                {this.state.retrievedCategories && this.state.retrievedCategories.map(
+                                    (category, index) => <option key={index} value={category.categoryId}>{category.name}</option>)
                                 }
                             </select>
 
@@ -200,7 +217,22 @@ class CoursePackEditPage extends Component {
                             />
                         </MDBCol>
                     </MDBRow>
-
+                    
+                    <MDBRow style={{ paddingTop: "20px" }}>
+                        <MDBCol sm="4">Cover Image Weblink: </MDBCol>
+                        <MDBCol sm="8">
+                            <input
+                                value={this.state.imageLocation}
+                                name="imageLocation"
+                                type="text"
+                                className="form-control"
+                                required
+                                placeholder="Image weblink"
+                                onChange={this.handleOnChange}
+                                disabled={this.state.disabled}
+                            />
+                        </MDBCol>
+                    </MDBRow>
                     {/* this.outline() */}
                 </MDBContainer>
             </SectionContainer>
@@ -233,11 +265,19 @@ class CoursePackEditPage extends Component {
 
     render() {
         return (
+            <div className={this.props.className}>
+                {sessionStorage.getItem('accessRight') === 'Teacher' ?
+                    <div>
+                        <div className="module-sidebar-large"><CoursepackSideNavigation /></div>
+                        <div className="module-navbar-small">
+                            <CoursepackSideNavigationDropdown />
+                        </div>
+                    </div>
+                : null}
             <div className="module-content">
-                <CoursepackSideNavigation /* coursepackId={this.props.coursepackId} */ />
 
                 <MDBContainer className="mt-5" >
-                    <h3><b>Edit Coursepack</b></h3>
+                <h2 className="font-weight-bold" >Edit Coursepack</h2>
                     <hr />
                     <br />
                     {this.form()}
@@ -275,7 +315,28 @@ class CoursePackEditPage extends Component {
                     ]}
                 />
             </div >
+            </div>
         );
     }
 }
-export default CoursePackEditPage
+export default styled(CoursePackEditPage)`
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+}
+`;

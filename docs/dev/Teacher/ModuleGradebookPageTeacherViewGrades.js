@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
-import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBCard, MDBDataTable, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
+import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBCardBody, MDBEdgeHeader, MDBCard, MDBDataTable, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader } from "mdbreact";
 import ModuleSideNavigation from "../ModuleSideNavigation";
+import ModuleSideNavigationDropdown from "../ModuleSideNavigationDropdown";
 import { Snackbar } from '@material-ui/core';
 import axios from 'axios';
 import { observer, inject } from 'mobx-react';
@@ -91,7 +92,7 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
             this.setState({
                 gradeEntryId: row.gradeEntryId,
                 marks: row.marks === null ? 0 : row.marks,
-                remarks: row.remarks === null ? "": row.remarks
+                remarks: row.remarks === null ? "" : row.remarks
             })
         }
     };
@@ -188,14 +189,13 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
     renderGradebookTable = () => {
         var item = this.state.gradeEntries;
         var moduleId = this.props.dataStore.getCurrModId;
-        // console.log(quiz)
         if (this.state.gradeEntries.length !== 0) {
             var tempgradeEntries = []
             for (let i = 0; i < this.state.gradeEntries.length; i++) {
                 tempgradeEntries.push({
                     studentName: item[i].student.firstName + " " + item[i].student.lastName,
                     gradeEntryId: item[i].gradeEntryId,
-                    score: item[i].marks === null ? "-" : item[i].marks,
+                    score: item[i].marks === null ? "-" : item[i].marks.toFixed(1),
                     remarks: item[i].remarks === null ? "-" : item[i].remarks,
                     viewButton: <center><MDBIcon onClick={() => this.toggle(1, item[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></center>
                 })
@@ -217,10 +217,14 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
 
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Gradebook'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }}>
+                        <MDBRow>
                             <MDBCol md="8">
                                 <h2 className="font-weight-bold">
                                     <a href={`/modules/${moduleId}/gradebook`}>Gradebook</a>
@@ -274,10 +278,14 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
         }
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Gradebook'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }}>
+                        <MDBRow>
                             <MDBCol md="8">
                                 <h2 className="font-weight-bold">
                                     <a href={`/modules/${moduleId}/gradebook`}>Gradebook</a>
@@ -307,10 +315,14 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
         var moduleId = this.props.dataStore.getCurrModId;
         return (
             <div className={this.props.className}>
-                <ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation>
+                <div className="module-sidebar-large"><ModuleSideNavigation moduleId={moduleId}></ModuleSideNavigation></div>
+                <div className="module-navbar-small">
+                    <ModuleSideNavigationDropdown moduleId={moduleId} activeTab={'Gradebook'}></ModuleSideNavigationDropdown>
+                </div>
                 <div className="module-content">
+                    <MDBEdgeHeader color="indigo darken-3" className="multimediaPage" />
                     <MDBContainer className="mt-3">
-                        <MDBRow style={{ paddingTop: 60 }} align="center">
+                        <MDBRow align="center">
                             <MDBCol md="12">
                                 <div className="spinner-border text-primary" role="status">
                                     <span className="sr-only">Loading...</span>
@@ -326,7 +338,6 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
     initPage() {
         var pathname = location.pathname;
         pathname = pathname.split("/");
-        // console.log(pathname[2])
         this.props.dataStore.setCurrModId(pathname[2]);
         this.props.dataStore.setCurrGradeItemId(pathname[4]);
     }
@@ -344,10 +355,25 @@ class ModuleGradebookPageTeacherViewGrades extends Component {
 }
 export default styled(ModuleGradebookPageTeacherViewGrades)`
 .module-content{
-    margin-left: 270px;
-    margin-top: 40px;
+    margin-top: 0px;
 }
-.align-right{
-    float: right;
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 270px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
 }
 `;

@@ -4,10 +4,13 @@ import axios from "axios";
 import { NavLink } from 'react-router-dom'
 import { Card, CardActionArea, CardActions, CardContent, CardMedia, Typography } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
+import { observer, inject } from 'mobx-react';
 
 const API_MOCK = "http://localhost:3001"
 const API = "http://localhost:8080/LMS-war/webresources/"
 
+@inject('dataStore')
+@observer
 class CoursepackCoursesTeacher extends Component {
 
     state = {
@@ -19,11 +22,20 @@ class CoursepackCoursesTeacher extends Component {
     componentDidMount() {
         axios.get(`${API}Coursepack/getUserCoursepack/${sessionStorage.getItem("userId")}`)
             .then(result => {
-                this.setState({ createdCoursepacks: result.data.coursepack, published: result.data.coursepack })
+                this.setState({ createdCoursepacks: result.data.coursepack, published: result.data.coursepack, coursepackList: this.getCoursepackList(result.data.coursepack) })
+                this.props.dataStore.setCoursepacks(this.state.coursepackList);
             })
             .catch(error => {
                 console.error("error in axios " + error);
             });
+    }
+
+    getCoursepackList = (coursepacks) => {
+        var list = []
+        coursepacks && coursepacks.map((cp) => {
+            list.push({title: cp.title, id: cp.coursepackId })
+        })
+        return list
     }
 
     toggle = tab => e => {
@@ -69,7 +81,7 @@ class CoursepackCoursesTeacher extends Component {
                                             </Typography>
                                             <Typography variant="body2" color="textSecondary">
                                                 <div style={{ width: 200, display: "flex", marginTop: 10 }}>
-                                                    <Rating name="hover-side" value={course.rating} precision={0.1} readOnly size="small" /><span className="ml-2">{course.rating.toFixed(1)}</span>
+                                                    <Rating name="hover-side" value={course.rating} precision={0.1} readOnly size="small" /><span className="ml-2">{course.rating && course.rating.toFixed(1)}</span>
                                                 </div>
                                             </Typography>
                                         </CardContent>

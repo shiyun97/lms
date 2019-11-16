@@ -10,25 +10,12 @@ import {
     MDBNav,
     MDBNavLink,
     MDBCollapse,
-    MDBNavItem,
-    MDBIcon,
-    MDBDropdown,
-    MDBDropdownMenu,
-    MDBDropdownItem,
-    MDBDropdownToggle,
-    MDBBtn,
-    NavbarNav,
-    MDBInput, 
-    MDBRow
+    MDBNavItem
 } from "mdbreact";
 import Badge from '@material-ui/core/Badge';
 import Tooltip from '@material-ui/core/Tooltip';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import SearchIcon from '@material-ui/icons/Search';
-import IconButton from '@material-ui/core/IconButton';
-import Paper from '@material-ui/core/Paper';
-import InputBase from '@material-ui/core/InputBase';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import styled from 'styled-components';
 
 const API = "http://localhost:8080/LMS-war/webresources/Coursepack"
 
@@ -54,14 +41,14 @@ class CoursepackTopNav extends Component {
     }
 
     toggleCollapse = collapseID => () =>
-    this.setState(prevState => ({
-      collapseID: prevState.collapseID !== collapseID ? collapseID : ""
-    }));
+        this.setState(prevState => ({
+            collapseID: prevState.collapseID !== collapseID ? collapseID : ""
+        }));
 
-  closeCollapse = collapseID => () => {
-    window.scrollTo(0, 0);
-    this.state.collapseID === collapseID && this.setState({ collapseID: "" });
-  };
+    closeCollapse = collapseID => () => {
+        window.scrollTo(0, 0);
+        this.state.collapseID === collapseID && this.setState({ collapseID: "" });
+    };
 
     goToCart = () => {
         this.props.dataStore.setPath('/coursepack/cart');
@@ -71,6 +58,14 @@ class CoursepackTopNav extends Component {
     goToCategory = (id) => {
         this.props.dataStore.setPath('/coursepacks/' + id);
         this.props.history.push('/coursepacks/' + id);
+    }
+
+    updatePath = (path) => {
+        this.props.dataStore.setPath(path);
+    }
+
+    logOutUser = () => {
+        this.props.dataStore.setSignOutStatus();
     }
 
     render() {
@@ -91,13 +86,13 @@ class CoursepackTopNav extends Component {
         const { collapseID } = this.state;
         let categories = this.state.categories;
         return (
-            <div>
-                <MDBNavbar style={{ background: '#F1948A' }} dark expand="md" fixed="top">
-                    <MDBNavbarBrand href="/coursepack/dashboard" style={{ paddingLeft: 80 }}>
+            <div className={this.props.className}>
+                <MDBNavbar style={{ background: "#fb6d63" }} dark expand="md" fixed="top">
+                    <MDBNavbarBrand href="/coursepack/dashboard" className="Navbar-coursepack-title">
                         <strong>Coursepack</strong>
                     </MDBNavbarBrand>
                     <MDBNavbarToggler onClick={this.toggleCollapse("mainNavbarCollapse")} />
-                    <MDBCollapse isOpen={this.state.collapseID} navbar>
+                    <MDBCollapse id="mainNavbarCollapse" isOpen={this.state.collapseID} navbar>
                         {/*<MDBNavbarNav left>
                             <MDBNavItem>
                                 <MDBDropdown>
@@ -135,31 +130,124 @@ class CoursepackTopNav extends Component {
                                 </Paper>
                             </MDBNavItem>
                             </MDBNavbarNav>*/}
-                        {
-                            sessionStorage.getItem("accessRight") === "Public" &&
-                            <NavbarNav right>
-                                <MDBNavItem>
+                        <MDBNavbarNav right>
+                            <div className="show-main-nav">
+                                {(this.props.dataStore.accessRight !== "Admin" && this.props.dataStore.accessRight !== "Teacher") &&
+                                    <MDBNavItem>
+                                        <MDBNavLink exact={true} to={`/coursepack/dashboard`} onClick={() => this.updatePath("/coursepack/dashboard")}>
+                                            Dashboard
+                                            </MDBNavLink>
+                                    </MDBNavItem>
+                                }
+                                {
+                                    (this.props.dataStore.getPath.includes("/coursepacks") || this.props.dataStore.getPath.includes("/coursepack/dashboard")) &&
+                                    categories && categories.map((category, index) => {
+                                        return (
+                                            <MDBNavItem>
+                                                <MDBNavLink exact to={`/coursepacks/${category.categoryId}`} onClick={() => this.updatePath(`/coursepacks/${category.categoryId}`)}>
+                                                    <span className="ml-4">{category.name}</span>
+                                                </MDBNavLink>
+                                            </MDBNavItem>
+                                        )
+                                    })
+                                }
+                            </div>
+                            {
+                                sessionStorage.getItem("accessRight") === "Public" &&
+                                <MDBNavItem active={false}>
                                     {
-                                        this.props.cartNum > 0 &&
-                                        <Tooltip title="Cart">
-                                            <span className="mr-2">
-                                                <Badge badgeContent={itemsInCart} color="secondary">
-                                                    <ShoppingCartIcon style={{ color: "white" }} aria-label="add" onClick={e => this.goToCart()} />
-                                                </Badge>
-                                            </span>
-                                        </Tooltip>
+                                        this.props.cartNum > 0 && <MDBNavLink exact to="/coursepack/cart" >
+                                            <Tooltip title="Cart">
+                                                <span className="mr-2">
+                                                    <Badge badgeContent={itemsInCart} color="secondary">
+                                                        <ShoppingCartIcon style={{ color: "white" }} aria-label="add" />
+                                                    </Badge>
+                                                    <span className="show-cart-word ml-3">Cart</span>
+                                                </span>
+                                            </Tooltip></MDBNavLink>
                                     }
                                     {
-                                        this.props.cartNum == 0 &&
-                                        <Tooltip title="Empty Cart!">
-                                            <span className="mr-2">
-                                                <ShoppingCartIcon style={{ color: "white" }} aria-label="add" />
-                                            </span>
-                                        </Tooltip>
+                                        this.props.cartNum == 0 && <MDBNavLink exact to="/coursepack/cart" onClick={this.closeCollapse("mainNavbarCollapse")}>
+                                            <Tooltip title="Empty Cart!">
+                                                <span className="mr-2">
+                                                    <ShoppingCartIcon style={{ color: "white" }} aria-label="add" />
+                                                    <span className="show-cart-word ml-2">Cart</span>
+                                                </span>
+                                            </Tooltip></MDBNavLink>
                                     }
                                 </MDBNavItem>
-                            </NavbarNav>
-                        }
+                            }
+                            <div className="show-main-nav">
+                                {(this.props.dataStore.accessRight !== "Admin" && this.props.dataStore.accessRight !== "Public") &&
+                                    <MDBNavItem>
+                                        <MDBNavLink exact={true} to={`/modules`} onClick={() => this.updatePath("/modules")}>
+                                            Module
+                                            </MDBNavLink>
+                                    </MDBNavItem>
+                                }
+                                {this.props.dataStore.accessRight !== "Admin" &&
+                                    <MDBNavItem>
+                                        <MDBNavLink exact={true} to={`/coursepack/myCourses`} onClick={() => this.updatePath("/coursepack/myCourses")}>
+                                            My Coursepacks
+                                            </MDBNavLink>
+                                    </MDBNavItem>
+                                }
+                                {(this.props.dataStore.accessRight !== "Admin" && this.props.dataStore.accessRight !== "Teacher") &&
+                                    <MDBNavItem>
+                                        <MDBNavLink exact={true} to={`/coursepack/achievements/view/badges`} onClick={() => this.updatePath("/coursepack/achievements/view/badges")}>
+                                            My Achievements
+                                            </MDBNavLink>
+                                    </MDBNavItem>
+                                }
+                                {this.props.dataStore.accessRight === "Admin" &&
+                                    <MDBNavItem>
+                                        <MDBNavLink exact={true} to={`/coursepack/dashboard/admin`} onClick={() => this.updatePath("/coursepack/dashboard/admin")}>
+                                            Achievements
+                                            </MDBNavLink>
+                                    </MDBNavItem>
+                                }
+                                {(this.props.dataStore.accessRight === "Admin" &&
+                                    <MDBNavItem>
+                                        <MDBNavLink exact={true} to={`/dashboard`} onClick={() => this.updatePath("/dashboard")}>
+                                            LMP
+                                            </MDBNavLink>
+                                    </MDBNavItem>
+                                )}
+                                {this.props.dataStore.accessRight === "Admin" &&
+                                    <MDBNavItem>
+                                        <MDBNavLink exact={true} to={`/coursepack/users`} onClick={() => this.updatePath("/coursepack/users")}>
+                                            Public Users
+                                            </MDBNavLink>
+                                    </MDBNavItem>
+                                }
+                                <MDBNavItem>
+                                    <MDBNavLink exact={true} to={`/coursepack/account`} onClick={() => this.updatePath("/coursepack/account")}>
+                                        Account
+                                            </MDBNavLink>
+                                </MDBNavItem>
+                                {(this.props.dataStore.accessRight === "Student" || this.props.dataStore.accessRight === "Teacher") &&
+                                    <MDBNavItem>
+                                        <MDBNavLink exact={true} onClick={() => this.logOutUser()} to="/login">
+                                            Logout
+                                    </MDBNavLink>
+                                    </MDBNavItem>
+                                }
+                                {this.props.dataStore.accessRight === "Admin" &&
+                                    <MDBNavItem>
+                                        <MDBNavLink exact={true} onClick={() => this.logOutUser()} to="/admin">
+                                            Logout
+                                    </MDBNavLink>
+                                    </MDBNavItem>
+                                }
+                                {this.props.dataStore.accessRight === "Public" &&
+                                    <MDBNavItem>
+                                        <MDBNavLink exact={true} onClick={() => this.logOutUser()} to="/coursepack/login">
+                                            Logout
+                                    </MDBNavLink>
+                                    </MDBNavItem>
+                                }
+                            </div>
+                        </MDBNavbarNav>
                     </MDBCollapse>
                 </MDBNavbar>
                 {collapseID && overlay}
@@ -197,15 +285,29 @@ export class CategoryTopNav extends Component {
         return (
             <div>
                 <MDBNav style={{ marginTop: '16px' }} dark expand="lg" fixed="top" className="justify-content-center">
-                        {this.state.category && this.state.category.map((category, index) => {
-                            return (
-                                <MDBNavItem><MDBNavLink to={`/coursepack/${category}/list`}>{category}</MDBNavLink></MDBNavItem>
-                            )
-                        })}
+                    {this.state.category && this.state.category.map((category, index) => {
+                        return (
+                            <MDBNavItem><MDBNavLink to={`/coursepack/${category}/list`}>{category}</MDBNavLink></MDBNavItem>
+                        )
+                    })}
                 </MDBNav>
             </div>
         )
     }
 }
 
-export default withRouter(CoursepackTopNav);
+export default styled(withRouter(CoursepackTopNav))`
+@media screen and (min-width: 800px) {
+    .Navbar-coursepack-title {
+        padding-left: 80px;
+    }
+
+    .show-cart-word {
+        display: none;
+    }
+
+    .show-main-nav {
+        display: none;
+    }
+}
+`;

@@ -177,24 +177,24 @@ class CoursepackQuizPageAnswerQuiz extends Component {
                     You have come to the end of the coursepack.
                   </center>
                 }
-                {complete !== undefined && complete.completeCoursepack === true &&
+                {/* {this.props.length === this.props.index + 1 && complete !== undefined && complete.completeCoursepack === true &&
                   <center><MDBIcon icon="check" style={{ color: "green" }} />You have fully completed the coursepack.</center>
                 }
-                {complete !== undefined && complete.completeCoursepack === false &&
+                {this.props.length === this.props.index + 1 && complete !== undefined && complete.completeCoursepack === false &&
                   <center><MDBIcon icon="times" style={{ color: "red" }} />You have fully completed the coursepack.</center>
                 }
-                {complete !== undefined && complete.unlockBadge === true &&
+                {this.props.length === this.props.index + 1 && complete !== undefined && complete.unlockBadge === true &&
                   <center><MDBIcon icon="check" style={{ color: "green" }} />You have achieved a new badge.</center>
                 }
-                {complete !== undefined && complete.unlockBadge === false &&
+                {this.props.length === this.props.index + 1 && complete !== undefined && complete.unlockBadge === false &&
                   <center><MDBIcon icon="times" style={{ color: "red" }} />You have achieved a new badge.</center>
                 }
-                {complete !== undefined && complete.unlockCertificate === true &&
+                {this.props.length === this.props.index + 1 && complete !== undefined && complete.unlockCertificate === true &&
                   <center><MDBIcon icon="check" style={{ color: "green" }} />You have achieved a new certificate.</center>
                 }
-                {complete !== undefined && complete.unlockCertificate === false &&
+                {this.props.length === this.props.index + 1 && complete !== undefined && complete.unlockCertificate === false &&
                   <center><MDBIcon icon="times" style={{ color: "red" }} />You have achieved a new certificate.</center>
-                }
+                } */}
 
               </div>
             }

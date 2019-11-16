@@ -1,9 +1,11 @@
 import React, { Component } from "react";
-import { MDBIcon, MDBRow, MDBCol, MDBDataTable, MDBBtn, MDBModal, MDBModalHeader, MDBModalBody, MDBModalFooter } from "mdbreact";
+import { MDBIcon, MDBRow, MDBCol, MDBDataTable, MDBBtn, MDBModal, MDBModalHeader, MDBModalBody, MDBModalFooter, MDBContainer } from "mdbreact";
 import axios from "axios";
 import { Snackbar } from "@material-ui/core";
 import { observer, inject } from 'mobx-react'
 const API = "http://localhost:8080/LMS-war/webresources/";
+import styled from 'styled-components';
+import MainSideNavDropdown from "../MainSideNavDropdown";
 
 @inject('dataStore')
 @observer
@@ -181,7 +183,7 @@ class CoursepackCertificatesDetailsPage extends Component {
     }
 
     saveCertName = event => {
-        axios.put(`${API}Gamification/updateCertification?certificationId=${this.state.certId}`, {title: this.state.title})
+        axios.put(`${API}Gamification/updateCertification?certificationId=${this.state.certId}`, { title: this.state.title })
             .then(result => {
                 this.setState({
                     message: "Certificate name updated",
@@ -230,78 +232,115 @@ class CoursepackCertificatesDetailsPage extends Component {
     render() {
 
         return (
-            <div style={{ paddingLeft: 150, paddingTop: 50, paddingRight: 50 }}>
-                <MDBRow size="12" >
-                    <MDBCol size="8">
-                        <h2 className="font-weight-bold" style={{ paddingTop: 50 }}>
-                            {this.state.title}
-                            <MDBIcon style={{ paddingLeft: 20 }} onClick={this.toggleEdit} icon="edit" />
-                            <MDBModal isOpen={this.state.modalEdit} toggle={this.toggleEdit}>
-                                <MDBModalHeader toggle={this.toggleEdit}>Edit Certificate Name</MDBModalHeader>
+            <div className={this.props.className}>
+                <div className="module-navbar-small">
+                    <MainSideNavDropdown moduleId={this.props.moduleId} activeTab={'Achievements'}></MainSideNavDropdown>
+                </div>
+                <div className="module-content">
+                    <MDBContainer className="mt-3">
+                        <MDBRow md="12" >
+                            <MDBCol md="8">
+                                <h2 className="font-weight-bold" style={{ paddingTop: 50 }}>
+                                    {this.state.title}
+                                    <MDBIcon style={{ paddingLeft: 20 }} onClick={this.toggleEdit} icon="edit" />
+                                    <MDBModal isOpen={this.state.modalEdit} toggle={this.toggleEdit}>
+                                        <MDBModalHeader toggle={this.toggleEdit}>Edit Certificate Name</MDBModalHeader>
+                                        <MDBModalBody>
+                                            <input type="text" name="title" onChange={this.handleChange} defaultValue={this.state.title} className="form-control" />
+                                        </MDBModalBody>
+                                        <MDBModalFooter>
+                                            <MDBBtn color="deep-orange" onClick={this.saveCertName}>Save</MDBBtn>
+                                        </MDBModalFooter>
+                                    </MDBModal>
+                                </h2>
+                            </MDBCol>
+                            <MDBCol md="4" align="right" style={{ paddingTop: 40, paddingRight: 30 }}>
+                                <MDBBtn color="deep-orange" onClick={this.toggleModal}>Add Coursepack</MDBBtn>
+                                <MDBModal isOpen={this.state.modal} toggle={this.toggleModal}>
+                                    <MDBModalHeader toggle={this.toggleModal}>Add Coursepack</MDBModalHeader>
+                                    <MDBModalBody>
+                                        <MDBRow>
+                                            <MDBCol sm="4">Select Coursepack: </MDBCol>
+                                            <MDBCol sm="8">
+                                                {this.select()}
+                                            </MDBCol>
+                                        </MDBRow>
+                                    </MDBModalBody>
+                                    <MDBModalFooter>
+                                        <MDBBtn color="deep-orange" onClick={this.addCoursepack}>Add</MDBBtn>
+                                    </MDBModalFooter>
+                                </MDBModal>
+                            </MDBCol>
+                        </MDBRow>
+                        <hr />
+                        {this.showTable()}
+                        <MDBCol align="right">
+                            <MDBBtn color="danger" onClick={this.toggleDelete}>Delete Certificate</MDBBtn>
+                            <MDBModal isOpen={this.state.modalDelete} toggle={this.toggleDelete}>
+                                <MDBModalHeader toggle={this.toggleDelete}>Add Coursepack</MDBModalHeader>
                                 <MDBModalBody>
-                                    <input type="text" name="title" onChange={this.handleChange} defaultValue={this.state.title} className="form-control" />
+                                    <MDBCol align="center">
+                                        <b>Confirm deletion? This action cannot be reverted.</b>
+                                    </MDBCol>
                                 </MDBModalBody>
                                 <MDBModalFooter>
-                                    <MDBBtn color="secondary" onClick={this.saveCertName}>Save</MDBBtn>
+                                    <MDBBtn color="grey" onClick={this.cancel}>Cancel</MDBBtn>
+                                    <MDBBtn color="danger" onClick={this.removeCert}>Remove</MDBBtn>
                                 </MDBModalFooter>
                             </MDBModal>
-                        </h2>
-                    </MDBCol>
-                    <MDBCol size="4" align="right" style={{ paddingTop: 40, paddingRight: 30 }}>
-                        <MDBBtn color="primary" onClick={this.toggleModal}>Add Coursepack</MDBBtn>
-                        <MDBModal isOpen={this.state.modal} toggle={this.toggleModal}>
-                            <MDBModalHeader toggle={this.toggleModal}>Add Coursepack</MDBModalHeader>
-                            <MDBModalBody>
-                                <MDBRow>
-                                    <MDBCol sm="4">Select Coursepack: </MDBCol>
-                                    <MDBCol sm="8">
-                                        {this.select()}
-                                    </MDBCol>
-                                </MDBRow>
-                            </MDBModalBody>
-                            <MDBModalFooter>
-                                <MDBBtn color="secondary" onClick={this.addCoursepack}>Add</MDBBtn>
-                            </MDBModalFooter>
-                        </MDBModal>
-                    </MDBCol>
-                </MDBRow>
-                <hr />
-                {this.showTable()}
-                <MDBCol align="right">
-                    <MDBBtn color="danger" onClick={this.toggleDelete}>Delete Certificate</MDBBtn>
-                    <MDBModal isOpen={this.state.modalDelete} toggle={this.toggleDelete}>
-                        <MDBModalHeader toggle={this.toggleDelete}>Add Coursepack</MDBModalHeader>
-                        <MDBModalBody>
-                            <MDBCol align="center">
-                                <b>Confirm deletion? This action cannot be reverted.</b>
-                            </MDBCol>
-                        </MDBModalBody>
-                        <MDBModalFooter>
-                            <MDBBtn color="primary" onClick={this.cancel}>Cancel</MDBBtn>
-                            <MDBBtn color="danger" onClick={this.removeCert}>Remove</MDBBtn>
-                        </MDBModalFooter>
-                    </MDBModal>
-                </MDBCol>
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    open={this.state.openSnackbar}
-                    autoHideDuration={6000}
-                    onClose={this.handleClose}
-                    ContentProps={{
-                        'aria-describedby': 'message-id',
-                    }}
-                    message={<span id="message-id">{this.state.message}</span>}
-                    action={[
-                        <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
-                    ]}
-                />
-
+                        </MDBCol>
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            open={this.state.openSnackbar}
+                            autoHideDuration={6000}
+                            onClose={this.handleClose}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">{this.state.message}</span>}
+                            action={[
+                                <MDBIcon icon="times" color="white" onClick={this.handleClose} style={{ cursor: "pointer" }} />,
+                            ]}
+                        />
+                    </MDBContainer>
+                </div>
             </div>
         )
     }
 }
 
-export default CoursepackCertificatesDetailsPage
+export default styled(CoursepackCertificatesDetailsPage)`
+.module-content{
+    margin-top: 10px;
+}
+@media screen and (min-width: 800px) {
+    .module-content{
+        margin-left: 0px;
+    }
+    .module-navbar-small{
+        display: none;
+    }
+    .module-sidebar-large{
+        display: block;
+    }
+}
+@media screen and (max-width: 800px) {
+    .module-sidebar-large{
+        display: none;
+    }
+    .module-navbar-small{
+        display: block;
+    }
+}
+
+.new-paragraph{
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+.align-right{
+    float: right;
+}
+`

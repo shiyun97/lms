@@ -257,16 +257,16 @@ class UsersManagementPage extends Component {
                                         </label>
                                 <input type="text" className="form-control" defaultValue={this.state.email} onChange={this.handleChange} name="email" />
                             </MDBCol>
-                            <MDBCol md="12" className="mt-4">
+                            {/* <MDBCol md="12" className="mt-4">
                                 <label className="grey-text">
                                     Password
                                         </label>
-                            </MDBCol>
-                            <MDBCol md="6">
+                            </MDBCol> */}
+                            {/* <MDBCol md="6">
                                 <input type="text" className="form-control" onChange={this.handleChange} disabled value={this.state.password} />
-                            </MDBCol>
-                            <MDBCol md="6" align="right"> </MDBCol>
-                            <MDBCol md="12" className="mt-4">
+                            </MDBCol> */}
+                            {/* <MDBCol md="6" align="right"> </MDBCol> */}
+                            <MDBCol md="12">
                                 <MDBInputGroup
                                     style={{ paddingTop: 32 }}
                                     containerClassName="mb-3"
@@ -423,7 +423,7 @@ class UsersManagementPage extends Component {
                     <MDBCol md={6}><MDBIcon onClick={() => this.toggle(1, row[i])} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="edit" /></MDBCol>
                     <MDBCol md={6}><MDBIcon onClick={() => this.deleteUser(row[i].userId)} style={{ cursor: "pointer", textShadow: "1px 0px 1px #000000" }} icon="trash" /></MDBCol>
                 </MDBRow>,
-                                achievements: <MDBCol align="center" md={6}><MDBBtn color="deep-orange" size="sm" onClick={() => this.viewUserAchievements(row[i].userId)}>View</MDBBtn></MDBCol>,
+                achievements: <MDBCol align="center" md={6}><MDBBtn color="deep-orange" size="sm" onClick={() => this.viewUserAchievements(row[i].userId)}>View</MDBBtn></MDBCol>,
             })
         }
         const data = () => ({ columns: this.state.columns, rows: newRows })

@@ -1,11 +1,13 @@
 import React, { Component } from "react";
-import { NavLink, MDBDataTable, MDBRow, MDBBtn, MDBCol, MDBTabContent, MDBTabPane, MDBNav, MDBNavItem, MDBNavLink } from "mdbreact";
+import { NavLink, MDBDataTable, MDBRow, MDBBtn, MDBCol, MDBTabContent, MDBTabPane, MDBNav, MDBNavItem, MDBNavLink, MDBJumbotron, MDBCardTitle } from "mdbreact";
 import { observer, inject } from 'mobx-react'
 import axios from "axios";
 import CoursepackAchievementsCertificate from './CoursepackAchievementsCertificate'
 import SwipeableViews from 'react-swipeable-views';
 import { AppBar, Tabs, Tab, Paper, Card, Typography } from '@material-ui/core';
 import CoursepackAchievementsTranscript from "./CoursepackAchievementsTranscript";
+import CoursepackTopNav from "./CoursepackTopNav";
+import styled from 'styled-components';
 
 const API = "http://localhost:8080/LMS-war/webresources/";
 const FILE_SERVER = "http://127.0.0.1:8887/";
@@ -26,7 +28,8 @@ class CoursepackAchievementsPage extends Component {
         allCertificates: [],
         allBadges: "",
         achievedBadges: [],
-        attainedCerts: ""
+        attainedCerts: "",
+        cartNum: 0
     }
 
     componentDidMount() {
@@ -69,6 +72,17 @@ class CoursepackAchievementsPage extends Component {
             .catch(error => {
                 console.error("error in axios " + error);
             });
+
+        // get cart items if any
+        let cart = sessionStorage.getItem("cart");
+        let cartNum = 0;
+        if (cart != undefined && cart != null) {
+            let cartObjs = JSON.parse(cart);
+            cartNum = cartObjs.length;
+        }
+        this.setState({
+            cartNum: cartNum
+        })
     }
 
     toggle = tab => e => {
@@ -107,8 +121,8 @@ class CoursepackAchievementsPage extends Component {
             <MDBRow >
                 {this.state.allBadges && this.state.allBadges.map((badge, index) => {
                     location = badge.location
-                    let savedFileName = location.split('/')[5]; //FIXME:
-                    /* let savedFileName = location.split('\\')[1]; */
+                   // let savedFileName = location.split('/')[5]; //FIXME:
+                    let savedFileName = location.split('\\')[1];
                     let fullPath = FILE_SERVER + savedFileName;
                     console.log(fullPath)
 
@@ -232,15 +246,47 @@ class CoursepackAchievementsPage extends Component {
 
     render() {
         return (
-            <div style={{ paddingLeft: 150, paddingTop: 50, paddingRight: 50 }} >
-                <MDBCol>
-                    <h3><b>Coursepack Achievements</b></h3>
-                    <hr />
-                </MDBCol>
-                {this.showTabs()}
-            </div >
+            <div className={this.props.className}>
+                <CoursepackTopNav cartNum={this.state.cartNum} />
+                <div className="coursepack-topbar-large">
+                    <MDBJumbotron style={{ padding: 0, backgroundColor: "#505763", width: "100%" }}>
+                        <MDBCol className="text-white">
+                            <MDBCol className="py-3">
+                                <MDBCardTitle className="h1-responsive pt-5 m-3 ml-5 px-5">
+                                    <MDBRow></MDBRow>
+                                    <MDBRow>Coursepack Achievements</MDBRow>
+                                </MDBCardTitle>
+                            </MDBCol>
+                        </MDBCol>
+                    </MDBJumbotron>
+                </div>
+
+                <div className="coursepack-topbar-small">
+                    <MDBRow className="py-3" style={{ backgroundColor: "#505763", color: "#fff" }}>
+                        <MDBCardTitle className="h1-responsive pt-5 m-3 ml-0 px-5">
+                            <MDBRow></MDBRow>
+                            <MDBRow>Coursepack Achievements</MDBRow>
+                        </MDBCardTitle>
+                    </MDBRow>
+                </div>
+
+                <div style={{ paddingLeft: 150, paddingRight: 50 }} >
+                    {this.showTabs()}
+                </div >
+            </div>
         )
     }
 }
 
-export default CoursepackAchievementsPage;
+export default styled(CoursepackAchievementsPage)`
+@media screen and (min-width: 800px) {
+    .coursepack-topbar-small{
+      display: none;
+    }
+}
+@media screen and (max-width: 800px) {
+    .coursepack-topbar-large{
+      display: none;
+    }
+}
+`;

@@ -11,13 +11,18 @@ import {
     MDBIcon,
     MDBNav,
     MDBNavItem,
-    MDBNavLink
+    MDBNavLink,
+    MDBAnimation
 } from "mdbreact";
 import axios from "axios";
 import { Rating } from '@material-ui/lab';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
@@ -25,6 +30,7 @@ import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
 import CoursepackTopNav from "./CoursepackTopNav";
 import cprog from './img/cprog.jpg';
+import styled from 'styled-components';
 
 const API = "http://localhost:8080/LMS-war/webresources/"
 
@@ -244,7 +250,7 @@ class CoursepackViewAllPage extends Component {
     showCoursepacks = () => {
         let coursepacks = this.state.coursepacks;
         return (
-            <MDBRow middle>
+            <MDBRow>
                 <MDBCol>
                     <MDBRow>
                         <MDBRow>
@@ -253,6 +259,8 @@ class CoursepackViewAllPage extends Component {
                             </MDBCol>
                         </MDBRow>
                     </MDBRow>
+                    {/* LARGE VIEW */}
+                    <div className="coursepack-breadcrumb-large">
                     {
                         coursepacks.map((coursepack) => (<div>
                             <hr style={{ borderTop: "1px solid rgba(0,0,0,.1)" }} />
@@ -281,7 +289,7 @@ class CoursepackViewAllPage extends Component {
                                         <MDBRow>
                                             <b style={{ color: "#f44336", fontSize: "18px" }}>
                                                 {
-                                                    (sessionStorage.getItem("accessRight") === "Public" || !sessionStorage.getItem("accessRight")) && <span>S${coursepack.price.toFixed(2)}</span>
+                                                    (sessionStorage.getItem("accessRight") === "Public" || !sessionStorage.getItem("accessRight")) && <span>S${coursepack.price && coursepack.price.toFixed(2)}</span>
                                                 }
                                                 {
                                                     sessionStorage.getItem("accessRight") === "Student" && <span>FREE</span>
@@ -291,7 +299,7 @@ class CoursepackViewAllPage extends Component {
                                         <div className="mb-2" />
                                         <MDBRow>
                                             <Rating name="hover-side" value={coursepack.rating} precision={0.1} readOnly size="small" />
-                                            <Box ml={2} style={{ fontSize: "14px" }}>{coursepack.rating.toFixed(1)}</Box>
+                                            <Box ml={2} style={{ fontSize: "14px" }}>{coursepack.rating && coursepack.rating.toFixed(1)}</Box>
                                         </MDBRow>
                                         <MDBRow>
                                             <Typography variant="body2" color="textSecondary">{" (" + coursepack.ratingList.length + " ratings)"}</Typography>
@@ -317,6 +325,61 @@ class CoursepackViewAllPage extends Component {
                         </div>
                         ))
                     }
+                    </div>
+
+                    {/* LARGE VIEW */}
+                    <div className="coursepack-breadcrumb-small">
+                        {coursepacks && coursepacks.map((course, index) => {
+                            return (
+                                <MDBCol md="3" key={course.coursepackId} style={{ paddingBottom: 30 }}>
+                                    <MDBAnimation reveal type="fadeInUp">
+                                        <Card>
+                                            <CardActionArea>
+                                                <NavLink to={`/coursepack/${course.coursepackId}/`} style={{ marginBottom: 0 }}>
+                                                    <CardMedia
+                                                        style={{ height: 140 }}
+                                                        image={course.imageLocation}
+                                                        title={course.title}
+                                                    />
+                                                    <CardContent>
+                                                        <Typography gutterBottom variant="h5" component="h2" style={{ color: "#000000" }}>
+                                                            {course.title}
+                                                        </Typography>
+                                                        <Typography variant="body2" color="textSecondary" component="p">
+                                                            {course.assignedTeacher.firstName + " " + course.assignedTeacher.lastName}
+                                                        </Typography>
+                                                        <Typography variant="body2" color="textSecondary" component="p">
+                                                            <div style={{ width: 200, display: "flex", marginTop: 10 }}>
+                                                                <Rating name="hover-side" value={course.rating} precision={0.1} readOnly size="small" />
+                                                                <Box ml={2}>{course.rating && course.rating.toFixed(1) + " (" + course.ratingList.length + ")"}</Box>
+                                                            </div>
+                                                        </Typography>
+                                                        <Typography gutterBottom variant="h6" component="h2" style={{ color: "#000000", marginTop: 10 }}>
+                                                            {sessionStorage.getItem("accessRight") === "Student" ? "FREE" : "S$" + course.price && course.price.toFixed(2)}
+                                                        </Typography>
+                                                    </CardContent>
+                                                </NavLink>
+                                            </CardActionArea>
+                                            {
+                                                sessionStorage.getItem("accessRight") === "Public" && <CardActions>
+                                                    <Button variant="contained" style={{ backgroundColor: "#fb6d63" }} onClick={e => this.addToCart(course)}>
+                                                        Add To Cart
+                                                    </Button>
+                                                </CardActions>
+                                            }
+                                            {
+                                                sessionStorage.getItem("accessRight") === "Student" && <CardActions>
+                                                    <Button variant="contained" style={{ backgroundColor: "#fb6d63" }} onClick={e => this.enrollCourse(course)}>
+                                                        Enroll Now
+                                                    </Button>
+                                                </CardActions>
+                                            }
+                                        </Card>
+                                    </MDBAnimation>
+                                </MDBCol>
+                            )
+                        })}
+                    </div>
                 </MDBCol>
             </MDBRow>
         )
@@ -368,9 +431,9 @@ class CoursepackViewAllPage extends Component {
         let coursepacks = this.state.coursepacks;
         let categories = this.state.categories;
         return (
-            <div>
+            <div className={this.props.className}>
                 <CoursepackTopNav cartNum={this.state.cartNum} />
-                <MDBJumbotron style={{ paddingLeft: 260, paddingBottom: 40, height: 10, marginBottom: 0, float: "center" }}>
+                <MDBJumbotron style={{ paddingLeft: 260, paddingBottom: 40, height: 10, marginBottom: 0, float: "center", backgroundColor: "#f0f0f0" }} className="categoryBar">
                     <div>
                         <MDBNav>
                             {
@@ -389,12 +452,13 @@ class CoursepackViewAllPage extends Component {
                     </div>
                 </MDBJumbotron>
 
-                <MDBJumbotron style={{ padding: 0, backgroundColor: "#505763", width: "100%" }}>
-                    <MDBCol className="text-white">
-                        <MDBCol className="py-3">
-                            <MDBCardTitle className="h1-responsive pt-2 m-3 ml-5 px-5">
-                                {this.showBreadcrumb()}
-                                <MDBRow>
+                <div className="coursepack-breadcrumb-large">
+                    <MDBJumbotron style={{ padding: 0, backgroundColor: "#505763", width: "100%" }}>
+                        <MDBCol className="text-white">
+                            <MDBCol className="py-3">
+                                <MDBCardTitle className="h1-responsive pt-2 m-3 ml-5 px-5">
+                                    {this.showBreadcrumb()}
+                                    <MDBRow>
                                     {
                                         this.state.categoryName && <span>All {this.state.categoryName} Coursepacks</span>
                                     }
@@ -402,10 +466,27 @@ class CoursepackViewAllPage extends Component {
                                         !this.state.categoryName && <span>All Coursepacks</span>
                                     }
                                 </MDBRow>
-                            </MDBCardTitle>
+                                </MDBCardTitle>
                         </MDBCol>
                     </MDBCol>
                 </MDBJumbotron>
+                </div>
+                <div className="coursepack-breadcrumb-small">
+                    <MDBRow style={{ backgroundColor: "#505763", color: "#fff" }}>
+                        <MDBCardTitle className="h1-responsive pt-5 m-3 px-5">
+                            {this.showBreadcrumb()}
+                            <MDBRow>
+                                {
+                                    this.state.categoryName && <span>All {this.state.categoryName} Coursepacks</span>
+                                }
+                                {
+                                    !this.state.categoryName && <span>All Coursepacks</span>
+                                }
+                            </MDBRow>
+                        </MDBCardTitle>
+                    </MDBRow>
+                </div>
+
                 <MDBContainer style={{ paddingBottom: 240 }}>
                     <MDBContainer style={{ paddingTop: 17 }} >
                         <MDBCol>
@@ -424,4 +505,21 @@ class CoursepackViewAllPage extends Component {
     }
 }
 
-export default CoursepackViewAllPage;
+export default styled(CoursepackViewAllPage)`
+@media screen and (max-width: 800px) {
+    .categoryBar {
+        display: none;
+    }
+    .jumbotronPaddingTop {
+        margin-top: 50px;
+    }
+    .coursepack-breadcrumb-large{
+        display: none;
+    }
+}
+@media screen and (min-width: 800px) {
+    .coursepack-breadcrumb-small{
+        display: none;
+    }
+}
+`;

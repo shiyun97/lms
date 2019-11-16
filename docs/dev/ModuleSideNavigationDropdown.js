@@ -19,6 +19,10 @@ class ModuleSideNavigationDropdown extends Component {
         collapseID: ''
     }
 
+    logOutUser = () => {
+        this.props.dataStore.setSignOutStatus();
+    }
+
     toggleCollapse = collapseID => () => {
         this.setState(prevState => ({ collapseID: (prevState.collapseID !== collapseID ? collapseID : '') }));
     }
@@ -29,6 +33,7 @@ class ModuleSideNavigationDropdown extends Component {
         return <MDBNavbar color="indigo" dark>
             <MDBContainer>
                 <MDBNavbarBrand className="white-text">
+                    <strong>FlipIt</strong>
                 </MDBNavbarBrand>
                 <MDBNavbarToggler className="white-text" onClick={this.toggleCollapse('navbarCollapse1')} />
                 <MDBCollapse id="navbarCollapse1" isOpen={this.state.collapseID} navbar>
@@ -77,6 +82,11 @@ class ModuleSideNavigationDropdown extends Component {
                                 <MDBNavLink exact={true} to={`/modules/${moduleId}/analytics`}>Analytics</MDBNavLink>
                             </MDBNavItem>
                         }
+                        <MDBNavItem>
+                            <MDBNavLink exact={true} onClick={() => this.logOutUser()} to="/login">
+                                Logout
+                        </MDBNavLink>
+                        </MDBNavItem>
                     </NavbarNav>
                 </MDBCollapse>
             </MDBContainer>
